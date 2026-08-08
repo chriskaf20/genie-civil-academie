@@ -1,0 +1,393 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   DESIGN SYSTEM — GLOBAL CIVIL ENGINEERING ACADEMY
+   ======================================== */
+
+:root {
+  --eng-blue: #0F52BA;
+  --eng-blue-light: #1a6be0;
+  --eng-orange: #FF6B00;
+  --eng-orange-light: #ff8533;
+  --concrete-gray: #4A5568;
+  --concrete-light: #718096;
+  --sidebar-width: 300px;
+  --right-panel-width: 380px;
+  --transition-base: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --glow-blue: 0 0 24px rgba(15, 82, 186, 0.35);
+  --glow-orange: 0 0 24px rgba(255, 107, 0, 0.35);
+}
+
+/* ── Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* ── Headings use Outfit ── */
+h1, h2, h3, h4 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* ── Code / mono ── */
+code, pre, .mono {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.2); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(15, 82, 186, 0.5), rgba(255, 107, 0, 0.4));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, rgba(15, 82, 186, 0.8), rgba(255, 107, 0, 0.6));
+}
+
+/* ── Focus rings ── */
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid rgba(15, 82, 186, 0.7);
+  outline-offset: 2px;
+  box-shadow: var(--glow-blue);
+}
+
+/* ── Glassmorphism card ── */
+.glass {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  border: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+.glass-light {
+  background: rgba(248, 250, 252, 0.7);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(15, 82, 186, 0.15);
+}
+
+/* ── Gradient text ── */
+.gradient-text {
+  background: linear-gradient(135deg, #38bdf8 0%, #0F52BA 40%, #FF6B00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(135deg, #FF6B00 0%, #ff8533 50%, #fbbf24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Engineering grid background ── */
+.eng-grid-bg {
+  background-image:
+    linear-gradient(rgba(15, 82, 186, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 82, 186, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.eng-grid-bg-light {
+  background-image:
+    linear-gradient(rgba(15, 82, 186, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 82, 186, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Accent line / border ── */
+.accent-border-left {
+  border-left: 3px solid var(--eng-blue);
+  padding-left: 1rem;
+}
+.accent-border-left-orange {
+  border-left: 3px solid var(--eng-orange);
+  padding-left: 1rem;
+}
+
+/* ── Animated gradient bar ── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.progress-bar-animated {
+  background: linear-gradient(90deg, #0F52BA, #38bdf8, #FF6B00, #38bdf8, #0F52BA);
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Pulse dot ── */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+.pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+/* ── Section entrance animation ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeSlideUp 0.45s ease both;
+}
+.animate-fade-up-delay-1 { animation-delay: 0.08s; }
+.animate-fade-up-delay-2 { animation-delay: 0.16s; }
+.animate-fade-up-delay-3 { animation-delay: 0.24s; }
+
+/* ── Hover card lift ── */
+.card-hover {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 60px rgba(15, 82, 186, 0.15), 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* ── Step badge ── */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  background: linear-gradient(135deg, rgba(15, 82, 186, 0.3), rgba(15, 82, 186, 0.1));
+  border: 1px solid rgba(15, 82, 186, 0.4);
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+
+/* ── Formula card ── */
+.formula-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(8, 47, 73, 0.8) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.formula-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #38bdf8, #0F52BA, transparent);
+}
+
+/* ── Alert boxes ── */
+.alert-warning {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.1) 0%, rgba(234, 88, 12, 0.05) 100%);
+  border: 1px solid rgba(234, 88, 12, 0.3);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+.alert-tip {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+.alert-info {
+  background: linear-gradient(135deg, rgba(15, 82, 186, 0.12) 0%, rgba(15, 82, 186, 0.05) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+.alert-norm {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+/* ── Quiz option buttons ── */
+.quiz-option {
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+.quiz-option::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15, 82, 186, 0.1), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.quiz-option:hover::before { opacity: 1; }
+.quiz-option.correct {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+  color: #a7f3d0 !important;
+}
+.quiz-option.incorrect {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  color: #fca5a5 !important;
+}
+.quiz-option.selected-correct {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: #10b981 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3) !important;
+}
+.quiz-option.selected-incorrect {
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* ── Module nav items ── */
+.module-nav-item {
+  transition: all var(--transition-base);
+  border: 1px solid transparent;
+}
+.module-nav-item.active {
+  background: linear-gradient(135deg, rgba(15, 82, 186, 0.2) 0%, rgba(15, 82, 186, 0.08) 100%);
+  border-color: rgba(15, 82, 186, 0.35);
+  box-shadow: inset 0 0 20px rgba(15, 82, 186, 0.08);
+}
+.module-nav-item:not(.active):hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(51, 65, 85, 0.5);
+  transform: translateX(3px);
+}
+
+/* ── Sidebar toggle btn ── */
+.sidebar-toggle {
+  transition: all var(--transition-base);
+}
+.sidebar-toggle:hover {
+  background: rgba(15, 82, 186, 0.2);
+  box-shadow: var(--glow-blue);
+}
+
+/* ── KaTeX override ── */
+.katex { font-size: 1.05em !important; }
+.katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.5rem 0; }
+
+/* ── SVG interactive triangle ── */
+.svg-interactive { cursor: crosshair; user-select: none; }
+.svg-interactive:active { cursor: grabbing; }
+
+/* ── Beam calculator canvas ── */
+.beam-canvas { border-radius: 0.75rem; display: block; }
+
+/* ── Unit converter ── */
+.unit-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 1rem;
+  padding: 1rem;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+.unit-card:hover {
+  border-color: rgba(15, 82, 186, 0.4);
+  box-shadow: 0 0 16px rgba(15, 82, 186, 0.1);
+}
+
+/* ── Tag / badge ── */
+.tag-blue {
+  background: rgba(15, 82, 186, 0.15);
+  color: #93c5fd;
+  border: 1px solid rgba(15, 82, 186, 0.3);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tag-orange {
+  background: rgba(255, 107, 0, 0.15);
+  color: #fdba74;
+  border: 1px solid rgba(255, 107, 0, 0.3);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tag-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Sidebar transition ── */
+.sidebar-left {
+  transition: width var(--transition-base), opacity var(--transition-base);
+}
+
+/* ── Light mode overrides ── */
+.theme-light body,
+.theme-light {
+  --glass-bg: rgba(248, 250, 252, 0.75);
+  --glass-border: rgba(15, 82, 186, 0.12);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  :root { --sidebar-width: 260px; --right-panel-width: 100%; }
+}
+
+/* ── Rotate animation for icons ── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow { animation: spin-slow 8s linear infinite; }
+
+/* ── Number counter animation ── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.count-up { animation: countUp 0.5s ease; }
+
+/* ── Tooltip ── */
+[data-tooltip] { position: relative; }
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.95);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  z-index: 100;
+}
+[data-tooltip]:hover::after { opacity: 1; }
