@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
+import { Search, LockKeyholeOpen, CheckCircle2 } from 'lucide-react';
 
 const CATEGORY_COLORS = {
   blue: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
@@ -23,17 +24,17 @@ const LEVEL_COLORS = {
   'Tous niveaux': 'text-sky-400',
 };
 
-const QUICK_SEARCH_CHIPS = ['Béton', 'RDM', 'BIM', 'Routes', 'Ponts', 'Géotechnique', 'Normes', 'IA'];
+const QUICK_SEARCH_CHIPS = ['Béton', 'RDM', 'BIM', 'Routes', 'Ponts', 'Sols', 'Eurocode', 'IA'];
 
 export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState({});
   const [filter, setFilter] = useState('Tous');
 
-  // Enhanced search logic matching titles, descriptions, categories, and specific lesson keywords
   const filteredModules = useMemo(() => {
     const q = search.toLowerCase().trim();
     return modules.filter(m => {
+      const isLocked = false; // Total unlock on all modules
       const matchTitle = m.title.toLowerCase().includes(q);
       const matchDesc = m.description.toLowerCase().includes(q);
       const matchCat = m.category.toLowerCase().includes(q);
@@ -41,7 +42,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       
       const matchSearch = !q || matchTitle || matchDesc || matchCat || matchLessons;
       const matchFilter = filter === 'Tous' || m.level === filter;
-      return matchSearch && matchFilter;
+      return matchSearch && matchFilter && !isLocked;
     });
   }, [search, filter]);
 
@@ -63,23 +64,24 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Free Access Header Banner */}
       <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-sm">🔓</span>
+          <LockKeyholeOpen className="w-4 h-4 text-emerald-400" />
           <div>
             <p className="text-xs font-bold text-emerald-300">Accès Libre 100%</p>
-            <p className="text-[10px] text-slate-400">35 modules sans prérequis</p>
+            <p className="text-[10px] text-slate-400">Tous les 35 modules sont déverrouillés</p>
           </div>
         </div>
         <span className="tag-green text-[9px]">35 Cours</span>
       </div>
 
-      {/* Global Quick Search */}
+      {/* Global Search Input */}
       <div className="space-y-2">
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">🔍</span>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
           <input
+            type="search"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Recherche rapide (ex: Béton, RDM, Semelle)..."
+            placeholder="Rechercher (Béton, RDM, Sols, Eurocode)..."
             className="w-full rounded-xl border border-slate-700 bg-slate-800/80 pl-9 pr-8 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500/50 transition-colors"
           />
           {search && (
@@ -167,7 +169,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
                           <div className="flex items-center justify-between gap-1">
                             <span className="text-[10px] text-slate-500 font-mono shrink-0">{String(m.id).padStart(2, '0')}</span>
                             <div className="flex items-center gap-1">
-                              {isDone && <span className="text-emerald-400 text-[10px] font-bold" title="Terminé">✓</span>}
+                              {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
                               <span className="text-[9px] text-emerald-400 font-medium">🔓</span>
                             </div>
                           </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ModuleNav from './components/ModuleNav.jsx';
 import LessonCanvas from './components/LessonCanvas.jsx';
 import SidebarRight from './components/SidebarRight.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import SciCalc from './components/SciCalc.jsx';
 import GlossarySearch from './components/GlossarySearch.jsx';
 import { modules } from './data/modules.js';
@@ -27,6 +28,7 @@ export default function App() {
   const [selectedModule, setSelectedModule] = useState(
     () => modules.find(m => m.id === loadProgress().currentModuleId) || modules[0]
   );
+  const [view, setView] = useState('dashboard'); // 'dashboard' | 'lesson'
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [rightPanelOpen, setRightPanelOpen] = useState(true);
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -47,6 +49,7 @@ export default function App() {
 
   const selectModule = (module) => {
     setSelectedModule(module);
+    setView('lesson');
     setMobileMenu(false);
     setActiveMobileTab('cours');
     setProgress(p => ({
@@ -54,6 +57,12 @@ export default function App() {
       currentModuleId: module.id,
       completedIds: p.completedIds.includes(module.id) ? p.completedIds : [...p.completedIds, module.id],
     }));
+  };
+
+  const goHome = () => {
+    setView('dashboard');
+    setMobileMenu(false);
+    setActiveMobileTab('cours');
   };
 
   const handleMobileTabClick = (tabKey) => {
@@ -127,29 +136,40 @@ export default function App() {
             🗂️
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-xs md:text-sm shadow-md">
+          {/* Logo — clickable to go home */}
+          <button onClick={goHome} className="flex items-center gap-2 group">
+            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-xs md:text-sm shadow-md group-hover:shadow-blue-500/40 transition-all">
               G
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-[10px] md:text-xs uppercase tracking-widest text-sky-400 font-semibold leading-tight">Académie Génie Civil</p>
+                <p className="text-[10px] md:text-xs uppercase tracking-widest text-sky-400 font-semibold leading-tight group-hover:text-sky-300 transition-colors">Académie Génie Civil</p>
                 <span className="tag-green text-[8px] md:text-[9px]">Accès Libre</span>
               </div>
               <p className="text-xs md:text-sm font-bold text-white leading-tight hidden sm:block">Global Civil Engineering Academy</p>
             </div>
-          </div>
+          </button>
         </div>
 
-        {/* Center: current module indicator */}
+        {/* Center: current module indicator or dashboard label */}
         <div className="flex-1 hidden lg:flex items-center justify-center">
-          <div className="flex items-center gap-2.5 text-sm bg-slate-800/50 px-3.5 py-1 rounded-full border border-slate-700/50">
-            <span className="text-lg">{selectedModule.icon}</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xs text-sky-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
-              <p className="font-semibold text-white text-xs truncate max-w-xs">{selectedModule.title}</p>
+          {view === 'lesson' ? (
+            <button
+              onClick={goHome}
+              className="flex items-center gap-2.5 text-sm bg-slate-800/50 hover:bg-slate-800/80 px-3.5 py-1 rounded-full border border-slate-700/50 hover:border-sky-500/40 transition-all group"
+            >
+              <span className="text-lg">{selectedModule.icon}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-sky-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
+                <p className="font-semibold text-white text-xs truncate max-w-xs">{selectedModule.title}</p>
+              </div>
+              <span className="text-[10px] text-slate-500 group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 text-sm bg-blue-500/10 border border-blue-500/20 px-3.5 py-1 rounded-full">
+              <span className="text-xs text-sky-400 font-semibold">🏠 Tableau de Bord — {totalCount} Modules Déverrouillés</span>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right: progress + controls */}
@@ -251,7 +271,15 @@ export default function App() {
         <main className={`flex-1 overflow-y-auto pb-16 md:pb-0 ${isDark ? '' : 'bg-slate-50'}`}>
           <div className={`min-h-full ${isDark ? 'eng-grid-bg' : ''}`}>
             <div className="p-3 md:p-6">
-              <LessonCanvas module={selectedModule} theme={theme} />
+              {view === 'dashboard' ? (
+                <Dashboard
+                  onSelectModule={selectModule}
+                  completedIds={progress.completedIds}
+                  theme={theme}
+                />
+              ) : (
+                <LessonCanvas module={selectedModule} theme={theme} />
+              )}
             </div>
           </div>
         </main>
@@ -274,9 +302,21 @@ export default function App() {
       {/* ── Fixed Bottom Navigation Bar (Mobile) ── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 border-t border-slate-800/80 backdrop-blur-md px-2 py-1.5 flex justify-around items-center">
         <button
-          onClick={() => handleMobileTabClick('cours')}
+          onClick={() => { goHome(); }}
           className={`flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
-            activeMobileTab === 'cours' && !mobileMenu && !showSciCalc && !showMobileGlossary
+            view === 'dashboard' && !mobileMenu && !showSciCalc && !showMobileGlossary
+              ? 'text-sky-400 font-bold bg-sky-500/10'
+              : 'text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <span className="text-base">🏠</span>
+          <span className="text-[10px] mt-0.5">Accueil</span>
+        </button>
+
+        <button
+          onClick={() => { setView('lesson'); setMobileMenu(false); setActiveMobileTab('cours'); }}
+          className={`flex flex-col items-center py-1 px-2 rounded-xl transition-all ${
+            view === 'lesson' && activeMobileTab === 'cours' && !mobileMenu && !showSciCalc && !showMobileGlossary
               ? 'text-sky-400 font-bold bg-sky-500/10'
               : 'text-slate-400 hover:text-slate-200'
           }`}

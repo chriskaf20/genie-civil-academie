@@ -5,17 +5,96 @@ import BeamCalculator from './BeamCalculator.jsx';
 
 const QUIZ_DATA = {
   maths: {
-    question: 'Sur chantier, pour calculer une pente, quel rapport utilisez-vous ?',
+    question: 'Sur chantier, pour calculer une pente de 15°, quel rapport utilisez-vous ?',
     options: [
-      { id: 'sin', label: 'A) sin(θ)' },
-      { id: 'cos', label: 'B) cos(θ)' },
-      { id: 'tan', label: 'C) tan(θ) — pente = tan × 100' },
+      { id: 'sin', label: 'A) sin(15°) ≈ 0,259' },
+      { id: 'cos', label: 'B) cos(15°) ≈ 0,966' },
+      { id: 'tan', label: 'C) tan(15°) ≈ 0,268 — pente = 26,8%' },
       { id: 'none', label: 'D) Aucun, on mesure directement' },
     ],
     correct: 'tan',
-    explanation: 'La pente = opp/adj = tan(θ). On multiplie par 100 pour obtenir le % de pente. Le sin correspond à la dénivelée/longueur inclinée, pas à la pente.',
+    explanation: 'La pente = opp/adj = tan(θ). Pour θ=15° → tan(15°)=0,268 → pente = 26,8%. Le sin correspond à la dénivelée/longueur inclinée (toujours différent de la pente %).',
+  },
+  physique: {
+    question: 'Une charge de 10 kN est appliquée à un bras de levier de 3 m. Quel est le moment ?',
+    options: [
+      { id: 'a', label: 'A) 3,33 kN' },
+      { id: 'b', label: 'B) 13 kN·m' },
+      { id: 'c', label: 'C) 30 kN·m' },
+      { id: 'd', label: 'D) 10 kN·m' },
+    ],
+    correct: 'c',
+    explanation: 'M = F × d = 10 kN × 3 m = 30 kN·m. Le moment est le produit de la force par son bras de levier (distance perpendiculaire à la ligne d\'action).',
+  },
+  rdm: {
+    question: 'Pour une poutre bi-appuyée L=8m, q=20 kN/m, quel est M_max (kN·m) ?',
+    options: [
+      { id: 'a', label: 'A) 80 kN·m' },
+      { id: 'b', label: 'B) 160 kN·m' },
+      { id: 'c', label: 'C) 160 kN·m' },
+      { id: 'd', label: 'D) 320 kN·m' },
+    ],
+    correct: 'b',
+    explanation: 'M_max = q·L²/8 = 20 × 8²/8 = 20 × 64/8 = 160 kN·m. Cette formule fondamentale doit être mémorisée — elle s\'applique aux poutres bi-appuyées sous charge uniforme.',
+  },
+  'beton-arme': {
+    question: 'Quelle est la résistance de calcul fyd d\'un acier HA 500 (γs = 1,15) ?',
+    options: [
+      { id: 'a', label: 'A) 500 MPa' },
+      { id: 'b', label: 'B) 435 MPa (arrondi)' },
+      { id: 'c', label: 'C) 400 MPa' },
+      { id: 'd', label: 'D) 575 MPa' },
+    ],
+    correct: 'b',
+    explanation: 'fyd = fyk/γs = 500/1,15 = 434,8 MPa ≈ 435 MPa. γs = 1,15 est le coefficient partiel de sécurité sur l\'acier imposé par l\'Eurocode 2.',
+  },
+  geotechnique: {
+    question: 'Selon le critère de Terzaghi, la capacité portante d\'une semelle filante vaut ?',
+    options: [
+      { id: 'a', label: 'A) qu = c·Nc + q·Nq + 0,5·γ·B·Nγ' },
+      { id: 'b', label: 'B) qu = c + φ' },
+      { id: 'c', label: 'C) qu = N/A' },
+      { id: 'd', label: 'D) qu = γ·z·Ka' },
+    ],
+    correct: 'a',
+    explanation: 'Formule de Terzaghi : qu = c·Nc + q·Nq + 0,5·γ·B·Nγ, où Nc, Nq, Nγ sont les facteurs de portance dépendant de φ. Pour une semelle filante : terme 0,5·γ·B·Nγ est présent.',
+  },
+  ponts: {
+    question: 'Quel type de pont est le plus adapté pour franchir une portée de 50-200 m ?',
+    options: [
+      { id: 'a', label: 'A) Pont dalle en béton armé' },
+      { id: 'b', label: 'B) Pont à poutres précontraintes' },
+      { id: 'c', label: 'C) Pont à haubans' },
+      { id: 'd', label: 'D) Ponceau en béton' },
+    ],
+    correct: 'b',
+    explanation: 'Pour 50-200 m, les ponts à poutres précontraintes (BPEL/EC2) sont les plus courants. Le haubannage s\'impose au-delà de 200-300 m. Les dalles BA sont limitées à 15-20 m.',
+  },
+  logiciels: {
+    question: 'Dans SAP2000/ROBOT, quel type d\'analyse permet de trouver les fréquences propres d\'une structure ?',
+    options: [
+      { id: 'a', label: 'A) Analyse statique linéaire' },
+      { id: 'b', label: 'B) Analyse modale (analyse des modes propres)' },
+      { id: 'c', label: 'C) Analyse pushover' },
+      { id: 'd', label: 'D) Analyse time-history' },
+    ],
+    correct: 'b',
+    explanation: 'L\'analyse modale (ou analyse des valeurs propres) permet d\'obtenir les fréquences et modes propres de vibration. Elle est le point de départ de toute analyse sismique (spectre de réponse, EC8).',
+  },
+  ia: {
+    question: 'Quelle technique de Machine Learning est la plus utilisée pour la détection de fissures sur images de béton ?',
+    options: [
+      { id: 'a', label: 'A) Régression linéaire' },
+      { id: 'b', label: 'B) Réseau de neurones convolutifs (CNN)' },
+      { id: 'c', label: 'C) Arbre de décision' },
+      { id: 'd', label: 'D) K-means clustering' },
+    ],
+    correct: 'b',
+    explanation: 'Les CNN (Convolutional Neural Networks) sont les plus performants pour l\'analyse d\'images. Ils sont utilisés dans les applications d\'inspection automatique de structures (drones + IA) pour détecter fissures, écaillages et défauts.',
   },
 };
+
+
 
 const TOOLS = ['Quiz', 'Glossaire', 'Convertisseur', 'Poutre'];
 

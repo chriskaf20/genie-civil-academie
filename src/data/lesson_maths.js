@@ -1,529 +1,541 @@
-// Leçon 1 complète — Module 1 : Mathématiques appliquées au Génie Civil
-// 23 étapes pédagogiques canoniques
+// Module 1 : Mathématiques appliquées au Génie Civil
+// 4 Leçons complètes avec chacune les 23 étapes pédagogiques canoniques
 
 export const lesson_maths_trig = {
   moduleId: 1,
   slug: 'maths',
   lessonIndex: 1,
-  title: 'Trigonométrie & Pythagore',
-  subtitle: 'Module 1 — Mathématiques appliquées au Génie Civil',
+  title: 'Trigonométrie de Base & Théorème de Pythagore',
+  subtitle: 'Module 1 — Leçon 1 : Trigonométrie de Base & Pythagore',
   level: 'Débutant → Confirmé',
   duration: '3h',
-  tags: ['Trigonométrie', 'Pythagore', 'Angles', 'Pentes', 'Distances'],
+  diagramType: 'trig_interactive',
+  tags: ['Trigonométrie', 'Pythagore', 'SOH-CAH-TOA', 'Angles', 'Pentes', 'Règle 3-4-5'],
 
   steps: [
     {
-      id: 1,
-      key: 'definition',
-      title: 'Définition simple',
-      icon: '📖',
-      type: 'definition',
-      fr: 'Trigonométrie / Pythagore',
-      en: 'Trigonometry / Pythagorean Theorem',
+      id: 1, key: 'definition', title: 'Définition simple', icon: '📖', type: 'definition',
+      fr: 'Trigonométrie / Théorème de Pythagore', en: 'Trigonometry / Pythagorean Theorem',
       metier: 'Utilisé quotidiennement par les ingénieurs géotechniciens, topographes, chefs de chantier et ingénieurs structures.',
-      content: `La **trigonométrie** est la branche des mathématiques qui étudie les relations entre les angles et les longueurs des côtés des triangles. Le **théorème de Pythagore** est son fondement géométrique essentiel.
+      content: `La **trigonométrie de base** étudie les relations fondamentales entre les angles et les côtés d'un triangle rectangle. Le **théorème de Pythagore** établit la relation géométrique directe entre les carrés des trois côtés.
 
-En génie civil, ces deux outils sont utilisés **chaque jour** pour :
-- Calculer des **pentes de route** et des **dévers**
-- Déterminer des **distances inaccessibles** sur le terrain
-- Vérifier l'**alignement** d'éléments de structure
-- Calculer des **forces décomposées** selon des directions spécifiques`,
+En génie civil :
+- **SOH-CAH-TOA** définit les rapports trigonométriques ($\sin$, $\cos$, $\tan$).
+- **La règle du 3-4-5** est l'outil ultime de chantier pour tracer un angle droit d'une précision millimétrique.`,
     },
     {
-      id: 2,
-      key: 'importance',
-      title: 'Pourquoi c\'est important en ingénierie',
-      icon: '⚠️',
-      type: 'importance',
-      content: `La trigonométrie est **omniprésente** en génie civil. Sans elle, il est impossible de :
-
-- **Tracer un projet** : tout profil en long ou en travers nécessite des calculs angulaires
-- **Décomposer des forces** : une charge inclinée sur un toit se décompose en composantes horizontale et verticale
-- **Réaliser des levés topographiques** : mesure d'altitudes, de distances, pose de repères
-- **Calculer des talus** : la pente d'un remblai ou d'une tranchée est définie par son angle
-- **Vérifier l'aplomb** d'une construction : contrôler que des poteaux sont bien verticaux
-
-> 💡 **Fait professionnel** : Un ingénieur structure passe environ **40% de son temps** à résoudre des problèmes géométriques impliquant des relations trigonométriques.`,
+      id: 2, key: 'importance', title: 'Pourquoi c\'est important en ingénierie', icon: '⚠️', type: 'importance',
+      content: `Sans trigonométrie élémentaire, aucun ouvrage ne peut être implanté ni dimensionné correctement.
+- **Tracé d'implantation** : vérifier l'équerrage des dalles et des coffrages.
+- **Calcul de pentes** : dimensionner les réseaux d'assainissement et rampes PMR.
+- **Décomposition de forces** : projeter le poids propre sur les axes de la structure.`,
     },
     {
-      id: 3,
-      key: 'applications',
-      title: 'Applications réelles sur le terrain',
-      icon: '🏗️',
-      type: 'applications',
+      id: 3, key: 'applications', title: 'Applications réelles sur le terrain', icon: '🏗️', type: 'applications',
       examples: [
-        { context: 'Voirie', text: 'Calcul du pourcentage de pente d\'une route (% = tan θ × 100)' },
-        { context: 'Bâtiment', text: 'Calcul de la hauteur d\'un poteau à partir de son ombre et de l\'angle solaire' },
-        { context: 'Topographie', text: 'Mesure de la hauteur d\'un bâtiment depuis un point connu avec un théodolite' },
-        { context: 'Fondations', text: 'Vérification de l\'aplomb des pieux forés par mesure angulaire' },
-        { context: 'Ponts', text: 'Calcul de la longueur d\'un câble de suspension connaissant la portée et la flèche' },
-        { context: 'Charpente', text: 'Calcul des longueurs d\'arbalétriers et de la surface de couverture d\'une toiture' },
+        { context: 'Chantier', text: 'Implantation d\'une dalle 12×16 m en utilisant la diagonale 20 m (3-4-5 × 4).' },
+        { context: 'Voirie', text: 'Vérification du pourcentage de pente d\'une rampe d\'accès PMR (tan θ × 100 ≤ 5%).' },
+        { context: 'Topographie', text: 'Mesure de hauteur d\'un poteau électrique par visée angulaire au théodolite.' },
+        { context: 'Charpente', text: 'Calcul de la longueur des arbalétriers d\'une ferme de toiture à deux versants.' },
       ],
     },
     {
-      id: 4,
-      key: 'theory',
-      title: 'Bases théoriques',
-      icon: '📐',
-      type: 'theory',
-      content: `### Le triangle rectangle — élément fondamental
+      id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'trig_interactive',
+      content: `Dans tout triangle rectangle dont un angle aigu est $\\theta$ :
+- **Hypoténuse ($H$)** : côté opposé à l'angle droit (le plus long).
+- **Côté Opposé ($\text{opp}$)** : côté en face de l'angle $\\theta$.
+- **Côté Adjacent ($\text{adj}$)** : côté formant l'angle $\\theta$ avec l'hypoténuse.
 
-Un triangle rectangle possède **un angle droit** (90°) et deux autres angles aigus dont la somme vaut 90°.
-
-**Ses trois côtés sont nommés par rapport à un angle aigu θ :**
-- **Hypoténuse (H)** : le côté le plus long, opposé à l'angle droit
-- **Adjacent (adj)** : le côté qui "touche" l'angle θ
-- **Opposé (opp)** : le côté en face de l'angle θ
-
-### Théorème de Pythagore
-Dans tout triangle rectangle : **H² = adj² + opp²**
-
-### Propriétés importantes
-- La somme des angles d'un triangle vaut toujours **180°**
-- Dans un triangle rectangle : **α + β = 90°** (les deux angles aigus sont complémentaires)
-- Le sinus et le cosinus sont des fonctions **bornées entre -1 et +1**`,
+Théorème de Pythagore : $H^2 = \\text{adj}^2 + \\text{opp}^2$`,
     },
     {
-      id: 5,
-      key: 'formulas',
-      title: 'Formules et équations mathématiques',
-      icon: '🔢',
-      type: 'formulas',
+      id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'trig_interactive',
       formulas: [
-        {
-          name: 'Théorème de Pythagore',
-          latex: 'H^2 = \\text{adj}^2 + \\text{opp}^2 \\quad \\Leftrightarrow \\quad H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}',
-          description: 'Relation entre les trois côtés d\'un triangle rectangle'
-        },
-        {
-          name: 'Sinus',
-          latex: '\\sin(\\theta) = \\frac{\\text{opp}}{H} \\quad \\Rightarrow \\quad \\text{opp} = H \\cdot \\sin(\\theta)',
-          description: 'Rapport : côté opposé / hypoténuse'
-        },
-        {
-          name: 'Cosinus',
-          latex: '\\cos(\\theta) = \\frac{\\text{adj}}{H} \\quad \\Rightarrow \\quad \\text{adj} = H \\cdot \\cos(\\theta)',
-          description: 'Rapport : côté adjacent / hypoténuse'
-        },
-        {
-          name: 'Tangente',
-          latex: '\\tan(\\theta) = \\frac{\\text{opp}}{\\text{adj}} = \\frac{\\sin(\\theta)}{\\cos(\\theta)}',
-          description: 'Rapport : côté opposé / côté adjacent — utilisé pour les pentes'
-        },
-        {
-          name: 'Fonctions inverses',
-          latex: '\\theta = \\arcsin\\!\\left(\\frac{\\text{opp}}{H}\\right) = \\arccos\\!\\left(\\frac{\\text{adj}}{H}\\right) = \\arctan\\!\\left(\\frac{\\text{opp}}{\\text{adj}}\\right)',
-          description: 'Pour retrouver un angle à partir des longueurs connues'
-        },
-        {
-          name: 'Identité fondamentale',
-          latex: '\\sin^2(\\theta) + \\cos^2(\\theta) = 1',
-          description: 'Relation algébrique toujours vérifiée'
-        },
-        {
-          name: 'Pente en % (Génie Civil)',
-          latex: 'p\\,(\\%) = \\tan(\\theta) \\times 100 = \\frac{\\Delta h}{\\Delta L_{horiz}} \\times 100',
-          description: 'Expression usuelle de la pente en voirie et terrassements'
-        },
+        { name: 'Théorème de Pythagore', latex: 'H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}', description: 'Calcul de l\'hypoténuse ou diagonale' },
+        { name: 'Sinus (SOH)', latex: '\\sin(\\theta) = \\frac{\\text{opp}}{H}', description: 'Rapport opposé sur hypoténuse' },
+        { name: 'Cosinus (CAH)', latex: '\\cos(\\theta) = \\frac{\\text{adj}}{H}', description: 'Rapport adjacent sur hypoténuse' },
+        { name: 'Tangente (TOA)', latex: '\\tan(\\theta) = \\frac{\\text{opp}}{\\text{adj}}', description: 'Calcul du pourcentage de pente : p(\\%) = \\tan(\\theta) \\cdot 100' },
+        { name: 'Identité fondamentale', latex: '\\sin^2(\\theta) + \\cos^2(\\theta) = 1', description: 'Relation toujours vérifiée sur le cercle unité' },
       ],
     },
     {
-      id: 6,
-      key: 'stepbystep',
-      title: 'Démonstrations pas-à-pas',
-      icon: '🔬',
-      type: 'stepbystep',
-      problem: 'Un ingénieur souhaite connaître la hauteur d\'une antenne installée au sommet d\'un bâtiment. Il se place à 50 m de la base et mesure un angle d\'élévation de 42°.',
+      id: 6, key: 'stepbystep', title: 'Démonstrations pas-à-pas', icon: '🔬', type: 'stepbystep',
+      problem: 'Un arbalétrier de toiture a une portée horizontale de 8,00 m et une pente de 30%. Calculer sa longueur réelle H et l\'angle d\'inclinaison θ.',
       steps_demo: [
-        { n: 1, text: 'Identifier le triangle rectangle : base = 50 m (adjacent), angle θ = 42°, hauteur = opposé' },
-        { n: 2, text: 'Sélectionner la bonne formule : on connaît l\'adjacent et θ → on utilise tan(θ) = opp / adj' },
-        { n: 3, text: 'Isoler l\'inconnue : opp = adj × tan(θ) = 50 × tan(42°)' },
-        { n: 4, text: 'Calculer : tan(42°) ≈ 0,9004 → opp = 50 × 0,9004 = 45,02 m' },
-        { n: 5, text: 'Vérifier : calculer l\'hypoténuse H = 50 / cos(42°) = 50 / 0,7431 ≈ 67,29 m' },
-        { n: 6, text: 'Vérification Pythagore : √(50² + 45,02²) = √(2500 + 2027) = √4527 ≈ 67,28 m ✓' },
+        { n: 1, text: 'Convertir la pente en tangente : tan(θ) = 0,30' },
+        { n: 2, text: 'Calculer la hauteur verticale : opp = 8,00 × 0,30 = 2,40 m' },
+        { n: 3, text: 'Appliquer Pythagore : H = √(8,00² + 2,40²) = √(64,00 + 5,76) = √69,76' },
+        { n: 4, text: 'Calculer H : H = 8,35 m' },
+        { n: 5, text: 'Calculer l\'angle : θ = arctan(0,30) = 16,70°' },
       ],
-      result_latex: 'H_{bâtiment} = 50 \\times \\tan(42°) \\approx 45{,}02 \\text{ m}',
+      result_latex: 'H = 8{,}35 \\text{ m}, \\quad \\theta = 16{,}70°',
     },
     {
-      id: 7,
-      key: 'units',
-      title: 'Unités & Systèmes de mesure',
-      icon: '📏',
-      type: 'units',
+      id: 7, key: 'units', title: 'Unités & Systèmes de mesure', icon: '📏', type: 'units',
       table: [
-        { grandeur: 'Longueur (SI)', si: 'm (mètre)', imperial: 'ft (pied) / in (pouce)', conversion: '1 m = 3,281 ft = 39,37 in' },
-        { grandeur: 'Angle', si: 'rad (radian)', imperial: '° (degré) / gon', conversion: '1 rad = 180°/π ≈ 57,296° = 63,66 gon' },
-        { grandeur: 'Pente', si: '% ou ‰', imperial: '% grade', conversion: 'identique en général' },
-        { grandeur: 'Superficie', si: 'm²', imperial: 'ft² / acre', conversion: '1 m² = 10,764 ft²' },
+        { grandeur: 'Longueur', si: 'm (mètre)', imperial: 'ft / in', conversion: '1 m = 3,2808 ft' },
+        { grandeur: 'Angle', si: 'degré (°) / rad', imperial: 'deg / min / sec', conversion: '1 rad = 57,2958°' },
+        { grandeur: 'Pente', si: '% ou ‰', imperial: '% grade', conversion: 'p(%) = tan(θ) × 100' },
       ],
-      note: 'En France et en Europe, on travaille en **degrés décimaux** pour la topographie. Dans les pays anglophones, on utilise aussi les **pieds et pouces**. Toujours préciser l\'unité dans les rapports !',
+      note: 'Vérifier systématiquement que la calculatrice est réglée sur DEG (Degrés).',
     },
     {
-      id: 8,
-      key: 'hypotheses',
-      title: 'Hypothèses d\'application',
-      icon: '📋',
-      type: 'hypotheses',
+      id: 8, key: 'hypotheses', title: 'Hypothèses d\'application', icon: '📋', type: 'hypotheses',
       items: [
-        { type: 'warning', text: 'Le triangle doit être strictement **rectangle** (angle 90° exactement)' },
-        { type: 'warning', text: 'Les mesures doivent être prises dans un **plan unique** (pas de 3D sauf si on décompose)' },
-        { type: 'info', text: 'En topographie, on projette systématiquement sur le **plan horizontal** pour éviter les erreurs de pente' },
-        { type: 'info', text: 'Pour les petits angles (θ < 5°), on peut approcher : sin(θ) ≈ tan(θ) ≈ θ (en rad)' },
-        { type: 'tip', text: 'En chantier, les angles sont souvent donnés en **pourcentage de pente** plutôt qu\'en degrés' },
-        { type: 'warning', text: 'Vérifier que la calculatrice est bien en **mode degrés (DEG)** et non en radians (RAD)' },
+        { type: 'warning', text: 'Le théorème de Pythagore s\'applique UNIQUEMENT dans un triangle strictement rectangle (90°)' },
+        { type: 'info', text: 'La projection des pentes en topographie se fait toujours sur le plan horizontal' },
+        { type: 'tip', text: 'Sur chantier, la règle 3-4-5 s\'utilise avec un multiple (ex: 6-8-10 m ou 9-12-15 m)' },
       ],
     },
     {
-      id: 9,
-      key: 'simple_examples',
-      title: 'Exemples simples guidés',
-      icon: '✏️',
-      type: 'examples_simple',
+      id: 9, key: 'simple_examples', title: 'Exemples simples guidés', icon: '✏️', type: 'examples_simple',
       examples: [
         {
-          title: 'Exemple 1 : Hauteur d\'un mur',
-          given: 'Un câble de 15 m part du sol à 35° d\'angle',
-          find: 'Hauteur du point d\'attache en haut du mur',
-          solution_latex: 'h = 15 \\times \\sin(35°) = 15 \\times 0{,}5736 = 8{,}60 \\text{ m}',
-          result: '8,60 m',
-        },
-        {
-          title: 'Exemple 2 : Pente d\'une rampe',
-          given: 'Rampe de 12 m de long, montée verticale de 1,5 m',
-          find: 'Angle d\'inclinaison et pourcentage de pente',
-          solution_latex: '\\theta = \\arcsin\\left(\\frac{1{,}5}{12}\\right) = \\arcsin(0{,}125) \\approx 7{,}18° \\quad\\quad p = \\tan(7{,}18°) \\times 100 \\approx 12{,}5\\%',
-          result: 'θ ≈ 7,18° — Pente ≈ 12,5%',
-        },
-        {
-          title: 'Exemple 3 : Distance entre deux points',
-          given: 'Point A et point B : ΔH = 4 m, longueur inclinée L = 9 m',
-          find: 'Distance horizontale D entre les deux points',
-          solution_latex: 'D = \\sqrt{L^2 - \\Delta H^2} = \\sqrt{9^2 - 4^2} = \\sqrt{81-16} = \\sqrt{65} \\approx 8{,}06 \\text{ m}',
-          result: '8,06 m',
+          title: 'Exemple : Contrôle d\'équerrage 3-4-5',
+          given: 'Côté a = 6,00 m, Côté b = 8,00 m',
+          find: 'Longueur de la diagonale d\'équerrage c',
+          solution_latex: 'c = \\sqrt{6{,}00^2 + 8{,}00^2} = \\sqrt{36 + 64} = \\sqrt{100} = 10{,}00 \\text{ m}',
+          result: 'c = 10.00 m — Angle 90° parfait',
         },
       ],
     },
     {
-      id: 10,
-      key: 'real_examples',
-      title: 'Exemples réels de bureau d\'études & chantier',
-      icon: '🏢',
-      type: 'examples_real',
+      id: 10, key: 'real_examples', title: 'Exemples réels de bureau d\'études & chantier', icon: '🏢', type: 'examples_real', diagramType: 'trig_interactive',
       examples: [
         {
-          context: 'Bureau d\'études — Charpente métallique',
-          scenario: 'Un arbalétrier de toiture incliné à 22° supporte une charge normale de 45 kN/m. L\'ingénieur doit décomposer cette force.',
-          decomposition_latex: 'F_{vert} = 45 \\times \\cos(22°) = 45 \\times 0{,}927 = 41{,}7 \\text{ kN/m} \\quad F_{horiz} = 45 \\times \\sin(22°) = 45 \\times 0{,}374 = 16{,}8 \\text{ kN/m}',
-          lesson: 'La composante horizontale crée une poussée sur les murs, qui doit être reprise par des tirants ou une ceinture.',
-        },
-        {
-          context: 'Chantier — Voirie',
-          scenario: 'Une route doit raccorder deux points distants de 200 m avec une dénivelée de 8 m. Le cahier des charges impose une pente max de 6%.',
-          check_latex: 'p_{réelle} = \\frac{8}{200} \\times 100 = 4\\% < 6\\% \\quad \\checkmark',
-          lesson: 'La pente de 4% est acceptable. On peut calculer l\'angle exact : θ = arctan(0,04) ≈ 2,29°',
+          context: 'Chantier Bâtiment',
+          scenario: 'Contrôle d\'aplomb d\'un voilier de coffrage de 6,00 m de hauteur par mesure de décalage au laser.',
+          decomposition_latex: '\\Delta x = H \\cdot \\sin(\\Delta \\theta) = 6000 \\cdot \\sin(0{,}2°) = 20{,}9 \\text{ mm}',
+          lesson: 'Le décalage de 20.9 mm dépasse la tolérance ISO (15 mm). Régler les vérins d\'étaiement.',
         },
       ],
     },
     {
-      id: 11,
-      key: 'diagrams',
-      title: 'Schémas techniques & diagrammes explicatifs',
-      icon: '📊',
-      type: 'interactive_diagram',
-      description: 'Utilisez le widget interactif (colonne de droite) pour manipuler le triangle rectangle en temps réel. Cliquez ou glissez dans le SVG pour ajuster l\'angle et observez les valeurs recalculées instantanément.',
-      diagram_description: [
-        'Le côté **bleu** représente l\'hypoténuse H (cable, pente, diagonale)',
-        'Le côté **orange** représente la base horizontale (adjacent)',
-        'Le côté **vert** représente la hauteur verticale (opposé)',
-        'L\'**arc cyan** représente l\'angle θ au point d\'origine',
-      ],
+      id: 11, key: 'diagrams', title: 'Schémas techniques & diagrammes explicatifs', icon: '📊', type: 'interactive_diagram', diagramType: 'trig_interactive',
+      description: 'Diagramme vectoriel interactif du triangle rectangle avec valeurs trigonométriques réelles.',
+      diagram_description: ['Axe des abscisses : Adjacent', 'Axe des ordonnées : Opposé', 'Diagonale : Hypoténuse'],
     },
     {
-      id: 12,
-      key: 'mistakes',
-      title: 'Erreurs fréquentes des débutants & pièges à éviter',
-      icon: '⛔',
-      type: 'mistakes',
+      id: 12, key: 'mistakes', title: 'Erreurs fréquentes des débutants & pièges à éviter', icon: '⛔', type: 'mistakes',
       items: [
-        {
-          mistake: 'Confondre sinus et cosinus selon le côté de référence',
-          trap: 'sin = opp/H, cos = adj/H — toujours repérer depuis QUEL angle vous travaillez',
-          fix: 'Dessiner le triangle et annoter explicitement les côtés avant de calculer',
-        },
-        {
-          mistake: 'Calculatrice en radians au lieu de degrés',
-          trap: 'sin(30 rad) ≠ sin(30°). En France les angles de chantier sont en degrés.',
-          fix: 'Vérifier que l\'écran affiche DEG ou D avant tout calcul trigonométrique',
-        },
-        {
-          mistake: 'Appliquer Pythagore à un triangle non rectangle',
-          trap: 'H² = a² + b² uniquement si l\'angle entre a et b est exactement 90°',
-          fix: 'Utiliser la loi des cosinus pour les triangles quelconques : a² = b² + c² − 2bc·cos(A)',
-        },
-        {
-          mistake: 'Confondre angle d\'inclinaison et pourcentage de pente',
-          trap: 'Une pente de 5% correspond à θ = arctan(0,05) ≈ 2,86°, pas 5°',
-          fix: 'p(%) = tan(θ) × 100 — toujours convertir avec la tangente',
-        },
-        {
-          mistake: 'Négliger la projection horizontale en 3D',
-          trap: 'En topographie, les distances mesurées "en pente" doivent être réduites à l\'horizontal',
-          fix: 'D_horiz = D_pente × cos(θ) — toujours réduire à l\'horizontal',
-        },
+        { mistake: 'Confondre % de pente et angle en degrés', trap: 'Une pente de 10% n\'est PAS un angle de 10°', fix: 'θ = arctan(0,10) = 5.71°' },
+        { mistake: 'Calculatrice en Radians au lieu de Degrés', trap: 'sin(30 rad) = -0.988 au lieu de 0.500', fix: 'Vérifier l\'indicateur DEG sur l\'écran' },
       ],
     },
     {
-      id: 13,
-      key: 'tips',
-      title: 'Astuces et secrets professionnels du terrain',
-      icon: '💡',
-      type: 'tips',
+      id: 13, key: 'tips', title: 'Astuces et secrets professionnels du terrain', icon: '💡', type: 'tips',
       tips: [
-        'Mémorisez SOH-CAH-TOA : Sin=Opp/Hyp, Cos=Adj/Hyp, Tan=Opp/Adj — indémodable depuis 50 ans',
-        'Sur chantier, un angle de 45° est le seul où sin = cos = tan/2 ≈ 0,707. Utile pour les contrôles rapides.',
-        'Le triangle 3-4-5 (côtés entiers) est un classique de chantier pour tracer un angle droit précis',
-        'Pour les pentes routières, retenez : 1% ≈ 10 mm/m — facile à mémoriser',
-        'Un niveau laser ou un fil à plomb remplace rarement la trigonométrie, mais vérifier l\'un avec l\'autre est une bonne pratique',
-        'Sur une calculatrice scientifique, les fonctions inverses sont souvent appelées 2nd + sin/cos/tan ou INV+sin',
+        'Mnémonique universel : SOH - CAH - TOA',
+        'Pour 45°, sin(45°) = cos(45°) = √2 / 2 ≈ 0.707',
+        'Règle du 1% de pente = 1 cm de dénivelée par mètre linéaire',
       ],
     },
     {
-      id: 14,
-      key: 'norms',
-      title: 'Normes & standards concernés',
-      icon: '📜',
-      type: 'norms',
+      id: 14, key: 'norms', title: 'Normes & standards concernés', icon: '📜', type: 'norms',
       norms: [
-        { code: 'Eurocode 1 (EN 1991)', description: 'Actions sur les structures — les charges inclinées nécessitent une décomposition trigonométrique' },
-        { code: 'Eurocode 7 (EN 1997)', description: 'Géotechnique — pentes de talus, angles de frottement, inclination des charges' },
-        { code: 'NF P 98-080', description: 'Terrassements routiers — définition et calcul des pentes et dévers' },
-        { code: 'ISO 1101', description: 'Tolérances géométriques — angles et perpendicularité dans les dessins techniques' },
-        { code: 'AASHTO', description: 'Normes routières américaines utilisant des pentes en % et des angles en degrés' },
+        { code: 'ISO 4463-1', description: 'Méthodes de mesure dans le bâtiment — Implantation et levés' },
+        { code: 'Eurocode 7', description: 'Géotechnique — Inflexion et inclinaison des talus' },
       ],
     },
     {
-      id: 15,
-      key: 'exercises',
-      title: 'Exercices d\'application directe',
-      icon: '✍️',
-      type: 'exercises',
+      id: 15, key: 'exercises', title: 'Exercices d\'application directe', icon: '✍️', type: 'exercises',
       exercises: [
         {
-          id: 'ex1',
-          number: 1,
-          difficulty: 'Facile',
-          text: 'Un câble d\'acier tendu du sol forme un angle de 60° avec l\'horizontal. Sa longueur est de 20 m. Calculez la hauteur (h) et la distance horizontale (d) de son point d\'attache.',
-          hint: 'Utilisez sin pour la hauteur et cos pour la distance horizontale.',
-          answer_latex: 'h = 20 \\sin(60°) = 17{,}32 \\text{ m} \\quad d = 20 \\cos(60°) = 10{,}00 \\text{ m}',
-          answer_text: 'h = 17,32 m ; d = 10,00 m',
-        },
-        {
-          id: 'ex2',
-          number: 2,
-          difficulty: 'Moyen',
-          text: 'Une route en pente doit relier deux points : A (altitude 120 m) et B (altitude 135 m), séparés par une distance horizontale de 250 m. Calculez : a) le pourcentage de pente, b) l\'angle d\'inclinaison en degrés, c) la longueur réelle de la route.',
-          hint: 'a) p = ΔH/D × 100 ; b) θ = arctan(p/100) ; c) L = D/cos(θ)',
-          answer_latex: 'p = \\frac{15}{250} \\times 100 = 6\\% \\quad \\theta = \\arctan(0{,}06) \\approx 3{,}43° \\quad L = \\frac{250}{\\cos(3{,}43°)} \\approx 250{,}9 \\text{ m}',
-          answer_text: 'p = 6% ; θ ≈ 3,43° ; L ≈ 250,9 m',
-        },
-        {
-          id: 'ex3',
-          number: 3,
-          difficulty: 'Difficile',
-          text: 'Un ingénieur topographe doit déterminer la hauteur H d\'une tour depuis deux points alignés. Depuis le point A (à 80 m de la base) l\'angle d\'élévation est de 38°. Depuis le point B (à 140 m de la base) il est de 25°. Vérifiez la cohérence des mesures et calculez H.',
-          hint: 'H = 80·tan(38°) et H = 140·tan(25°) — les deux doivent donner la même valeur si les mesures sont cohérentes.',
-          answer_latex: 'H_A = 80 \\tan(38°) = 80 \\times 0{,}781 = 62{,}5 \\text{ m} \\quad H_B = 140 \\tan(25°) = 140 \\times 0{,}466 = 65{,}2 \\text{ m}',
-          answer_text: 'HA ≈ 62,5 m — HB ≈ 65,2 m — Légère différence due aux arrondis / imprécisions de mesure. Valeur finale ≈ 63–65 m.',
+          id: 'ex1', number: 1, difficulty: 'Facile',
+          text: 'Un câble de tirant d\'ancrage est incliné à 35° et fixé à une hauteur H = 5,00 m. Calculer la longueur du câble L.',
+          hint: 'L = H / sin(35°)',
+          answer_latex: 'L = \\frac{5{,}00}{\\sin(35°)} = \\frac{5{,}00}{0{,}5736} = 8{,}72 \\text{ m}',
+          answer_text: 'L = 8.72 m',
         },
       ],
     },
+    { id: 16, key: 'corrections', title: 'Corrections détaillées pas-à-pas', icon: '✅', type: 'corrections', note: 'Voir les corrections interactives sous chaque exercice.' },
     {
-      id: 16,
-      key: 'corrections',
-      title: 'Corrections détaillées pas-à-pas',
-      icon: '✅',
-      type: 'corrections',
-      linked_to_exercises: true,
-      note: 'Les corrections complètes sont accessibles après avoir soumis vos réponses dans la section Exercices ci-dessus.',
-    },
-    {
-      id: 17,
-      key: 'quiz',
-      title: 'Quiz d\'évaluation rapide',
-      icon: '🎯',
-      type: 'quiz',
+      id: 17, key: 'quiz', title: 'Quiz d\'évaluation rapide', icon: '🎯', type: 'quiz',
       questions: [
         {
-          id: 'q1',
-          question: 'Quel rapport trigonométrique exprime directement le pourcentage de pente d\'une route ?',
-          options: [
-            { id: 'a', text: 'sin(θ)' },
-            { id: 'b', text: 'cos(θ)' },
-            { id: 'c', text: 'tan(θ)' },
-            { id: 'd', text: '1/sin(θ)' },
-          ],
-          correct: 'c',
-          explanation: 'La pente est définie comme le rapport montée/distance horizontale = opp/adj = tan(θ). Le % de pente = tan(θ) × 100.',
-        },
-        {
-          id: 'q2',
-          question: 'Dans un triangle rectangle avec hypoténuse H = 10 m et angle θ = 30°, quelle est la hauteur (côté opposé) ?',
-          options: [
-            { id: 'a', text: '8,66 m' },
-            { id: 'b', text: '5,00 m' },
-            { id: 'c', text: '3,33 m' },
-            { id: 'd', text: '7,07 m' },
-          ],
-          correct: 'b',
-          explanation: 'h = H × sin(30°) = 10 × 0,5 = 5,00 m. Le sinus de 30° vaut exactement 1/2.',
-        },
-        {
-          id: 'q3',
-          question: 'Un triangle a des côtés de 3 m, 4 m et 5 m. Est-il rectangle ?',
-          options: [
-            { id: 'a', text: 'Oui, car 3 + 4 = 7 > 5' },
-            { id: 'b', text: 'Oui, car 3² + 4² = 5² (9 + 16 = 25)' },
-            { id: 'c', text: 'Non, les côtés ne sont pas égaux' },
-            { id: 'd', text: 'Non, on ne peut pas le savoir sans connaître les angles' },
-          ],
-          correct: 'b',
-          explanation: 'Théorème de Pythagore : 3² + 4² = 9 + 16 = 25 = 5². Donc ce triangle est bien rectangle. Le triplet (3,4,5) est le triplet pythagoricien classique utilisé sur les chantiers pour tracer des angles droits.',
-        },
-        {
-          id: 'q4',
-          question: 'Une route a une pente de 8%. Quel est l\'angle d\'inclinaison approximatif ?',
-          options: [
-            { id: 'a', text: '8,00°' },
-            { id: 'b', text: '4,57°' },
-            { id: 'c', text: '2,87°' },
-            { id: 'd', text: '0,80°' },
-          ],
-          correct: 'b',
-          explanation: 'θ = arctan(8/100) = arctan(0,08) ≈ 4,57°. Attention : 8% de pente ≠ 8° d\'angle ! La conversion se fait via la tangente.',
-        },
-        {
-          id: 'q5',
-          question: 'Quelle est la relation fondamentale toujours vraie entre sin et cos ?',
-          options: [
-            { id: 'a', text: 'sin(θ) + cos(θ) = 1' },
-            { id: 'b', text: 'sin²(θ) + cos²(θ) = 1' },
-            { id: 'c', text: 'sin(θ) × cos(θ) = 1' },
-            { id: 'd', text: 'sin(θ) = cos(90° + θ)' },
-          ],
-          correct: 'b',
-          explanation: 'L\'identité trigonométrique fondamentale est sin²(θ) + cos²(θ) = 1. Elle découle directement du théorème de Pythagore appliqué au cercle unité.',
+          id: 'q1', question: 'Quelle est la valeur de sin(30°) ?',
+          options: [{ id: 'a', text: '0,50' }, { id: 'b', text: '0,866' }, { id: 'c', text: '1,00' }], correct: 'a',
+          explanation: 'Le sinus de 30° vaut exactement 1/2 = 0.50.',
         },
       ],
     },
+    { id: 18, key: 'exam_questions', title: 'Questions d\'examen universitaire', icon: '🎓', type: 'exam', questions: ['Démontrer l\'identité sin²(θ) + cos²(θ) = 1 sur le cercle trigonométrique.'] },
+    { id: 19, key: 'interview_questions', title: 'Questions d\'entretien d\'embauche technique', icon: '💼', type: 'interview', questions: [{ question: 'Comment contrôlez-vous l\'angle droit d\'une dalle 20×15 m sur chantier ?', answer_hint: 'Méthode des diagonales égales d = √(20² + 15²) = √625 = 25.00 m.' }] },
     {
-      id: 18,
-      key: 'exam_questions',
-      title: 'Questions d\'examen universitaire',
-      icon: '🎓',
-      type: 'exam',
-      questions: [
-        'Démontrez le théorème de Pythagore à partir de la définition géométrique du carré de l\'hypoténuse.',
-        'Un ingénieur civil reçoit un plan topographique avec des courbes de niveau espacées de 5 m. Comment utilise-t-il la trigonométrie pour calculer le volume de déblais d\'un talus ?',
-        'Expliquez la différence entre un angle en degrés, en radians et en grades (gons). Donnez les formules de conversion et un contexte d\'utilisation professionnel pour chacun.',
-        'Résolvez le triangle quelconque avec a = 12 m, b = 15 m, angle C = 50°. Donnez c, les angles A et B. (Loi des cosinus et loi des sinus)',
-      ],
+      id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'trig_interactive',
+      scenario: 'Implantation d\'une Rampe d\'Accès Handicapés (PMR)',
+      description: 'Entrée surélevée de 60 cm. Pente maximale PMR = 5%. Calculer la longueur minimale au sol L et la longueur de la rampe R.',
+      resolution_latex_1: 'L_{sol} = \\frac{0{,}60}{0{,}05} = 12{,}00 \\text{ m}',
+      resolution_latex_2: 'R = \\sqrt{12{,}00^2 + 0{,}60^2} = \\sqrt{144 + 0{,}36} = 12{,}015 \\text{ m}',
+      resolution_latex_3: '\\theta = \\arctan(0{,}05) = 2{,}86° \\quad \\checkmark \\text{ (Conforme PMR)}',
+      conclusion: 'La rampe doit avoir une portée au sol de 12.00 m.',
     },
-    {
-      id: 19,
-      key: 'interview_questions',
-      title: 'Questions d\'entretien d\'embauche technique',
-      icon: '💼',
-      type: 'interview',
-      questions: [
-        {
-          question: 'Expliquez en moins de 2 minutes comment vous vérifiez l\'aplomb d\'un poteau de 8 m sur chantier.',
-          answer_hint: 'Mesure avec un niveau ou un fil à plomb, vérification trigonométrique si déviation mesurée.',
-        },
-        {
-          question: 'Un architecte vous donne une pente de toiture de 35%. Quelle est l\'inclinaison en degrés ? Comment calculerez-vous la longueur des chevrons ?',
-          answer_hint: 'arctan(0,35) ≈ 19,29° ; longueur chevron = distance horizontale / cos(θ)',
-        },
-        {
-          question: 'Pourquoi utilise-t-on le triangle 3-4-5 sur les chantiers ?',
-          answer_hint: 'Triplet pythagoricien permettant de tracer un angle droit parfait avec un simple mètre-ruban.',
-        },
-      ],
-    },
-    {
-      id: 20,
-      key: 'practical_case',
-      title: 'Cas pratique professionnel — Scénario réel',
-      icon: '🔧',
-      type: 'practical',
-      scenario: 'Dimensionnement d\'une rampe d\'accès PMR (Personnes à Mobilité Réduite)',
-      description: `**Contexte** : Vous êtes chargé de concevoir une rampe d'accès pour un bâtiment public. L'entrée est surélevée de 45 cm par rapport au trottoir. La réglementation impose une pente maximale de 5%.
-
-**Questions professionnelles** :
-1. Quelle doit être la longueur minimale de la rampe ?
-2. Quel angle d'inclinaison cela représente-t-il ?
-3. Si l'espace disponible est limité à 8 m, la solution est-elle réglementaire ?`,
-      resolution_latex_1: 'L_{min} = \\frac{\\Delta H}{\\tan(\\theta_{max})} = \\frac{0{,}45}{0{,}05} = 9{,}00 \\text{ m}',
-      resolution_latex_2: '\\theta = \\arctan(0{,}05) \\approx 2{,}86°',
-      resolution_latex_3: 'p_{dispo} = \\frac{0{,}45}{8{,}00} \\times 100 = 5{,}63\\% > 5\\% \\quad \\Rightarrow \\text{ Non conforme !}',
-      conclusion: 'La rampe de 8 m présente une pente de 5,63%, supérieure à la limite de 5%. Il faut soit prévoir une rampe de 9 m minimum, soit envisager un ascenseur ou une autre solution.',
-    },
-    {
-      id: 21,
-      key: 'summary',
-      title: 'Résumé exécutif',
-      icon: '📋',
-      type: 'summary',
-      content: `La trigonométrie et le théorème de Pythagore constituent les **outils mathématiques les plus utilisés** en génie civil. Ils permettent de résoudre tout problème impliquant des angles et des distances dans un plan.
-
-**En pratique** : chaque fois que vous avez un triangle rectangle — que ce soit une pente, un câble, un talus, ou une force décomposée — vous appliquez sin, cos ou tan selon les données disponibles et l'inconnue recherchée.
-
-**La clé du succès** : identifier correctement les côtés (opposé/adjacent/hypoténuse) par rapport à l'angle de travail, et toujours vérifier que la calculatrice est en mode degrés.`,
-    },
-    {
-      id: 22,
-      key: 'key_points',
-      title: 'Points clés à retenir',
-      icon: '⭐',
-      type: 'keypoints',
-      points: [
-        'SOH-CAH-TOA : Sin = Opp/Hyp | Cos = Adj/Hyp | Tan = Opp/Adj',
-        'Pythagore : H² = a² + b² — UNIQUEMENT pour les triangles RECTANGLES',
-        'Pente (%) = tan(θ) × 100 — conversion via la tangente, pas directement en degrés',
-        'sin²(θ) + cos²(θ) = 1 — identité fondamentale, toujours vraie',
-        'Fonctions inverses : arcsin, arccos, arctan — pour trouver un angle depuis des longueurs',
-        'Triplet (3,4,5) : outil de chantier classique pour tracer un angle droit',
-        'Vérification : toujours confirmer par le théorème de Pythagore après calcul',
-        'En topographie : réduire les distances inclinées à l\'horizontal (× cos θ)',
-      ],
-    },
-    {
-      id: 23,
-      key: 'self_assessment',
-      title: 'Module de vérification de la compréhension',
-      icon: '🏆',
-      type: 'self_assessment',
-      description: 'Testez votre compréhension avec les exercices interactifs et le quiz ci-dessus. Cochez mentalement les objectifs atteints :',
-      objectives: [
-        'Je sais nommer les 3 côtés d\'un triangle rectangle et les relier à SOH-CAH-TOA',
-        'Je peux appliquer sin, cos et tan pour trouver une longueur inconnue',
-        'Je peux retrouver un angle avec arcsin, arccos ou arctan',
-        'Je sais convertir une pente en % en angle et inversement',
-        'Je comprends quand appliquer Pythagore vs la loi des cosinus',
-        'J\'ai réussi les 3 exercices avec une erreur < 1%',
-        'J\'ai obtenu au moins 4/5 au quiz',
-      ],
-    },
+    { id: 21, key: 'summary', title: 'Résumé exécutif', icon: '📋', type: 'summary', content: 'La trigonométrie élémentaire et la règle 3-4-5 constituent le socle de l\'implantation et du contrôle géométrique en génie civil.' },
+    { id: 22, key: 'key_points', title: 'Points clés à retenir', icon: '⭐', type: 'keypoints', points: ['SOH-CAH-TOA', 'Pythagore : H² = a² + b²', 'p(%) = tan(θ) × 100', 'Toujours en mode DEG'] },
+    { id: 23, key: 'self_assessment', title: 'Module de vérification de la compréhension', icon: '🏆', type: 'self_assessment', description: 'Vérifiez vos acquis :', objectives: ['Je maîtrise SOH-CAH-TOA', 'Je sais convertir les pentes', 'J\'applique la règle 3-4-5'] },
   ],
-
-  // Quiz data extracted for SidebarRight
-  quickQuiz: {
-    question: 'Sur chantier, quel rapport trigonométrique utilise-t-on pour calculer une pente ?',
-    options: [
-      { id: 'sin', label: 'A) sin(θ)' },
-      { id: 'cos', label: 'B) cos(θ)' },
-      { id: 'tan', label: 'C) tan(θ) ← pente = tan × 100' },
-    ],
-    correct: 'tan',
-    explanation: 'La pente est définie comme Δhauteur/Δlongueur_horizontale = opp/adj = tan(θ). Le pourcentage de pente = tan(θ) × 100.',
-  },
 };
+
+// ── LEÇON 2 : Trigonométrie Avancée & Triangles Quelconques ────────────────────
+export const lesson_maths_advanced_trig = {
+  moduleId: 1,
+  slug: 'maths',
+  lessonIndex: 2,
+  title: 'Trigonométrie Avancée & Triangles Quelconques',
+  subtitle: 'Module 1 — Leçon 2 : Théorème d\'Al-Kashi & Loi des Sinus',
+  level: 'Intermédiaire',
+  duration: '4h',
+  diagramType: 'trig_interactive',
+  tags: ['Al-Kashi', 'Loi des Sinus', 'Triangles Quelconques', 'Géodésie', 'Ambiguïté Arcsin'],
+
+  steps: [
+    {
+      id: 1, key: 'definition', title: 'Définition simple', icon: '📖', type: 'definition',
+      fr: 'Théorème d\'Al-Kashi (Loi des Cosinus) & Loi des Sinus', en: 'Law of Cosines & Law of Sines',
+      metier: 'Indispensable pour le calcul des réseaux de triangulation géodésique, assemblages métalliques non perpendiculaires et ponts haubanés.',
+      content: `Dans la réalité du terrain, les triangles ne sont pas toujours rectangles. La **trigonométrie avancée** fournit les outils mathématiques universels pour résoudre n'importe quel triangle quelconque (scalène, isocèle, obtusangle).
+
+- **Théorème d'Al-Kashi (Loi des Cosinus)** : Généralisation du théorème de Pythagore à tous les triangles.
+- **Loi des Sinus** : Établit la proportionnalité stricte entre la longueur d'un côté et le sinus de son angle opposé.`,
+    },
+    {
+      id: 2, key: 'importance', title: 'Pourquoi c\'est important en ingénierie', icon: '⚠️', type: 'importance',
+      content: `Les structures réelles comportent de nombreuses membrures inclinées (nœuds de treillis, haubans, contreventements).
+- **Calcul de nœuds de treillis** : déterminer les angles entre barres non orthogonales.
+- **Relevés topographiques** : calculer la distance entre deux points inaccessibles (méthode de l'intersection).
+- **Levés par triangulation** : calcul de réseaux géodésiques.`,
+    },
+    {
+      id: 3, key: 'applications', title: 'Applications réelles sur le terrain', icon: '🏗️', type: 'applications',
+      examples: [
+        { context: 'Ponts Haubanés', text: 'Calcul des tensions et longueurs des câbles reliant le pylône au tablier avec angles variables.' },
+        { context: 'Topographie', text: 'Détermination de la distance AB séparée par un obstacle (rivière, falaise) depuis une base C.' },
+        { context: 'Charpente Métallique', text: 'Vérification de l\'écartement entre deux pannes de toiture sur ferme brisée (mansardée).' },
+      ],
+    },
+    {
+      id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'trig_interactive',
+      content: `Soit un triangle quelconque $ABC$ de côtés $a, b, c$ opposés aux angles $A, B, C$ :
+
+### 1. Théorème d'Al-Kashi (Loi des Cosinus)
+$a^2 = b^2 + c^2 - 2bc \\cdot \\cos(A)$
+
+### 2. Loi des Sinus
+$\\frac{a}{\\sin(A)} = \\frac{b}{\\sin(B)} = \\frac{c}{\\sin(C)} = 2R$ (où $R$ est le rayon du cercle circonscrit).`,
+    },
+    {
+      id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'trig_interactive',
+      formulas: [
+        { name: 'Al-Kashi (Côté a)', latex: 'a = \\sqrt{b^2 + c^2 - 2bc \\cos(A)}', description: 'Calcul du côté opposé à l\'angle connu A' },
+        { name: 'Al-Kashi (Angle A)', latex: '\\cos(A) = \\frac{b^2 + c^2 - a^2}{2bc}', description: 'Calcul d\'un angle lorsque les 3 côtés sont connus' },
+        { name: 'Loi des Sinus', latex: '\\frac{\\sin(A)}{a} = \\frac{\\sin(B)}{b} = \\frac{\\sin(C)}{c}', description: 'Calcul d\'un côté ou angle par proportionnalité' },
+        { name: 'Aire d\'un triangle quelconque', latex: '\\text{Aire} = \\frac{1}{2} a b \\sin(C) = \\sqrt{s(s-a)(s-b)(s-c)}', description: 'Formule trigonométrique et formule d\'Héron (s = demi-périmètre)' },
+      ],
+    },
+    {
+      id: 6, key: 'stepbystep', title: 'Démonstrations pas-à-pas', icon: '🔬', type: 'stepbystep',
+      problem: 'Un ingénieur géomètre mesure deux distances $b = 120\\text{ m}$, $c = 150\\text{ m}$ et l\'angle formé $A = 40°$. Calculer la distance inaccessible $a$ et l\'angle $B$.',
+      steps_demo: [
+        { n: 1, text: 'Appliquer Al-Kashi pour calculer a : a² = 120² + 150² - 2(120)(150)cos(40°)' },
+        { n: 2, text: 'Calculer les carrés : 120² + 150² = 14400 + 22500 = 36900' },
+        { n: 3, text: 'Calculer le terme croisé : 2 × 120 × 150 × cos(40°) = 36000 × 0.76604 = 27577.6' },
+        { n: 4, text: 'Déduire a² : a² = 36900 - 27577.6 = 9322.4 ⇒ a = √9322.4 = 96.55 m' },
+        { n: 5, text: 'Utiliser la Loi des Sinus pour B : sin(B) = (b · sin(A)) / a = (120 · sin(40°)) / 96.55 = 77.13 / 96.55 = 0.7989' },
+        { n: 6, text: 'Calculer B : B = arcsin(0.7989) = 53.03°' },
+      ],
+      result_latex: 'a = 96{,}55 \\text{ m}, \\quad B = 53{,}03°',
+    },
+    {
+      id: 7, key: 'units', title: 'Unités & Systèmes de mesure', icon: '📏', type: 'units',
+      table: [
+        { grandeur: 'Angle', si: 'Degrés décimaux (°)', imperial: 'Deg-Min-Sec', conversion: '1° = 60\' = 3600"' },
+        { grandeur: 'Distance', si: 'mètres (m)', imperial: 'feet (ft)', conversion: '1 m = 3,2808 ft' },
+      ],
+      note: 'Attention à l\'ambiguïté de la fonction arcsin (un sinus positif donne deux angles : B ou 180°-B).',
+    },
+    {
+      id: 8, key: 'hypotheses', title: 'Hypothèses d\'application', icon: '📋', type: 'hypotheses',
+      items: [
+        { type: 'warning', text: 'Vérifier la somme des angles A + B + C = 180° à chaque étape' },
+        { type: 'info', text: 'L\'ambiguïté SSA (Côté-Côté-Angle) peut donner 0, 1 ou 2 solutions possibles' },
+      ],
+    },
+    {
+      id: 9, key: 'simple_examples', title: 'Exemples simples guidés', icon: '✏️', type: 'examples_simple',
+      examples: [
+        {
+          title: 'Exemple : Nœud de charpente triangulé',
+          given: 'a = 5.0 m, b = 7.0 m, c = 10.0 m',
+          find: 'Calculer l\'angle C opposé au plus grand côté c',
+          solution_latex: '\\cos(C) = \\frac{5^2 + 7^2 - 10^2}{2 \\cdot 5 \\cdot 7} = \\frac{25 + 49 - 100}{70} = \\frac{-26}{70} = -0{,}3714',
+          result: 'C = arccos(-0.3714) = 111.80° (Angle obtus)',
+        },
+      ],
+    },
+    {
+      id: 10, key: 'real_examples', title: 'Exemples réels de bureau d\'études & chantier', icon: '🏢', type: 'examples_real', diagramType: 'trig_interactive',
+      examples: [
+        {
+          context: 'Topographie — Franchissement de rivière',
+          scenario: 'Visée de deux berges C1 et C2 depuis une station A. Base AB = 80 m, Angle A = 65°, Angle B = 75°.',
+          decomposition_latex: 'C = 180° - 65° - 75° = 40° \\quad \\Rightarrow \\quad AC = \\frac{80 \\cdot \\sin(75°)}{\\sin(40°)} = 120{,}2 \\text{ m}',
+          lesson: 'La loi des sinus permet de déterminer les distances de pontage sans traverser la rivière.',
+        },
+      ],
+    },
+    { id: 11, key: 'diagrams', title: 'Schémas techniques & diagrammes explicatifs', icon: '📊', type: 'interactive_diagram', diagramType: 'trig_interactive', description: 'Diagramme de résolution de triangles quelconques.', diagram_description: ['Repérage des 3 côtés a, b, c', 'Angles opposés A, B, C'] },
+    { id: 12, key: 'mistakes', title: 'Erreurs fréquentes des débutants & pièges à éviter', icon: '⛔', type: 'mistakes', items: [{ mistake: 'Oublier le signe négatif dans cos(C) pour les angles obtus', trap: 'cos(C) < 0 si C > 90°', fix: 'La calculatrice gère le signe négatif automatiquement en arccos' }] },
+    { id: 13, key: 'tips', title: 'Astuces et secrets professionnels du terrain', icon: '💡', type: 'tips', tips: ['Utiliser Al-Kashi pour trouver le plus grand angle en premier pour éviter l\'ambiguïté des sinus.'] },
+    { id: 14, key: 'norms', title: 'Normes & standards concernés', icon: '📜', type: 'norms', norms: [{ code: 'EN 1993-1-1', description: 'Calcul des assemblages et treillis métalliques' }] },
+    { id: 15, key: 'exercises', title: 'Exercices d\'application directe', icon: '✍️', type: 'exercises', exercises: [{ id: 'ex1', number: 1, difficulty: 'Moyen', text: 'Soit un triangle avec a=8m, b=10m, C=60°. Calculer c.', hint: 'c² = a² + b² - 2ab cos(C)', answer_latex: 'c = \\sqrt{64 + 100 - 2(8)(10)(0.5)} = \\sqrt{164 - 80} = \\sqrt{84} = 9{,}17 \\text{ m}', answer_text: 'c = 9.17 m' }] },
+    { id: 16, key: 'corrections', title: 'Corrections détaillées pas-à-pas', icon: '✅', type: 'corrections', note: 'Voir les corrections sous chaque exercice.' },
+    { id: 17, key: 'quiz', title: 'Quiz d\'évaluation rapide', icon: '🎯', type: 'quiz', questions: [{ id: 'q1', question: 'Quelle est la formule d\'Al-Kashi pour c² ?', options: [{ id: 'a', text: 'a² + b² - 2ab cos(C)' }, { id: 'b', text: 'a² + b²' }], correct: 'a', explanation: 'c² = a² + b² - 2ab cos(C).' }] },
+    { id: 18, key: 'exam_questions', title: 'Questions d\'examen universitaire', icon: '🎓', type: 'exam', questions: ['Démontrer la loi des sinus par le calcul de la hauteur h.'] },
+    { id: 19, key: 'interview_questions', title: 'Questions d\'entretien d\'embauche technique', icon: '💼', type: 'interview', questions: [{ question: 'Comment calculez-vous la longueur d\'un hauban incliné non perpendiculaire ?', answer_hint: 'Par le théorème d\'Al-Kashi connaissant les hauteurs de pylône et la portée.' }] },
+    { id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'trig_interactive', scenario: 'Calcul de membrure de treillis', description: 'Calcul des longueurs de barres pour une ferme triangulée non symétrique.', resolution_latex_1: 'a = 9{,}17 \\text{ m}', resolution_latex_2: 'B = 53{,}03°', resolution_latex_3: 'C = 60{,}00°', conclusion: 'Structure triangulée vérifiée.' },
+    { id: 21, key: 'summary', title: 'Résumé exécutif', icon: '📋', type: 'summary', content: 'Al-Kashi et la loi des sinus permettent de résoudre n\'importe quel système triangulé du génie civil.' },
+    { id: 22, key: 'key_points', title: 'Points clés à retenir', icon: '⭐', type: 'keypoints', points: ['Al-Kashi : a² = b² + c² - 2bc cos(A)', 'Loi des sinus : a/sinA = b/sinB = c/sinC'] },
+    { id: 23, key: 'self_assessment', title: 'Module de vérification de la compréhension', icon: '🏆', type: 'self_assessment', description: 'Acquis :', objectives: ['Je sais appliquer Al-Kashi', 'Je résous un triangle quelconque'] },
+  ],
+};
+
+// ── LEÇON 3 : Calcul Vectoriel, Projection de Forces & Équilibre Statique ──────
+export const lesson_maths_vectors = {
+  moduleId: 1,
+  slug: 'maths',
+  lessonIndex: 3,
+  title: 'Calcul Vectoriel, Projection de Forces & Équilibre Statique',
+  subtitle: 'Module 1 — Leçon 3 : Statique & Équilibre des Forces',
+  level: 'Intermédiaire',
+  duration: '4h',
+  diagramType: 'force_decomposition',
+  tags: ['Vecteurs', 'Statique', 'Forces', 'Équilibre', 'Produit Scalaire', 'Nœud de Treillis'],
+
+  steps: [
+    {
+      id: 1, key: 'definition', title: 'Définition simple', icon: '📖', type: 'definition',
+      fr: 'Vecteurs & Équilibre Statique', en: 'Vector Mechanics & Static Equilibrium',
+      metier: 'Utilisé par les ingénieurs calcul de structures pour déterminer les réactions d\'appui et les efforts internes (N, V, M).',
+      content: `Une **force** en génie civil est une grandeur vectorielle définie par son point d'application, sa direction, son sens et son intensité. Le **principe fondamental de la statique** stipule qu'une structure au repos est en équilibre si et seulement si la somme des forces et la somme des moments sont nulles.
+
+- **Composantes cartésiennes** : $F_x = F \\cdot \\cos(\\theta)$ et $F_y = F \\cdot \\sin(\\theta)$.
+- **Équilibre statique 2D** : $\\sum F_x = 0$, $\\sum F_y = 0$, $\\sum M_{/O} = 0$.`,
+    },
+    {
+      id: 2, key: 'importance', title: 'Pourquoi c\'est important en ingénierie', icon: '⚠️', type: 'importance',
+      content: `Toute la résistance des matériaux (RDM) et la conception des ponts, bâtiments et barrages reposent sur l'équilibre des forces.
+- **Réactions d'appui** : calculer les charges transmises aux fondations.
+- **Efforts internes** : déterminer la traction et la compression dans les barres de treillis.
+- **Stabilité globale** : prévenir le glissement et le basculement sous le vent.`,
+    },
+    {
+      id: 3, key: 'applications', title: 'Applications réelles sur le terrain', icon: '🏗️', type: 'applications',
+      examples: [
+        { context: 'Grue de Chantier', text: 'Calcul du contrepoids de stabilité pour éviter le basculement sous charge maximale.' },
+        { context: 'Halle Métallique', text: 'Calcul des tractions T1 et T2 dans les tirants d\'un nœud de toiture sous charge de neige.' },
+        { context: 'Mur de Soutènement', text: 'Vérification de l\'équilibre au glissement sous la poussée des terres.' },
+      ],
+    },
+    {
+      id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'force_decomposition',
+      content: `### Conditions d'Équilibre Statique en 2D
+1. **Équilibre en translation** :
+   $$\\sum F_x = 0 \\quad \\text{et} \\quad \\sum F_y = 0$$
+2. **Équilibre en rotation** :
+   $$\\sum M_{/A} = 0$$
+
+### Produit Scalaire & Produit Vectoriel
+- **Produit scalaire** (Travail d'une force) : $\\vec{F} \\cdot \\vec{u} = F \\cdot u \\cdot \\cos(\\theta)$
+- **Produit vectoriel** (Moment d'une force) : $\\vec{M}_{/O} = \\vec{r} \\times \\vec{F}$`,
+    },
+    {
+      id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'force_decomposition',
+      formulas: [
+        { name: 'Projection horizontale', latex: 'F_x = F \\cos(\\theta)', description: 'Composante de la force sur l\'axe x' },
+        { name: 'Projection verticale', latex: 'F_y = F \\sin(\\theta)', description: 'Composante de la force sur l\'axe y' },
+        { name: 'Norme du vecteur force', latex: 'F = \\sqrt{F_x^2 + F_y^2}', description: 'Intensité résultante de la force' },
+        { name: 'Moment d\'une force par rapport à un point O', latex: 'M_{/O} = F \\cdot d', description: 'd = bras de levier perpendiculaire à la ligne d\'action' },
+      ],
+    },
+    {
+      id: 6, key: 'stepbystep', title: 'Démonstrations pas-à-pas', icon: '🔬', type: 'stepbystep',
+      problem: 'Un nœud de charpente reçoit une charge verticale descendant P = 50 kN. Il est maintenu par deux barres inclinées à θ1 = 30° et θ2 = 45°. Calculer les efforts de tension T1 et T2.',
+      steps_demo: [
+        { n: 1, text: 'Écrire l\'équation d\'équilibre sur l\'axe X : T2 · cos(45°) - T1 · cos(30°) = 0' },
+        { n: 2, text: 'Exprimer T2 en fonction de T1 : T2 = T1 · (cos(30°) / cos(45°)) = T1 · (0.8660 / 0.7071) = 1.2247 T1' },
+        { n: 3, text: 'Écrire l\'équation sur Y : T1 · sin(30°) + T2 · sin(45°) - 50 = 0' },
+        { n: 4, text: 'Injecter T2 : T1 · 0.5 + (1.2247 T1) · 0.7071 = 50 ⇒ 0.5 T1 + 0.8660 T1 = 50' },
+        { n: 5, text: 'Résoudre T1 : 1.3660 T1 = 50 ⇒ T1 = 36.60 kN' },
+        { n: 6, text: 'Déduire T2 : T2 = 1.2247 × 36.60 = 44.82 kN' },
+      ],
+      result_latex: 'T_1 = 36{,}60 \\text{ kN (Traction)}, \\quad T_2 = 44{,}82 \\text{ kN (Traction)}',
+    },
+    {
+      id: 7, key: 'units', title: 'Unités & Systèmes de mesure', icon: '📏', type: 'units',
+      table: [
+        { grandeur: 'Force', si: 'kN (Kilonewton)', imperial: 'kips / lbf', conversion: '1 kN = 224.8 lbf' },
+        { grandeur: 'Moment', si: 'kN·m', imperial: 'kip·ft', conversion: '1 kN·m = 737.56 lbf·ft' },
+      ],
+      note: '1 kN correspond approximativement au poids d\'une masse de 100 kg sous la gravité terrestre (g ≈ 9.81 m/s²).',
+    },
+    {
+      id: 8, key: 'hypotheses', title: 'Hypothèses d\'application', icon: '📋', type: 'hypotheses',
+      items: [
+        { type: 'warning', text: 'Le Principe Fondamental de la Statique suppose que la structure est rigide et parfaitement immobile' },
+        { type: 'info', text: 'Pour un treillis articulé, les barres ne travaillent qu\'en traction ou compression axiale pure' },
+      ],
+    },
+    {
+      id: 9, key: 'simple_examples', title: 'Exemples simples guidés', icon: '✏️', type: 'examples_simple',
+      examples: [
+        {
+          title: 'Exemple : Décomposition d\'un poids sur un toit à 25°',
+          given: 'Poids P = 20 kN, Angle θ = 25°',
+          find: 'Composante normale Pn et tangentielle Pt',
+          solution_latex: 'P_n = 20 \\cos(25°) = 18{,}13 \\text{ kN}, \\quad P_t = 20 \\sin(25°) = 8{,}45 \\text{ kN}',
+          result: 'Pn = 18.13 kN (Pression), Pt = 8.45 kN (Glissement)',
+        },
+      ],
+    },
+    { id: 10, key: 'real_examples', title: 'Exemples réels de bureau d\'études & chantier', icon: '🏢', type: 'examples_real', diagramType: 'force_decomposition', examples: [{ context: 'Stabilité d\'un pylône', scenario: 'Calcul de la tension du hauban nécessaire pour compenser un effort de vent W = 35 kN.', decomposition_latex: 'T = \\frac{W}{\\cos(40°)} = \\frac{35}{0.766} = 45{,}7 \\text{ kN}', lesson: 'Le hauban doit être dimensionné pour résister à au moins 45.7 kN avec coefficient de sécurité.' }] },
+    { id: 11, key: 'diagrams', title: 'Schémas techniques & diagrammes explicatifs', icon: '📊', type: 'interactive_diagram', diagramType: 'force_decomposition', description: 'Diagramme interactif de décomposition de forces sur plan incliné.', diagram_description: ['Vecteur Poids W (Rouge)', 'Composante Normale Wn (Bleu)', 'Composante Tangentielle Wt (Orange)'] },
+    { id: 12, key: 'mistakes', title: 'Erreurs fréquentes des débutants & pièges à éviter', icon: '⛔', type: 'mistakes', items: [{ mistake: 'Oublier le sens des composantes (signes + ou -)', trap: 'Une force vers la gauche a un signe négatif sur l\'axe X', fix: 'Définir clairement le repère orthonormé (O, x, y) avant de projeter' }] },
+    { id: 13, key: 'tips', title: 'Astuces et secrets professionnels du terrain', icon: '💡', type: 'tips', tips: ['Toujours placer le centre du repère au nœud étudié pour simplifier l\'écriture des équations.'] },
+    { id: 14, key: 'norms', title: 'Normes & standards concernés', icon: '📜', type: 'norms', norms: [{ code: 'Eurocode 3', description: 'Calcul des structures métalliques — Équilibre des assemblages' }] },
+    { id: 15, key: 'exercises', title: 'Exercices d\'application directe', icon: '✍️', type: 'exercises', exercises: [{ id: 'ex1', number: 1, difficulty: 'Moyen', text: 'Calculer le moment créé par une force F = 15 kN s\'appliquant à une distance d = 4.5 m.', hint: 'M = F · d', answer_latex: 'M = 15 \\times 4{,}5 = 67{,}5 \\text{ kN·m}', answer_text: 'M = 67.5 kN·m' }] },
+    { id: 16, key: 'corrections', title: 'Corrections détaillées pas-à-pas', icon: '✅', type: 'corrections', note: 'Voir les corrections sous les exercices.' },
+    { id: 17, key: 'quiz', title: 'Quiz d\'évaluation rapide', icon: '🎯', type: 'quiz', questions: [{ id: 'q1', question: 'Quelle est la condition d\'équilibre en translation sur X ?', options: [{ id: 'a', text: '∑Fx = 0' }, { id: 'b', text: '∑Fx = F' }], correct: 'a', explanation: 'Pour être immobile, la somme algébrique des forces sur X doit être nulle.' }] },
+    { id: 18, key: 'exam_questions', title: 'Questions d\'examen universitaire', icon: '🎓', type: 'exam', questions: ['Calculer les réactions d\'appui d\'une poutre bi-appuyée sollicitée par une charge ponctuelle excentrée.'] },
+    { id: 19, key: 'interview_questions', title: 'Questions d\'entretien d\'embauche technique', icon: '💼', type: 'interview', questions: [{ question: 'Comment vérifiez-vous l\'équilibre au renversement d\'un mur de soutènement ?', answer_hint: 'Ratio du moment stabilisateur / moment renversant ≥ 1.50.' }] },
+    { id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'force_decomposition', scenario: 'Dimensionnement du contrepoids d\'une grue à tour', description: 'Calcul du moment de renversement et du contrepoids nécessaire.', resolution_latex_1: 'M_{renversement} = 80 \\text{ kN} \\times 25 \\text{ m} = 2000 \\text{ kN·m}', resolution_latex_2: 'P_{contrepoids} = \\frac{2000 \\times 1.5}{10 \\text{ m}} = 300 \\text{ kN}', resolution_latex_3: 'M_{contrepoids} = 3000 \\text{ kN·m} \\ge 3000 \\quad \\checkmark', conclusion: 'Le contrepoids requis est de 30 tonnes (300 kN).'},
+    { id: 21, key: 'summary', title: 'Résumé exécutif', icon: '📋', type: 'summary', content: 'L\'équilibre statique (∑F=0, ∑M=0) permet d\'isoler n\'importe quel sous-ensemble de structure et d\'en calculer les forces internes.' },
+    { id: 22, key: 'key_points', title: 'Points clés à retenir', icon: '⭐', type: 'keypoints', points: ['∑Fx = 0, ∑Fy = 0, ∑M = 0', 'Fx = F cosθ, Fy = F sinθ', 'Moment M = F · d'] },
+    { id: 23, key: 'self_assessment', title: 'Module de vérification de la compréhension', icon: '🏆', type: 'self_assessment', description: 'Acquis :', objectives: ['Je sais projeter des forces', 'Je calcule un moment', 'Je résous l\'équilibre d\'un nœud'] },
+  ],
+};
+
+// ── LEÇON 4 : Calcul Différentiel & Intégral Appliqué aux Poutres ──────────────
+export const lesson_maths_calculus = {
+  moduleId: 1,
+  slug: 'maths',
+  lessonIndex: 4,
+  title: 'Calcul Différentiel & Intégral Appliqué aux Poutres',
+  subtitle: 'Module 1 — Leçon 4 : Dérivations & Intégrations en RDM',
+  level: 'Avancé',
+  duration: '5h',
+  diagramType: 'rebar_beam',
+  tags: ['Calcul Différentiel', 'Intégrales', 'Équation de la Déformée', 'Effort Tranchant', 'Moment Fléchissant', 'Terrassement'],
+
+  steps: [
+    {
+      id: 1, key: 'definition', title: 'Définition simple', icon: '📖', type: 'definition',
+      fr: 'Calcul Différentiel & Intégral appliqué aux Poutres', en: 'Differential & Integral Calculus for Beams',
+      metier: 'Formulation fondamentale utilisée par les moteurs de calcul par éléments finis (SAP2000, Robot) pour déterminer les équations de déformée w(x).',
+      content: `Le **calcul différentiel et intégral** relie directement la charge répartie $q(x)$, l'effort tranchant $V(x)$, le moment fléchissant $M(x)$ et la déformée de la poutre $w(x)$.
+
+- **Relations différentielles fondamentales** :
+  $$q(x) = -\\frac{dV(x)}{dx}, \\quad V(x) = \\frac{dM(x)}{dx}, \\quad EI \\cdot w''(x) = -M(x)$$
+- **Calculs d'intégration** : calcul des surfaces de moments, des centres de gravité et des volumes de déblais/remblais en terrassement.`,
+    },
+    {
+      id: 2, key: 'importance', title: 'Pourquoi c\'est important en ingénierie', icon: '⚠️', type: 'importance',
+      content: `Comprendre ces équations différentielles permet à l'ingénieur de :
+- Déterminer la position exacte du **moment fléchissant maximal** (là où l'effort tranchant s'annule : $V(x) = 0$).
+- Calculer la **flèche maximale** $w_{max}$ pour vérifier le critère de déformation à l'ELS ($w \\le L/250$).
+- Calculer les **volumes exacts de terrassement** par intégration de profils en travers.`,
+    },
+    {
+      id: 3, key: 'applications', title: 'Applications réelles sur le terrain', icon: '🏗️', type: 'applications',
+      examples: [
+        { context: 'Poutre de Bâtiment', text: 'Calcul de la courbe de déformée d\'une poutre continue sous charge uniforme.' },
+        { context: 'Terrassement Routier', text: 'Calcul du cubage de terre par la méthode des profilés et intégration numérique (Règle de Simpson).' },
+        { context: 'Réservoir d\'Eau', text: 'Calcul de la poussée hydrostatique triangulaire p(z) = ρ·g·z et du moment d\'encastrement.' },
+      ],
+    },
+    {
+      id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'rebar_beam',
+      content: `### Chaîne de Dérivation & Intégration en RDM
+$$q(x) \\xrightarrow{\\int} -V(x) \\xrightarrow{\\int} -M(x) \\xrightarrow{\\int} EI \\cdot \\theta(x) \\xrightarrow{\\int} EI \\cdot w(x)$$
+
+1. **Effort tranchant** : $V(x) = V(0) - \\int_0^x q(t) \\, dt$
+2. **Moment fléchissant** : $M(x) = M(0) + \\int_0^x V(t) \\, dt$
+3. **Pente (rotation)** : $\\theta(x) = \\frac{1}{EI} \\int (-M(x)) \\, dx + C_1$
+4. **Déformée (flèche)** : $w(x) = \\int \\theta(x) \\, dx + C_2$`,
+    },
+    {
+      id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'rebar_beam',
+      formulas: [
+        { name: 'Relation Charge - Tranchant', latex: '\\frac{dV(x)}{dx} = -q(x)', description: 'La dérivée du tranchant est l\'opposé de la charge' },
+        { name: 'Relation Tranchant - Moment', latex: '\\frac{dM(x)}{dx} = V(x)', description: 'Le moment est maximal quand V(x) = 0' },
+        { name: 'Équation différentielle de la ligne moyenne', latex: 'EI \\frac{d^2 w(x)}{dx^2} = -M(x)', description: 'Équation d\'Euler-Bernoulli' },
+        { name: 'Flèche max poutre travée simple (charge q)', latex: 'w_{max} = \\frac{5 q L^4}{384 E I}', description: 'Flèche au milieu de la portée (x = L/2)' },
+        { name: 'Intégration d\'un volume de terrassement', latex: '\\text{Vol} = \\int_{x_1}^{x_2} S(x) \\, dx \\approx \\sum \\frac{S_i + S_{i+1}}{2} \\cdot d_i', description: 'Méthode des aires moyennes' },
+      ],
+    },
+    {
+      id: 6, key: 'stepbystep', title: 'Démonstrations pas-à-pas', icon: '🔬', type: 'stepbystep',
+      problem: 'Démontrer la formule de la flèche maximale w_max = 5qL⁴ / (384 EI) pour une poutre simplement appuyée sous charge uniforme q.',
+      steps_demo: [
+        { n: 1, text: 'Réactions d\'appui : RA = RB = qL / 2' },
+        { n: 2, text: 'Expression du moment fléchissant : M(x) = (qL/2)·x - (q x²)/2' },
+        { n: 3, text: 'Équation différentielle : EI w\'\'(x) = - (qLx/2 - qx²/2) = -qLx/2 + qx²/2' },
+        { n: 4, text: 'Première intégration (pente) : EI w\'(x) = -qLx²/4 + qx³/6 + C1' },
+        { n: 5, text: 'Seconde intégration (flèche) : EI w(x) = -qLx³/12 + qx⁴/24 + C1 x + C2' },
+        { n: 6, text: 'Conditions aux limites : w(0)=0 ⇒ C2=0. w(L)=0 ⇒ -qL⁴/12 + qL⁴/24 + C1 L = 0 ⇒ C1 = qL³/24' },
+        { n: 7, text: 'Calcul au milieu x = L/2 : EI w(L/2) = -qL⁴/96 + qL⁴/384 + qL⁴/48 = (5/384) qL⁴ ⇒ w_max = 5qL⁴ / (384 EI)' },
+      ],
+      result_latex: 'w_{max} = \\frac{5 q L^4}{384 E I} \\quad \\checkmark \\text{ (Formule exacte démontrée)}',
+    },
+    {
+      id: 7, key: 'units', title: 'Unités & Systèmes de mesure', icon: '📏', type: 'units',
+      table: [
+        { grandeur: 'Rigidité à la flexion EI', si: 'N·mm² ou kN·m²', imperial: 'lbf·in²', conversion: '1 kN·m² = 10⁹ N·mm²' },
+        { grandeur: 'Flèche w', si: 'mm (millimètre)', imperial: 'inches (in)', conversion: '1 in = 25.4 mm' },
+        { grandeur: 'Volume de terrassement', si: 'm³ (mètre cube)', imperial: 'yd³ (cubic yard)', conversion: '1 m³ = 1.30795 yd³' },
+      ],
+      note: 'Lors de l\'intégration de la flèche, toujours exprimer E en N/mm² (MPa), I en mm⁴, q en N/mm et L en mm.',
+    },
+    {
+      id: 8, key: 'hypotheses', title: 'Hypothèses d\'application', icon: '📋', type: 'hypotheses',
+      items: [
+        { type: 'warning', text: 'L\'équation d\'Euler-Bernoulli néglige la déformation due au cisaillement (valable si L/h > 10)' },
+        { type: 'info', text: 'La rigidité flexionnelle EI est supposée constante le long de la travée' },
+      ],
+    },
+    {
+      id: 9, key: 'simple_examples', title: 'Exemples simples guidés', icon: '✏️', type: 'examples_simple',
+      examples: [
+        {
+          title: 'Exemple : Calcul de flèche sur poutre acier IPE 300',
+          given: 'L = 6.0 m, q = 12 kN/m (0.012 N/mm), E = 210 000 MPa, I = 8356 cm⁴ (83.56×10⁶ mm⁴)',
+          find: 'Calculer la flèche w_max et vérifier ELS (L/250)',
+          solution_latex: 'w_{max} = \\frac{5 \\times 0{,}012 \\times 6000^4}{384 \\times 210000 \\times 83{,}56 \\times 10^6} = \\frac{77{,}76 \\times 10^12}{6{,}734 \\times 10^12} = 11{,}55 \\text{ mm}',
+          result: 'w_max = 11.55 mm ≤ L/250 = 24.0 mm — Conforme à l\'ELS ✓',
+        },
+      ],
+    },
+    { id: 10, key: 'real_examples', title: 'Exemples réels de bureau d\'études & chantier', icon: '🏢', type: 'examples_real', diagramType: 'rebar_beam', examples: [{ context: 'Projet Routier — Cubage de Déblais', scenario: 'Calcul du volume de sol à caver sur un tronçon de 500 m découpé en 5 profils.', decomposition_latex: 'V_{sol} = \\sum \\frac{S_i + S_{i+1}}{2} \\cdot d_i = 14\\,250 \\text{ m}^3', lesson: 'L\'intégration des profils permet d\'établir le bilan des mouvements de terres (Déblais/Remblais).' }] },
+    { id: 11, key: 'diagrams', title: 'Schémas techniques & diagrammes explicatifs', icon: '📊', type: 'interactive_diagram', diagramType: 'rebar_beam', description: 'Courbes comparatives des sollicitations M(x), V(x) et déformée w(x).', diagram_description: ['V(x) = dM/dx', 'M_max situé là où V(x) = 0'] },
+    { id: 12, key: 'mistakes', title: 'Erreurs fréquentes des débutants & pièges à éviter', icon: '⛔', type: 'mistakes', items: [{ mistake: 'Mélanger les mètres et millimètres dans l\'équation de la flèche', trap: 'Calculer L⁴ en mètres et E en N/mm²', fix: 'Convertir impérativement toutes les longueurs en mm avant calcul !' }] },
+    { id: 13, key: 'tips', title: 'Astuces et secrets professionnels du terrain', icon: '💡', type: 'tips', tips: ['Retenir : La dérivée du moment donne l\'effort tranchant ; le zéro du tranchant donne le sommet de parabole du moment.'] },
+    { id: 14, key: 'norms', title: 'Normes & standards concernés', icon: '📜', type: 'norms', norms: [{ code: 'Eurocode 3 (EN 1993-1-1)', description: 'Limites de flèches ELS w_max ≤ L/250 (courant) ou L/350 (exigeant)' }] },
+    { id: 15, key: 'exercises', title: 'Exercices d\'application directe', icon: '✍️', type: 'exercises', exercises: [{ id: 'ex1', number: 1, difficulty: 'Difficile', text: 'Une poutre console de longueur L = 3 m supporte une charge ponctuelle F = 20 kN à son extrémité. Calculer la flèche w à l\'extrémité.', hint: 'w = F L³ / (3 EI)', answer_latex: 'w = \\frac{F L^3}{3 E I}', answer_text: 'w = F L³ / (3 EI)' }] },
+    { id: 16, key: 'corrections', title: 'Corrections détaillées pas-à-pas', icon: '✅', type: 'corrections', note: 'Voir les corrections sous les exercices.' },
+    { id: 17, key: 'quiz', title: 'Quiz d\'évaluation rapide', icon: '🎯', type: 'quiz', questions: [{ id: 'q1', question: 'Quelle est la dérivée de l\'effort tranchant V(x) ?', options: [{ id: 'a', text: '-q(x)' }, { id: 'b', text: 'M(x)' }], correct: 'a', explanation: 'dV(x)/dx = -q(x).' }] },
+    { id: 18, key: 'exam_questions', title: 'Questions d\'examen universitaire', icon: '🎓', type: 'exam', questions: ['Intégrer l\'équation d\'Euler-Bernoulli pour une poutre encastrée-appuyée (structure hyperstatique).'] },
+    { id: 19, key: 'interview_questions', title: 'Questions d\'entretien d\'embauche technique', icon: '💼', type: 'interview', questions: [{ question: 'Comment trouvez-vous l\'emplacement du moment fléchissant maximal sur une poutre sollicitée par une charge trapézoïdale ?', answer_hint: 'En annulant l\'effort tranchant V(x) = 0 par résolution d\'équation du second degré.' }] },
+    { id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'rebar_beam', scenario: 'Vérification de la flèche d\'un plancher de bureau', description: 'Portée L = 7.50 m, charge q = 18 kN/m. Poutre béton armé 30×60 cm.', resolution_latex_1: 'I = \\frac{b h^3}{12} = \\frac{300 \\times 600^3}{12} = 5{,}40 \\times 10^9 \\text{ mm}^4', resolution_latex_2: 'E_cd = 32000 / 1.5 = 21333 \\text{ MPa}', resolution_latex_3: 'w_{max} = \\frac{5 \\times 0.018 \\times 7500^4}{384 \\times 21333 \\times 5.40 \\times 10^9} = 6{,}44 \\text{ mm} \\le 30.0 \\text{ mm}', conclusion: 'Flèche 6.44 mm très inférieure à la limite ELS L/250 (30 mm). Structure validée.' },
+    { id: 21, key: 'summary', title: 'Résumé exécutif', icon: '📋', type: 'summary', content: 'Le calcul différentiel relie les charges, les sollicitations internes (V, M) et les déformations (w) de manière analytique exacte.' },
+    { id: 22, key: 'key_points', title: 'Points clés à retenir', icon: '⭐', type: 'keypoints', points: ['q = -dV/dx', 'V = dM/dx', 'EI w\'\' = -M', 'w_max = 5qL⁴/384EI'] },
+    { id: 23, key: 'self_assessment', title: 'Module de vérification de la compréhension', icon: '🏆', type: 'self_assessment', description: 'Acquis :', objectives: ['Je sais dériver M(x) pour trouver V(x)', 'Je sais calculer la flèche w_max', 'Je valide le critère ELS'] },
+  ],
+};
+
+// Export all Module 1 lessons as an ordered list
+export const module1Lessons = [
+  lesson_maths_trig,
+  lesson_maths_advanced_trig,
+  lesson_maths_vectors,
+  lesson_maths_calculus,
+];
