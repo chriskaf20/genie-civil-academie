@@ -12,6 +12,7 @@ import { lesson_aeroports } from './lesson_aeroports.js';
 import { lesson_ports } from './lesson_ports.js';
 import { lesson_ferroviaire } from './lesson_ferroviaire.js';
 import { lesson_topographie } from './lesson_topographie.js';
+import { lesson_materiaux } from './lesson_materiaux.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -29,6 +30,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'ports') return lesson_ports;
   if (module.slug === 'ferroviaire') return lesson_ferroviaire;
   if (module.slug === 'topographie') return lesson_topographie;
+  if (module.slug === 'materiaux') return lesson_materiaux;
 
 
   const diagramMap = {
