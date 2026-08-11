@@ -3,6 +3,7 @@ import { lesson_rdm } from './lesson_rdm.js';
 import { lesson_beton_arme } from './lesson_beton_arme.js';
 import { lesson_geotechnique } from './lesson_geotechnique.js';
 import { lesson_mecanique } from './lesson_mecanique.js';
+import { lesson_hydraulique } from './lesson_hydraulique.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -11,6 +12,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'rdm') return lesson_rdm;
   if (module.slug === 'beton-arme') return lesson_beton_arme;
   if (module.slug === 'geotechnique') return lesson_geotechnique;
+  if (module.slug === 'hydraulique') return lesson_hydraulique;
 
 
   const diagramMap = {
