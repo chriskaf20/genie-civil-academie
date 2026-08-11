@@ -11,6 +11,7 @@ import { lesson_barrages } from './lesson_barrages.js';
 import { lesson_aeroports } from './lesson_aeroports.js';
 import { lesson_ports } from './lesson_ports.js';
 import { lesson_ferroviaire } from './lesson_ferroviaire.js';
+import { lesson_topographie } from './lesson_topographie.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -27,6 +28,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'aeroports') return lesson_aeroports;
   if (module.slug === 'ports') return lesson_ports;
   if (module.slug === 'ferroviaire') return lesson_ferroviaire;
+  if (module.slug === 'topographie') return lesson_topographie;
 
 
   const diagramMap = {
