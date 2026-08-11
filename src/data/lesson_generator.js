@@ -7,6 +7,7 @@ import { lesson_hydraulique } from './lesson_hydraulique.js';
 import { lesson_routes } from './lesson_routes.js';
 import { lesson_ponts } from './lesson_ponts.js';
 import { lesson_tunnels } from './lesson_tunnels.js';
+import { lesson_barrages } from './lesson_barrages.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -19,6 +20,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'routes') return lesson_routes;
   if (module.slug === 'ponts') return lesson_ponts;
   if (module.slug === 'tunnels') return lesson_tunnels;
+  if (module.slug === 'barrages') return lesson_barrages;
 
 
   const diagramMap = {
