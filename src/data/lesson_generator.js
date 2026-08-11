@@ -13,6 +13,7 @@ import { lesson_ports } from './lesson_ports.js';
 import { lesson_ferroviaire } from './lesson_ferroviaire.js';
 import { lesson_topographie } from './lesson_topographie.js';
 import { lesson_materiaux } from './lesson_materiaux.js';
+import { lesson_dessin } from './lesson_dessin.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -31,6 +32,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'ferroviaire') return lesson_ferroviaire;
   if (module.slug === 'topographie') return lesson_topographie;
   if (module.slug === 'materiaux') return lesson_materiaux;
+  if (module.slug === 'dessin') return lesson_dessin;
 
 
   const diagramMap = {
