@@ -15,6 +15,7 @@ import { lesson_topographie } from './lesson_topographie.js';
 import { lesson_materiaux } from './lesson_materiaux.js';
 import { lesson_dessin } from './lesson_dessin.js';
 import { lesson_bim } from './lesson_bim.js';
+import { lesson_metal } from './lesson_metal.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -35,6 +36,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'materiaux') return lesson_materiaux;
   if (module.slug === 'dessin') return lesson_dessin;
   if (module.slug === 'bim') return lesson_bim;
+  if (module.slug === 'metal') return lesson_metal;
 
 
   const diagramMap = {
