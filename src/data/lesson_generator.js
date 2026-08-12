@@ -20,12 +20,15 @@ import { lesson_precontrainte } from './lesson_precontrainte.js';
 import { lesson_bois } from './lesson_bois.js';
 import { lesson_chantier } from './lesson_chantier.js';
 import { lesson_metre } from './lesson_metre.js';
+import { lesson_analyse } from './lesson_analyse.js';
+import { lesson_fondations } from './lesson_fondations.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
   if (module.slug === 'maths') return lesson_maths_trig;
   if (module.slug === 'mecanique') return lesson_mecanique;
   if (module.slug === 'rdm') return lesson_rdm;
+  if (module.slug === 'structures' || module.slug === 'analyse') return lesson_analyse;
   if (module.slug === 'beton-arme') return lesson_beton_arme;
   if (module.slug === 'geotechnique') return lesson_geotechnique;
   if (module.slug === 'hydraulique') return lesson_hydraulique;
@@ -45,6 +48,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'bois') return lesson_bois;
   if (module.slug === 'chantier') return lesson_chantier;
   if (module.slug === 'metre') return lesson_metre;
+  if (module.slug === 'hse' || module.slug === 'fondations') return lesson_fondations;
 
 
   const diagramMap = {
