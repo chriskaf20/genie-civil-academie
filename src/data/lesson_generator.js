@@ -22,10 +22,14 @@ import { lesson_chantier } from './lesson_chantier.js';
 import { lesson_metre } from './lesson_metre.js';
 import { lesson_analyse } from './lesson_analyse.js';
 import { lesson_fondations } from './lesson_fondations.js';
+import { lesson_physique } from './lesson_physique.js';
+import { lesson_seisme } from './lesson_seisme.js';
+import { lesson_eco } from './lesson_eco.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
   if (module.slug === 'maths') return lesson_maths_trig;
+  if (module.slug === 'physique') return lesson_physique;
   if (module.slug === 'mecanique') return lesson_mecanique;
   if (module.slug === 'rdm') return lesson_rdm;
   if (module.slug === 'structures' || module.slug === 'analyse') return lesson_analyse;
@@ -49,6 +53,8 @@ export function getLessonForModule(module) {
   if (module.slug === 'chantier') return lesson_chantier;
   if (module.slug === 'metre') return lesson_metre;
   if (module.slug === 'hse' || module.slug === 'fondations') return lesson_fondations;
+  if (module.slug === 'environnement' || module.slug === 'seisme') return lesson_seisme;
+  if (module.slug === 'normes' || module.slug === 'eco') return lesson_eco;
 
 
   const diagramMap = {
