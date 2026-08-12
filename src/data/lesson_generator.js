@@ -27,6 +27,8 @@ import { lesson_seisme } from './lesson_seisme.js';
 import { lesson_eco } from './lesson_eco.js';
 import { lesson_droit } from './lesson_droit.js';
 import { lesson_pathologie } from './lesson_pathologie.js';
+import { lesson_climat } from './lesson_climat.js';
+import { lesson_energie } from './lesson_energie.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -59,6 +61,8 @@ export function getLessonForModule(module) {
   if (module.slug === 'normes' || module.slug === 'eco') return lesson_eco;
   if (module.slug === 'ia' || module.slug === 'droit') return lesson_droit;
   if (module.slug === 'logiciels' || module.slug === 'pathologie') return lesson_pathologie;
+  if (module.slug === 'methodes' || module.slug === 'climat') return lesson_climat;
+  if (module.slug === 'qualite' || module.slug === 'energie') return lesson_energie;
 
 
   const diagramMap = {
