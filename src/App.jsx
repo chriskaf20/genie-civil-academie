@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard.jsx';
 import SciCalc from './components/SciCalc.jsx';
 import GlossarySearch from './components/GlossarySearch.jsx';
 import PwaInstallPrompt from './components/PwaInstallPrompt.jsx';
+import GceaLogoSvg from './components/GceaLogoSvg.jsx';
 import { modules } from './data/modules.js';
 import './styles.css';
 
@@ -142,9 +143,7 @@ export default function App() {
 
           {/* Logo — clickable to go home */}
           <button onClick={goHome} className="flex items-center gap-2 group">
-            <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-br from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-xs md:text-sm shadow-md group-hover:shadow-blue-500/40 transition-all">
-              G
-            </div>
+            <GceaLogoSvg size={30} isDark={isDark} className="md:w-[34px] md:h-[34px] group-hover:scale-105 transition-transform duration-200" />
             <div>
               <div className="flex items-center gap-1.5">
                 <p className="text-[10px] md:text-xs uppercase tracking-widest text-sky-400 font-semibold leading-tight group-hover:text-sky-300 transition-colors">Académie Génie Civil</p>
