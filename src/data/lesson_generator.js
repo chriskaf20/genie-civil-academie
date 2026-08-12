@@ -19,6 +19,7 @@ import { lesson_metal } from './lesson_metal.js';
 import { lesson_precontrainte } from './lesson_precontrainte.js';
 import { lesson_bois } from './lesson_bois.js';
 import { lesson_chantier } from './lesson_chantier.js';
+import { lesson_metre } from './lesson_metre.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -43,6 +44,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'precontrainte') return lesson_precontrainte;
   if (module.slug === 'bois') return lesson_bois;
   if (module.slug === 'chantier') return lesson_chantier;
+  if (module.slug === 'metre') return lesson_metre;
 
 
   const diagramMap = {
