@@ -25,6 +25,7 @@ import { lesson_fondations } from './lesson_fondations.js';
 import { lesson_physique } from './lesson_physique.js';
 import { lesson_seisme } from './lesson_seisme.js';
 import { lesson_eco } from './lesson_eco.js';
+import { lesson_droit } from './lesson_droit.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -55,6 +56,7 @@ export function getLessonForModule(module) {
   if (module.slug === 'hse' || module.slug === 'fondations') return lesson_fondations;
   if (module.slug === 'environnement' || module.slug === 'seisme') return lesson_seisme;
   if (module.slug === 'normes' || module.slug === 'eco') return lesson_eco;
+  if (module.slug === 'ia' || module.slug === 'droit') return lesson_droit;
 
 
   const diagramMap = {
