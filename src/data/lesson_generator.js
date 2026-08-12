@@ -29,6 +29,9 @@ import { lesson_droit } from './lesson_droit.js';
 import { lesson_pathologie } from './lesson_pathologie.js';
 import { lesson_climat } from './lesson_climat.js';
 import { lesson_energie } from './lesson_energie.js';
+import { lesson_management } from './lesson_management.js';
+import { lesson_bim_management } from './lesson_bim_management.js';
+import { lesson_ia_btp } from './lesson_ia_btp.js';
 
 export function getLessonForModule(module) {
   if (!module) return lesson_maths_trig;
@@ -62,7 +65,9 @@ export function getLessonForModule(module) {
   if (module.slug === 'ia' || module.slug === 'droit') return lesson_droit;
   if (module.slug === 'logiciels' || module.slug === 'pathologie') return lesson_pathologie;
   if (module.slug === 'methodes' || module.slug === 'climat') return lesson_climat;
-  if (module.slug === 'qualite' || module.slug === 'energie') return lesson_energie;
+  if (module.slug === 'qualite' || module.slug === 'energie' || module.slug === 'management') return lesson_management;
+  if (module.slug === 'cas' || module.slug === 'bim_management') return lesson_bim_management;
+  if (module.slug === 'carriere' || module.slug === 'ia_btp') return lesson_ia_btp;
 
 
   const diagramMap = {
