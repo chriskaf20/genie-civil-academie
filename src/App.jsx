@@ -5,6 +5,7 @@ import SidebarRight from './components/SidebarRight.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import SciCalc from './components/SciCalc.jsx';
 import GlossarySearch from './components/GlossarySearch.jsx';
+import PwaInstallPrompt from './components/PwaInstallPrompt.jsx';
 import { modules } from './data/modules.js';
 import './styles.css';
 
@@ -97,6 +98,9 @@ export default function App() {
 
   return (
     <div className={`h-screen flex flex-col ${bgClass} overflow-hidden`}>
+      {/* PWA Install / Update Banner */}
+      <PwaInstallPrompt isDark={isDark} />
+
       {/* Popups */}
       {showSciCalc && <SciCalc onClose={() => setShowSciCalc(false)} />}
 

@@ -1,0 +1,97 @@
+{
+  "name": "Global Civil Engineering Academy",
+  "short_name": "GCEA",
+  "description": "Plateforme interactive d'apprentissage du Génie Civil — 35 modules, 23 étapes, formules KaTeX, schémas SVG et exercices corrigés.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "lang": "fr-FR",
+  "scope": "/",
+  "categories": ["education", "engineering"],
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/dashboard.png",
+      "sizes": "1366x641",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tableau de bord — 35 modules de Génie Civil"
+    },
+    {
+      "src": "/screenshots/lesson.png",
+      "sizes": "1366x641",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Leçon interactive avec formules KaTeX et exercices"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Accueil & Catalogue",
+      "short_name": "Accueil",
+      "description": "Retourner au tableau de bord des 35 modules",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Module Béton Armé",
+      "short_name": "Béton Armé",
+      "description": "Ouvrir directement le module Béton Armé & Eurocode 2",
+      "url": "/?module=beton-arme",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "prefer_related_applications": false
+}
