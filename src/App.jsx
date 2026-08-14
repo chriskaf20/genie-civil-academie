@@ -98,7 +98,7 @@ export default function App() {
   const headerBg = isDark ? 'bg-slate-900/95 border-slate-800/60' : 'bg-white/95 border-slate-200';
 
   return (
-    <div className={`h-screen flex flex-col ${bgClass} overflow-hidden`}>
+    <div className={`h-screen flex flex-col ${bgClass} overflow-hidden w-full max-w-full`}>
       {/* PWA Install / Update Banner */}
       <PwaInstallPrompt isDark={isDark} />
 
@@ -118,7 +118,7 @@ export default function App() {
       )}
 
       {/* ── Compact Header Bar ── */}
-      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-3 py-1.5 md:py-3 md:px-4 flex items-center gap-3 z-30`}
+      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-3 py-1.5 md:py-3 md:px-4 flex items-center gap-3 z-30 w-full max-w-full overflow-hidden`}
         style={{ background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)' }}>
         
         {/* Logo & brand */}
@@ -215,7 +215,7 @@ export default function App() {
       </header>
 
       {/* ── Main layout ── */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div className="flex-1 flex overflow-hidden relative w-full max-w-full">
         {/* Mobile overlay */}
         {mobileMenu && (
           <div
@@ -271,9 +271,9 @@ export default function App() {
         </aside>
 
         {/* ── Main Content ── */}
-        <main className={`flex-1 overflow-y-auto pb-16 md:pb-0 ${isDark ? '' : 'bg-slate-50'}`}>
-          <div className={`min-h-full ${isDark ? 'eng-grid-bg' : ''}`}>
-            <div className="p-3 md:p-6">
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
+          <div className={`min-h-full w-full max-w-full overflow-x-hidden ${isDark ? 'eng-grid-bg' : ''}`}>
+            <div className="p-3 md:p-6 w-full max-w-full overflow-x-hidden">
               {view === 'dashboard' ? (
                 <Dashboard
                   onSelectModule={selectModule}

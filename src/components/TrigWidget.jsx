@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { BlockMath, InlineMath } from 'react-katex';
+import { SafeBlockMath, SafeInlineMath } from './SafeMath.jsx';
 
-export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse }) {
+export default function TrigWidget({ angle = 30, setAngle, hypotenuse = 10, setHypotenuse }) {
   const [mode, setMode] = useState('hyp-angle'); // 'hyp-angle' | 'two-sides'
   const [sideA, setSideA] = useState(3);
   const [sideB, setSideB] = useState(4);
@@ -18,7 +18,7 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
   const angle2 = (Math.atan2(Number(sideA), Number(sideB)) * 180) / Math.PI;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 w-full max-w-full overflow-hidden">
       {/* Mode tabs */}
       <div className="flex gap-2 p-1 bg-slate-900/80 rounded-xl">
         {[
@@ -40,14 +40,14 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
       </div>
 
       {mode === 'hyp-angle' ? (
-        <div className="space-y-3">
+        <div className="space-y-3 w-full max-w-full">
           {/* Inputs */}
           <div className="grid grid-cols-2 gap-3">
             <label className="space-y-1">
               <span className="text-xs text-slate-400 font-medium">Hypoténuse (m)</span>
               <input
                 type="number" value={hypotenuse} min="0.1" step="0.5"
-                onChange={e => setHypotenuse(Math.max(0.1, Number(e.target.value)))}
+                onChange={e => setHypotenuse && setHypotenuse(Math.max(0.1, Number(e.target.value)))}
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 text-sm"
               />
             </label>
@@ -55,7 +55,7 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
               <span className="text-xs text-slate-400 font-medium">Angle θ (°)</span>
               <input
                 type="number" value={angle} min="1" max="89"
-                onChange={e => setAngle(clamp(e.target.value, 1, 89))}
+                onChange={e => setAngle && setAngle(clamp(e.target.value, 1, 89))}
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 text-sm"
               />
             </label>
@@ -68,7 +68,7 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
             </div>
             <input
               type="range" min="1" max="89" value={angle}
-              onChange={e => setAngle(Number(e.target.value))}
+              onChange={e => setAngle && setAngle(Number(e.target.value))}
               className="w-full h-2 accent-sky-500 cursor-pointer"
             />
           </div>
@@ -84,20 +84,22 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
               <div key={item.label} className={`rounded-xl border p-3 ${item.color}`}>
                 <p className="text-xs text-slate-500">{item.label}</p>
                 <p className="text-base font-bold text-white mt-1 font-mono">{item.value}</p>
-                <p className="text-xs text-slate-600 mt-1">
-                  <InlineMath math={item.formula} />
-                </p>
+                <div className="text-xs text-slate-600 mt-1 overflow-x-auto">
+                  <SafeInlineMath math={item.formula} />
+                </div>
               </div>
             ))}
           </div>
 
           {/* Formula display */}
-          <div className="formula-card">
-            <BlockMath math={`H=${hypotenuse}\\text{ m},\\;\\theta=${angle}°\\;\\Rightarrow\\;h=${height.toFixed(2)}\\text{ m}`} />
+          <div className="formula-card w-full max-w-full overflow-x-auto">
+            <div className="overflow-x-auto max-w-full py-1 math-scroll">
+              <SafeBlockMath math={`H=${hypotenuse}\\text{ m},\\;\\theta=${angle}^\\circ\\;\\Rightarrow\\;h=${height.toFixed(2)}\\text{ m}`} />
+            </div>
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 w-full max-w-full">
           <div className="grid grid-cols-2 gap-3">
             <label className="space-y-1">
               <span className="text-xs text-slate-400 font-medium">Côté a (opp, m)</span>
@@ -131,8 +133,10 @@ export default function TrigWidget({ angle, setAngle, hypotenuse, setHypotenuse 
             ))}
           </div>
 
-          <div className="formula-card">
-            <BlockMath math={`H = \\sqrt{${Number(sideA).toFixed(1)}^2 + ${Number(sideB).toFixed(1)}^2} = ${hyp2.toFixed(3)}\\text{ m}`} />
+          <div className="formula-card w-full max-w-full overflow-x-auto">
+            <div className="overflow-x-auto max-w-full py-1 math-scroll">
+              <SafeBlockMath math={`H = \\sqrt{${Number(sideA).toFixed(1)}^2 + ${Number(sideB).toFixed(1)}^2} = ${hyp2.toFixed(3)}\\text{ m}`} />
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { BlockMath, InlineMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
+import { SafeBlockMath, SafeInlineMath } from './SafeMath.jsx';
 import TrigWidget from './TrigWidget.jsx';
 import TrigSVG from './TrigSVG.jsx';
 import SciCalc from './SciCalc.jsx';
@@ -15,19 +15,23 @@ function parseLatexContent(text) {
   return parts.map((part, i) => {
     if (part.startsWith('$$') && part.endsWith('$$')) {
       const math = part.slice(2, -2).trim();
-      return <BlockMath key={i} math={math} />;
+      return (
+        <div key={i} className="overflow-x-auto max-w-full py-1 math-scroll">
+          <SafeBlockMath math={math} />
+        </div>
+      );
     }
     if (part.startsWith('$') && part.endsWith('$')) {
-      return <InlineMath key={i} math={part.slice(1, -1)} />;
+      return <SafeInlineMath key={i} math={part.slice(1, -1)} />;
     }
     const lines = part.split('\n');
     return lines.map((line, li) => {
-      if (line.startsWith('### ')) return <h4 key={li} className="text-base font-bold text-white mt-4 mb-2">{line.slice(4)}</h4>;
-      if (line.startsWith('## ')) return <h3 key={li} className="text-lg font-bold text-white mt-5 mb-2">{line.slice(3)}</h3>;
-      if (line.startsWith('> ')) return <blockquote key={li} className="border-l-2 border-sky-500 pl-3 my-2 text-sky-200 text-sm italic">{line.slice(2)}</blockquote>;
-      if (line.startsWith('- ')) return <li key={li} className="text-slate-300 text-sm ml-4 list-disc leading-6">{renderInline(line.slice(2))}</li>;
+      if (line.startsWith('### ')) return <h4 key={li} className="text-base font-bold text-white mt-4 mb-2 break-words">{line.slice(4)}</h4>;
+      if (line.startsWith('## ')) return <h3 key={li} className="text-lg font-bold text-white mt-5 mb-2 break-words">{line.slice(3)}</h3>;
+      if (line.startsWith('> ')) return <blockquote key={li} className="border-l-2 border-sky-500 pl-3 my-2 text-sky-200 text-sm italic break-words">{line.slice(2)}</blockquote>;
+      if (line.startsWith('- ')) return <li key={li} className="text-slate-300 text-sm ml-4 list-disc leading-6 break-words">{renderInline(line.slice(2))}</li>;
       if (line.trim() === '') return <br key={li} />;
-      return <p key={li} className="text-slate-300 text-sm leading-relaxed">{renderInline(line)}</p>;
+      return <p key={li} className="text-slate-300 text-sm leading-relaxed break-words">{renderInline(line)}</p>;
     });
   });
 }
@@ -47,8 +51,8 @@ function StepHeader({ step, title, icon }) {
   return (
     <div className="flex items-center gap-3 mb-4">
       <div className="step-badge">{step}</div>
-      <span className="text-lg">{icon}</span>
-      <h3 className="text-base font-bold text-white">{title}</h3>
+      <span className="text-lg shrink-0">{icon}</span>
+      <h3 className="text-base font-bold text-white leading-snug">{title}</h3>
     </div>
   );
 }
@@ -56,7 +60,7 @@ function StepHeader({ step, title, icon }) {
 // ── Section Card wrapper ──────────────────────────────────────────────────────
 function Section({ children, className = '' }) {
   return (
-    <div className={`rounded-2xl border border-slate-700/50 bg-slate-900/60 p-5 card-hover animate-fade-up ${className}`}>
+    <div className={`rounded-2xl border border-slate-700/50 bg-slate-900/60 p-4 sm:p-5 card-hover animate-fade-up w-full max-w-full overflow-hidden ${className}`}>
       {children}
     </div>
   );
@@ -69,13 +73,13 @@ function DefinitionStep({ s }) {
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="space-y-3">
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           <span className="tag-blue">🇫🇷 {s.fr}</span>
           <span className="tag-orange">🇬🇧 {s.en}</span>
         </div>
         <div className="alert-info mt-3">
           <p className="text-xs text-sky-300 font-semibold mb-1">💼 Utilisation métier</p>
-          <p className="text-sm text-slate-300">{s.metier}</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{s.metier}</p>
         </div>
         <div className="prose-custom">{parseLatexContent(s.content)}</div>
       </div>
@@ -122,13 +126,15 @@ function FormulasStep({ s, diagramType }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3 mb-4">
+      <div className="space-y-3 mb-4 w-full max-w-full">
         {s.formulas.map(f => (
-          <div key={f.name} className="formula-card">
+          <div key={f.name} className="formula-card w-full max-w-full overflow-x-auto">
             <div className="flex items-start justify-between gap-3 mb-2">
               <p className="text-xs text-sky-300 font-semibold uppercase tracking-wider">{f.name}</p>
             </div>
-            <BlockMath math={f.latex} />
+            <div className="overflow-x-auto max-w-full py-1 math-scroll">
+              <SafeBlockMath math={f.latex} />
+            </div>
             <p className="text-xs text-slate-500 mt-2">{f.description}</p>
           </div>
         ))}
@@ -165,9 +171,11 @@ function StepByStepSection({ s }) {
           </div>
         ))}
       </div>
-      <div className="formula-card mt-4">
+      <div className="formula-card mt-4 w-full max-w-full overflow-x-auto">
         <p className="text-xs text-emerald-400 font-semibold mb-2">✅ Résultat :</p>
-        <BlockMath math={s.result_latex} />
+        <div className="overflow-x-auto max-w-full py-1 math-scroll">
+          <SafeBlockMath math={s.result_latex} />
+        </div>
       </div>
     </Section>
   );
@@ -177,8 +185,8 @@ function UnitsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
+      <div className="overflow-x-auto max-w-full py-1 table-scroll">
+        <table className="w-full text-sm text-left border-collapse">
           <thead>
             <tr className="border-b border-slate-700/50">
               <th className="text-xs text-slate-400 uppercase pb-2 pr-4">Grandeur</th>
@@ -190,9 +198,9 @@ function UnitsStep({ s }) {
           <tbody>
             {s.table.map(row => (
               <tr key={row.grandeur} className="border-b border-slate-800/50">
-                <td className="py-2 pr-4 text-white font-medium">{row.grandeur}</td>
-                <td className="py-2 pr-4 text-sky-300 font-mono text-xs">{row.si}</td>
-                <td className="py-2 pr-4 text-orange-300 font-mono text-xs">{row.imperial}</td>
+                <td className="py-2 pr-4 text-white font-medium whitespace-nowrap">{row.grandeur}</td>
+                <td className="py-2 pr-4 text-sky-300 font-mono text-xs whitespace-nowrap">{row.si}</td>
+                <td className="py-2 pr-4 text-orange-300 font-mono text-xs whitespace-nowrap">{row.imperial}</td>
                 <td className="py-2 text-slate-400 text-xs">{row.conversion}</td>
               </tr>
             ))}
@@ -234,12 +242,14 @@ function ExamplesSimpleStep({ s }) {
         {s.examples.map(ex => (
           <div key={ex.title} className="rounded-xl border border-slate-700/40 bg-slate-800/40 p-4">
             <p className="text-sm font-bold text-white mb-2">{ex.title}</p>
-            <div className="grid grid-cols-2 gap-3 text-xs mb-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
               <div><p className="text-slate-500">Données :</p><p className="text-slate-300">{ex.given}</p></div>
               <div><p className="text-slate-500">Trouver :</p><p className="text-sky-300">{ex.find}</p></div>
             </div>
-            <div className="formula-card">
-              <BlockMath math={ex.solution_latex} />
+            <div className="formula-card w-full max-w-full overflow-x-auto">
+              <div className="overflow-x-auto max-w-full py-1 math-scroll">
+                <SafeBlockMath math={ex.solution_latex} />
+              </div>
             </div>
             <div className="flex items-center gap-2 mt-2">
               <span className="text-emerald-400 text-sm">✅</span>
@@ -260,9 +270,21 @@ function RealExamplesStep({ s, diagramType }) {
         {s.examples.map(ex => (
           <div key={ex.context} className="rounded-xl border border-slate-700/40 bg-slate-800/30 p-4">
             <span className="tag-orange mb-2 inline-block">{ex.context}</span>
-            <p className="text-sm text-slate-300 mb-3 italic">{ex.scenario}</p>
-            {ex.decomposition_latex && <div className="formula-card mb-3"><BlockMath math={ex.decomposition_latex} /></div>}
-            {ex.check_latex && <div className="formula-card mb-3"><BlockMath math={ex.check_latex} /></div>}
+            <p className="text-sm text-slate-300 mb-3 italic leading-relaxed">{ex.scenario}</p>
+            {ex.decomposition_latex && (
+              <div className="formula-card mb-3 w-full max-w-full overflow-x-auto">
+                <div className="overflow-x-auto max-w-full py-1 math-scroll">
+                  <SafeBlockMath math={ex.decomposition_latex} />
+                </div>
+              </div>
+            )}
+            {ex.check_latex && (
+              <div className="formula-card mb-3 w-full max-w-full overflow-x-auto">
+                <div className="overflow-x-auto max-w-full py-1 math-scroll">
+                  <SafeBlockMath math={ex.check_latex} />
+                </div>
+              </div>
+            )}
             <div className="alert-tip">
               <p className="text-xs text-emerald-300">💡 Leçon professionnelle : {ex.lesson}</p>
             </div>
@@ -279,7 +301,7 @@ function DiagramStep({ s, diagramType }) {
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="alert-info mb-3">
-        <p className="text-sm text-slate-300">{s.description}</p>
+        <p className="text-sm text-slate-300 leading-relaxed">{s.description}</p>
       </div>
       <ul className="space-y-1 mb-4">
         {s.diagram_description.map((d, i) => (
@@ -326,7 +348,7 @@ function TipsStep({ s }) {
         {s.tips.map((tip, i) => (
           <div key={i} className="flex gap-3 rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
             <span className="text-emerald-400 shrink-0">💡</span>
-            <p className="text-sm text-slate-300">{tip}</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{tip}</p>
           </div>
         ))}
       </div>
@@ -342,7 +364,7 @@ function NormsStep({ s }) {
         {s.norms.map(n => (
           <div key={n.code} className="flex gap-3 items-start rounded-xl bg-violet-500/5 border border-violet-500/20 p-3">
             <span className="tag-blue shrink-0">{n.code}</span>
-            <p className="text-sm text-slate-300">{n.description}</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{n.description}</p>
           </div>
         ))}
       </div>
@@ -374,7 +396,7 @@ function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
                 <span className={`tag-${ex.difficulty === 'Facile' ? 'green' : ex.difficulty === 'Moyen' ? 'blue' : 'orange'} mb-2 inline-block`}>
                   {ex.difficulty}
                 </span>
-                <p className="text-sm text-slate-300">{ex.text}</p>
+                <p className="text-sm text-slate-300 leading-relaxed">{ex.text}</p>
               </div>
             </div>
 
@@ -399,10 +421,12 @@ function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
             </div>
 
             {revealed[ex.id] && (
-              <div className="mt-3 formula-card animate-fade-up">
+              <div className="mt-3 formula-card animate-fade-up w-full max-w-full overflow-x-auto">
                 <p className="text-xs text-emerald-400 font-semibold mb-2">✅ Solution :</p>
-                <BlockMath math={ex.answer_latex} />
-                <p className="text-sm text-emerald-300 font-mono mt-2">{ex.answer_text}</p>
+                <div className="overflow-x-auto max-w-full py-1 math-scroll">
+                  <SafeBlockMath math={ex.answer_latex} />
+                </div>
+                <p className="text-sm text-emerald-300 font-mono mt-2 break-words">{ex.answer_text}</p>
               </div>
             )}
           </div>
@@ -434,7 +458,7 @@ function QuizStep({ s }) {
             {score >= s.questions.length * 0.8 ? '🏆' : score >= s.questions.length * 0.5 ? '📈' : '📚'} {' '}
             Score : {score}/{s.questions.length} ({Math.round(score / s.questions.length * 100)}%)
           </p>
-          <p className="text-sm mt-1 text-slate-300">
+          <p className="text-sm mt-1 text-slate-300 leading-relaxed">
             {score === s.questions.length ? 'Excellent ! Toutes les réponses sont correctes.' :
              score >= s.questions.length * 0.8 ? 'Très bien ! Revoyez les questions ratées.' :
              score >= s.questions.length * 0.5 ? 'Bien. Approfondissez les notions manquantes.' :
@@ -512,7 +536,7 @@ function ExamStep({ s }) {
         {s.questions.map((q, i) => (
           <div key={i} className="flex gap-3 rounded-xl bg-slate-800/40 border border-slate-700/40 p-4">
             <div className="step-badge shrink-0">{i + 1}</div>
-            <p className="text-sm text-slate-300">{q}</p>
+            <p className="text-sm text-slate-300 leading-relaxed">{q}</p>
           </div>
         ))}
       </div>
@@ -543,7 +567,7 @@ function InterviewStep({ s }) {
             </button>
             {revealed[i] && (
               <div className="alert-tip mt-2 animate-fade-up">
-                <p className="text-xs text-emerald-200">{q.answer_hint}</p>
+                <p className="text-xs text-emerald-200 leading-relaxed">{q.answer_hint}</p>
               </div>
             )}
           </div>
@@ -568,14 +592,16 @@ function PracticalStep({ s, diagramType }) {
           { label: 'Détermination des contraintes', latex: s.resolution_latex_2 },
           { label: 'Vérification du critère de sécurité', latex: s.resolution_latex_3 },
         ].map((r, i) => (
-          <div key={i}>
+          <div key={i} className="w-full max-w-full overflow-hidden">
             <div className="flex items-center gap-2 mb-1">
               <div className="step-badge">{i + 1}</div>
               <p className="text-xs text-slate-400">{r.label}</p>
             </div>
             {(step > i || i === 0) ? (
-              <div className="formula-card animate-fade-up">
-                <BlockMath math={r.latex} />
+              <div className="formula-card animate-fade-up w-full max-w-full overflow-x-auto">
+                <div className="overflow-x-auto max-w-full py-1 math-scroll">
+                  <SafeBlockMath math={r.latex} />
+                </div>
               </div>
             ) : (
               <button onClick={() => setStep(i)} className="text-xs bg-slate-800 text-slate-400 px-3 py-2 rounded-xl hover:bg-slate-700 transition-colors border border-slate-700">
@@ -715,34 +741,34 @@ export default function LessonCanvas({ module, theme }) {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto overflow-x-hidden">
       {showSciCalc && <SciCalc onClose={() => setShowSciCalc(false)} />}
 
       {/* Lesson Header */}
-      <div className="rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/50 p-6 mb-6 relative overflow-hidden">
-        <div className="absolute inset-0 eng-grid-bg opacity-60" />
+      <div className="rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/50 p-4 sm:p-6 mb-6 relative overflow-hidden w-full max-w-full">
+        <div className="absolute inset-0 eng-grid-bg opacity-60 pointer-events-none" />
         <div className="relative">
           <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-3 flex-wrap">
-                <span className="text-2xl">{module.icon}</span>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
+                <span className="text-2xl shrink-0">{module.icon}</span>
                 <span className="tag-blue">Module {module.id}</span>
                 <span className="tag-green">🔓 Accès Libre</span>
                 <span className={`tag-${lesson.level.includes('Débutant') ? 'green' : 'orange'}`}>{lesson.level}</span>
                 <span className="tag-blue">{lesson.duration}</span>
               </div>
               <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-1">{lesson.subtitle}</p>
-              <h2 className="text-2xl font-bold text-white">{lesson.title}</h2>
-              <div className="flex flex-wrap gap-2 mt-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight break-words">{lesson.title}</h2>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                 {lesson.tags.map(t => (
                   <span key={t} className="text-xs bg-slate-800/80 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">{t}</span>
                 ))}
               </div>
             </div>
-            <div className="shrink-0">
+            <div className="shrink-0 w-full sm:w-auto">
               <button
                 onClick={() => setShowSciCalc(true)}
-                className="flex items-center gap-2 bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm"
               >
                 🧮 Calculatrice Scientifique
               </button>
@@ -752,8 +778,8 @@ export default function LessonCanvas({ module, theme }) {
           {/* Step progress bar */}
           <div className="mt-5">
             <div className="flex justify-between text-xs text-slate-500 mb-1">
-              <span>{lesson.steps.length} étapes pédagogiques canoniques</span>
-              <span>Canvas 100% complet & déverrouillé</span>
+              <span>{lesson.steps.length} étapes pédagogiques</span>
+              <span>100% déverrouillé</span>
             </div>
             <div className="flex gap-1">
               {lesson.steps.map(s => (
@@ -769,14 +795,14 @@ export default function LessonCanvas({ module, theme }) {
       </div>
 
       {/* Two-column layout */}
-      <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
-        {/* Left: Main content (all 23 steps) */}
-        <div ref={contentRef} className="space-y-5">
+      <div className="grid gap-6 xl:grid-cols-[1fr_360px] w-full max-w-full">
+        {/* Left: Main content (all steps) */}
+        <div ref={contentRef} className="space-y-5 w-full max-w-full min-w-0 overflow-x-hidden">
           {lesson.steps.map(s => renderStep(s))}
         </div>
 
         {/* Right: Sticky interactive panel */}
-        <aside className="space-y-5">
+        <aside className="space-y-5 w-full max-w-full min-w-0">
           <div className="sticky top-4 space-y-4">
             {/* Tabs */}
             <div className="flex gap-2 p-1 bg-slate-900/80 rounded-2xl border border-slate-700/50">
@@ -800,7 +826,7 @@ export default function LessonCanvas({ module, theme }) {
 
             {/* Calculator Widget */}
             {activeTab === 'widget' && (
-              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-5">
+              <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4 sm:p-5 w-full max-w-full overflow-hidden">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-sky-400 text-xs uppercase tracking-widest font-semibold">Calculateur Trigonométrique & Sollicitations</span>
                 </div>
@@ -814,7 +840,7 @@ export default function LessonCanvas({ module, theme }) {
             )}
 
             {/* Quick reference formulas — always visible */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4">
+            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4 w-full max-w-full overflow-hidden">
               <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-3">Aide-mémoire & Formules Clés</p>
               <div className="space-y-2 text-xs">
                 {[
@@ -823,16 +849,18 @@ export default function LessonCanvas({ module, theme }) {
                   { label: 'Eurocode ELU', formula: '1{,}35 G + 1{,}50 Q \\le f_{yd}' },
                   { label: 'Hooke', formula: '\\sigma = E \\cdot \\varepsilon' },
                 ].map(item => (
-                  <div key={item.label} className="flex items-center gap-3 rounded-lg bg-slate-800/60 px-3 py-2">
+                  <div key={item.label} className="flex items-center gap-3 rounded-lg bg-slate-800/60 px-3 py-2 overflow-x-auto max-w-full">
                     <span className="tag-blue w-20 text-center shrink-0">{item.label}</span>
-                    <InlineMath math={item.formula} />
+                    <div className="overflow-x-auto max-w-full py-0.5">
+                      <SafeInlineMath math={item.formula} />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Bilingual mini-glossary */}
-            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4">
+            <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4 w-full max-w-full overflow-hidden">
               <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-3">Glossaire de la leçon</p>
               <div className="space-y-2">
                 {[

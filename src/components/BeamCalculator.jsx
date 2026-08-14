@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BlockMath } from 'react-katex';
+import { SafeBlockMath } from './SafeMath.jsx';
 
 // Beam calculator: Simply supported beam with uniform load
 export default function BeamCalculator() {
@@ -65,7 +65,7 @@ export default function BeamCalculator() {
   ].join(' ');
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-5 space-y-4">
+    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4 sm:p-5 space-y-4 w-full max-w-full overflow-hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-xl">📊</span>
@@ -83,7 +83,7 @@ export default function BeamCalculator() {
       </div>
 
       {/* Inputs */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {[
           { label: 'Portée L (m)', value: L, set: setL, min: 0.5, step: 0.5, color: 'text-sky-300' },
           { label: 'Charge q (kN/m)', value: q, set: setQ, min: 0, step: 1, color: 'text-orange-300' },
@@ -101,7 +101,7 @@ export default function BeamCalculator() {
       </div>
 
       {/* Results */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {[
           { label: 'M_max', value: M_max.toFixed(2) + ' kN·m', sub: 'Moment max (mi-travée)', color: 'border-violet-500/40 bg-violet-500/8' },
           { label: 'V_max', value: V_max.toFixed(2) + ' kN', sub: 'Effort tranchant max', color: 'border-rose-500/40 bg-rose-500/8' },
@@ -117,34 +117,38 @@ export default function BeamCalculator() {
       </div>
 
       {/* Bending moment formula */}
-      <div className="formula-card text-xs">
-        <BlockMath math={`M_{max} = \\frac{q L^2}{8} + \\frac{PL}{4} = \\frac{${q_}\\times${L_}^2}{8} + \\frac{${P_}\\times${L_}}{4} = ${M_max.toFixed(2)}\\text{ kN·m}`} />
+      <div className="formula-card text-xs w-full max-w-full overflow-x-auto">
+        <div className="overflow-x-auto max-w-full py-1 math-scroll">
+          <SafeBlockMath math={`M_{max} = \\frac{q L^2}{8} + \\frac{PL}{4} = \\frac{${q_}\\times${L_}^2}{8} + \\frac{${P_}\\times${L_}}{4} = ${M_max.toFixed(2)}\\text{ kN·m}`} />
+        </div>
       </div>
 
       {/* Diagram */}
       {showDiagram && (
-        <div>
+        <div className="w-full max-w-full overflow-hidden">
           <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider">Diagramme des Moments Fléchissants (M)</p>
-          <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full beam-canvas bg-slate-950/50">
-            {/* Baseline */}
-            <line x1={padX} y1={padY + plotH / 2} x2={padX + plotW} y2={padY + plotH / 2}
-              stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" />
-            {/* Moment fill */}
-            <path d={fillM} fill="rgba(139,92,246,0.15)" />
-            {/* Moment curve */}
-            <path d={pathM} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinejoin="round" />
-            {/* Supports */}
-            <polygon points={`${padX},${padY + plotH / 2} ${padX - 8},${padY + plotH / 2 + 14} ${padX + 8},${padY + plotH / 2 + 14}`}
-              fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
-            <polygon points={`${padX + plotW},${padY + plotH / 2} ${padX + plotW - 8},${padY + plotH / 2 + 14} ${padX + plotW + 8},${padY + plotH / 2 + 14}`}
-              fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
-            {/* Labels */}
-            <text x={padX} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">A</text>
-            <text x={padX + plotW} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">B</text>
-            <text x={padX + plotW / 2} y={padY + 12} fill="#a78bfa" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono" fontWeight="bold">
-              {M_max.toFixed(1)} kN·m
-            </text>
-          </svg>
+          <div className="w-full max-w-full overflow-hidden rounded-xl bg-slate-950/50">
+            <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full h-auto max-w-full beam-canvas block">
+              {/* Baseline */}
+              <line x1={padX} y1={padY + plotH / 2} x2={padX + plotW} y2={padY + plotH / 2}
+                stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" />
+              {/* Moment fill */}
+              <path d={fillM} fill="rgba(139,92,246,0.15)" />
+              {/* Moment curve */}
+              <path d={pathM} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinejoin="round" />
+              {/* Supports */}
+              <polygon points={`${padX},${padY + plotH / 2} ${padX - 8},${padY + plotH / 2 + 14} ${padX + 8},${padY + plotH / 2 + 14}`}
+                fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
+              <polygon points={`${padX + plotW},${padY + plotH / 2} ${padX + plotW - 8},${padY + plotH / 2 + 14} ${padX + plotW + 8},${padY + plotH / 2 + 14}`}
+                fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
+              {/* Labels */}
+              <text x={padX} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">A</text>
+              <text x={padX + plotW} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">B</text>
+              <text x={padX + plotW / 2} y={padY + 12} fill="#a78bfa" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono" fontWeight="bold">
+                {M_max.toFixed(1)} kN·m
+              </text>
+            </svg>
+          </div>
         </div>
       )}
     </div>
