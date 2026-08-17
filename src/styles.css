@@ -392,9 +392,39 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   --glass-border: rgba(15, 82, 186, 0.12);
 }
 
-/* ── Responsive ── */
+/* ── Responsive Mobile Optimizations (< 768px) ── */
 @media (max-width: 768px) {
   :root { --sidebar-width: 260px; --right-panel-width: 100%; }
+
+  /* Compact full-width cards without horizontal clipping */
+  .formula-card {
+    padding: 0.75rem 0.875rem !important;
+    border-radius: 0.875rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .alert-info, .alert-warning, .alert-tip, .alert-norm {
+    padding: 0.75rem 0.875rem !important;
+    border-radius: 0.875rem !important;
+  }
+
+  .unit-card {
+    padding: 0.75rem !important;
+    border-radius: 0.875rem !important;
+  }
+
+  /* Optimize KaTeX display padding on mobile */
+  .katex-display {
+    padding: 0.25rem 0 !important;
+    margin: 0.25rem 0 !important;
+  }
+
+  .katex {
+    font-size: 0.98em !important;
+  }
 }
 
 /* ── Rotate animation for icons ── */

@@ -118,7 +118,7 @@ export default function App() {
       )}
 
       {/* ── Compact Header Bar ── */}
-      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-3 py-1.5 md:py-3 md:px-4 flex items-center gap-3 z-30 w-full max-w-full overflow-hidden`}
+      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-2 py-1.5 sm:px-4 md:py-3 md:px-6 flex items-center gap-2 sm:gap-3 z-30 w-full max-w-full overflow-hidden`}
         style={{ background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)' }}>
         
         {/* Logo & brand */}
@@ -248,7 +248,7 @@ export default function App() {
         {/* Mobile sidebar drawer */}
         <aside
           className={`
-            fixed top-0 left-0 h-full z-50 w-80 flex flex-col
+            fixed top-0 left-0 h-full z-50 w-72 max-w-[85vw] flex flex-col
             ${sidebarBg} border-r shadow-2xl
             transform transition-transform duration-300 md:hidden
             ${mobileMenu ? 'translate-x-0' : '-translate-x-full'}
@@ -273,7 +273,7 @@ export default function App() {
         {/* ── Main Content ── */}
         <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
           <div className={`min-h-full w-full max-w-full overflow-x-hidden ${isDark ? 'eng-grid-bg' : ''}`}>
-            <div className="p-3 md:p-6 w-full max-w-full overflow-x-hidden">
+            <div className="px-2 py-3 sm:px-4 md:px-6 w-full max-w-full overflow-x-hidden">
               {view === 'dashboard' ? (
                 <Dashboard
                   onSelectModule={selectModule}

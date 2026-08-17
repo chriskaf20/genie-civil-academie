@@ -18,32 +18,57 @@ export default function DiagramViewer({
   const safeType = typeof type === 'string' && type.trim() ? type.trim() : 'trig_interactive';
 
   return (
-    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/90 p-4 sm:p-5 space-y-4 shadow-xl card-hover">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
-        <div className="flex items-center gap-2.5 min-w-0">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/90 p-3 sm:p-5 space-y-4 shadow-xl card-hover">
+      {/* Header with clear Tab Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-800 pb-3">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-xl shrink-0">📐</span>
           <div className="min-w-0">
-            <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold truncate">Schéma Technique & Diagramme</p>
-            <h4 className="text-sm font-bold text-white mt-0.5 truncate">{title || getDiagramTitle(safeType)}</h4>
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] sm:text-xs uppercase tracking-widest text-sky-400 font-semibold truncate">Schéma Technique & Diagramme</p>
+              <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                activeTab === 'diagram'
+                  ? 'bg-blue-500/20 text-sky-300 border border-blue-500/30'
+                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+              }`}>
+                {activeTab === 'diagram' ? 'MODE SCHÉMA' : 'MODE TABLEAU'}
+              </span>
+            </div>
+            <h4 className="text-xs sm:text-sm font-bold text-white mt-0.5 truncate">{title || getDiagramTitle(safeType)}</h4>
           </div>
         </div>
-        <div className="flex gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800 shrink-0">
+
+        {/* Tab Buttons with obvious active badges */}
+        <div className="flex gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 shrink-0 shadow-inner w-full sm:w-auto justify-stretch sm:justify-end">
           <button
+            type="button"
             onClick={() => setActiveTab('diagram')}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'diagram' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
+              activeTab === 'diagram'
+                ? 'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-md ring-1 ring-sky-400/50'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
             }`}
           >
-            Vue Schématique
+            <span>📐</span>
+            <span>Vue Schématique</span>
+            {activeTab === 'diagram' && (
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            )}
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('legend')}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'legend' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+            className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
+              activeTab === 'legend'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-md ring-1 ring-emerald-400/50'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
             }`}
           >
-            Légende & Cotations
+            <span>📋</span>
+            <span>Légende & Cotations</span>
+            {activeTab === 'legend' && (
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            )}
           </button>
         </div>
       </div>
@@ -136,7 +161,7 @@ function ForceDecompositionDiagram({ angle = 30, setAngle }) {
   return (
     <div className="space-y-3 w-full max-w-full overflow-hidden">
       {/* Control slider */}
-      <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+      <div className="flex items-center gap-3 bg-slate-950 p-2.5 sm:p-3 rounded-xl border border-slate-800">
         <span className="text-xs text-slate-400 font-medium whitespace-nowrap">Inclinaison θ :</span>
         <input
           type="range"
@@ -225,8 +250,8 @@ function ForceDecompositionDiagram({ angle = 30, setAngle }) {
 function RebarBeamDiagram({ showStress = true, setShowStress }) {
   return (
     <div className="space-y-3 w-full max-w-full overflow-hidden">
-      <div className="flex flex-wrap justify-between items-center gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800">
-        <span className="text-xs text-slate-300 font-medium">Affichage des diagrammes d'efforts :</span>
+      <div className="flex flex-wrap justify-between items-center gap-2 bg-slate-950 p-2.5 sm:p-3 rounded-xl border border-slate-800">
+        <span className="text-xs text-slate-300 font-medium">Diagrammes d'efforts :</span>
         <button
           onClick={() => setShowStress && setShowStress(!showStress)}
           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
@@ -459,7 +484,7 @@ function TrigInteractiveDiagram({ angle = 30, setAngle }) {
 
   return (
     <div className="space-y-3 w-full max-w-full overflow-hidden">
-      <div className="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+      <div className="flex items-center gap-3 bg-slate-950 p-2.5 sm:p-3 rounded-xl border border-slate-800">
         <span className="text-xs text-slate-400 font-medium whitespace-nowrap">Angle θ :</span>
         <input
           type="range"
@@ -511,57 +536,143 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
 
   // Retrieve built-in default data if custom is missing
   const defaultItems = getDefaultLegendItems(type, safeAngle);
-  const defaultCotationTable = getDefaultCotations(type, safeAngle);
+  const technicalTableData = getDetailedTechnicalTable(type, safeAngle);
 
   return (
-    <div className="space-y-4 text-xs bg-slate-950 p-4 sm:p-5 rounded-xl border border-slate-800 w-full max-w-full overflow-hidden">
-      <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
-        <h5 className="font-bold text-sky-400 uppercase tracking-wider text-xs">
-          Notice Technique & Légende des Cotations
-        </h5>
-        <span className="text-[10px] text-slate-500 font-mono">Conformité Eurocodes</span>
+    <div className="space-y-4 text-xs bg-slate-950 p-3 sm:p-5 rounded-xl border border-slate-800 w-full max-w-full overflow-hidden animate-fade-up">
+      {/* Header Banner */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <h5 className="font-bold text-emerald-400 uppercase tracking-wider text-xs sm:text-sm">
+            Tableau Technique des Cotations & Règles Eurocodes
+          </h5>
+        </div>
+        <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+          Normes NF EN / EC
+        </span>
       </div>
 
-      {/* 1. Custom or Default Legend Items */}
-      {hasCustomLegend ? (
-        <ul className="space-y-2 text-slate-300">
-          {legend.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5">
-              <span
-                className="w-3 h-3 rounded-full mt-0.5 shrink-0"
-                style={{ backgroundColor: item?.color || '#38bdf8' }}
-              />
-              <div className="leading-relaxed min-w-0">
-                <strong className="text-white">{item?.symbol || item?.label || `Élément ${idx + 1}`}</strong>
-                {item?.unit ? <span className="text-sky-300 font-mono text-[10px] ml-1">({item.unit})</span> : null}
-                {item?.desc || item?.description ? ` : ${item.desc || item.description}` : ''}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <ul className="space-y-2.5 text-slate-300">
-          {defaultItems.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2.5">
-              <span className={`w-3 h-3 rounded-full mt-0.5 shrink-0 ${item.dotClass || 'bg-sky-400'}`} />
-              <div className="leading-relaxed min-w-0">
-                <strong className="text-white">{item.title}</strong> : {item.text}{' '}
-                {item.math && (
-                  <span className="inline-block mx-1">
-                    (<SafeInlineMath math={item.math} />)
-                  </span>
-                )}
-                {item.extra && <span>. {item.extra}</span>}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* 1. Full-Width Stylized 3-Column Technical Table */}
+      <div className="w-full max-w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 shadow-inner">
+        <div className="overflow-x-auto max-w-full py-0.5 table-scroll">
+          <table className="w-full min-w-full text-left text-xs border-collapse">
+            <thead>
+              <tr className="border-b border-slate-800 bg-slate-950/90 text-slate-300">
+                <th className="py-2.5 px-3 font-bold text-sky-400 uppercase tracking-wider text-[11px] w-28 sm:w-36 shrink-0">
+                  1. Symbole / Élément
+                </th>
+                <th className="py-2.5 px-3 font-bold text-slate-300 uppercase tracking-wider text-[11px] min-w-[140px]">
+                  2. Désignation & Unité
+                </th>
+                <th className="py-2.5 px-3 font-bold text-emerald-400 uppercase tracking-wider text-[11px] min-w-[180px]">
+                  3. Valeur / Règle Eurocode
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60">
+              {hasCustomCotations ? (
+                cotations.map((row, i) => (
+                  <tr key={i} className={`hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-900/20' : 'bg-transparent'}`}>
+                    <td className="py-2.5 px-3 font-mono font-bold text-sky-300 whitespace-nowrap align-top">
+                      {row?.symbol ? <SafeInlineMath math={row.symbol} /> : (row?.name || `Élément ${i + 1}`)}
+                    </td>
+                    <td className="py-2.5 px-3 font-medium text-slate-200 align-top">
+                      <div>{row?.designation || row?.name || row?.label || '-'}</div>
+                      {row?.unit && <span className="text-[10px] text-slate-400 font-mono">[{row.unit}]</span>}
+                    </td>
+                    <td className="py-2.5 px-3 text-slate-300 align-top">
+                      <div className="font-mono text-emerald-300 font-semibold">
+                        {row?.value ? <SafeInlineMath math={String(row.value)} /> : (row?.val || '-')}
+                      </div>
+                      {row?.rule && <div className="text-[10px] text-slate-400 mt-0.5">{row.rule}</div>}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                technicalTableData.map((row, i) => (
+                  <tr key={i} className={`hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-900/30' : 'bg-transparent'}`}>
+                    {/* Colonne 1: Symbole / Élément */}
+                    <td className="py-2.5 px-3 align-top font-mono font-bold text-sky-300 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                        <SafeInlineMath math={row.symbol} />
+                      </div>
+                    </td>
+                    {/* Colonne 2: Désignation & Unité */}
+                    <td className="py-2.5 px-3 align-top text-slate-200">
+                      <p className="font-semibold text-white leading-snug">{row.designation}</p>
+                      {row.unit && (
+                        <span className="inline-block mt-0.5 text-[10px] text-sky-400/90 font-mono bg-sky-500/10 px-1.5 py-0.2 rounded border border-sky-500/20">
+                          {row.unit}
+                        </span>
+                      )}
+                    </td>
+                    {/* Colonne 3: Valeur / Règle Eurocode associée */}
+                    <td className="py-2.5 px-3 align-top text-slate-300">
+                      <div className="font-mono text-emerald-300 font-bold leading-relaxed">
+                        {row.mathValue ? <SafeInlineMath math={row.mathValue} /> : row.value}
+                      </div>
+                      <p className="text-[10px] text-slate-400 mt-0.5 leading-relaxed">{row.eurocodeRule}</p>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-      {/* 2. Annotations list if available */}
+      {/* 2. Key Observations & Summary Badges */}
+      <div className="pt-2">
+        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <span>💡</span>
+          <span>Synthèse & Justifications Techniques</span>
+        </p>
+
+        {hasCustomLegend ? (
+          <ul className="space-y-1.5 text-slate-300">
+            {legend.map((item, idx) => (
+              <li key={idx} className="flex items-start gap-2.5">
+                <span
+                  className="w-2.5 h-2.5 rounded-full mt-1 shrink-0"
+                  style={{ backgroundColor: item?.color || '#38bdf8' }}
+                />
+                <div className="leading-relaxed min-w-0">
+                  <strong className="text-white">{item?.symbol || item?.label || `Élément ${idx + 1}`}</strong>
+                  {item?.unit ? <span className="text-sky-300 font-mono text-[10px] ml-1">({item.unit})</span> : null}
+                  {item?.desc || item?.description ? ` : ${item.desc || item.description}` : ''}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {defaultItems.map((item, idx) => (
+              <div key={idx} className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-start gap-2">
+                <span className={`w-2.5 h-2.5 rounded-full mt-1 shrink-0 ${item.dotClass || 'bg-sky-400'}`} />
+                <div className="min-w-0 flex-1 leading-relaxed">
+                  <strong className="text-white text-[11px]">{item.title}</strong>
+                  <p className="text-[10px] text-slate-300 mt-0.5">
+                    {item.text}{' '}
+                    {item.math && (
+                      <span className="inline-block mx-0.5 font-mono text-sky-300">
+                        (<SafeInlineMath math={item.math} />)
+                      </span>
+                    )}
+                  </p>
+                  {item.extra && <p className="text-[9px] text-slate-500 font-mono mt-0.5">{item.extra}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 3. Annotations list if available */}
       {hasCustomAnnotations && (
         <div className="pt-2 border-t border-slate-800/60">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Annotations Techniques :</p>
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Annotations de Chantier :</p>
           <ul className="space-y-1 text-slate-400">
             {annotations.map((ann, i) => (
               <li key={i} className="flex items-center gap-2">
@@ -572,54 +683,338 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
           </ul>
         </div>
       )}
-
-      {/* 3. Cotations Table (Custom or Default) */}
-      <div className="pt-3 border-t border-slate-800/80">
-        <p className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-          <span>📏</span>
-          <span>Tableau Récapitulatif des Cotations & Paramètres</span>
-        </p>
-
-        <div className="overflow-x-auto max-w-full py-1 rounded-lg border border-slate-800/60">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-slate-800 bg-slate-900/80">
-                <th className="py-2 px-3 text-slate-400 font-semibold uppercase text-[10px]">Grandeur / Élément</th>
-                <th className="py-2 px-3 text-slate-400 font-semibold uppercase text-[10px]">Symbole</th>
-                <th className="py-2 px-3 text-slate-400 font-semibold uppercase text-[10px]">Valeur / Formule</th>
-                <th className="py-2 px-3 text-slate-400 font-semibold uppercase text-[10px]">Rôle & Justification</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60">
-              {hasCustomCotations
-                ? cotations.map((row, i) => (
-                    <tr key={i} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="py-2 px-3 font-medium text-white">{row?.name || row?.label || `Grandeur ${i + 1}`}</td>
-                      <td className="py-2 px-3 text-sky-400 font-mono">
-                        {row?.symbol ? <SafeInlineMath math={row.symbol} /> : '-'}
-                      </td>
-                      <td className="py-2 px-3 text-emerald-400 font-mono">{row?.value || row?.val || '-'}</td>
-                      <td className="py-2 px-3 text-slate-400">{row?.desc || row?.role || '-'}</td>
-                    </tr>
-                  ))
-                : defaultCotationTable.map((row, i) => (
-                    <tr key={i} className="hover:bg-slate-900/40 transition-colors">
-                      <td className="py-2 px-3 font-medium text-white">{row.name}</td>
-                      <td className="py-2 px-3 text-sky-400 font-mono">
-                        {row.symbol ? <SafeInlineMath math={row.symbol} /> : '-'}
-                      </td>
-                      <td className="py-2 px-3 text-emerald-400 font-mono">
-                        {row.mathValue ? <SafeInlineMath math={row.mathValue} /> : row.value}
-                      </td>
-                      <td className="py-2 px-3 text-slate-400">{row.role}</td>
-                    </tr>
-                  ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
+}
+
+// ── Detailed 3-Column Technical Table Generator ─────────────────────────────
+function getDetailedTechnicalTable(type, angle = 30) {
+  switch (type) {
+    case 'rebar_beam':
+      return [
+        {
+          symbol: 'b',
+          designation: 'Largeur de coffrage de la section',
+          unit: 'mm',
+          mathValue: '300\\text{ mm}',
+          eurocodeRule: 'Dimension transversale normalisée / Coffrage régulier',
+        },
+        {
+          symbol: 'h',
+          designation: 'Hauteur totale de la poutre',
+          unit: 'mm',
+          mathValue: '500\\text{ mm}',
+          eurocodeRule: 'Hauteur statique globale (Élancement L/12 à L/15)',
+        },
+        {
+          symbol: 'd',
+          designation: 'Hauteur utile de calcul en flexion',
+          unit: 'mm',
+          mathValue: 'd = h - c - \\phi_t - \\phi_l/2 = 445\\text{ mm}',
+          eurocodeRule: 'Distance fibre extrême comprimée au centre de gravité des aciers (EC2 §5.3)',
+        },
+        {
+          symbol: 'c_{nom}',
+          designation: "Enrobage nominal de durabilité",
+          unit: 'mm',
+          mathValue: 'c_{nom} = c_{min} + \\Delta c_{dev} = 35\\text{ mm}',
+          eurocodeRule: 'Classe d exposition XC4, protection anti-corrosion 50 ans (EC2 §4.4.1)',
+        },
+        {
+          symbol: 'A_s',
+          designation: 'Section d armatures tendues longitudinales',
+          unit: 'cm²',
+          mathValue: '3\\text{ HA }20 = 9.42\\text{ cm}^2',
+          eurocodeRule: 'Reprise intégrale du moment de traction ELU M_Ed (Pivot B)',
+        },
+        {
+          symbol: "A_s'",
+          designation: 'Armatures supérieures de montage',
+          unit: 'cm²',
+          mathValue: '2\\text{ HA }12 = 2.26\\text{ cm}^2',
+          eurocodeRule: 'Maintien rigide de la cage et limitation du fluage ELS',
+        },
+        {
+          symbol: 'A_{sw} / s',
+          designation: 'Armatures transversales (Étriers / Cadres)',
+          unit: 'cm²/m',
+          mathValue: '\\text{HA }8\\text{ espacés de }15\\text{ cm}',
+          eurocodeRule: 'Cousure des fissures obliques d effort tranchant V_Ed à 45° (EC2 §6.2)',
+        },
+        {
+          symbol: 'f_{cd}',
+          designation: 'Résistance de calcul du béton en compression',
+          unit: 'MPa',
+          mathValue: 'f_{cd} = \\alpha_{cc} f_{ck} / \\gamma_c = 16.7\\text{ MPa}',
+          eurocodeRule: 'Béton C25/30, coefficient partiel gamma_c = 1.50 (EC2 §3.1.6)',
+        },
+        {
+          symbol: 'f_{yd}',
+          designation: 'Limite d élasticité de calcul de l acier',
+          unit: 'MPa',
+          mathValue: 'f_{yd} = f_{yk} / \\gamma_s = 435\\text{ MPa}',
+          eurocodeRule: 'Acier B500B haute adhérence, coefficient gamma_s = 1.15 (EC2 §3.2.7)',
+        },
+        {
+          symbol: 'x_u / d',
+          designation: 'Position relative de l axe neutre à l ELU',
+          unit: '-',
+          mathValue: 'x_u \\approx 0.40 \\cdot d = 178\\text{ mm}',
+          eurocodeRule: 'Diagramme rectangulaire simplifié / Section normalement armée',
+        },
+      ];
+
+    case 'force_decomposition':
+      return [
+        {
+          symbol: 'W',
+          designation: 'Poids propre total vertical (Action gravitaire)',
+          unit: 'kN',
+          mathValue: 'W = m \\cdot g = 100.0\\text{ kN}',
+          eurocodeRule: 'Action permanente descendante G (Eurocode 1 / NF EN 1991)',
+        },
+        {
+          symbol: 'W_n',
+          designation: 'Composante normale pressante sur le plan',
+          unit: 'kN',
+          mathValue: `W_n = W \\cos\\theta = ${(100 * Math.cos((angle * Math.PI) / 180)).toFixed(1)}\\text{ kN}`,
+          eurocodeRule: 'Force de réaction d appui perpendiculaire générant l adhérence',
+        },
+        {
+          symbol: 'W_t',
+          designation: 'Composante tangentielle motrice de glissement',
+          unit: 'kN',
+          mathValue: `W_t = W \\sin\\theta = ${(100 * Math.sin((angle * Math.PI) / 180)).toFixed(1)}\\text{ kN}`,
+          eurocodeRule: 'Effort de cisaillement parallèle à la pente tendant au décrochement',
+        },
+        {
+          symbol: 'N',
+          designation: 'Réaction normale du support de toiture / talus',
+          unit: 'kN',
+          mathValue: 'N = -W_n',
+          eurocodeRule: 'Principe d équilibre statique d appui (sigma_sol <= q_admis)',
+        },
+        {
+          symbol: '\\theta',
+          designation: 'Angle d inclinaison du versant / toiture',
+          unit: '°',
+          mathValue: `\\theta = ${angle}^\\circ`,
+          eurocodeRule: 'Pente géométrique par rapport au plan horizontal de référence',
+        },
+        {
+          symbol: '\\mu_{min}',
+          designation: 'Coefficient de frottement minimal anti-glissement',
+          unit: '-',
+          mathValue: `\\mu_{min} = \\tan\\theta = ${(Math.tan((angle * Math.PI) / 180)).toFixed(3)}`,
+          eurocodeRule: 'Loi de Coulomb : condition de stabilité à sec W_t <= mu * W_n',
+        },
+      ];
+
+    case 'road_profile':
+      return [
+        {
+          symbol: 'e_{BB}',
+          designation: 'Couche de roulement (Béton Bitumineux)',
+          unit: 'cm',
+          mathValue: 'e = 4\\text{ cm}',
+          eurocodeRule: 'BBTM 0/10 étanche, adhérent et résistant à l usure du trafic',
+        },
+        {
+          symbol: 'e_{EME}',
+          designation: 'Couche de liaison (Enrobé Module Élevé)',
+          unit: 'cm',
+          mathValue: 'e = 7\\text{ cm}',
+          eurocodeRule: 'EME2 0/14 conférant une rigidité intermédiaire (NF EN 13108-1)',
+        },
+        {
+          symbol: 'e_{GB}',
+          designation: 'Couche de base structurelle (Grave Bitume)',
+          unit: 'cm',
+          mathValue: 'e = 12\\text{ cm}',
+          eurocodeRule: 'GB3 0/14 reprenant les efforts de flexion sous essieux lourds (E=9000 MPa)',
+        },
+        {
+          symbol: 'e_{GNT}',
+          designation: 'Couche de forme / fondation (GNT)',
+          unit: 'cm',
+          mathValue: 'e = 30\\text{ cm}',
+          eurocodeRule: 'GNT 0/31.5 plateforme de terrassement classe PF3 (Portance EV2 > 120 MPa)',
+        },
+        {
+          symbol: 'i',
+          designation: 'Pente transversale de dévers chaussée',
+          unit: '%',
+          mathValue: 'i = -2.5\\%',
+          eurocodeRule: 'Évacuation gravitaire accélérée des eaux de ruissellement (Guide SETRA)',
+        },
+        {
+          symbol: 'L_c',
+          designation: 'Largeur totale de la chaussée bidirectionnelle',
+          unit: 'm',
+          mathValue: 'L_c = 7.00\\text{ m}',
+          eurocodeRule: '2 voies de circulation de 3.50 m (Norme d aménagement ICTAARN)',
+        },
+        {
+          symbol: 'h_f',
+          designation: 'Profondeur du fossé latéral trapézoïdal',
+          unit: 'm',
+          mathValue: 'h_f = 0.50\\text{ m}',
+          eurocodeRule: 'Talutage 1:1 pour le drainage hydraulique longitudinal',
+        },
+      ];
+
+    case 'soil_profile':
+      return [
+        {
+          symbol: 'h_1',
+          designation: 'Horizon supérieur : Terre végétale & remblais',
+          unit: 'm',
+          mathValue: '0.00 \\rightarrow -1.50\\text{ m}',
+          eurocodeRule: 'Sol organique compressible impropre aux fondations (décapage exigé)',
+        },
+        {
+          symbol: "c'",
+          designation: 'Cohésion effective de l argile plastique',
+          unit: 'kPa',
+          mathValue: "c' = 25\\text{ kPa}",
+          eurocodeRule: 'Résistance intrinsèque au cisaillement drainé (Eurocode 7 / NF P94-261)',
+        },
+        {
+          symbol: "\\phi'",
+          designation: 'Angle de frottement effectif interne',
+          unit: '°',
+          mathValue: "\\phi' = 22^\\circ",
+          eurocodeRule: 'Frottement intergranulaire de l horizon argileux consolidé',
+        },
+        {
+          symbol: 'z_w',
+          designation: 'Profondeur de la nappe phréatique',
+          unit: 'm',
+          mathValue: 'z_w = -2.20\\text{ m}',
+          eurocodeRule: "Calcul des contraintes effectives selon Terzaghi (sigma' = sigma - u)",
+        },
+        {
+          symbol: 'q_{admis}',
+          designation: 'Capacité portante admissible de la marne',
+          unit: 'MPa',
+          mathValue: 'q_{admis} = 0.35\\text{ MPa} = 3.5\\text{ bars}',
+          eurocodeRule: 'Pression limite nette de calcul au pressiomètre ou pénétromètre (EC7)',
+        },
+        {
+          symbol: 'B',
+          designation: 'Largeur de semelle filante en béton armé',
+          unit: 'm',
+          mathValue: 'B = 1.80\\text{ m}',
+          eurocodeRule: 'Ancrage D = 2.00 m dans le substratum compact marneux',
+        },
+        {
+          symbol: '\\gamma',
+          designation: 'Poids volumique moyen des sols humides',
+          unit: 'kN/m³',
+          mathValue: '\\gamma = 19.0\\text{ kN/m}^3',
+          eurocodeRule: 'Calcul des pressions géostatiques verticales sigma_v = gamma * z',
+        },
+      ];
+
+    case 'bridge_structure':
+      return [
+        {
+          symbol: 'L',
+          designation: 'Portée principale du tablier de pont',
+          unit: 'm',
+          mathValue: 'L = 35.00\\text{ m}',
+          eurocodeRule: 'Franchissement de la brèche sans appui dans le lit mineur (EC2-2 / EC1-2)',
+        },
+        {
+          symbol: 'h_t',
+          designation: 'Hauteur totale des poutres précontraintes',
+          unit: 'm',
+          mathValue: 'h_t = 1.40\\text{ m}',
+          eurocodeRule: 'Élancement économique L/25 en béton précontraint post-tension',
+        },
+        {
+          symbol: 'H_{libre}',
+          designation: 'Tirant d air / Gabarit sous ouvrage',
+          unit: 'm',
+          mathValue: 'H_{libre} = 5.50\\text{ m}',
+          eurocodeRule: 'Hauteur libre de sécurité routière / fluviale réglementaire',
+        },
+        {
+          symbol: 'A_{app}',
+          designation: 'Appareils d appui en élastomère fretté',
+          unit: 'mm',
+          mathValue: '160 \\times 200 \\times 60\\text{ mm}',
+          eurocodeRule: 'Néoprène + frettes acier reprenant rotations et dilatations sans fissure (EN 1337)',
+        },
+        {
+          symbol: 'H_{cul}',
+          designation: 'Hauteur totale des culées d extrémité C1/C2',
+          unit: 'm',
+          mathValue: 'H = 8.00\\text{ m}',
+          eurocodeRule: 'Murs garde-grève et chevêtres en béton armé C30/37',
+        },
+        {
+          symbol: 'b \\times l',
+          designation: 'Section du fût de la pile intermédiaire P1',
+          unit: 'm',
+          mathValue: '1.20 \\times 3.00\\text{ m}',
+          eurocodeRule: 'Béton armé C35/45 reprenant les réactions d appui verticales et chocs',
+        },
+        {
+          symbol: 'h_{gc}',
+          designation: 'Hauteur normalisée des garde-corps',
+          unit: 'm',
+          mathValue: 'h_{gc} = 1.10\\text{ m}',
+          eurocodeRule: 'Sécurité antichute piétons et usagers (Norme NF P98-405)',
+        },
+      ];
+
+    default: // trig_interactive & fallback
+      return [
+        {
+          symbol: 'H',
+          designation: 'Longueur de l hypoténuse (Distance oblique)',
+          unit: 'm',
+          mathValue: 'H = 160.0\\text{ m}',
+          eurocodeRule: 'Distance directe inclinée de mesure tachéométrique ou visée laser',
+        },
+        {
+          symbol: '\\text{opp}',
+          designation: 'Côté opposé / Dénivelé vertical',
+          unit: 'm',
+          mathValue: `\\text{opp} = H \\sin\\theta = ${(160 * Math.sin((angle * Math.PI) / 180)).toFixed(1)}\\text{ m}`,
+          eurocodeRule: 'Projection verticale représentant la hauteur d ouvrage franchie',
+        },
+        {
+          symbol: '\\text{adj}',
+          designation: 'Côté adjacent / Distance horizontale',
+          unit: 'm',
+          mathValue: `\\text{adj} = H \\cos\\theta = ${(160 * Math.cos((angle * Math.PI) / 180)).toFixed(1)}\\text{ m}`,
+          eurocodeRule: 'Projection horizontale cartographique (Distance de calcul au sol)',
+        },
+        {
+          symbol: '\\theta',
+          designation: 'Angle au sommet / Dénivelée angulaire',
+          unit: '°',
+          mathValue: `\\theta = ${angle}^\\circ`,
+          eurocodeRule: 'Angle formé par l hypoténuse avec le plan horizontal',
+        },
+        {
+          symbol: 'p',
+          designation: 'Pente topographique en pourcentage',
+          unit: '%',
+          mathValue: `p = \\tan\\theta \\times 100 = ${(Math.tan((angle * Math.PI) / 180) * 100).toFixed(1)}\\%`,
+          eurocodeRule: 'Pente normalisée pour rampes d accès et talus (Guide terrassement GTR)',
+        },
+        {
+          symbol: '\\alpha',
+          designation: 'Angle complémentaire au sommet supérieur',
+          unit: '°',
+          mathValue: `\\alpha = 90^\\circ - \\theta = ${90 - angle}^\\circ`,
+          eurocodeRule: 'Relation trigonométrique euclidienne : alpha + theta = 90°',
+        },
+      ];
+  }
 }
 
 function getDefaultLegendItems(type, angle = 30) {
@@ -814,66 +1209,6 @@ function getDefaultLegendItems(type, angle = 30) {
           extra: `Pente = ${(Math.tan((angle * Math.PI) / 180) * 100).toFixed(1)} %`,
           dotClass: 'bg-violet-400',
         },
-      ];
-  }
-}
-
-function getDefaultCotations(type, angle = 30) {
-  switch (type) {
-    case 'force_decomposition':
-      return [
-        { name: 'Poids propre vertical', symbol: 'W', mathValue: '100.0\\text{ kN}', role: 'Charge gravitaire verticale descendante' },
-        { name: 'Pression normale', symbol: 'W_n', mathValue: `${(100 * Math.cos((angle * Math.PI) / 180)).toFixed(1)}\\text{ kN}`, role: 'Contrainte de compression sur le plan' },
-        { name: 'Effort tangentiel', symbol: 'W_t', mathValue: `${(100 * Math.sin((angle * Math.PI) / 180)).toFixed(1)}\\text{ kN}`, role: 'Sollicitation motrice de glissement' },
-        { name: 'Angle de talus / toiture', symbol: '\\theta', mathValue: `${angle}^\\circ`, role: 'Pente géométrique par rapport à l horizontal' },
-        { name: 'Coefficient de frottement min.', symbol: '\\mu_{min}', mathValue: '\\tan\\theta', role: 'Condition de non-glissement à sec' },
-      ];
-
-    case 'rebar_beam':
-      return [
-        { name: 'Largeur de la section', symbol: 'b', mathValue: '300\\text{ mm}', role: 'Dimension de coffrage transversal' },
-        { name: 'Hauteur totale', symbol: 'h', mathValue: '500\\text{ mm}', role: 'Hauteur statique de la poutre' },
-        { name: 'Hauteur utile', symbol: 'd', mathValue: '445\\text{ mm}', role: 'Distance fibre comprimée / barycentre aciers' },
-        { name: 'Enrobage nominal', symbol: 'c_{nom}', mathValue: '35\\text{ mm}', role: 'Protection anti-corrosion (Eurocode 2)' },
-        { name: 'Section aciers tendus', symbol: 'A_s', mathValue: '9.42\\text{ cm}^2', role: '3 HA 20 reprenant le moment fléchissant' },
-        { name: 'Espacement des cadres', symbol: 's', mathValue: '15\\text{ cm}', role: 'Reprise du cisaillement V_Ed' },
-      ];
-
-    case 'road_profile':
-      return [
-        { name: 'Couche de roulement', symbol: 'e_1', mathValue: '4\\text{ cm}', role: 'BBM 0/10 étanche et adhérent' },
-        { name: 'Couche de base', symbol: 'e_2', mathValue: '12\\text{ cm}', role: 'Grave Bitume GB3 rigide sous essieux' },
-        { name: 'Couche de forme', symbol: 'e_3', mathValue: '30\\text{ cm}', role: 'GNT 0/31.5 assurant la portance PF3' },
-        { name: 'Pente de dévers', symbol: 'i', mathValue: '-2.5\\%', role: 'Évacuation rapide des eaux vers fossé' },
-        { name: 'Largeur chaussée', symbol: 'L_c', mathValue: '7.00\\text{ m}', role: '2 voies de circulation bidirectionnelle' },
-      ];
-
-    case 'soil_profile':
-      return [
-        { name: 'Épaisseur remblai', symbol: 'h_1', mathValue: '1.50\\text{ m}', role: 'Sol compressible à décaper' },
-        { name: 'Cohésion effective argile', symbol: "c'", mathValue: '25\\text{ kPa}', role: 'Résistance intrinsèque au cisaillement' },
-        { name: 'Angle de frottement interne', symbol: "\\phi'", mathValue: '22^\\circ', role: 'Frottement intergranulaire argileux' },
-        { name: 'Profondeur de la nappe', symbol: 'z_w', mathValue: '-2.20\\text{ m}', role: 'Niveau piézométrique hydrostatique' },
-        { name: 'Contrainte admissible marne', symbol: 'q_{admis}', mathValue: '0.35\\text{ MPa}', role: 'Capacité portante de la semelle' },
-        { name: 'Largeur semelle filante', symbol: 'B', mathValue: '1.80\\text{ m}', role: 'Répartition surfacique des charges' },
-      ];
-
-    case 'bridge_structure':
-      return [
-        { name: 'Portée principale tablier', symbol: 'L', mathValue: '35.00\\text{ m}', role: 'Franchissement sans appui intermédiaire dans l eau' },
-        { name: 'Hauteur libre / Tirant d air', symbol: 'H_{libre}', mathValue: '5.50\\text{ m}', role: 'Gabarit de sécurité sous ouvrage' },
-        { name: 'Épaisseur tablier', symbol: 'h_t', mathValue: '1.40\\text{ m}', role: 'Élancement L/25 en béton précontraint' },
-        { name: 'Section des appuis néoprène', symbol: 'A_{app}', mathValue: '160 \\times 200\\text{ mm}', role: 'Transmission souple des réactions d appui' },
-        { name: 'Hauteur garde-corps', symbol: 'h_{gc}', mathValue: '1.10\\text{ m}', role: 'Sécurité antichute (norme NF P98-405)' },
-      ];
-
-    default: // generic fallback
-      return [
-        { name: 'Longueur de portée', symbol: 'L', mathValue: '6.00\\text{ m}', role: 'Portée libre entre appuis théoriques' },
-        { name: 'Charge permanente', symbol: 'G', mathValue: '15.0\\text{ kN/m}', role: 'Poids propre structure et superstructures' },
-        { name: 'Charge d exploitation', symbol: 'Q', mathValue: '8.0\\text{ kN/m}', role: 'Surcharges mobiles d usage' },
-        { name: 'Combinaison ELU', symbol: 'q_{Ed}', mathValue: '1.35G + 1.5Q', role: 'Vérification à l État Limite Ultime' },
-        { name: 'Flèche admissible ELS', symbol: 'f_{max}', mathValue: 'L / 500', role: 'Critère de confort et d intégrité' },
       ];
   }
 }

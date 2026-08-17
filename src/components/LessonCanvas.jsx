@@ -60,7 +60,7 @@ function StepHeader({ step, title, icon }) {
 // ── Section Card wrapper ──────────────────────────────────────────────────────
 function Section({ children, className = '' }) {
   return (
-    <div className={`rounded-2xl border border-slate-700/50 bg-slate-900/60 p-4 sm:p-5 card-hover animate-fade-up w-full max-w-full overflow-hidden ${className}`}>
+    <div className={`rounded-2xl border border-slate-700/50 bg-slate-900/60 p-3 sm:p-5 card-hover animate-fade-up w-full max-w-full mx-0 overflow-hidden ${className}`}>
       {children}
     </div>
   );
@@ -741,34 +741,34 @@ export default function LessonCanvas({ module, theme }) {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto overflow-x-hidden">
+    <div className="w-full max-w-5xl mx-0 sm:mx-auto overflow-x-hidden px-0">
       {showSciCalc && <SciCalc onClose={() => setShowSciCalc(false)} />}
 
       {/* Lesson Header */}
-      <div className="rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/50 p-4 sm:p-6 mb-6 relative overflow-hidden w-full max-w-full">
+      <div className="rounded-2xl border border-slate-700/50 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/50 p-3.5 sm:p-6 mb-4 sm:mb-6 relative overflow-hidden w-full max-w-full mx-0">
         <div className="absolute inset-0 eng-grid-bg opacity-60 pointer-events-none" />
         <div className="relative">
-          <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
-                <span className="text-2xl shrink-0">{module.icon}</span>
+              <div className="flex items-center gap-1.5 sm:gap-3 mb-2.5 sm:mb-3 flex-wrap">
+                <span className="text-xl sm:text-2xl shrink-0">{module.icon}</span>
                 <span className="tag-blue">Module {module.id}</span>
                 <span className="tag-green">🔓 Accès Libre</span>
                 <span className={`tag-${lesson.level.includes('Débutant') ? 'green' : 'orange'}`}>{lesson.level}</span>
                 <span className="tag-blue">{lesson.duration}</span>
               </div>
-              <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold mb-1">{lesson.subtitle}</p>
-              <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight break-words">{lesson.title}</h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+              <p className="text-[10px] sm:text-xs uppercase tracking-widest text-sky-400 font-semibold mb-1">{lesson.subtitle}</p>
+              <h2 className="text-lg sm:text-2xl font-bold text-white leading-tight break-words">{lesson.title}</h2>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2.5 sm:mt-3">
                 {lesson.tags.map(t => (
-                  <span key={t} className="text-xs bg-slate-800/80 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">{t}</span>
+                  <span key={t} className="text-[10px] sm:text-xs bg-slate-800/80 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">{t}</span>
                 ))}
               </div>
             </div>
-            <div className="shrink-0 w-full sm:w-auto">
+            <div className="shrink-0 w-full sm:w-auto mt-1 sm:mt-0">
               <button
                 onClick={() => setShowSciCalc(true)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm"
               >
                 🧮 Calculatrice Scientifique
               </button>
@@ -776,12 +776,12 @@ export default function LessonCanvas({ module, theme }) {
           </div>
 
           {/* Step progress bar */}
-          <div className="mt-5">
-            <div className="flex justify-between text-xs text-slate-500 mb-1">
+          <div className="mt-4 sm:mt-5">
+            <div className="flex justify-between text-[10px] sm:text-xs text-slate-500 mb-1">
               <span>{lesson.steps.length} étapes pédagogiques</span>
               <span>100% déverrouillé</span>
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-0.5 sm:gap-1">
               {lesson.steps.map(s => (
                 <div
                   key={s.id}
@@ -794,15 +794,15 @@ export default function LessonCanvas({ module, theme }) {
         </div>
       </div>
 
-      {/* Two-column layout */}
-      <div className="grid gap-6 xl:grid-cols-[1fr_360px] w-full max-w-full">
+      {/* Two-column layout (Single-column on mobile) */}
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-4 sm:gap-6 w-full max-w-full mx-0">
         {/* Left: Main content (all steps) */}
-        <div ref={contentRef} className="space-y-5 w-full max-w-full min-w-0 overflow-x-hidden">
+        <div ref={contentRef} className="space-y-4 sm:space-y-5 w-full max-w-full min-w-0 mx-0 overflow-x-hidden">
           {lesson.steps.map(s => renderStep(s))}
         </div>
 
         {/* Right: Sticky interactive panel */}
-        <aside className="space-y-5 w-full max-w-full min-w-0">
+        <aside className="space-y-4 sm:space-y-5 w-full max-w-full min-w-0 mx-0">
           <div className="sticky top-4 space-y-4">
             {/* Tabs */}
             <div className="flex gap-2 p-1 bg-slate-900/80 rounded-2xl border border-slate-700/50">
