@@ -18,35 +18,35 @@ export default function DiagramViewer({
   const safeType = typeof type === 'string' && type.trim() ? type.trim() : 'trig_interactive';
 
   return (
-    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-slate-700/60 bg-slate-900/90 p-3 sm:p-5 space-y-4 shadow-xl card-hover">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-900/90 p-3 sm:p-5 space-y-4 shadow-sm card-hover">
       {/* Header with clear Tab Switcher */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-800 pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-200 dark:border-slate-800 pb-3">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-xl shrink-0">📐</span>
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <p className="text-[10px] sm:text-xs uppercase tracking-widest text-sky-400 font-semibold truncate">Schéma Technique & Diagramme</p>
+              <p className="text-[10px] sm:text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold truncate">Schéma Technique & Diagramme</p>
               <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${
                 activeTab === 'diagram'
-                  ? 'bg-blue-500/20 text-sky-300 border border-blue-500/30'
-                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                  ? 'bg-blue-100 text-blue-700 border border-blue-300 dark:bg-blue-500/20 dark:text-sky-300 dark:border-blue-500/30'
+                  : 'bg-emerald-100 text-emerald-700 border border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30'
               }`}>
                 {activeTab === 'diagram' ? 'MODE SCHÉMA' : 'MODE TABLEAU'}
               </span>
             </div>
-            <h4 className="text-xs sm:text-sm font-bold text-white mt-0.5 truncate">{title || getDiagramTitle(safeType)}</h4>
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mt-0.5 truncate">{title || getDiagramTitle(safeType)}</h4>
           </div>
         </div>
 
         {/* Tab Buttons with obvious active badges */}
-        <div className="flex gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 shrink-0 shadow-inner w-full sm:w-auto justify-stretch sm:justify-end">
+        <div className="flex gap-1 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0 shadow-inner w-full sm:w-auto justify-stretch sm:justify-end">
           <button
             type="button"
             onClick={() => setActiveTab('diagram')}
             className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
               activeTab === 'diagram'
                 ? 'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-md ring-1 ring-sky-400/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60'
             }`}
           >
             <span>📐</span>
@@ -61,7 +61,7 @@ export default function DiagramViewer({
             className={`flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 ${
               activeTab === 'legend'
                 ? 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-md ring-1 ring-emerald-400/50'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-900/60'
             }`}
           >
             <span>📋</span>
@@ -74,7 +74,7 @@ export default function DiagramViewer({
       </div>
 
       {description && (
-        <p className="text-xs text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-xl border border-slate-800/60">
+        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800/60">
           {description}
         </p>
       )}
@@ -539,81 +539,81 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
   const technicalTableData = getDetailedTechnicalTable(type, safeAngle);
 
   return (
-    <div className="space-y-4 text-xs bg-slate-950 p-3 sm:p-5 rounded-xl border border-slate-800 w-full max-w-full overflow-hidden animate-fade-up">
+    <div className="space-y-4 text-xs bg-slate-50 dark:bg-slate-950 p-3 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 w-full max-w-full overflow-hidden animate-fade-up">
       {/* Header Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800/80 pb-2.5">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <h5 className="font-bold text-emerald-400 uppercase tracking-wider text-xs sm:text-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <h5 className="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-xs sm:text-sm">
             Tableau Technique des Cotations & Règles Eurocodes
           </h5>
         </div>
-        <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800 shadow-sm">
           Normes NF EN / EC
         </span>
       </div>
 
       {/* 1. Full-Width Stylized 3-Column Technical Table */}
-      <div className="w-full max-w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-900/40 shadow-inner">
+      <div className="w-full max-w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 shadow-inner">
         <div className="overflow-x-auto max-w-full py-0.5 table-scroll">
           <table className="w-full min-w-full text-left text-xs border-collapse">
             <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/90 text-slate-300">
-                <th className="py-2.5 px-3 font-bold text-sky-400 uppercase tracking-wider text-[11px] w-28 sm:w-36 shrink-0">
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/90 text-slate-700 dark:text-slate-300">
+                <th className="py-2.5 px-3 font-bold text-blue-700 dark:text-sky-400 uppercase tracking-wider text-[11px] w-28 sm:w-36 shrink-0">
                   1. Symbole / Élément
                 </th>
-                <th className="py-2.5 px-3 font-bold text-slate-300 uppercase tracking-wider text-[11px] min-w-[140px]">
+                <th className="py-2.5 px-3 font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider text-[11px] min-w-[140px]">
                   2. Désignation & Unité
                 </th>
-                <th className="py-2.5 px-3 font-bold text-emerald-400 uppercase tracking-wider text-[11px] min-w-[180px]">
+                <th className="py-2.5 px-3 font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] min-w-[180px]">
                   3. Valeur / Règle Eurocode
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {hasCustomCotations ? (
                 cotations.map((row, i) => (
-                  <tr key={i} className={`hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-900/20' : 'bg-transparent'}`}>
-                    <td className="py-2.5 px-3 font-mono font-bold text-sky-300 whitespace-nowrap align-top">
+                  <tr key={i} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-50/50 dark:bg-slate-900/20' : 'bg-transparent'}`}>
+                    <td className="py-2.5 px-3 font-mono font-bold text-blue-700 dark:text-sky-300 whitespace-nowrap align-top">
                       {row?.symbol ? <SafeInlineMath math={row.symbol} /> : (row?.name || `Élément ${i + 1}`)}
                     </td>
-                    <td className="py-2.5 px-3 font-medium text-slate-200 align-top">
+                    <td className="py-2.5 px-3 font-medium text-slate-800 dark:text-slate-200 align-top">
                       <div>{row?.designation || row?.name || row?.label || '-'}</div>
-                      {row?.unit && <span className="text-[10px] text-slate-400 font-mono">[{row.unit}]</span>}
+                      {row?.unit && <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">[{row.unit}]</span>}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-300 align-top">
-                      <div className="font-mono text-emerald-300 font-semibold">
+                    <td className="py-2.5 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      <div className="font-mono text-emerald-700 dark:text-emerald-300 font-semibold">
                         {row?.value ? <SafeInlineMath math={String(row.value)} /> : (row?.val || '-')}
                       </div>
-                      {row?.rule && <div className="text-[10px] text-slate-400 mt-0.5">{row.rule}</div>}
+                      {row?.rule && <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{row.rule}</div>}
                     </td>
                   </tr>
                 ))
               ) : (
                 technicalTableData.map((row, i) => (
-                  <tr key={i} className={`hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-900/30' : 'bg-transparent'}`}>
+                  <tr key={i} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors ${i % 2 === 0 ? 'bg-slate-50/50 dark:bg-slate-900/30' : 'bg-transparent'}`}>
                     {/* Colonne 1: Symbole / Élément */}
-                    <td className="py-2.5 px-3 align-top font-mono font-bold text-sky-300 whitespace-nowrap">
+                    <td className="py-2.5 px-3 align-top font-mono font-bold text-blue-700 dark:text-sky-300 whitespace-nowrap">
                       <div className="flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-sky-400 shrink-0" />
                         <SafeInlineMath math={row.symbol} />
                       </div>
                     </td>
                     {/* Colonne 2: Désignation & Unité */}
-                    <td className="py-2.5 px-3 align-top text-slate-200">
-                      <p className="font-semibold text-white leading-snug">{row.designation}</p>
+                    <td className="py-2.5 px-3 align-top text-slate-800 dark:text-slate-200">
+                      <p className="font-semibold text-slate-900 dark:text-white leading-snug">{row.designation}</p>
                       {row.unit && (
-                        <span className="inline-block mt-0.5 text-[10px] text-sky-400/90 font-mono bg-sky-500/10 px-1.5 py-0.2 rounded border border-sky-500/20">
+                        <span className="inline-block mt-0.5 text-[10px] text-blue-700 dark:text-sky-400/90 font-mono bg-blue-50 dark:bg-sky-500/10 px-1.5 py-0.2 rounded border border-blue-200 dark:border-sky-500/20">
                           {row.unit}
                         </span>
                       )}
                     </td>
                     {/* Colonne 3: Valeur / Règle Eurocode associée */}
-                    <td className="py-2.5 px-3 align-top text-slate-300">
-                      <div className="font-mono text-emerald-300 font-bold leading-relaxed">
+                    <td className="py-2.5 px-3 align-top text-slate-700 dark:text-slate-300">
+                      <div className="font-mono text-emerald-700 dark:text-emerald-300 font-bold leading-relaxed">
                         {row.mathValue ? <SafeInlineMath math={row.mathValue} /> : row.value}
                       </div>
-                      <p className="text-[10px] text-slate-400 mt-0.5 leading-relaxed">{row.eurocodeRule}</p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{row.eurocodeRule}</p>
                     </td>
                   </tr>
                 ))
@@ -625,13 +625,13 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
 
       {/* 2. Key Observations & Summary Badges */}
       <div className="pt-2">
-        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+        <p className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <span>💡</span>
           <span>Synthèse & Justifications Techniques</span>
         </p>
 
         {hasCustomLegend ? (
-          <ul className="space-y-1.5 text-slate-300">
+          <ul className="space-y-1.5 text-slate-700 dark:text-slate-300">
             {legend.map((item, idx) => (
               <li key={idx} className="flex items-start gap-2.5">
                 <span
@@ -639,8 +639,8 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
                   style={{ backgroundColor: item?.color || '#38bdf8' }}
                 />
                 <div className="leading-relaxed min-w-0">
-                  <strong className="text-white">{item?.symbol || item?.label || `Élément ${idx + 1}`}</strong>
-                  {item?.unit ? <span className="text-sky-300 font-mono text-[10px] ml-1">({item.unit})</span> : null}
+                  <strong className="text-slate-900 dark:text-white">{item?.symbol || item?.label || `Élément ${idx + 1}`}</strong>
+                  {item?.unit ? <span className="text-blue-700 dark:text-sky-300 font-mono text-[10px] ml-1">({item.unit})</span> : null}
                   {item?.desc || item?.description ? ` : ${item.desc || item.description}` : ''}
                 </div>
               </li>
@@ -649,14 +649,14 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {defaultItems.map((item, idx) => (
-              <div key={idx} className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-start gap-2">
+              <div key={idx} className="p-2.5 rounded-xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 flex items-start gap-2 shadow-sm">
                 <span className={`w-2.5 h-2.5 rounded-full mt-1 shrink-0 ${item.dotClass || 'bg-sky-400'}`} />
                 <div className="min-w-0 flex-1 leading-relaxed">
-                  <strong className="text-white text-[11px]">{item.title}</strong>
-                  <p className="text-[10px] text-slate-300 mt-0.5">
+                  <strong className="text-slate-900 dark:text-white text-[11px]">{item.title}</strong>
+                  <p className="text-[10px] text-slate-600 dark:text-slate-300 mt-0.5">
                     {item.text}{' '}
                     {item.math && (
-                      <span className="inline-block mx-0.5 font-mono text-sky-300">
+                      <span className="inline-block mx-0.5 font-mono text-blue-700 dark:text-sky-300">
                         (<SafeInlineMath math={item.math} />)
                       </span>
                     )}
@@ -671,12 +671,12 @@ function DiagramLegend({ type = 'trig_interactive', angle = 30, legend, annotati
 
       {/* 3. Annotations list if available */}
       {hasCustomAnnotations && (
-        <div className="pt-2 border-t border-slate-800/60">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Annotations de Chantier :</p>
-          <ul className="space-y-1 text-slate-400">
+        <div className="pt-2 border-t border-slate-200 dark:border-slate-800/60">
+          <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider mb-1.5">Annotations de Chantier :</p>
+          <ul className="space-y-1 text-slate-600 dark:text-slate-400">
             {annotations.map((ann, i) => (
               <li key={i} className="flex items-center gap-2">
-                <span className="text-sky-400 text-xs">▸</span>
+                <span className="text-blue-600 dark:text-sky-400 text-xs">▸</span>
                 <span>{typeof ann === 'string' ? ann : ann?.text || JSON.stringify(ann)}</span>
               </li>
             ))}

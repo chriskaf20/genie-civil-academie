@@ -115,15 +115,15 @@ export default function SidebarRight({ module }) {
   return (
     <div className="flex flex-col h-full gap-4">
       {/* Tool switcher */}
-      <div className="flex gap-1.5 p-1 bg-slate-900/80 rounded-2xl border border-slate-700/50">
+      <div className="flex gap-1.5 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-inner">
         {TOOLS.map(tool => (
           <button
             key={tool}
             onClick={() => setActiveTool(tool)}
             className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all ${
               activeTool === tool
-                ? 'bg-gradient-to-br from-blue-600 to-sky-500 text-white shadow-lg shadow-blue-500/20'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
             }`}
           >
             {tool}
@@ -133,25 +133,25 @@ export default function SidebarRight({ module }) {
 
       {/* Quiz */}
       {activeTool === 'Quiz' && (
-        <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-5 space-y-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-5 space-y-4 shadow-sm">
           <div className="flex items-center gap-3">
             <span className="text-xl">🎯</span>
             <div>
-              <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold">Quiz Express</p>
-              <p className="text-xs text-slate-500 mt-0.5">Question du module en cours</p>
+              <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold">Quiz Express</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Question du module en cours</p>
             </div>
           </div>
 
-          <p className="text-sm text-slate-200 font-medium leading-relaxed">{quiz.question}</p>
+          <p className="text-sm text-slate-900 dark:text-slate-200 font-semibold leading-relaxed">{quiz.question}</p>
 
           <div className="space-y-2">
             {quiz.options.map(opt => {
-              let cls = 'quiz-option w-full rounded-xl border border-slate-700/50 bg-slate-800/50 px-4 py-3 text-sm text-left transition-all text-slate-300';
+              let cls = 'quiz-option w-full rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 text-sm text-left transition-all text-slate-700 dark:text-slate-300 shadow-sm';
               if (quizSubmitted) {
                 if (opt.id === quiz.correct) cls += ' selected-correct';
                 else if (opt.id === quizAnswer && opt.id !== quiz.correct) cls += ' selected-incorrect';
               } else if (quizAnswer === opt.id) {
-                cls += ' bg-sky-500/15 border-sky-500/40 text-sky-200';
+                cls += ' bg-blue-50 border-blue-400 text-blue-700 dark:bg-sky-500/15 dark:border-sky-500/40 dark:text-sky-200 font-medium';
               }
               return (
                 <button
@@ -169,7 +169,7 @@ export default function SidebarRight({ module }) {
           {quizAnswer && !quizSubmitted && (
             <button
               onClick={handleQuizSubmit}
-              className="w-full bg-gradient-to-r from-blue-600 to-sky-500 text-white py-3 rounded-xl font-semibold text-sm hover:from-blue-700 hover:to-sky-600 transition-all"
+              className="w-full bg-gradient-to-r from-blue-600 to-sky-500 text-white py-3 rounded-xl font-semibold text-sm hover:from-blue-700 hover:to-sky-600 transition-all shadow-sm"
             >
               Valider
             </button>
@@ -177,11 +177,11 @@ export default function SidebarRight({ module }) {
 
           {quizSubmitted && (
             <div className={`rounded-xl p-4 ${quizAnswer === quiz.correct ? 'alert-tip' : 'alert-warning'}`}>
-              <p className={`font-bold text-sm mb-1 ${quizAnswer === quiz.correct ? 'text-emerald-300' : 'text-orange-300'}`}>
+              <p className={`font-bold text-sm mb-1 ${quizAnswer === quiz.correct ? 'text-emerald-700 dark:text-emerald-300' : 'text-orange-700 dark:text-orange-300'}`}>
                 {quizAnswer === quiz.correct ? '✅ Correct !' : '❌ Incorrect'}
               </p>
-              <p className="text-xs text-slate-300">{quiz.explanation}</p>
-              <button onClick={handleQuizReset} className="mt-3 text-xs text-slate-400 hover:text-white underline">
+              <p className="text-xs text-slate-700 dark:text-slate-300">{quiz.explanation}</p>
+              <button onClick={handleQuizReset} className="mt-3 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white underline font-medium">
                 Réessayer
               </button>
             </div>
@@ -199,21 +199,21 @@ export default function SidebarRight({ module }) {
       {activeTool === 'Poutre' && <BeamCalculator />}
 
       {/* Progress stats */}
-      <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-4 mt-auto">
-        <p className="text-xs uppercase tracking-widest text-slate-500 font-semibold mb-3">Progression Globale</p>
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-4 mt-auto shadow-sm">
+        <p className="text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold mb-3">Progression Globale</p>
         <div className="grid grid-cols-3 gap-3 text-center">
           {[
-            { label: 'Modules', value: '35', color: 'text-sky-400' },
-            { label: 'Leçons', value: '120+', color: 'text-orange-400' },
-            { label: 'Heures', value: '1200+', color: 'text-emerald-400' },
+            { label: 'Modules', value: '35', color: 'text-blue-600 dark:text-sky-400' },
+            { label: 'Leçons', value: '120+', color: 'text-orange-600 dark:text-orange-400' },
+            { label: 'Heures', value: '1200+', color: 'text-emerald-600 dark:text-emerald-400' },
           ].map(stat => (
-            <div key={stat.label} className="bg-slate-800/60 rounded-xl p-2">
+            <div key={stat.label} className="bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-transparent rounded-xl p-2">
               <p className={`text-lg font-bold font-mono ${stat.color}`}>{stat.value}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{stat.label}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{stat.label}</p>
             </div>
           ))}
         </div>
-        <div className="mt-3 text-xs text-slate-500 flex items-center gap-2">
+        <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 pulse-dot" />
           <span>Module 1 en cours — Leçon 1</span>
         </div>

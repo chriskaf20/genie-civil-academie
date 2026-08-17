@@ -2,35 +2,35 @@ import { useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
 
 const CATEGORY_COLORS = {
-  blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', glow: 'shadow-blue-500/10' },
-  orange: { bg: 'bg-orange-500/10', border: 'border-orange-500/30', text: 'text-orange-400', glow: 'shadow-orange-500/10' },
-  violet: { bg: 'bg-violet-500/10', border: 'border-violet-500/30', text: 'text-violet-400', glow: 'shadow-violet-500/10' },
-  amber: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', glow: 'shadow-amber-500/10' },
-  teal: { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400', glow: 'shadow-teal-500/10' },
-  rose: { bg: 'bg-rose-500/10', border: 'border-rose-500/30', text: 'text-rose-400', glow: 'shadow-rose-500/10' },
-  indigo: { bg: 'bg-indigo-500/10', border: 'border-indigo-500/30', text: 'text-indigo-400', glow: 'shadow-indigo-500/10' },
-  green: { bg: 'bg-green-500/10', border: 'border-green-500/30', text: 'text-green-400', glow: 'shadow-green-500/10' },
-  emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', glow: 'shadow-emerald-500/10' },
-  slate: { bg: 'bg-slate-700/30', border: 'border-slate-600/30', text: 'text-slate-400', glow: 'shadow-slate-500/10' },
-  cyan: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/30', text: 'text-cyan-400', glow: 'shadow-cyan-500/10' },
-  pink: { bg: 'bg-pink-500/10', border: 'border-pink-500/30', text: 'text-pink-400', glow: 'shadow-pink-500/10' },
+  blue: { bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-200 dark:border-blue-500/30', text: 'text-blue-600 dark:text-blue-400', glow: 'shadow-blue-500/5 dark:shadow-blue-500/10' },
+  orange: { bg: 'bg-orange-50 dark:bg-orange-500/10', border: 'border-orange-200 dark:border-orange-500/30', text: 'text-orange-600 dark:text-orange-400', glow: 'shadow-orange-500/5 dark:shadow-orange-500/10' },
+  violet: { bg: 'bg-violet-50 dark:bg-violet-500/10', border: 'border-violet-200 dark:border-violet-500/30', text: 'text-violet-600 dark:text-violet-400', glow: 'shadow-violet-500/5 dark:shadow-violet-500/10' },
+  amber: { bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/30', text: 'text-amber-600 dark:text-amber-400', glow: 'shadow-amber-500/5 dark:shadow-amber-500/10' },
+  teal: { bg: 'bg-teal-50 dark:bg-teal-500/10', border: 'border-teal-200 dark:border-teal-500/30', text: 'text-teal-600 dark:text-teal-400', glow: 'shadow-teal-500/5 dark:shadow-teal-500/10' },
+  rose: { bg: 'bg-rose-50 dark:bg-rose-500/10', border: 'border-rose-200 dark:border-rose-500/30', text: 'text-rose-600 dark:text-rose-400', glow: 'shadow-rose-500/5 dark:shadow-rose-500/10' },
+  indigo: { bg: 'bg-indigo-50 dark:bg-indigo-500/10', border: 'border-indigo-200 dark:border-indigo-500/30', text: 'text-indigo-600 dark:text-indigo-400', glow: 'shadow-indigo-500/5 dark:shadow-indigo-500/10' },
+  green: { bg: 'bg-green-50 dark:bg-green-500/10', border: 'border-green-200 dark:border-green-500/30', text: 'text-green-600 dark:text-green-400', glow: 'shadow-green-500/5 dark:shadow-green-500/10' },
+  emerald: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/30', text: 'text-emerald-600 dark:text-emerald-400', glow: 'shadow-emerald-500/5 dark:shadow-emerald-500/10' },
+  slate: { bg: 'bg-slate-50 dark:bg-slate-700/30', border: 'border-slate-200 dark:border-slate-600/30', text: 'text-slate-600 dark:text-slate-400', glow: 'shadow-slate-500/5 dark:shadow-slate-500/10' },
+  cyan: { bg: 'bg-cyan-50 dark:bg-cyan-500/10', border: 'border-cyan-200 dark:border-cyan-500/30', text: 'text-cyan-600 dark:text-cyan-400', glow: 'shadow-cyan-500/5 dark:shadow-cyan-500/10' },
+  pink: { bg: 'bg-pink-50 dark:bg-pink-500/10', border: 'border-pink-200 dark:border-pink-500/30', text: 'text-pink-600 dark:text-pink-400', glow: 'shadow-pink-500/5 dark:shadow-pink-500/10' },
 };
 
 const LEVEL_CONFIG = {
-  'Débutant': { color: 'text-green-400', bg: 'bg-green-500/10 border border-green-500/30', dot: 'bg-green-400' },
-  'Intermédiaire': { color: 'text-yellow-400', bg: 'bg-yellow-500/10 border border-yellow-500/30', dot: 'bg-yellow-400' },
-  'Avancé': { color: 'text-orange-400', bg: 'bg-orange-500/10 border border-orange-500/30', dot: 'bg-orange-400' },
-  'Tous niveaux': { color: 'text-sky-400', bg: 'bg-sky-500/10 border border-sky-500/30', dot: 'bg-sky-400' },
+  'Débutant': { color: 'text-green-700 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-500/10 border border-green-300 dark:border-green-500/30', dot: 'bg-green-500' },
+  'Intermédiaire': { color: 'text-amber-700 dark:text-yellow-400', bg: 'bg-amber-100 dark:bg-yellow-500/10 border border-amber-300 dark:border-yellow-500/30', dot: 'bg-amber-500' },
+  'Avancé': { color: 'text-orange-700 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-500/10 border border-orange-300 dark:border-orange-500/30', dot: 'bg-orange-500' },
+  'Tous niveaux': { color: 'text-sky-700 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-500/10 border border-sky-300 dark:border-sky-500/30', dot: 'bg-sky-500' },
 };
 
 const FEATURED_MODULES = [9, 7, 16, 13, 29, 30]; // Béton Armé, RDM, Ponts, Géotechnique, Logiciels, IA
 
 function StatCard({ value, label, icon, color }) {
   return (
-    <div className={`rounded-2xl border ${color.border} ${color.bg} p-4 flex flex-col items-center justify-center text-center`}>
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-4 flex flex-col items-center justify-center text-center shadow-sm">
       <span className="text-2xl mb-1">{icon}</span>
       <p className={`text-2xl font-bold font-mono ${color.text}`}>{value}</p>
-      <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{label}</p>
     </div>
   );
 }
@@ -44,11 +44,11 @@ function ModuleCard({ module, onSelect, isDone }) {
   return (
     <button
       onClick={() => onSelect(module)}
-      className={`group w-full text-left rounded-2xl border ${color.border} ${color.bg} p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${color.glow} relative overflow-hidden`}
+      className="group w-full text-left rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-4 transition-all duration-200 hover:scale-[1.02] hover:shadow-md hover:border-blue-400 dark:hover:border-sky-500/50 shadow-sm relative overflow-hidden"
     >
       {isDone && (
         <div className="absolute top-2 right-2">
-          <span className="text-emerald-400 text-sm">✓</span>
+          <span className="text-emerald-500 dark:text-emerald-400 text-sm">✓</span>
         </div>
       )}
       <div className="flex items-start gap-3">
@@ -57,19 +57,19 @@ function ModuleCard({ module, onSelect, isDone }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-slate-500">#{String(module.id).padStart(2, '0')}</span>
+            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">#{String(module.id).padStart(2, '0')}</span>
             <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${level.bg} ${level.color}`}>
               {module.level}
             </span>
           </div>
-          <p className={`text-sm font-bold ${color.text} leading-tight group-hover:text-white transition-colors truncate`}>
+          <p className="text-sm font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-sky-300 transition-colors truncate">
             {module.title}
           </p>
-          <p className="text-xs text-slate-500 mt-1 line-clamp-1">{module.description}</p>
+          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-1">{module.description}</p>
           <div className="flex items-center gap-2 mt-2">
-            <span className="text-[10px] text-slate-400">⏱ {module.duration}</span>
-            <span className="text-slate-600 text-[10px]">·</span>
-            <span className="text-[10px] text-slate-400">{module.lessons?.length || 0} leçons</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">⏱ {module.duration}</span>
+            <span className="text-slate-400 dark:text-slate-600 text-[10px]">·</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">{module.lessons?.length || 0} leçons</span>
           </div>
         </div>
       </div>
@@ -84,14 +84,14 @@ function CategorySection({ cat, onSelect, completedIds }) {
 
   return (
     <div>
-      <div className={`flex items-center justify-between mb-3`}>
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${color.text.replace('text-', 'bg-')}`} />
           <h3 className={`text-sm font-bold ${color.text}`}>{cat.name}</h3>
-          <span className="text-xs text-slate-500">({catModules.length} modules)</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">({catModules.length} modules)</span>
         </div>
         {doneCount > 0 && (
-          <span className="text-xs text-emerald-400 font-mono">{doneCount}/{catModules.length} explorés</span>
+          <span className="text-xs text-emerald-600 dark:text-emerald-400 font-mono font-medium">{doneCount}/{catModules.length} explorés</span>
         )}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -108,8 +108,7 @@ function CategorySection({ cat, onSelect, completedIds }) {
   );
 }
 
-export default function Dashboard({ onSelectModule, completedIds = [], theme }) {
-  const isDark = theme === 'dark';
+export default function Dashboard({ onSelectModule, completedIds = [] }) {
   const totalHours = modules.reduce((acc, m) => acc + parseInt(m.duration), 0);
   const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
 
@@ -121,25 +120,25 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-up">
       {/* Hero Banner */}
-      <div className="relative rounded-3xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-900 via-blue-950/40 to-slate-900 p-8">
-        <div className="absolute inset-0 eng-grid-bg opacity-40" />
+      <div className="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700/50 bg-gradient-to-br from-blue-50 via-sky-50/70 to-white dark:from-slate-900 dark:via-blue-950/40 dark:to-slate-900 p-6 sm:p-8 shadow-sm">
+        <div className="absolute inset-0 eng-grid-bg opacity-40 dark:opacity-40" />
         <div className="relative">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-blue-500/30">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-sky-400 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-blue-500/20">
                   G
                 </div>
                 <div>
-                  <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold">Bienvenue sur</p>
-                  <h1 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                  <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold">Bienvenue sur</p>
+                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white leading-tight">
                     Global Civil Engineering Academy
                   </h1>
                 </div>
               </div>
-              <p className="text-slate-400 text-sm leading-relaxed max-w-lg">
+              <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-lg">
                 La plateforme d'apprentissage progressif et exhaustif du Génie Civil. 
-                De zéro à ingénieur accompli — <strong className="text-sky-400">35 modules, 120+ leçons, 1200+ heures de contenu.</strong>
+                De zéro à ingénieur accompli — <strong className="text-blue-600 dark:text-sky-400">35 modules, 120+ leçons, 1200+ heures de contenu.</strong>
               </p>
               <div className="flex flex-wrap gap-2 mt-4">
                 <span className="tag-green">🔓 Accès Libre 100%</span>
@@ -148,17 +147,17 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
                 <span className="tag-blue">🌍 FR / EN</span>
               </div>
             </div>
-            <div className="shrink-0">
-              <div className="rounded-2xl border border-sky-500/30 bg-sky-500/5 p-5 text-center min-w-[140px]">
-                <p className="text-4xl font-black text-sky-400 font-mono">35</p>
-                <p className="text-xs text-slate-400 mt-1">Modules Déverrouillés</p>
-                <div className="mt-2 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div className="shrink-0 w-full md:w-auto">
+              <div className="rounded-2xl border border-sky-300 dark:border-sky-500/30 bg-white/80 dark:bg-sky-500/5 p-5 text-center min-w-[140px] shadow-sm">
+                <p className="text-4xl font-black text-blue-600 dark:text-sky-400 font-mono">35</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Modules Déverrouillés</p>
+                <div className="mt-2 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full transition-all duration-700"
                     style={{ width: `${Math.max(3, Math.round((completedIds.length / 35) * 100))}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1">
+                <p className="text-[10px] text-slate-500 mt-1 font-medium">
                   {completedIds.length}/{35} explorés ({Math.round((completedIds.length / 35) * 100)}%)
                 </p>
               </div>
@@ -179,7 +178,7 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
       <div>
         <div className="flex items-center gap-3 mb-4">
           <span className="text-lg">⭐</span>
-          <h2 className="text-lg font-bold text-white">Modules Phares</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Modules Phares</h2>
           <span className="text-xs text-slate-500">Les incontournables du Génie Civil</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -190,15 +189,15 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
       </div>
 
       {/* Separator */}
-      <div className="border-t border-slate-800/60" />
+      <div className="border-t border-slate-200 dark:border-slate-800/60" />
 
       {/* Learning Path Banner */}
-      <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
+      <div className="rounded-2xl border border-amber-300/80 dark:border-amber-500/20 bg-amber-50/70 dark:bg-amber-500/5 p-5 shadow-sm">
         <div className="flex items-start gap-4">
           <span className="text-3xl shrink-0">🗺️</span>
           <div>
-            <h3 className="text-sm font-bold text-amber-300 mb-1">Parcours d'apprentissage recommandé</h3>
-            <p className="text-xs text-slate-400 leading-relaxed mb-3">
+            <h3 className="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">Parcours d'apprentissage recommandé</h3>
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
               Pour une progression optimale de débutant à expert, suivez cet ordre thématique :
             </p>
             <div className="flex flex-wrap gap-2 items-center text-xs">
@@ -220,13 +219,13 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
                 <button
                   key={i}
                   onClick={() => onSelectModule(modules.find(m => m.id === step.id))}
-                  className="flex items-center gap-1 bg-slate-800/60 border border-slate-700/50 px-2 py-1 rounded-lg hover:border-amber-500/40 hover:bg-amber-500/10 transition-all"
+                  className="flex items-center gap-1 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 px-2 py-1 rounded-lg hover:border-amber-500/40 hover:bg-amber-100/50 dark:hover:bg-amber-500/10 transition-all shadow-sm"
                 >
                   <span>{step.icon}</span>
-                  <span className="text-slate-300 font-medium">{step.label}</span>
+                  <span className="text-slate-700 dark:text-slate-300 font-medium">{step.label}</span>
                 </button>
               ) : (
-                <span key={i} className="text-slate-600">→</span>
+                <span key={i} className="text-slate-400 dark:text-slate-600">→</span>
               ))}
             </div>
           </div>
@@ -237,7 +236,7 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
       <div>
         <div className="flex items-center gap-3 mb-6">
           <span className="text-lg">🗂️</span>
-          <h2 className="text-lg font-bold text-white">Tous les 35 Modules — Catalogue Complet</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Tous les 35 Modules — Catalogue Complet</h2>
         </div>
         <div className="space-y-8">
           {categories.map(cat => (
@@ -252,9 +251,9 @@ export default function Dashboard({ onSelectModule, completedIds = [], theme }) 
       </div>
 
       {/* Footer */}
-      <div className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 text-center">
-        <p className="text-slate-500 text-xs">
-          🌐 <strong className="text-slate-400">Global Civil Engineering Academy</strong> — 
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-800/60 bg-white dark:bg-slate-900/40 p-6 text-center shadow-sm">
+        <p className="text-slate-600 dark:text-slate-400 text-xs">
+          🌐 <strong className="text-slate-800 dark:text-slate-300">Global Civil Engineering Academy</strong> — 
           Plateforme open-access d'excellence pour la formation en Génie Civil.
           Contenu basé sur les Eurocodes, normes ACI, NF EN ISO et pratiques internationales.
         </p>

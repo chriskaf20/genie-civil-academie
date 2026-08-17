@@ -183,55 +183,96 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   font-size: 11px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
+  background: rgba(15, 82, 186, 0.1);
+  border: 1px solid rgba(15, 82, 186, 0.25);
+  color: #1d4ed8;
+  flex-shrink: 0;
+}
+.dark .step-badge {
   background: linear-gradient(135deg, rgba(15, 82, 186, 0.3), rgba(15, 82, 186, 0.1));
   border: 1px solid rgba(15, 82, 186, 0.4);
   color: #93c5fd;
-  flex-shrink: 0;
 }
 
 /* ── Formula card ── */
 .formula-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(8, 47, 73, 0.8) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 1.25rem;
   padding: 1rem 1.25rem;
   position: relative;
   overflow-x: auto;
   max-width: 100%;
   -webkit-overflow-scrolling: touch;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 .formula-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #2563eb, #0F52BA, transparent);
+}
+.dark .formula-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(8, 47, 73, 0.8) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: none;
+}
+.dark .formula-card::before {
   background: linear-gradient(90deg, transparent, #38bdf8, #0F52BA, transparent);
 }
 
 /* ── Alert boxes ── */
 .alert-warning {
+  background: #fff7ed;
+  border: 1px solid #fdba74;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  color: #9a3412;
+}
+.dark .alert-warning {
   background: linear-gradient(135deg, rgba(234, 88, 12, 0.1) 0%, rgba(234, 88, 12, 0.05) 100%);
   border: 1px solid rgba(234, 88, 12, 0.3);
+  color: #fdba74;
+}
+
+.alert-tip {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
   border-radius: 1rem;
   padding: 1rem 1.25rem;
+  color: #166534;
 }
-.alert-tip {
+.dark .alert-tip {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
   border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #86efac;
+}
+
+.alert-info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 1rem;
   padding: 1rem 1.25rem;
+  color: #1e40af;
 }
-.alert-info {
+.dark .alert-info {
   background: linear-gradient(135deg, rgba(15, 82, 186, 0.12) 0%, rgba(15, 82, 186, 0.05) 100%);
   border: 1px solid rgba(56, 189, 248, 0.25);
+  color: #bae6fd;
+}
+
+.alert-norm {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
   border-radius: 1rem;
   padding: 1rem 1.25rem;
+  color: #5b21b6;
 }
-.alert-norm {
+.dark .alert-norm {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
   border: 1px solid rgba(124, 58, 237, 0.3);
-  border-radius: 1rem;
-  padding: 1rem 1.25rem;
+  color: #ddd6fe;
 }
 
 /* ── Quiz option buttons ── */
@@ -347,9 +388,26 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 
 /* ── Tag / badge ── */
 .tag-blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.dark .tag-blue {
   background: rgba(15, 82, 186, 0.15);
   color: #93c5fd;
   border: 1px solid rgba(15, 82, 186, 0.3);
+}
+
+.tag-orange {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
@@ -357,10 +415,16 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.tag-orange {
+.dark .tag-orange {
   background: rgba(255, 107, 0, 0.15);
   color: #fdba74;
   border: 1px solid rgba(255, 107, 0, 0.3);
+}
+
+.tag-green {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
   border-radius: 9999px;
   font-size: 11px;
   font-weight: 600;
@@ -368,16 +432,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
-.tag-green {
+.dark .tag-green {
   background: rgba(16, 185, 129, 0.12);
   color: #6ee7b7;
   border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 9999px;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 /* ── Sidebar transition ── */

@@ -64,12 +64,12 @@ export default function UnitConverter() {
   const result = convert();
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-5">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-5 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <span className="text-xl">⚖️</span>
         <div>
-          <p className="text-xs uppercase tracking-widest text-orange-400 font-semibold">Convertisseur d'Unités</p>
-          <p className="text-xs text-slate-500 mt-0.5">Spécialisé Génie Civil</p>
+          <p className="text-xs uppercase tracking-widest text-orange-600 dark:text-orange-400 font-semibold">Convertisseur d'Unités</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Spécialisé Génie Civil</p>
         </div>
       </div>
 
@@ -87,8 +87,8 @@ export default function UnitConverter() {
             }}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
               category === cat
-                ? 'bg-orange-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                ? 'bg-orange-600 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >
             {cat}
@@ -103,13 +103,13 @@ export default function UnitConverter() {
             type="number"
             value={value}
             onChange={e => setValue(e.target.value)}
-            className="flex-1 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-white text-sm"
+            className="flex-1 rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800 px-3 py-2.5 text-slate-900 dark:text-white text-sm focus:bg-white transition-colors"
             placeholder="Valeur..."
           />
           <select
             value={fromUnit}
             onChange={e => setFromUnit(e.target.value)}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sky-300 text-sm font-mono"
+            className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800 px-3 py-2.5 text-blue-600 dark:text-sky-300 text-sm font-mono"
           >
             {units.map(u => <option key={u}>{u}</option>)}
           </select>
@@ -122,7 +122,7 @@ export default function UnitConverter() {
               setFromUnit(toUnit);
               setToUnit(tmp);
             }}
-            className="text-slate-400 hover:text-sky-400 transition-colors bg-slate-800 rounded-full p-2"
+            className="text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-sky-400 transition-colors bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 rounded-full p-2"
             title="Inverser"
           >
             ⇅
@@ -130,13 +130,13 @@ export default function UnitConverter() {
         </div>
 
         <div className="flex gap-2">
-          <div className="flex-1 rounded-xl border border-orange-500/30 bg-orange-500/5 px-3 py-2.5 text-orange-300 text-sm font-mono font-bold">
+          <div className="flex-1 rounded-xl border border-orange-300 dark:border-orange-500/30 bg-orange-50 dark:bg-orange-500/5 px-3 py-2.5 text-orange-700 dark:text-orange-300 text-sm font-mono font-bold">
             {result}
           </div>
           <select
             value={toUnit}
             onChange={e => setToUnit(e.target.value)}
-            className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-orange-300 text-sm font-mono"
+            className="rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800 px-3 py-2.5 text-orange-700 dark:text-orange-300 text-sm font-mono"
           >
             {units.map(u => <option key={u}>{u}</option>)}
           </select>
@@ -144,9 +144,9 @@ export default function UnitConverter() {
       </div>
 
       {/* Quick reference */}
-      <div className="mt-4 pt-3 border-t border-slate-700/50">
-        <p className="text-xs text-slate-500 mb-2">Conversions fréquentes :</p>
-        <div className="space-y-1 text-xs text-slate-400">
+      <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700/50">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Conversions fréquentes :</p>
+        <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
           {category === 'Pression' && (
             <>
               <p>• 1 MPa = 145,04 psi = 10,197 kgf/cm²</p>

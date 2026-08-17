@@ -43,7 +43,16 @@ export default function App() {
 
   useEffect(() => {
     saveProgress(progress);
-  }, [progress]);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('theme-light');
+      document.documentElement.classList.add('theme-dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove('theme-dark');
+      document.documentElement.classList.add('theme-light');
+    }
+  }, [progress, isDark]);
 
   const toggleTheme = () => {
     setProgress(p => ({ ...p, theme: p.theme === 'dark' ? 'light' : 'dark' }));
@@ -94,11 +103,11 @@ export default function App() {
     : 'bg-slate-50 text-slate-900 eng-grid-bg-light';
 
   const sidebarBg = isDark ? 'bg-slate-900 border-slate-800/60' : 'bg-white border-slate-200';
-  const rightBg = isDark ? 'bg-slate-950 border-slate-800/60' : 'bg-slate-50 border-slate-200';
+  const rightBg = isDark ? 'bg-slate-950 border-slate-800/60' : 'bg-white border-slate-200';
   const headerBg = isDark ? 'bg-slate-900/95 border-slate-800/60' : 'bg-white/95 border-slate-200';
 
   return (
-    <div className={`h-screen flex flex-col ${bgClass} overflow-hidden w-full max-w-full`}>
+    <div className={`h-screen flex flex-col ${isDark ? 'dark' : ''} ${bgClass} overflow-hidden w-full max-w-full`}>
       {/* PWA Install / Update Banner */}
       <PwaInstallPrompt isDark={isDark} />
 
@@ -110,7 +119,7 @@ export default function App() {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowMobileGlossary(false)}>
           <div className="w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex justify-end mb-2">
-              <button onClick={() => setShowMobileGlossary(false)} className="text-slate-400 hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center text-sm">✕</button>
+              <button onClick={() => setShowMobileGlossary(false)} className="text-slate-400 hover:text-white dark:hover:text-white bg-slate-800 rounded-full w-8 h-8 flex items-center justify-center text-sm">✕</button>
             </div>
             <GlossarySearch />
           </div>
@@ -126,7 +135,7 @@ export default function App() {
           {/* Sidebar toggle (desktop) */}
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="sidebar-toggle hidden md:flex w-8 h-8 items-center justify-center rounded-lg text-slate-400 hover:text-white text-base"
+            className="sidebar-toggle hidden md:flex w-8 h-8 items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-base"
             title={sidebarOpen ? 'Masquer la navigation' : 'Afficher la navigation'}
           >
             {sidebarOpen ? '◀' : '▶'}
@@ -135,7 +144,7 @@ export default function App() {
           {/* Mobile menu trigger */}
           <button
             onClick={() => handleMobileTabClick('modules')}
-            className="md:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-300 hover:text-white bg-slate-800/80 text-sm"
+            className="md:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-600 hover:text-slate-900 bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:bg-slate-800/80 text-sm"
             title="Menu modules"
           >
             🗂️
@@ -146,10 +155,10 @@ export default function App() {
             <GceaLogoSvg size={30} isDark={isDark} className="md:w-[34px] md:h-[34px] group-hover:scale-105 transition-transform duration-200" />
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-[10px] md:text-xs uppercase tracking-widest text-sky-400 font-semibold leading-tight group-hover:text-sky-300 transition-colors">Académie Génie Civil</p>
+                <p className="text-[10px] md:text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold leading-tight group-hover:text-blue-700 dark:group-hover:text-sky-300 transition-colors">Académie Génie Civil</p>
                 <span className="tag-green text-[8px] md:text-[9px]">Accès Libre</span>
               </div>
-              <p className="text-xs md:text-sm font-bold text-white leading-tight hidden sm:block">Global Civil Engineering Academy</p>
+              <p className="text-xs md:text-sm font-bold text-slate-900 dark:text-white leading-tight hidden sm:block">Global Civil Engineering Academy</p>
             </div>
           </button>
         </div>
@@ -159,18 +168,18 @@ export default function App() {
           {view === 'lesson' ? (
             <button
               onClick={goHome}
-              className="flex items-center gap-2.5 text-sm bg-slate-800/50 hover:bg-slate-800/80 px-3.5 py-1 rounded-full border border-slate-700/50 hover:border-sky-500/40 transition-all group"
+              className="flex items-center gap-2.5 text-sm bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700/50 dark:hover:bg-slate-750 px-3.5 py-1 rounded-full transition-all group shadow-sm"
             >
               <span className="text-lg">{selectedModule.icon}</span>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-sky-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
-                <p className="font-semibold text-white text-xs truncate max-w-xs">{selectedModule.title}</p>
+                <span className="text-xs text-blue-600 dark:text-sky-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
+                <p className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{selectedModule.title}</p>
               </div>
-              <span className="text-[10px] text-slate-500 group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>
+              <span className="text-[10px] text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2 text-sm bg-blue-500/10 border border-blue-500/20 px-3.5 py-1 rounded-full">
-              <span className="text-xs text-sky-400 font-semibold">🏠 Tableau de Bord — {totalCount} Modules Déverrouillés</span>
+            <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-sky-400 dark:border-blue-500/20 px-3.5 py-1 rounded-full font-medium shadow-sm">
+              <span className="text-xs">🏠 Tableau de Bord — {totalCount} Modules Déverrouillés</span>
             </div>
           )}
         </div>
@@ -181,23 +190,23 @@ export default function App() {
           <div className="hidden sm:flex items-center gap-2.5">
             <div className="text-right">
               <p className="text-[10px] text-slate-500">Explorés</p>
-              <p className="text-xs font-bold text-white font-mono">{completedCount}/{totalCount}</p>
+              <p className="text-xs font-bold text-slate-800 dark:text-white font-mono">{completedCount}/{totalCount}</p>
             </div>
-            <div className="w-24 h-2 rounded-full bg-slate-800 overflow-hidden">
+            <div className="w-24 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
               <div
                 className="progress-bar-animated h-full rounded-full transition-all duration-700"
                 style={{ width: `${Math.max(3, progressPct)}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-sky-400 font-mono">{progressPct}%</span>
+            <span className="text-xs font-bold text-blue-600 dark:text-sky-400 font-mono">{progressPct}%</span>
           </div>
 
-          <div className="w-px h-5 bg-slate-700 hidden sm:block" />
+          <div className="w-px h-5 bg-slate-300 dark:bg-slate-700 hidden sm:block" />
 
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all hover:bg-slate-800 text-xs md:text-sm"
+            className="w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-transparent dark:hover:bg-slate-800 dark:text-slate-300 text-xs md:text-sm border border-slate-200 dark:border-transparent"
             title={isDark ? 'Mode clair' : 'Mode sombre'}
           >
             {isDark ? '☀️' : '🌙'}
@@ -206,7 +215,7 @@ export default function App() {
           {/* Right panel toggle */}
           <button
             onClick={() => setRightPanelOpen(p => !p)}
-            className="hidden xl:flex w-8 h-8 rounded-lg items-center justify-center transition-all hover:bg-slate-800 text-xs text-slate-400"
+            className="hidden xl:flex w-8 h-8 rounded-lg items-center justify-center transition-all hover:bg-slate-100 text-slate-600 dark:hover:bg-slate-800 text-xs dark:text-slate-400"
             title={rightPanelOpen ? 'Masquer le panneau' : 'Afficher le panneau'}
           >
             {rightPanelOpen ? '▶' : '◀'}

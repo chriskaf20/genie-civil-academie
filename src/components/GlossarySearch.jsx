@@ -20,26 +20,26 @@ export default function GlossarySearch() {
   }, [query, activeCategory]);
 
   return (
-    <div className="rounded-2xl border border-slate-700/50 bg-slate-900/80 p-5">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-5 shadow-sm">
       <div className="flex items-center gap-3 mb-4">
         <span className="text-lg">📚</span>
         <div>
-          <p className="text-xs uppercase tracking-widest text-sky-400 font-semibold">Glossaire Bilingue</p>
-          <p className="text-xs text-slate-500 mt-0.5">{glossaryData.length} termes FR/EN</p>
+          <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold">Glossaire Bilingue</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{glossaryData.length} termes FR/EN</p>
         </div>
       </div>
 
       {/* Search */}
       <div className="relative mb-3">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">🔍</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">🔍</span>
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
           placeholder="Rechercher : Moment fléchissant, Slump..."
-          className="w-full rounded-xl border border-slate-700 bg-slate-800/80 pl-9 pr-4 py-2.5 text-slate-100 text-sm placeholder:text-slate-600 focus:border-sky-500/50 transition-colors"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/80 pl-9 pr-4 py-2.5 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:border-sky-500/50 transition-colors shadow-inner"
         />
         {query && (
-          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">✕</button>
+          <button onClick={() => setQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">✕</button>
         )}
       </div>
 
@@ -51,8 +51,8 @@ export default function GlossarySearch() {
             onClick={() => setActiveCategory(cat)}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
               activeCategory === cat
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >
             {cat}
@@ -66,15 +66,15 @@ export default function GlossarySearch() {
           <p className="text-center text-slate-500 text-sm py-6">Aucun résultat pour "{query}"</p>
         ) : (
           results.slice(0, 8).map(item => (
-            <div key={item.en} className="rounded-xl bg-slate-800/60 p-3 hover:bg-slate-700/60 transition-colors">
+            <div key={item.en} className="rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-700/60 p-3 border border-slate-100 dark:border-transparent transition-colors">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-white">{item.fr}</span>
-                    <span className="text-xs text-slate-500">—</span>
-                    <span className="text-xs text-sky-400 font-medium font-mono">{item.en}</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">{item.fr}</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                    <span className="text-xs text-blue-600 dark:text-sky-400 font-medium font-mono">{item.en}</span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1 leading-relaxed">{item.definition}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">{item.definition}</p>
                 </div>
                 <span className="tag-blue shrink-0 mt-0.5">{item.category}</span>
               </div>

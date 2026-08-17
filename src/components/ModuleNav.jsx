@@ -64,10 +64,10 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Free Access Header Banner */}
       <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <LockKeyholeOpen className="w-4 h-4 text-emerald-400" />
+          <LockKeyholeOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <div>
-            <p className="text-xs font-bold text-emerald-300">Accès Libre 100%</p>
-            <p className="text-[10px] text-slate-400">Tous les 35 modules sont déverrouillés</p>
+            <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Accès Libre 100%</p>
+            <p className="text-[10px] text-slate-600 dark:text-slate-400">Tous les 35 modules sont déverrouillés</p>
           </div>
         </div>
         <span className="tag-green text-[9px]">35 Cours</span>
@@ -76,18 +76,18 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Global Search Input */}
       <div className="space-y-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-3.5 h-3.5" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 w-3.5 h-3.5" />
           <input
             type="search"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Rechercher (Béton, RDM, Sols, Eurocode)..."
-            className="w-full rounded-xl border border-slate-700 bg-slate-800/80 pl-9 pr-8 py-2 text-xs text-slate-200 placeholder:text-slate-500 focus:border-sky-500/50 transition-colors"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-8 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200 dark:placeholder:text-slate-500 dark:focus:border-sky-500/50 transition-colors shadow-sm"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs"
             >
               ✕
             </button>
@@ -102,8 +102,8 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
               onClick={() => setSearch(prev => prev === chip ? '' : chip)}
               className={`text-[10px] px-2 py-0.5 rounded-full border transition-all ${
                 search.toLowerCase() === chip.toLowerCase()
-                  ? 'bg-sky-500/20 border-sky-400 text-sky-300 font-bold'
-                  : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                  ? 'bg-blue-100 border-blue-300 text-blue-700 font-bold dark:bg-sky-500/20 dark:border-sky-400 dark:text-sky-300'
+                  : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200 dark:bg-slate-800/60 dark:border-slate-700/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:border-slate-600'
               }`}
             >
               {chip}
@@ -119,7 +119,9 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
             key={lvl}
             onClick={() => setFilter(lvl)}
             className={`px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all ${
-              filter === lvl ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+              filter === lvl
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >
             {lvl}
@@ -158,28 +160,32 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
                       <button
                         key={m.slug}
                         onClick={() => onSelect(m)}
-                        className={`module-nav-item w-full flex items-start gap-2.5 rounded-xl px-2.5 py-2 text-left transition-all ${
+                        className={`module-nav-item w-full flex items-start gap-2.5 rounded-xl px-2.5 py-2 text-left transition-all border ${
                           isActive
-                            ? 'bg-gradient-to-r from-blue-600/25 to-sky-500/15 border-sky-500/40 text-sky-200 shadow-md ring-1 ring-sky-500/30'
-                            : 'bg-slate-900/70 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-cyan-300 dark:border-cyan-700/50 shadow-sm'
+                            : 'bg-slate-50 text-slate-700 hover:bg-slate-100 border-slate-200/80 dark:bg-slate-800/60 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:text-white'
                         }`}
                       >
                         <span className="text-sm shrink-0 mt-0.5">{m.icon}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1">
-                            <span className="text-[10px] text-slate-500 font-mono shrink-0">{String(m.id).padStart(2, '0')}</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">{String(m.id).padStart(2, '0')}</span>
                             <div className="flex items-center gap-1">
-                              {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />}
-                              <span className="text-[9px] text-emerald-400 font-medium">🔓</span>
+                              {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-500 dark:text-emerald-400 shrink-0" />}
+                              <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">🔓</span>
                             </div>
                           </div>
-                          <p className={`text-xs font-semibold leading-tight mt-0.5 truncate ${isActive ? 'text-sky-200 font-bold' : 'text-slate-300'}`}>
+                          <p className={`text-xs font-semibold leading-tight mt-0.5 truncate ${
+                            isActive
+                              ? 'text-blue-700 dark:text-cyan-300 font-bold'
+                              : 'text-slate-800 dark:text-slate-300'
+                          }`}>
                             {m.title}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className={`text-[10px] ${LEVEL_COLORS[m.level] || 'text-slate-500'}`}>{m.level}</span>
-                            <span className="text-slate-600 text-[10px]">·</span>
-                            <span className="text-[10px] text-slate-400">{m.duration}</span>
+                            <span className={`text-[10px] font-medium ${LEVEL_COLORS[m.level] || 'text-slate-500'}`}>{m.level}</span>
+                            <span className="text-slate-400 dark:text-slate-600 text-[10px]">·</span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400">{m.duration}</span>
                           </div>
                         </div>
                       </button>
@@ -194,7 +200,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
         {Object.keys(grouped).length === 0 && (
           <div className="text-center text-slate-500 text-xs py-6">
             <p>Aucun module correspondant à "{search}"</p>
-            <button onClick={() => { setSearch(''); setFilter('Tous'); }} className="mt-2 text-sky-400 text-xs hover:underline">
+            <button onClick={() => { setSearch(''); setFilter('Tous'); }} className="mt-2 text-blue-600 dark:text-sky-400 text-xs hover:underline">
               Réinitialiser la recherche
             </button>
           </div>
