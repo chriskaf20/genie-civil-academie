@@ -4,7 +4,7 @@ import { InlineMath, BlockMath } from 'react-katex';
 /**
  * Universal LaTeX Sanitizer
  * Automatically heals broken escape characters (\t -> \text, \n -> \nabla, etc.)
- * caused by JS template strings or string literal escaping.
+ * and typographic residues caused by JS template strings or string literal escaping.
  */
 export function sanitizeLatexString(rawMath) {
   if (rawMath === undefined || rawMath === null) return '';
@@ -29,7 +29,7 @@ export function sanitizeLatexString(rawMath) {
     .replace(/\forall/g, '\\forall')     // \f + orall -> \forall
     .replace(/\phi/g, '\\phi');
 
-  // 2. Repair common LaTeX typography artifacts
+  // 2. Repair common LaTeX typography artifacts and corrupted identifiers
   str = str
     .replace(/\bextopp\b/g, '\\text{opp}')
     .replace(/\bextadj\b/g, '\\text{adj}')
@@ -37,7 +37,12 @@ export function sanitizeLatexString(rawMath) {
     .replace(/\\ext\{/g, '\\text{')
     .replace(/\balphacdot\b/g, '\\alpha \\cdot')
     .replace(/\blambdaabla\b/g, '\\lambda \\nabla')
-    .replace(/\blambdaablaT\b/g, '\\lambda \\nabla T');
+    .replace(/\blambdaablaT\b/g, '\\lambda \\nabla T')
+    .replace(/\blambdanabla\b/g, '\\lambda \\nabla')
+    .replace(/\\lambdanabla/g, '\\lambda \\nabla')
+    .replace(/\btextK\b/g, '\\text{ K}')
+    .replace(/\\textK\b/g, '\\text{ K}')
+    .replace(/\\text\s*\{\s*K\s*\}/g, '\\text{ K}');
 
   // 3. Ensure proper space between units in \text
   str = str.replace(/\\text\s*\{([^{}]+)\}/g, (match, p1) => {
@@ -48,8 +53,8 @@ export function sanitizeLatexString(rawMath) {
 }
 
 /**
- * Safe wrapper around KaTeX InlineMath that prevents white-screen crashes
- * and sanitizes input.
+ * Safe wrapper around KaTeX InlineMath that prevents white-screen crashes,
+ * sanitizes input, and forbids line breaks inside the formula.
  */
 export function SafeInlineMath({ math, fallback, className = '' }) {
   if (math === undefined || math === null) {
@@ -63,21 +68,23 @@ export function SafeInlineMath({ math, fallback, className = '' }) {
 
   try {
     return (
-      <InlineMath
-        math={cleanMath}
-        renderError={(error) => (
-          <span
-            className={`text-amber-400 font-mono text-xs px-1 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 ${className}`}
-            title={`KaTeX: ${error?.message || 'Syntaxe LaTeX'}`}
-          >
-            {fallback || cleanMath}
-          </span>
-        )}
-      />
+      <span className={`inline-block align-baseline whitespace-nowrap ${className}`}>
+        <InlineMath
+          math={cleanMath}
+          renderError={(error) => (
+            <span
+              className="text-amber-500 dark:text-amber-400 font-mono text-xs px-1 py-0.5 rounded bg-amber-500/10 border border-amber-500/20"
+              title={`KaTeX: ${error?.message || 'Syntaxe LaTeX'}`}
+            >
+              {fallback || cleanMath}
+            </span>
+          )}
+        />
+      </span>
     );
   } catch (err) {
     return (
-      <span className={`text-amber-400 font-mono text-xs ${className}`}>
+      <span className={`inline-block align-baseline text-amber-500 font-mono text-xs ${className}`}>
         {fallback || cleanMath}
       </span>
     );
@@ -85,34 +92,26 @@ export function SafeInlineMath({ math, fallback, className = '' }) {
 }
 
 /**
- * Safe wrapper around KaTeX BlockMath with overflow-x-auto container
- * and robust crash protection.
+ * Safe wrapper around KaTeX BlockMath with error boundary
  */
 export function SafeBlockMath({ math, fallback, className = '' }) {
   if (math === undefined || math === null) {
-    return (
-      <div className={`overflow-x-auto max-w-full py-1 text-slate-300 ${className}`}>
-        {fallback || ''}
-      </div>
-    );
+    return <div className={`text-slate-300 ${className}`}>{fallback || ''}</div>;
   }
 
   const cleanMath = sanitizeLatexString(math);
   if (!cleanMath) {
-    return <div className="py-1">{fallback || ''}</div>;
+    return <div className={className}>{fallback || ''}</div>;
   }
 
   try {
     return (
-      <div className="overflow-x-auto max-w-full py-1 math-scroll -webkit-overflow-scrolling-touch">
+      <div className={`overflow-x-auto max-w-full math-scroll py-1.5 ${className}`}>
         <BlockMath
           math={cleanMath}
           renderError={(error) => (
-            <div
-              className={`p-2 my-1 rounded-xl bg-slate-950 border border-amber-500/30 text-amber-400 font-mono text-xs overflow-x-auto ${className}`}
-              title={`KaTeX: ${error?.message || 'Syntaxe LaTeX'}`}
-            >
-              {fallback || cleanMath}
+            <div className="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono">
+              ⚠️ {fallback || cleanMath}
             </div>
           )}
         />
@@ -120,11 +119,15 @@ export function SafeBlockMath({ math, fallback, className = '' }) {
     );
   } catch (err) {
     return (
-      <div className={`overflow-x-auto max-w-full py-1 text-amber-400 font-mono text-xs ${className}`}>
+      <div className={`text-amber-400 font-mono text-xs ${className}`}>
         {fallback || cleanMath}
       </div>
     );
   }
 }
 
-export default { SafeInlineMath, SafeBlockMath, sanitizeLatexString };
+export default {
+  SafeInlineMath,
+  SafeBlockMath,
+  sanitizeLatexString
+};

@@ -14,39 +14,116 @@ import { getLessonForModule } from '../data/lesson_generator.js';
 
 function parseLatexContent(text) {
   if (!text) return null;
-  const parts = text.split(/(\$\$[\s\S]+?\$\$|\$[^$]+\$)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('$$') && part.endsWith('$$')) {
-      const math = part.slice(2, -2).trim();
+
+  // Split on block math equations $$...$$
+  const blocks = text.split(/(\$\$[\s\S]+?\$\$)/g);
+
+  return blocks.map((block, bi) => {
+    const trimmed = block.trim();
+    if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
+      const math = trimmed.slice(2, -2).trim();
       return (
-        <div key={i} className="overflow-x-auto max-w-full py-1 math-scroll">
+        <div key={bi} className="overflow-x-auto max-w-full py-2 my-2 math-scroll text-center">
           <SafeBlockMath math={math} />
         </div>
       );
     }
-    if (part.startsWith('$') && part.endsWith('$')) {
-      return <SafeInlineMath key={i} math={part.slice(1, -1)} />;
-    }
-    const lines = part.split('\n');
+
+    const lines = block.split('\n');
     return lines.map((line, li) => {
-      if (line.startsWith('### ')) return <h4 key={li} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 break-words">{renderInline(line.slice(4))}</h4>;
-      if (line.startsWith('## ')) return <h3 key={li} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2 break-words">{renderInline(line.slice(3))}</h3>;
-      if (line.startsWith('> ')) return <blockquote key={li} className="border-l-2 border-blue-500 dark:border-sky-500 pl-3 my-2 text-blue-900 dark:text-sky-200 text-sm italic break-words">{renderInline(line.slice(2))}</blockquote>;
-      if (line.startsWith('- ')) return <li key={li} className="text-slate-600 dark:text-slate-300 text-sm ml-4 list-disc leading-6 break-words">{renderInline(line.slice(2))}</li>;
-      if (line.trim() === '') return <br key={li} />;
-      return <p key={li} className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed break-words">{renderInline(line)}</p>;
+      const key = `${bi}-${li}`;
+      const lineTrim = line.trim();
+
+      if (line.startsWith('### ')) {
+        return (
+          <h4 key={key} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 break-words">
+            {renderInline(line.slice(4))}
+          </h4>
+        );
+      }
+      if (line.startsWith('## ')) {
+        return (
+          <h3 key={key} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2 break-words">
+            {renderInline(line.slice(3))}
+          </h3>
+        );
+      }
+      if (line.startsWith('> ')) {
+        return (
+          <blockquote key={key} className="border-l-2 border-teal-500 dark:border-cyan-500 pl-3 my-2 text-teal-900 dark:text-cyan-200 text-sm italic break-words bg-teal-50/40 dark:bg-slate-900/40 py-1.5 rounded-r-lg">
+            {renderInline(line.slice(2))}
+          </blockquote>
+        );
+      }
+      if (line.startsWith('- ')) {
+        return (
+          <li key={key} className="text-slate-700 dark:text-slate-300 text-sm ml-4 list-disc leading-relaxed my-1 break-words">
+            {renderInline(line.slice(2))}
+          </li>
+        );
+      }
+      if (/^\d+\.\s/.test(line)) {
+        const match = line.match(/^(\d+\.)\s(.*)$/);
+        return (
+          <li key={key} className="text-slate-700 dark:text-slate-300 text-sm ml-4 list-decimal leading-relaxed my-1 break-words">
+            {renderInline(match ? match[2] : line)}
+          </li>
+        );
+      }
+      if (lineTrim === '') {
+        return null;
+      }
+      return (
+        <p key={key} className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed my-1.5 break-words">
+          {renderInline(line)}
+        </p>
+      );
     });
   });
 }
 
 function renderInline(text) {
   if (!text) return null;
-  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
-  return parts.map((p, i) => {
-    if (p.startsWith('**') && p.endsWith('**')) return <strong key={i} className="text-slate-900 dark:text-white font-semibold">{enhanceTextWithTerms(p.slice(2, -2))}</strong>;
-    if (p.startsWith('*') && p.endsWith('*')) return <em key={i} className="text-slate-700 dark:text-slate-200 italic">{enhanceTextWithTerms(p.slice(1, -1))}</em>;
-    if (p.startsWith('`') && p.endsWith('`')) return <code key={i} className="bg-slate-100 dark:bg-slate-800 text-blue-700 dark:text-sky-300 px-1.5 py-0.5 rounded text-xs mono">{p.slice(1, -1)}</code>;
-    return <span key={i}>{enhanceTextWithTerms(p)}</span>;
+
+  // Unified tokenizer: $math$, **bold**, *italic*, `code`
+  const parts = text.split(/(\$[^$]+?\$|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+?`)/g);
+
+  return parts.map((part, i) => {
+    if (!part) return null;
+
+    if (part.startsWith('$') && part.endsWith('$')) {
+      const math = part.slice(1, -1).trim();
+      return (
+        <span key={i} className="inline-block px-0.5 align-baseline text-slate-900 dark:text-slate-100 font-medium">
+          <SafeInlineMath math={math} />
+        </span>
+      );
+    }
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const inner = part.slice(2, -2);
+      return (
+        <strong key={i} className="text-slate-900 dark:text-white font-bold">
+          {renderInline(inner)}
+        </strong>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      const inner = part.slice(1, -1);
+      return (
+        <em key={i} className="text-slate-700 dark:text-slate-200 italic">
+          {renderInline(inner)}
+        </em>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={i} className="bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs mono font-semibold">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    return <span key={i}>{enhanceTextWithTerms(part)}</span>;
   });
 }
 
@@ -117,12 +194,21 @@ function ApplicationsStep({ s }) {
 }
 
 function TheoryStep({ s, diagramType, moduleSlug }) {
+  const normSlug = (moduleSlug || '').replace(/-/g, '_').toLowerCase();
+  // N'affiche StructuralSketches QUE si le module est concerné par le dimensionnement structural
+  const isStructural = ['rdm', 'beton_arme', 'metal', 'geotechnique', 'fondations', 'bois', 'precontrainte'].includes(normSlug);
+
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="prose-custom mb-4">{parseLatexContent(s.content)}</div>
-      {/* Croquis didactique de dimensionnement (section, contraintes, déformations) */}
-      <StructuralSketches title="Croquis de Dimensionnement — Section b×h, Contraintes & Axe Neutre" />
+      {/* Croquis didactique de dimensionnement (ciblé par module) */}
+      {isStructural && (
+        <StructuralSketches
+          initialTab={normSlug === 'geotechnique' || normSlug === 'fondations' ? 'geotech' : 'section'}
+          title="Croquis de Dimensionnement — Section b×h, Contraintes & Axe Neutre"
+        />
+      )}
       <DiagramViewer type={s.diagramType || diagramType} title="Schéma Théorique & Cotations" />
     </Section>
   );
@@ -366,11 +452,18 @@ function NormsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-2">
+      <div className="space-y-2.5 w-full">
         {s.norms.map(n => (
-          <div key={n.code} className="flex gap-3 items-start rounded-xl bg-blue-50/50 dark:bg-violet-500/5 border border-blue-200 dark:border-violet-500/20 p-3">
-            <span className="tag-blue shrink-0">{n.code}</span>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{n.description}</p>
+          <div
+            key={n.code}
+            className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3.5 rounded-xl bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200/80 dark:border-slate-700 p-3.5 w-full max-w-full overflow-hidden shadow-2xs"
+          >
+            <span className="tag-blue shrink-0 self-start text-xs font-mono font-bold px-2.5 py-1">
+              {n.code}
+            </span>
+            <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed flex-1 min-w-0 break-words font-medium">
+              {renderInline(n.description)}
+            </p>
           </div>
         ))}
       </div>
@@ -640,11 +733,16 @@ function KeyPointsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2.5 sm:grid-cols-2">
         {s.points.map((pt, i) => (
-          <div key={i} className="flex gap-2 rounded-xl bg-blue-50 dark:bg-gradient-to-r dark:from-blue-500/10 dark:to-transparent border border-blue-200 dark:border-blue-500/20 p-3">
-            <span className="text-yellow-500 dark:text-yellow-400 shrink-0">⭐</span>
-            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">{pt}</p>
+          <div
+            key={i}
+            className="flex items-start gap-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-blue-200/90 dark:border-slate-700/80 p-3.5 shadow-xs transition-all hover:border-blue-300 dark:hover:border-slate-600"
+          >
+            <span className="text-amber-500 dark:text-amber-400 shrink-0 text-base mt-0.5">⭐</span>
+            <div className="text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-semibold leading-relaxed break-words flex-1">
+              {renderInline(pt)}
+            </div>
           </div>
         ))}
       </div>
