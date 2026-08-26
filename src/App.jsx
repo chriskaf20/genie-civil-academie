@@ -7,6 +7,7 @@ import SciCalc from './components/SciCalc.jsx';
 import GlossarySearch from './components/GlossarySearch.jsx';
 import PwaInstallPrompt from './components/PwaInstallPrompt.jsx';
 import GceaLogoSvg from './components/GceaLogoSvg.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { modules } from './data/modules.js';
 import './styles.css';
 
@@ -309,15 +310,40 @@ export default function App() {
         <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-8 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
           <div className={`min-h-full w-full max-w-full overflow-x-hidden ${isDark ? 'eng-grid-bg' : ''}`}>
             <div className="px-3 py-4 sm:px-6 md:px-8 w-full max-w-full overflow-x-hidden">
-              {view === 'dashboard' ? (
-                <Dashboard
-                  onSelectModule={selectModule}
-                  completedIds={progress.completedIds}
-                  theme={theme}
-                />
-              ) : (
-                <LessonCanvas module={selectedModule} theme={theme} />
-              )}
+              <ErrorBoundary
+                title="Erreur lors de l'affichage du module"
+                fallback={(error, reset) => (
+                  <div className="rounded-3xl border border-rose-500/40 bg-slate-900/90 p-6 sm:p-8 text-center space-y-4 max-w-xl mx-auto my-8 shadow-xl">
+                    <span className="text-3xl">⚠️</span>
+                    <h3 className="text-lg font-bold text-rose-400">Une difficulté d'affichage est survenue</h3>
+                    <p className="text-slate-300 text-sm leading-relaxed">{error?.message || 'Erreur inconnue.'}</p>
+                    <div className="flex gap-3 justify-center pt-2">
+                      <button
+                        onClick={reset}
+                        className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        🔄 Réessayer
+                      </button>
+                      <button
+                        onClick={goHome}
+                        className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        🏠 Retour à l'accueil
+                      </button>
+                    </div>
+                  </div>
+                )}
+              >
+                {view === 'dashboard' ? (
+                  <Dashboard
+                    onSelectModule={selectModule}
+                    completedIds={progress.completedIds}
+                    theme={theme}
+                  />
+                ) : (
+                  <LessonCanvas module={selectedModule} theme={theme} />
+                )}
+              </ErrorBoundary>
             </div>
           </div>
         </main>
