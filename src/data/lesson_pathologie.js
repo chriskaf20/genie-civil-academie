@@ -104,8 +104,8 @@ La concentration en chlorures $C(x,t)$ à une profondeur $x$ au bout d'un temps 
 
 $$C(x,t) = C_s \\cdot \\left( 1 - \\text{erf}\\left( \\frac{x}{2 \\sqrt{D_{cl} \\cdot t}} \\right) \\right)$$
 
-- $D_{cl}$ = coefficient de diffusion apparente des chlorures [$\\\\text{cm}^2/\\\\text{s}$].
-- $\\text{erf}$ = fonction d'erreur mathématique.
+- $D_{cl}$ = coefficient de diffusion apparente des chlorures [$\text{cm}^2/\text{s}$].
+- $\text{erf}$ = fonction d'erreur mathématique.
 
 ### 3. Calcul du Renforcement par Fibre de Carbone (PRFC)
 

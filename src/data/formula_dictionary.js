@@ -476,28 +476,28 @@ export const DOMAIN_VARIABLE_OVERRIDES = {
       symbol: 'H',
       name: "Hypoténuse (côté opposé à l'angle droit)",
       unit: '\\text{m ou mm}',
-      role: "Le plus long côté du triangle rectangle : H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}.",
+      role: "Le plus long côté du triangle rectangle : $H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}$.",
       category: 'Trigonométrie'
     },
     '\\text{opp}': {
       symbol: '\\text{opp}',
       name: "Côté Opposé",
       unit: '\\text{m ou mm}',
-      role: "Longueur du côté situé en face de l'angle aigu \\theta.",
+      role: "Longueur du côté situé en face de l'angle aigu $\\theta$.",
       category: 'Trigonométrie'
     },
     '\\text{adj}': {
       symbol: '\\text{adj}',
       name: "Côté Adjacent",
       unit: '\\text{m ou mm}',
-      role: "Longueur du côté formant l'angle \\theta avec l'hypoténuse.",
+      role: "Longueur du côté formant l'angle $\\theta$ avec l'hypoténuse.",
       category: 'Trigonométrie'
     },
     '\\theta': {
       symbol: '\\theta',
       name: "Angle aigu",
       unit: '° \\text{ (degrés)}',
-      role: "Angle d'inclinaison : p(\\%) = \\tan(\\theta) \\times 100.",
+      role: "Angle d'inclinaison : $p(\\%) = \\tan(\\theta) \\cdot 100$.",
       category: 'Trigonométrie'
     }
   },
@@ -506,7 +506,7 @@ export const DOMAIN_VARIABLE_OVERRIDES = {
       symbol: '\\Delta L',
       name: "Allongement thermique",
       unit: '\\text{mm ou m}',
-      role: "Variation de longueur due aux variations de température : \\Delta L = \\alpha \\cdot L \\cdot \\Delta T.",
+      role: "Variation de longueur due aux variations de température : $\\Delta L = \\alpha \\cdot L \\cdot \\Delta T$.",
       category: 'Physique Thermique'
     },
     '\\alpha': {
@@ -520,7 +520,7 @@ export const DOMAIN_VARIABLE_OVERRIDES = {
       symbol: 'q',
       name: "Flux thermique surfacique",
       unit: '\\text{W/m}^2',
-      role: "Puissance thermique traversant 1 m² de paroi : q = -\\lambda \\cdot \\nabla T.",
+      role: "Puissance thermique traversant 1 m² de paroi : $q = -\\lambda \\cdot \\nabla T$.",
       category: 'Thermique'
     },
     '\\lambda': {
@@ -534,7 +534,7 @@ export const DOMAIN_VARIABLE_OVERRIDES = {
       symbol: 'R',
       name: "Résistance thermique de la paroi",
       unit: '\\text{m}^2\\cdot\\text{K/W}',
-      role: "Pouvoir isolant de l'élément de paroi : R = e / \\lambda.",
+      role: "Pouvoir isolant de l'élément de paroi : $R = e / \\lambda$.",
       category: 'Thermique'
     }
   },

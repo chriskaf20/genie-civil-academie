@@ -1,20 +1,9 @@
 import { useState } from 'react';
-import { SafeBlockMath, SafeInlineMath } from './SafeMath.jsx';
+import { SafeBlockMath, SafeInlineMath, renderInlineLatex } from './SafeMath.jsx';
 import { extractVariablesFromLatex } from '../data/formula_dictionary.js';
 
 /**
  * FormulaExplainer — Cartouche Universelle d'Explication Pédagogique des Formules
- *
- * Fonctionnalités clés :
- * 1. Formule principale KaTeX en grand format (haute lisibilité, support dark/light, SafeMath).
- * 2. Grille bicolore cyan/émeraude "Anatomie de la formule" avec décomposition exhaustive :
- *    - Symbole KaTeX exact
- *    - Nom clair en français
- *    - Unité usuelle (SI / chantier)
- *    - Rôle physique vulgarisé pour les ingénieurs débutants
- * 3. Dictionnaire de repli automatique (100+ variables de Génie Civil reconnues sans configuration).
- * 4. Mode interactif : sélection d'une variable au clic/toucher pour afficher ses détails isolés.
- * 5. Copie du code LaTeX et conseils de conversion d'unités de l'ingénieur.
  */
 export default function FormulaExplainer({
   formula,
@@ -73,14 +62,14 @@ export default function FormulaExplainer({
             type="button"
             onClick={handleCopyLatex}
             title="Copier la formule en code LaTeX"
-            className="text-[11px] px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-cyan-300 transition-colors flex items-center gap-1 shadow-2xs active:scale-95"
+            className="text-[11px] px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-cyan-300 transition-colors flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer"
           >
             {copied ? '✓ Copié' : '📋 LaTeX'}
           </button>
           <button
             type="button"
             onClick={() => setExpanded(prev => !prev)}
-            className="text-[11px] px-2.5 py-1 rounded-lg bg-teal-600 dark:bg-teal-700 text-white font-semibold hover:bg-teal-500 transition-all shadow-sm active:scale-95"
+            className="text-[11px] px-2.5 py-1 rounded-lg bg-teal-600 dark:bg-teal-700 text-white font-semibold hover:bg-teal-500 transition-all shadow-sm active:scale-95 cursor-pointer"
           >
             {expanded ? 'Masquer détails ▴' : 'Anatomie complète ▾'}
           </button>
@@ -93,9 +82,9 @@ export default function FormulaExplainer({
           <SafeBlockMath math={formulaLatex} />
         </div>
         {formulaDesc && (
-          <p className="text-xs text-slate-600 dark:text-slate-300 mt-2 text-center max-w-2xl mx-auto leading-relaxed italic">
-            {formulaDesc}
-          </p>
+          <div className="text-xs text-slate-600 dark:text-slate-300 mt-2 text-center max-w-2xl mx-auto leading-relaxed italic">
+            {renderInlineLatex(formulaDesc)}
+          </div>
         )}
       </div>
 
@@ -147,9 +136,9 @@ export default function FormulaExplainer({
                   </div>
 
                   {/* Physical meaning / role */}
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pl-1.5 border-l-2 border-teal-300 dark:border-teal-700 mt-2">
-                    {v.role || v.meaning}
-                  </p>
+                  <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed pl-1.5 border-l-2 border-teal-300 dark:border-teal-700 mt-2">
+                    {renderInlineLatex(v.role || v.meaning)}
+                  </div>
 
                   {/* Category footer */}
                   {v.category && (
@@ -170,7 +159,7 @@ export default function FormulaExplainer({
             <span className="text-amber-600 dark:text-amber-400 text-base shrink-0 mt-0.5">💡</span>
             <div className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
               <span className="font-bold text-amber-900 dark:text-amber-300">Règle de bon sens de l'ingénieur : </span>
-              {formulaRule || 'Homogénéité absolue des unités : convertissez toujours les forces en Newtons (N) et les dimensions en millimètres (mm). La contrainte s\'exprime alors directement en Mégapascals (1 N/mm² = 1 MPa) sans risque d\'erreur d\'ordre de grandeur.'}
+              {renderInlineLatex(formulaRule || 'Homogénéité absolue des unités : convertissez toujours les forces en Newtons (N) et les dimensions en millimètres (mm). La contrainte s\'exprime alors directement en Mégapascals (1 N/mm² = 1 MPa) sans risque d\'erreur d\'ordre de grandeur.')}
             </div>
           </div>
         </div>

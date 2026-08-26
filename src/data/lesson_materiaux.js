@@ -94,7 +94,7 @@ Le ciment est composé de silicate tricalcique ($C_3S$) et dicalcique ($C_2S$). 
 $$C_3S + H_2O \\longrightarrow C-S-H + Ca(OH)_2 \\quad (\\text{Portlandite})$$
 
 - **C-S-H (Silicates de Calcium Hydratés)** : Gel fibreux assurant la résistance mécanique et la cohésion du béton.
-- **$\\\\text{Ca(OH)}_2$ (Portlandite)** : Base forte ($pH \\\\approx 12{,}5$) qui crée un milieu alcalin **passivant les aciers armatures** contre la rouille.
+- **$\text{Ca(OH)}_2$ (Portlandite)** : Base forte ($pH \approx 12{,}5$) qui crée un milieu alcalin **passivant les aciers armatures** contre la rouille.
 
 ### 2. Formulation du béton selon Dreux-Gorisse
 

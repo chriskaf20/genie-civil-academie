@@ -43,10 +43,10 @@ En génie civil :
       id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'trig_interactive',
       content: `Dans tout triangle rectangle dont un angle aigu est $\\theta$ :
 - **Hypoténuse ($H$)** : côté opposé à l'angle droit (le plus long).
-- **Côté Opposé ($\\\\text{opp}$)** : côté en face de l'angle $\\theta$.
-- **Côté Adjacent ($\\\\text{adj}$)** : côté formant l'angle $\\theta$ avec l'hypoténuse.
+- **Côté Opposé ($\text{opp}$)** : côté en face de l'angle $\\theta$.
+- **Côté Adjacent ($\text{adj}$)** : côté formant l'angle $\\theta$ avec l'hypoténuse.
 
-Théorème de Pythagore : $H^2 = \\\\text{adj}^2 + \\\\text{opp}^2$`,
+Théorème de Pythagore : $H^2 = \text{adj}^2 + \text{opp}^2$`,
     },
     {
       id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'trig_interactive',

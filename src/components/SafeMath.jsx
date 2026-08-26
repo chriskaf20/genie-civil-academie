@@ -3,7 +3,7 @@ import { InlineMath, BlockMath } from 'react-katex';
 
 /**
  * Universal LaTeX Sanitizer
- * Automatically heals broken escape characters (\t -> \text, \n -> \nabla, etc.)
+ * Automatically heals broken escape characters (\t -> \text, \n -> \nabla, multiple \\, etc.)
  * caused by JS template strings or string literal escaping.
  */
 export function sanitizeLatexString(rawMath) {
@@ -27,14 +27,21 @@ export function sanitizeLatexString(rawMath) {
     .replace(/\x08egin/g, '\\begin')       // \b + egin -> \begin
     .replace(/\x08ar/g, '\\bar')           // \b + ar -> \bar
     .replace(/\x0Crac/g, '\\frac')         // \f + rac -> \frac
-    .replace(/\x0Corall/g, '\\forall')     // \f + orall -> \forall
+    .replace(/\x0Corall/g, '\\forall')     // \f + orall -> \forall;
 
-  // 2. Repair common LaTeX typography artifacts and corrupted identifiers
+  // 2. Normalize multiple backslashes before LaTeX command keywords (e.g. \\text -> \text, \\theta -> \theta)
+  str = str.replace(/\\{2,}(text|tan|tau|theta|times|triangle|nabla|neq|rho|right|beta|begin|bar|frac|forall|sin|cos|sqrt|alpha|lambda|sigma|cdot|approx|pm|le|ge|gamma|phi|sum|int|infty|quad|qquad|textopp|textadj)/g, '\\$1');
+
+  // 3. Repair common LaTeX typography artifacts and corrupted identifiers
   str = str
+    .replace(/\btextopp\b/g, '\\text{opp}')
+    .replace(/\btextadj\b/g, '\\text{adj}')
     .replace(/\bextopp\b/g, '\\text{opp}')
     .replace(/\bextadj\b/g, '\\text{adj}')
     .replace(/\bext\{/g, '\\text{')
     .replace(/\\ext\{/g, '\\text{')
+    .replace(/\\text\{opp\}\s*\\text\{opp\}/g, '\\text{opp}')
+    .replace(/\\text\{adj\}\s*\\text\{adj\}/g, '\\text{adj}')
     .replace(/\balphacdot\b/g, '\\alpha \\cdot')
     .replace(/\blambdaabla\b/g, '\\lambda \\nabla')
     .replace(/\blambdaablaT\b/g, '\\lambda \\nabla T')
@@ -105,8 +112,56 @@ export function SafeBlockMath({ math, fallback, className = '' }) {
   );
 }
 
+/**
+ * Helper to parse and render text with embedded inline LaTeX $ ... $ and formatting
+ */
+export function renderInlineLatex(text) {
+  if (!text) return null;
+  if (typeof text !== 'string') return text;
+
+  // Split on inline math $...$, bold **...**, italic *...*, and code `...`
+  const parts = text.split(/(\$[^$]+?\$|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+?`)/g);
+
+  return parts.map((part, i) => {
+    if (!part) return null;
+
+    if (part.startsWith('$') && part.endsWith('$')) {
+      const math = part.slice(1, -1).trim();
+      return (
+        <span key={i} className="inline-block px-0.5 align-baseline">
+          <SafeInlineMath math={math} />
+        </span>
+      );
+    }
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="font-bold text-slate-900 dark:text-white">
+          {renderInlineLatex(part.slice(2, -2))}
+        </strong>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return (
+        <em key={i} className="italic text-slate-700 dark:text-slate-200">
+          {renderInlineLatex(part.slice(1, -1))}
+        </em>
+      );
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={i} className="bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs mono font-semibold">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    return <span key={i}>{part}</span>;
+  });
+}
+
 export default {
   SafeInlineMath,
   SafeBlockMath,
-  sanitizeLatexString
+  sanitizeLatexString,
+  renderInlineLatex
 };
