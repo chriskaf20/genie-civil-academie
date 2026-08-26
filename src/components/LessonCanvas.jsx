@@ -226,6 +226,7 @@ function FormulasStep({ s, diagramType, moduleSlug }) {
             description={f.description}
             variables={f.variables}
             ruleOfThumb={f.ruleOfThumb}
+            domain={moduleSlug}
             moduleSlug={moduleSlug}
           />
         ))}

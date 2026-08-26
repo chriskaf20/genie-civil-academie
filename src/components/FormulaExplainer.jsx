@@ -24,6 +24,7 @@ export default function FormulaExplainer({
   role,
   variables: customVariables,
   ruleOfThumb,
+  domain = '',
   moduleSlug = '',
   className = ''
 }) {
@@ -37,10 +38,10 @@ export default function FormulaExplainer({
   const formulaDesc = description || (formula && formula.description) || role || (formula && formula.role) || '';
   const formulaRule = ruleOfThumb || (formula && formula.ruleOfThumb) || '';
   const varsToUse = customVariables || (formula && formula.variables) || [];
-  const currentSlug = moduleSlug || (formula && formula.moduleSlug) || '';
+  const currentDomain = domain || moduleSlug || (formula && (formula.domain || formula.moduleSlug)) || '';
 
-  // Résolution automatique et contextualisée des variables via le dictionnaire universel
-  const variables = extractVariablesFromLatex(formulaLatex, varsToUse, currentSlug);
+  // Résolution automatique et contextualisée des variables selon le domaine
+  const variables = extractVariablesFromLatex(formulaLatex, varsToUse, currentDomain);
 
   const handleCopyLatex = (e) => {
     e.stopPropagation();
