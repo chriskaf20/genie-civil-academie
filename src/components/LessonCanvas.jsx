@@ -5,6 +5,9 @@ import TrigWidget from './TrigWidget.jsx';
 import TrigSVG from './TrigSVG.jsx';
 import SciCalc from './SciCalc.jsx';
 import DiagramViewer from './DiagramViewer.jsx';
+import FormulaExplainer from './FormulaExplainer.jsx';
+import StructuralSketches from './StructuralSketches.jsx';
+import TechTooltip, { enhanceTextWithTerms } from './TechTooltip.jsx';
 import { getLessonForModule } from '../data/lesson_generator.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -26,9 +29,9 @@ function parseLatexContent(text) {
     }
     const lines = part.split('\n');
     return lines.map((line, li) => {
-      if (line.startsWith('### ')) return <h4 key={li} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 break-words">{line.slice(4)}</h4>;
-      if (line.startsWith('## ')) return <h3 key={li} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2 break-words">{line.slice(3)}</h3>;
-      if (line.startsWith('> ')) return <blockquote key={li} className="border-l-2 border-blue-500 dark:border-sky-500 pl-3 my-2 text-blue-900 dark:text-sky-200 text-sm italic break-words">{line.slice(2)}</blockquote>;
+      if (line.startsWith('### ')) return <h4 key={li} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 break-words">{renderInline(line.slice(4))}</h4>;
+      if (line.startsWith('## ')) return <h3 key={li} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2 break-words">{renderInline(line.slice(3))}</h3>;
+      if (line.startsWith('> ')) return <blockquote key={li} className="border-l-2 border-blue-500 dark:border-sky-500 pl-3 my-2 text-blue-900 dark:text-sky-200 text-sm italic break-words">{renderInline(line.slice(2))}</blockquote>;
       if (line.startsWith('- ')) return <li key={li} className="text-slate-600 dark:text-slate-300 text-sm ml-4 list-disc leading-6 break-words">{renderInline(line.slice(2))}</li>;
       if (line.trim() === '') return <br key={li} />;
       return <p key={li} className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed break-words">{renderInline(line)}</p>;
@@ -37,12 +40,13 @@ function parseLatexContent(text) {
 }
 
 function renderInline(text) {
+  if (!text) return null;
   const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
   return parts.map((p, i) => {
-    if (p.startsWith('**') && p.endsWith('**')) return <strong key={i} className="text-slate-900 dark:text-white font-semibold">{p.slice(2, -2)}</strong>;
-    if (p.startsWith('*') && p.endsWith('*')) return <em key={i} className="text-slate-700 dark:text-slate-200 italic">{p.slice(1, -1)}</em>;
+    if (p.startsWith('**') && p.endsWith('**')) return <strong key={i} className="text-slate-900 dark:text-white font-semibold">{enhanceTextWithTerms(p.slice(2, -2))}</strong>;
+    if (p.startsWith('*') && p.endsWith('*')) return <em key={i} className="text-slate-700 dark:text-slate-200 italic">{enhanceTextWithTerms(p.slice(1, -1))}</em>;
     if (p.startsWith('`') && p.endsWith('`')) return <code key={i} className="bg-slate-100 dark:bg-slate-800 text-blue-700 dark:text-sky-300 px-1.5 py-0.5 rounded text-xs mono">{p.slice(1, -1)}</code>;
-    return p;
+    return <span key={i}>{enhanceTextWithTerms(p)}</span>;
   });
 }
 
@@ -112,31 +116,33 @@ function ApplicationsStep({ s }) {
   );
 }
 
-function TheoryStep({ s, diagramType }) {
+function TheoryStep({ s, diagramType, moduleSlug }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="prose-custom mb-4">{parseLatexContent(s.content)}</div>
+      {/* Croquis didactique de dimensionnement (section, contraintes, déformations) */}
+      <StructuralSketches title="Croquis de Dimensionnement — Section b×h, Contraintes & Axe Neutre" />
       <DiagramViewer type={s.diagramType || diagramType} title="Schéma Théorique & Cotations" />
     </Section>
   );
 }
 
-function FormulasStep({ s, diagramType }) {
+function FormulasStep({ s, diagramType, moduleSlug }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3 mb-4 w-full max-w-full">
-        {s.formulas.map(f => (
-          <div key={f.name} className="formula-card w-full max-w-full overflow-x-auto">
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <p className="text-xs text-blue-600 dark:text-sky-300 font-semibold uppercase tracking-wider">{f.name}</p>
-            </div>
-            <div className="overflow-x-auto max-w-full py-1 math-scroll">
-              <SafeBlockMath math={f.latex} />
-            </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{f.description}</p>
-          </div>
+      <div className="space-y-4 mb-4 w-full max-w-full">
+        {s.formulas.map((f, i) => (
+          <FormulaExplainer
+            key={f.name || i}
+            formula={f}
+            name={f.name}
+            latex={f.latex}
+            description={f.description}
+            variables={f.variables}
+            ruleOfThumb={f.ruleOfThumb}
+          />
         ))}
       </div>
       <DiagramViewer type={s.diagramType || diagramType} title="Illustration des Équations & Sollicitations" />
@@ -704,7 +710,7 @@ export default function LessonCanvas({ module, theme }) {
   const diagramType = lesson.diagramType || 'trig_interactive';
 
   const renderStep = (s) => {
-    const props = { s, showSciCalc, setShowSciCalc, diagramType };
+    const props = { s, showSciCalc, setShowSciCalc, diagramType, moduleSlug: module?.slug };
     switch (s.type) {
       case 'definition': return <DefinitionStep key={s.id} {...props} />;
       case 'importance': return <ImportanceStep key={s.id} {...props} />;
