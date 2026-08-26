@@ -4,28 +4,43 @@ import { TECH_TERMS } from '../data/tech_terms.js';
 /**
  * TechTooltip — Infobulle pédagogique pour débutants
  * Affiche une infobulle soignée avec définition, catégorie, icône et équivalent anglais.
+ * Positionnement intelligent automatique (haut/bas) et fermeture au clic extérieur.
  */
 export default function TechTooltip({ term, children, className = '' }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [coords, setCoords] = useState({ top: 0, left: 0 });
+  const [position, setPosition] = useState({ top: 0, left: 0, placeBelow: false });
   const triggerRef = useRef(null);
-  const info = TECH_TERMS[term] || {
-    term: term,
-    full: term,
+  const popupRef = useRef(null);
+
+  const cleanTerm = typeof term === 'string' ? term.trim() : '';
+  const info = TECH_TERMS[cleanTerm] || {
+    term: cleanTerm,
+    full: cleanTerm,
     summary: 'Terme technique usuel en ingénierie civile.',
     category: 'Général',
     icon: '💡'
   };
 
-  const handleMouseEnter = () => {
+  const updateCoordinates = () => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
-      setCoords({
-        top: rect.top - 8,
-        left: Math.max(16, Math.min(window.innerWidth - 300, rect.left + rect.width / 2 - 140))
+      const popupWidth = Math.min(300, window.innerWidth - 32);
+      const placeBelow = rect.top < 160;
+
+      let left = rect.left + rect.width / 2 - popupWidth / 2;
+      left = Math.max(16, Math.min(window.innerWidth - popupWidth - 16, left));
+
+      setPosition({
+        top: placeBelow ? rect.bottom + 8 : rect.top - 8,
+        left,
+        placeBelow
       });
-      setIsOpen(true);
     }
+  };
+
+  const handleMouseEnter = () => {
+    updateCoordinates();
+    setIsOpen(true);
   };
 
   const handleMouseLeave = () => {
@@ -34,15 +49,28 @@ export default function TechTooltip({ term, children, className = '' }) {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    if (triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      setCoords({
-        top: rect.top - 8,
-        left: Math.max(16, Math.min(window.innerWidth - 300, rect.left + rect.width / 2 - 140))
-      });
-      setIsOpen(prev => !prev);
-    }
+    updateCoordinates();
+    setIsOpen(prev => !prev);
   };
+
+  // Fermeture au clic à l'extérieur
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleOutsideClick = (e) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target) &&
+        popupRef.current && !popupRef.current.contains(e.target)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('touchstart', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -51,35 +79,40 @@ export default function TechTooltip({ term, children, className = '' }) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
-        className={`inline-flex items-center cursor-help border-b-2 border-dotted border-blue-400 dark:border-sky-400 text-blue-800 dark:text-sky-300 font-semibold px-0.5 rounded transition-colors hover:bg-blue-50 dark:hover:bg-blue-900/40 ${className}`}
-        title={`Cliquez pour la définition de ${term}`}
+        className={`inline-flex items-center cursor-help border-b-2 border-dotted border-teal-400 dark:border-cyan-400 text-teal-800 dark:text-cyan-300 font-semibold px-0.5 rounded transition-colors hover:bg-teal-50 dark:hover:bg-teal-950/50 ${className}`}
+        title={`Définition de ${cleanTerm}`}
       >
-        {children || term}
+        {children || cleanTerm}
       </span>
 
       {isOpen && (
         <div
-          className="fixed z-50 w-72 max-w-[calc(100vw-2rem)] p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl backdrop-blur-xl animate-fade-up text-left text-slate-800 dark:text-slate-100"
+          ref={popupRef}
+          className="fixed z-50 w-72 max-w-[calc(100vw-2rem)] p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-teal-200 dark:border-slate-700 shadow-2xl backdrop-blur-xl animate-fade-up text-left text-slate-800 dark:text-slate-100"
           style={{
-            top: `${coords.top}px`,
-            left: `${coords.left}px`,
-            transform: 'translateY(-100%)'
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            transform: position.placeBelow ? 'none' : 'translateY(-100%)'
           }}
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
           {/* Header */}
           <div className="flex items-start justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2 mb-2">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">{info.icon || '💡'}</span>
-              <div>
-                <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight">{info.full || info.term}</p>
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-lg shrink-0">{info.icon || '💡'}</span>
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-slate-900 dark:text-white leading-tight truncate">
+                  {info.full || info.term}
+                </p>
                 {info.en && (
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 italic">🇬🇧 {info.en}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 italic truncate">
+                    🇬🇧 {info.en}
+                  </p>
                 )}
               </div>
             </div>
-            <span className="text-[9px] uppercase px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-sky-300 font-bold shrink-0">
+            <span className="text-[9px] uppercase px-1.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/60 text-teal-700 dark:text-cyan-300 font-bold shrink-0">
               {info.category || 'Terme'}
             </span>
           </div>
@@ -98,7 +131,9 @@ export default function TechTooltip({ term, children, className = '' }) {
           {/* Footer badge */}
           <div className="mt-2.5 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
             <span>💡 Lexique GCEA</span>
-            <span className="font-mono text-[9px] bg-slate-100 dark:bg-slate-800 px-1 rounded">Astuce débutant</span>
+            <span className="font-mono text-[9px] bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
+              Astuce débutant
+            </span>
           </div>
         </div>
       )}

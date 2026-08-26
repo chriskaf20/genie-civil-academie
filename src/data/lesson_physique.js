@@ -24,10 +24,10 @@ export const lesson_physique = {
 
 ### Les 3 grands piliers de la physique du génie civil :
 1. **La Mécanique Newtonienne (Statique & Dynamique)** : Étude du mouvement et de l'équilibre des corps sous l'action des forces extérieures (pesanteur, vent, séisme, frottement).
-2. **La Thermodynamique & Dilatation Thermique** : Analyse des variations dimensionnelles ($\Delta L = \alpha \cdot L \cdot \Delta T$) subies par les structures sous l'effet des cycles climatiques d'été et d'hiver.
-3. **La Thermique du Bâtiment (Conduction, Convection, Rayonnement)** : Transfert de chaleur à travers l'enveloppe et isolation énergétique (Loi de Fourier $q = -\lambda \nabla T$).
+2. **La Thermodynamique & Dilatation Thermique** : Analyse des variations dimensionnelles ($\\\\Delta L = \\\\alpha \\\\cdot L \\\\cdot \\\\Delta T$) subies par les structures sous l'effet des cycles climatiques d'été et d'hiver.
+3. **La Thermique du Bâtiment (Conduction, Convection, Rayonnement)** : Transfert de chaleur à travers l'enveloppe et isolation énergétique (Loi de Fourier $q = -\\\\lambda \\\\nabla T$).
 
-> 💡 **La merveille de la nature** : Le béton ($\alpha \approx 10 \times 10^{-6}\text{ K}^{-1}$) et l'acier ($\alpha \approx 12 \times 10^{-6}\text{ K}^{-1}$) ont des coefficients de dilatation thermique quasi identiques ! C'est ce qui rend l'association du Béton Armé possible sans destruction par cisaillement thermique.`,
+> 💡 **La merveille de la nature** : Le béton ($\\\\alpha \\\\approx 10 \\\\times 10^{-6}\\\\text{ K}^{-1}$) et l'acier ($\\\\alpha \\\\approx 12 \\\\times 10^{-6}\\\\text{ K}^{-1}$) ont des coefficients de dilatation thermique quasi identiques ! C'est ce qui rend l'association du Béton Armé possible sans destruction par cisaillement thermique.`,
     },
 
     {
@@ -39,10 +39,10 @@ export const lesson_physique = {
       content: `Ignorer les principes fondamentaux de la physique entraîne la fissuration prématurée des ouvrages ou leur ruine thermique et mécanique.
 
 - **Évitement du blocage thermique des ponts** : Un tablier de pont de 100 m s'allonge de plus de 5 cm entre l'hiver (-10°C) et l'été (+40°C). Sans joint de dilatation, les réactions d'encastrement ruineraient les culées.
-- **Préservation du confort thermique des bâtiments** : Maîtriser la résistance thermique $R = e / \lambda$ permet de diviser la consommation de chauffage par 5.
-- **Sécurité sous actions climatiques** : La pression dynamique du vent varie comme le carré de la vitesse ($q_p \propto v^2$). Une tempête à 160 km/h exerce 4 fois plus d'effort qu'un vent à 80 km/h !
+- **Préservation du confort thermique des bâtiments** : Maîtriser la résistance thermique $R = e / \\\\lambda$ permet de diviser la consommation de chauffage par 5.
+- **Sécurité sous actions climatiques** : La pression dynamique du vent varie comme le carré de la vitesse ($q_p \\\\propto v^2$). Une tempête à 160 km/h exerce 4 fois plus d'effort qu'un vent à 80 km/h !
 
-> ⚠️ **Règle d'or** : "La physique ne négocie jamais. Si une dilatation thermique est bloquée, la contrainte engendrée $\sigma_{th} = E \cdot \alpha \cdot \Delta T$ est indépendante de la longueur de la pièce !"`,
+> ⚠️ **Règle d'or** : "La physique ne négocie jamais. Si une dilatation thermique est bloquée, la contrainte engendrée $\\\\sigma_{th} = E \\\\cdot \\\\alpha \\\\cdot \\\\Delta T$ est indépendante de la longueur de la pièce !"`,
     },
 
     {

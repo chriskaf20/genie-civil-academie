@@ -447,7 +447,7 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
 2. **Géothermie sur Pieux** : Utilisation des fondations béton pour échanger avec le sol à 12-14°C.
 3. **Pompes à Chaleur (PAC)** : Rendement caractérisé par le $COP = Q_{restituée} / W_{élec} \ge 4{,}0$.
 4. **Geocooling** : Rafraîchissement estival ultra-économique par circulation directe dans le sol.
-5. **Solaire Photovoltaïque** : Production $E = P_{crête} \cdot H \cdot PR$ (1 kWc $\approx 5\text{ m}^2$).
+5. **Solaire Photovoltaïque** : Production $E = P_{crête} \\cdot H \\cdot PR$ (1 kWc $\\approx 5\\\\text{ m}^2$).
 6. **Smart Grids** : Pilotage intelligent de l'autoconsommation et de la recharge électrique.`,
     },
 
