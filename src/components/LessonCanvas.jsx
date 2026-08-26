@@ -1,12 +1,10 @@
 import { useState, useRef } from 'react';
-import 'katex/dist/katex.min.css';
-import { SafeBlockMath, SafeInlineMath } from './SafeMath.jsx';
-import TrigWidget from './TrigWidget.jsx';
-import TrigSVG from './TrigSVG.jsx';
-import SciCalc from './SciCalc.jsx';
 import DiagramViewer from './DiagramViewer.jsx';
+import TrigWidget from './TrigWidget.jsx';
+import SciCalc from './SciCalc.jsx';
 import FormulaExplainer from './FormulaExplainer.jsx';
 import StructuralSketches from './StructuralSketches.jsx';
+import { SafeInlineMath, SafeBlockMath } from './SafeMath.jsx';
 import TechTooltip, { enhanceTextWithTerms } from './TechTooltip.jsx';
 import { getLessonForModule } from '../data/lesson_generator.js';
 
@@ -23,7 +21,7 @@ function parseLatexContent(text) {
     if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
       const math = trimmed.slice(2, -2).trim();
       return (
-        <div key={bi} className="overflow-x-auto max-w-full py-2 my-2 math-scroll text-center">
+        <div key={bi} className="overflow-x-auto max-w-full py-2.5 my-3 math-scroll text-center">
           <SafeBlockMath math={math} />
         </div>
       );
@@ -36,28 +34,28 @@ function parseLatexContent(text) {
 
       if (line.startsWith('### ')) {
         return (
-          <h4 key={key} className="text-base font-bold text-slate-900 dark:text-white mt-4 mb-2 break-words">
+          <h4 key={key} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2.5 break-words">
             {renderInline(line.slice(4))}
           </h4>
         );
       }
       if (line.startsWith('## ')) {
         return (
-          <h3 key={key} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2 break-words">
+          <h3 key={key} className="text-xl font-bold text-slate-900 dark:text-white mt-6 mb-3 break-words">
             {renderInline(line.slice(3))}
           </h3>
         );
       }
       if (line.startsWith('> ')) {
         return (
-          <blockquote key={key} className="border-l-2 border-teal-500 dark:border-cyan-500 pl-3 my-2 text-teal-900 dark:text-cyan-200 text-sm italic break-words bg-teal-50/40 dark:bg-slate-900/40 py-1.5 rounded-r-lg">
+          <blockquote key={key} className="border-l-4 border-teal-500 dark:border-cyan-500 pl-4 py-2.5 my-3 text-teal-950 dark:text-cyan-100 text-base italic break-words bg-teal-50/60 dark:bg-slate-900/70 rounded-r-xl leading-relaxed">
             {renderInline(line.slice(2))}
           </blockquote>
         );
       }
       if (line.startsWith('- ')) {
         return (
-          <li key={key} className="text-slate-700 dark:text-slate-300 text-sm ml-4 list-disc leading-relaxed my-1 break-words">
+          <li key={key} className="text-slate-700 dark:text-slate-200 text-base ml-5 list-disc leading-relaxed my-1.5 break-words">
             {renderInline(line.slice(2))}
           </li>
         );
@@ -65,7 +63,7 @@ function parseLatexContent(text) {
       if (/^\d+\.\s/.test(line)) {
         const match = line.match(/^(\d+\.)\s(.*)$/);
         return (
-          <li key={key} className="text-slate-700 dark:text-slate-300 text-sm ml-4 list-decimal leading-relaxed my-1 break-words">
+          <li key={key} className="text-slate-700 dark:text-slate-200 text-base ml-5 list-decimal leading-relaxed my-1.5 break-words">
             {renderInline(match ? match[2] : line)}
           </li>
         );
@@ -74,7 +72,7 @@ function parseLatexContent(text) {
         return null;
       }
       return (
-        <p key={key} className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed my-1.5 break-words">
+        <p key={key} className="text-slate-700 dark:text-slate-200 text-base leading-relaxed my-2 break-words">
           {renderInline(line)}
         </p>
       );
@@ -130,10 +128,10 @@ function renderInline(text) {
 // ── Step Icon Badge ───────────────────────────────────────────────────────────
 function StepHeader({ step, title, icon }) {
   return (
-    <div className="flex items-center gap-3 mb-4">
+    <div className="flex items-center gap-3 mb-4 sm:mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
       <div className="step-badge">{step}</div>
-      <span className="text-lg shrink-0">{icon}</span>
-      <h3 className="text-base font-bold text-slate-900 dark:text-white leading-snug">{title}</h3>
+      <span className="text-xl shrink-0">{icon}</span>
+      <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">{title}</h3>
     </div>
   );
 }
@@ -141,7 +139,7 @@ function StepHeader({ step, title, icon }) {
 // ── Section Card wrapper ──────────────────────────────────────────────────────
 function Section({ children, className = '' }) {
   return (
-    <div className={`rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800 p-3 sm:p-5 card-hover animate-fade-up w-full max-w-full mx-0 overflow-hidden shadow-sm ${className}`}>
+    <div className={`rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-4 sm:p-6 card-hover animate-fade-up w-full max-w-full mx-0 overflow-hidden shadow-xs text-base ${className}`}>
       {children}
     </div>
   );
@@ -153,14 +151,14 @@ function DefinitionStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3">
-        <div className="flex flex-wrap gap-2 sm:gap-3">
+      <div className="space-y-4">
+        <div className="flex flex-wrap gap-2.5 sm:gap-3">
           <span className="tag-blue">🇫🇷 {s.fr}</span>
           <span className="tag-orange">🇬🇧 {s.en}</span>
         </div>
-        <div className="alert-info mt-3">
-          <p className="text-xs text-blue-700 dark:text-sky-300 font-semibold mb-1">💼 Utilisation métier</p>
-          <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{s.metier}</p>
+        <div className="alert-info">
+          <p className="text-xs text-teal-800 dark:text-cyan-300 font-semibold uppercase tracking-wider mb-1">💼 Utilisation métier & Rôle Ingénieur</p>
+          <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{s.metier}</p>
         </div>
         <div className="prose-custom">{parseLatexContent(s.content)}</div>
       </div>
@@ -181,11 +179,11 @@ function ApplicationsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {s.examples.map(ex => (
-          <div key={ex.context} className="rounded-xl bg-slate-50 dark:bg-slate-800/60 p-3 border border-slate-200 dark:border-slate-700/40">
-            <span className="tag-orange mb-2 inline-block">{ex.context}</span>
-            <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{ex.text}</p>
+          <div key={ex.context} className="rounded-xl bg-slate-50 dark:bg-slate-800/60 p-4 border border-slate-200 dark:border-slate-700/50 shadow-2xs">
+            <span className="tag-orange mb-2.5 inline-block">{ex.context}</span>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{ex.text}</p>
           </div>
         ))}
       </div>
@@ -201,7 +199,7 @@ function TheoryStep({ s, diagramType, moduleSlug }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="prose-custom mb-4">{parseLatexContent(s.content)}</div>
+      <div className="prose-custom mb-5">{parseLatexContent(s.content)}</div>
       {/* Croquis didactique de dimensionnement (ciblé par module) */}
       {isStructural && (
         <StructuralSketches
@@ -218,7 +216,7 @@ function FormulasStep({ s, diagramType, moduleSlug }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-4 mb-4 w-full max-w-full">
+      <div className="space-y-4 mb-5 w-full max-w-full">
         {s.formulas.map((f, i) => (
           <FormulaExplainer
             key={f.name || i}
@@ -228,6 +226,7 @@ function FormulasStep({ s, diagramType, moduleSlug }) {
             description={f.description}
             variables={f.variables}
             ruleOfThumb={f.ruleOfThumb}
+            moduleSlug={moduleSlug}
           />
         ))}
       </div>
@@ -244,19 +243,19 @@ function StepByStepSection({ s }) {
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="alert-info mb-4">
-        <p className="text-sm text-blue-900 dark:text-sky-300 font-medium">📋 Problème :</p>
-        <p className="text-sm text-slate-700 dark:text-slate-300 mt-1 italic">{s.problem}</p>
+        <p className="text-sm text-teal-900 dark:text-cyan-300 font-bold">📋 Énoncé du Problème :</p>
+        <p className="text-base text-slate-700 dark:text-slate-200 mt-1.5 italic leading-relaxed">{s.problem}</p>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {s.steps_demo.map(step => (
           <div
             key={step.n}
             onClick={() => toggle(step.n)}
-            className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/40 p-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/70 transition-all"
+            className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/50 p-3.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all"
           >
             <div className="flex items-center gap-3">
-              <div className="step-badge">{step.n}</div>
-              <p className={`text-sm transition-colors ${revealed.includes(step.n) ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-600 dark:text-slate-400'}`}>
+              <div className="step-badge shrink-0">{step.n}</div>
+              <p className={`text-base transition-colors ${revealed.includes(step.n) ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
                 {step.text}
               </p>
             </div>
@@ -264,8 +263,8 @@ function StepByStepSection({ s }) {
         ))}
       </div>
       <div className="formula-card mt-4 w-full max-w-full overflow-x-auto">
-        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mb-2">✅ Résultat :</p>
-        <div className="overflow-x-auto max-w-full py-1 math-scroll">
+        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">✅ Résultat & Dimensionnement :</p>
+        <div className="overflow-x-auto max-w-full py-1.5 math-scroll">
           <SafeBlockMath math={s.result_latex} />
         </div>
       </div>
@@ -278,47 +277,43 @@ function UnitsStep({ s }) {
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="overflow-x-auto max-w-full py-1 table-scroll">
-        <table className="w-full text-sm text-left border-collapse">
+        <table className="w-full text-base text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-700/50">
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2 pr-4">Grandeur</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2 pr-4">SI</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2 pr-4">Impérial</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2">Conversion</th>
+            <tr className="border-b border-slate-200 dark:border-slate-700/60 pb-3">
+              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Grandeur</th>
+              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Système SI</th>
+              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Système Impérial</th>
+              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 font-bold">Facteur de Conversion</th>
             </tr>
           </thead>
           <tbody>
             {s.table.map(row => (
-              <tr key={row.grandeur} className="border-b border-slate-100 dark:border-slate-800/50">
-                <td className="py-2 pr-4 text-slate-900 dark:text-white font-medium whitespace-nowrap">{row.grandeur}</td>
-                <td className="py-2 pr-4 text-blue-600 dark:text-sky-300 font-mono text-xs whitespace-nowrap">{row.si}</td>
-                <td className="py-2 pr-4 text-orange-600 dark:text-orange-300 font-mono text-xs whitespace-nowrap">{row.imperial}</td>
-                <td className="py-2 text-slate-600 dark:text-slate-400 text-xs">{row.conversion}</td>
+              <tr key={row.grandeur} className="border-b border-slate-100 dark:border-slate-800/60">
+                <td className="py-2.5 pr-4 text-slate-900 dark:text-white font-medium whitespace-nowrap">{row.grandeur}</td>
+                <td className="py-2.5 pr-4 text-teal-700 dark:text-cyan-300 font-mono text-sm whitespace-nowrap font-bold">{row.si}</td>
+                <td className="py-2.5 pr-4 text-orange-600 dark:text-orange-300 font-mono text-sm whitespace-nowrap">{row.imperial}</td>
+                <td className="py-2.5 text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{row.conversion}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="alert-info mt-3">
-        <p className="text-xs text-slate-700 dark:text-slate-300">{s.note}</p>
+      <div className="alert-info mt-4">
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{s.note}</p>
       </div>
     </Section>
   );
 }
 
 function HypothesesStep({ s }) {
-  const colorMap = { warning: 'alert-warning', info: 'alert-info', tip: 'alert-tip' };
-  const iconMap = { warning: '⚠️', info: 'ℹ️', tip: '💡' };
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-2">
+      <div className="space-y-3">
         {s.items.map((item, i) => (
-          <div key={i} className={colorMap[item.type]}>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              <span className="mr-2">{iconMap[item.type]}</span>
-              <span dangerouslySetInnerHTML={{ __html: item.text.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-slate-900 dark:text-white">$1</strong>') }} />
-            </p>
+          <div key={i} className="flex gap-3 items-start rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 p-4">
+            <span className="text-teal-600 dark:text-cyan-400 font-bold shrink-0 mt-0.5">•</span>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(item)}</p>
           </div>
         ))}
       </div>
@@ -330,23 +325,11 @@ function ExamplesSimpleStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-4">
-        {s.examples.map(ex => (
-          <div key={ex.title} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/40 p-4">
-            <p className="text-sm font-bold text-slate-900 dark:text-white mb-2">{ex.title}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3">
-              <div><p className="text-slate-500">Données :</p><p className="text-slate-700 dark:text-slate-300 font-medium">{ex.given}</p></div>
-              <div><p className="text-slate-500">Trouver :</p><p className="text-blue-600 dark:text-sky-300 font-medium">{ex.find}</p></div>
-            </div>
-            <div className="formula-card w-full max-w-full overflow-x-auto">
-              <div className="overflow-x-auto max-w-full py-1 math-scroll">
-                <SafeBlockMath math={ex.solution_latex} />
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-emerald-500 text-sm">✅</span>
-              <p className="text-sm font-mono text-emerald-600 dark:text-emerald-300 font-bold">{ex.result}</p>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {s.items.map((item, i) => (
+          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4 shadow-2xs">
+            <span className="tag-blue mb-2.5 inline-block">{item.title}</span>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{item.content}</p>
           </div>
         ))}
       </div>
@@ -354,36 +337,24 @@ function ExamplesSimpleStep({ s }) {
   );
 }
 
-function RealExamplesStep({ s, diagramType }) {
+function RealExamplesStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-4 mb-4">
-        {s.examples.map(ex => (
-          <div key={ex.context} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4">
-            <span className="tag-orange mb-2 inline-block">{ex.context}</span>
-            <p className="text-sm text-slate-700 dark:text-slate-300 mb-3 italic leading-relaxed">{ex.scenario}</p>
-            {ex.decomposition_latex && (
-              <div className="formula-card mb-3 w-full max-w-full overflow-x-auto">
-                <div className="overflow-x-auto max-w-full py-1 math-scroll">
-                  <SafeBlockMath math={ex.decomposition_latex} />
-                </div>
-              </div>
-            )}
-            {ex.check_latex && (
-              <div className="formula-card mb-3 w-full max-w-full overflow-x-auto">
-                <div className="overflow-x-auto max-w-full py-1 math-scroll">
-                  <SafeBlockMath math={ex.check_latex} />
-                </div>
-              </div>
-            )}
-            <div className="alert-tip">
-              <p className="text-xs text-emerald-700 dark:text-emerald-300">💡 Leçon professionnelle : {ex.lesson}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {s.cases.map((c, i) => (
+          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/40 p-4 space-y-2 shadow-2xs">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🏗️</span>
+              <p className="text-base font-bold text-slate-900 dark:text-white leading-tight">{c.project}</p>
+            </div>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{c.description}</p>
+            <div className="alert-tip mt-2">
+              <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">💡 Solution ingénieur : {c.solution}</p>
             </div>
           </div>
         ))}
       </div>
-      <DiagramViewer type={s.diagramType || diagramType} title="Diagramme d'Application sur le Terrain" />
     </Section>
   );
 }
@@ -392,14 +363,14 @@ function DiagramStep({ s, diagramType }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="alert-info mb-3">
-        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{s.description}</p>
+      <div className="alert-info mb-3.5">
+        <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{s.description}</p>
       </div>
-      <ul className="space-y-1 mb-4">
+      <ul className="space-y-1.5 mb-5">
         {s.diagram_description.map((d, i) => (
-          <li key={i} className="text-xs text-slate-600 dark:text-slate-400 flex gap-2">
+          <li key={i} className="text-sm text-slate-600 dark:text-slate-300 flex gap-2">
             <span>•</span>
-            <span dangerouslySetInnerHTML={{ __html: d.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-slate-900 dark:text-slate-200">$1</strong>') }} />
+            <span dangerouslySetInnerHTML={{ __html: d.replace(/\*\*([^*]+)\*\*/g, '<strong class="text-slate-900 dark:text-slate-100 font-semibold">$1</strong>') }} />
           </li>
         ))}
       </ul>
@@ -412,18 +383,18 @@ function MistakesStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3">
+      <div className="space-y-4">
         {s.items.map((item, i) => (
-          <div key={i} className="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/40 p-4">
-            <div className="flex gap-3 mb-2">
-              <span className="text-rose-500 text-base shrink-0">❌</span>
-              <p className="text-sm text-rose-700 dark:text-rose-200 font-medium">{item.mistake}</p>
+          <div key={i} className="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 p-4 space-y-2.5 shadow-2xs">
+            <div className="flex gap-2.5 items-start">
+              <span className="text-rose-500 text-lg shrink-0 mt-0.5">❌</span>
+              <p className="text-base text-rose-700 dark:text-rose-200 font-semibold leading-relaxed">{item.mistake}</p>
             </div>
-            <div className="alert-warning mb-2">
-              <p className="text-xs text-orange-800 dark:text-orange-200">⚠️ Piège : {item.trap}</p>
+            <div className="alert-warning">
+              <p className="text-sm text-orange-900 dark:text-orange-200">⚠️ <strong>Piège technique</strong> : {item.trap}</p>
             </div>
             <div className="alert-tip">
-              <p className="text-xs text-emerald-800 dark:text-emerald-200">✅ Correction : {item.fix}</p>
+              <p className="text-sm text-emerald-900 dark:text-emerald-200">✅ <strong>Correction & Règle de l'art</strong> : {item.fix}</p>
             </div>
           </div>
         ))}
@@ -436,11 +407,11 @@ function TipsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {s.tips.map((tip, i) => (
-          <div key={i} className="flex gap-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-200 dark:border-emerald-500/20 p-3">
-            <span className="text-emerald-500 dark:text-emerald-400 shrink-0">💡</span>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{tip}</p>
+          <div key={i} className="flex gap-3 items-start rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-3.5">
+            <span className="text-emerald-600 dark:text-emerald-400 shrink-0 text-lg mt-0.5">💡</span>
+            <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{tip}</p>
           </div>
         ))}
       </div>
@@ -461,7 +432,7 @@ function NormsStep({ s }) {
             <span className="tag-blue shrink-0 self-start text-xs font-mono font-bold px-2.5 py-1">
               {n.code}
             </span>
-            <p className="text-xs sm:text-sm text-slate-800 dark:text-slate-200 leading-relaxed flex-1 min-w-0 break-words font-medium">
+            <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed flex-1 min-w-0 break-words font-medium">
               {renderInline(n.description)}
             </p>
           </div>
@@ -481,51 +452,51 @@ function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
       <div className="flex justify-end mb-3">
         <button
           onClick={() => setShowSciCalc(true)}
-          className="flex items-center gap-2 text-xs bg-slate-100 hover:bg-violet-100 border border-violet-300 text-violet-700 dark:bg-slate-800 dark:hover:bg-violet-600/20 dark:border-violet-500/30 dark:text-violet-300 px-3 py-2 rounded-xl transition-all shadow-sm"
+          className="flex items-center gap-2 text-xs bg-slate-100 hover:bg-violet-100 border border-violet-300 text-violet-700 dark:bg-slate-800 dark:hover:bg-violet-600/20 dark:border-violet-500/30 dark:text-violet-300 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
         >
           🧮 Calculatrice scientifique
         </button>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-5">
         {s.exercises.map(ex => (
-          <div key={ex.id} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4">
+          <div key={ex.id} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5">
             <div className="flex items-start gap-3 mb-3">
               <div className="step-badge shrink-0">{ex.number}</div>
               <div>
                 <span className={`tag-${ex.difficulty === 'Facile' ? 'green' : ex.difficulty === 'Moyen' ? 'blue' : 'orange'} mb-2 inline-block`}>
                   {ex.difficulty}
                 </span>
-                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{ex.text}</p>
+                <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{ex.text}</p>
               </div>
             </div>
 
             <div className="alert-info mb-3">
-              <p className="text-xs text-blue-700 dark:text-sky-300">💡 Indice : {ex.hint}</p>
+              <p className="text-sm text-teal-800 dark:text-cyan-300 font-medium">💡 Indice : {ex.hint}</p>
             </div>
 
             <textarea
-              placeholder="Entrez votre réponse ici..."
+              placeholder="Entrez votre raisonnement et résultat..."
               value={answers[ex.id] || ''}
               onChange={e => setAnswers(prev => ({ ...prev, [ex.id]: e.target.value }))}
-              className="w-full rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 min-h-16 resize-none shadow-inner"
+              className="w-full rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 px-3.5 py-2.5 text-base text-slate-900 dark:text-slate-200 placeholder:text-slate-400 min-h-20 resize-none shadow-inner font-mono"
             />
 
-            <div className="flex gap-2 mt-2">
+            <div className="flex gap-2 mt-3">
               <button
                 onClick={() => setRevealed(prev => ({ ...prev, [ex.id]: !prev[ex.id] }))}
-                className="text-xs bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600 dark:text-slate-300 px-3 py-2 rounded-lg transition-colors font-medium shadow-sm"
+                className="text-xs bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600 dark:text-slate-300 px-3.5 py-2 rounded-lg transition-colors font-medium shadow-sm cursor-pointer"
               >
-                {revealed[ex.id] ? 'Masquer correction' : '📋 Voir la correction'}
+                {revealed[ex.id] ? 'Masquer correction' : '📋 Voir la solution détaillée'}
               </button>
             </div>
 
             {revealed[ex.id] && (
-              <div className="mt-3 formula-card animate-fade-up w-full max-w-full overflow-x-auto">
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold mb-2">✅ Solution :</p>
-                <div className="overflow-x-auto max-w-full py-1 math-scroll">
+              <div className="mt-4 formula-card animate-fade-up w-full max-w-full overflow-x-auto">
+                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">✅ Solution :</p>
+                <div className="overflow-x-auto max-w-full py-1.5 math-scroll">
                   <SafeBlockMath math={ex.answer_latex} />
                 </div>
-                <p className="text-sm text-emerald-700 dark:text-emerald-300 font-mono mt-2 break-words font-medium">{ex.answer_text}</p>
+                <p className="text-base text-emerald-800 dark:text-emerald-300 font-mono mt-2.5 break-words font-medium">{ex.answer_text}</p>
               </div>
             )}
           </div>
@@ -552,16 +523,16 @@ function QuizStep({ s }) {
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
 
       {submitted && (
-        <div className={`rounded-xl p-4 mb-4 ${score >= s.questions.length * 0.8 ? 'alert-tip' : 'alert-warning'}`}>
-          <p className="text-base font-bold text-slate-900 dark:text-white">
+        <div className={`rounded-xl p-4 mb-5 ${score >= s.questions.length * 0.8 ? 'alert-tip' : 'alert-warning'}`}>
+          <p className="text-lg font-bold text-slate-900 dark:text-white">
             {score >= s.questions.length * 0.8 ? '🏆' : score >= s.questions.length * 0.5 ? '📈' : '📚'} {' '}
             Score : {score}/{s.questions.length} ({Math.round(score / s.questions.length * 100)}%)
           </p>
-          <p className="text-sm mt-1 text-slate-700 dark:text-slate-300 leading-relaxed">
-            {score === s.questions.length ? 'Excellent ! Toutes les réponses sont correctes.' :
-             score >= s.questions.length * 0.8 ? 'Très bien ! Revoyez les questions ratées.' :
-             score >= s.questions.length * 0.5 ? 'Bien. Approfondissez les notions manquantes.' :
-             'Relisez les sections 4 et 5 et réessayez.'}
+          <p className="text-base mt-1.5 text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+            {score === s.questions.length ? 'Excellent ! Maîtrise parfaite de toutes les compétences du module.' :
+             score >= s.questions.length * 0.8 ? 'Très bien ! Vous êtes prêt pour les applications de dimensionnement.' :
+             score >= s.questions.length * 0.5 ? 'Bonne assimilation globale. Révisez les points manqués.' :
+             'Relisez les étapes 4 et 5 et repassez le quiz pour consolider vos acquis.'}
           </p>
         </div>
       )}
@@ -571,19 +542,19 @@ function QuizStep({ s }) {
           const chosen = answers[q.id];
           const isSubmitted = submitted;
           return (
-            <div key={q.id} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4 shadow-sm">
-              <p className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
-                <span className="text-slate-400 dark:text-slate-500 mr-2">Q{qi + 1}.</span>
+            <div key={q.id} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5 shadow-sm">
+              <p className="text-base font-bold text-slate-900 dark:text-white mb-3.5">
+                <span className="text-teal-600 dark:text-cyan-400 mr-2">Q{qi + 1}.</span>
                 {q.question}
               </p>
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {q.options.map(opt => {
-                  let cls = 'quiz-option rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 px-4 py-3 text-sm text-slate-700 dark:text-slate-300 w-full text-left shadow-sm';
+                  let cls = 'quiz-option rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 px-4 py-3 text-base text-slate-700 dark:text-slate-300 w-full text-left shadow-2xs transition-all cursor-pointer';
                   if (isSubmitted) {
                     if (opt.id === q.correct) cls += ' selected-correct';
                     else if (opt.id === chosen && opt.id !== q.correct) cls += ' selected-incorrect';
                   } else if (chosen === opt.id) {
-                    cls += ' bg-blue-50 border-blue-400 text-blue-700 dark:bg-sky-500/20 dark:border-sky-500/50 dark:text-sky-200 font-medium';
+                    cls += ' bg-teal-50 border-teal-500 text-teal-900 dark:bg-teal-500/20 dark:border-cyan-500 dark:text-cyan-200 font-bold';
                   }
                   return (
                     <button
@@ -592,15 +563,15 @@ function QuizStep({ s }) {
                       className={cls}
                       disabled={isSubmitted}
                     >
-                      <span className="font-mono text-slate-400 dark:text-slate-500 mr-2">{opt.id.toUpperCase()})</span>
+                      <span className="font-mono text-slate-400 dark:text-slate-500 mr-2.5">{opt.id.toUpperCase()})</span>
                       {opt.text}
                     </button>
                   );
                 })}
               </div>
               {isSubmitted && (
-                <div className="alert-info mt-3">
-                  <p className="text-xs text-blue-700 dark:text-sky-300">💡 {q.explanation}</p>
+                <div className="mt-3.5 text-sm alert-info">
+                  <p className="font-bold text-slate-900 dark:text-white">💡 Explication : {q.explanation}</p>
                 </div>
               )}
             </div>
@@ -608,18 +579,20 @@ function QuizStep({ s }) {
         })}
       </div>
 
-      <div className="flex gap-3 mt-4">
+      <div className="mt-5 flex gap-3">
         {!submitted ? (
           <button
             onClick={handleSubmit}
-            disabled={Object.keys(answers).length < s.questions.length}
-            className="flex-1 bg-gradient-to-r from-blue-600 to-sky-500 text-white py-3 rounded-xl font-semibold text-sm disabled:opacity-40 hover:from-blue-700 hover:to-sky-600 transition-all shadow-sm"
+            className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
           >
-            Soumettre ({Object.keys(answers).length}/{s.questions.length} répondues)
+            Valider mes réponses
           </button>
         ) : (
-          <button onClick={handleReset} className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white py-3 rounded-xl font-semibold text-sm transition-colors shadow-sm">
-            🔄 Recommencer le quiz
+          <button
+            onClick={handleReset}
+            className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-all cursor-pointer"
+          >
+            Recommencer le quiz
           </button>
         )}
       </div>
@@ -628,45 +601,63 @@ function QuizStep({ s }) {
 }
 
 function ExamStep({ s }) {
+  const [showCriteria, setShowCriteria] = useState(false);
+
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3">
-        {s.questions.map((q, i) => (
-          <div key={i} className="flex gap-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 p-4">
-            <div className="step-badge shrink-0">{i + 1}</div>
-            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{q}</p>
-          </div>
-        ))}
+      <div className="border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl p-4 sm:p-5 mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xl">⏱️</span>
+          <p className="text-base font-bold text-amber-900 dark:text-amber-200">Sujet d'Épreuve — Durée : {s.duration}</p>
+        </div>
+        <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{s.prompt}</p>
       </div>
-      <div className="alert-info mt-4">
-        <p className="text-xs text-blue-700 dark:text-sky-300">🎓 Ces questions sont typiques d'un examen de fin de semestre de licence ou de master en génie civil.</p>
-      </div>
+
+      <button
+        onClick={() => setShowCriteria(p => !p)}
+        className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold mb-3 inline-block cursor-pointer"
+      >
+        {showCriteria ? 'Masquer la grille d\'évaluation' : '📋 Voir le barème et critères de notation'}
+      </button>
+
+      {showCriteria && (
+        <div className="space-y-2 mb-4 animate-fade-up">
+          {s.criteria.map((cr, i) => (
+            <div key={i} className="flex justify-between items-center text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
+              <span className="text-slate-700 dark:text-slate-200">{cr.item}</span>
+              <span className="tag-blue shrink-0">{cr.pts} pts</span>
+            </div>
+          ))}
+        </div>
+      )}
     </Section>
   );
 }
 
 function InterviewStep({ s }) {
   const [revealed, setRevealed] = useState({});
+  const toggle = (i) => setRevealed(p => ({ ...p, [i]: !p[i] }));
+
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="space-y-4">
         {s.questions.map((q, i) => (
-          <div key={i} className="rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 p-4">
-            <div className="flex gap-3 mb-3">
-              <div className="step-badge shrink-0">{i + 1}</div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-white">{q.question}</p>
+          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/40 p-4 sm:p-5">
+            <div className="flex items-start gap-3 mb-2.5">
+              <span className="text-lg">👔</span>
+              <p className="text-base font-bold text-slate-900 dark:text-white leading-snug">{q.q}</p>
             </div>
             <button
-              onClick={() => setRevealed(p => ({ ...p, [i]: !p[i] }))}
-              className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 dark:border-transparent px-3 py-1.5 rounded-lg transition-colors font-medium shadow-sm"
+              onClick={() => toggle(i)}
+              className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold mt-1 cursor-pointer"
             >
-              {revealed[i] ? 'Masquer' : '💼 Voir la piste de réponse'}
+              {revealed[i] ? 'Masquer la réponse attendue' : '💡 Voir la réponse attendue par le recruteur'}
             </button>
             {revealed[i] && (
-              <div className="alert-tip mt-2 animate-fade-up">
-                <p className="text-xs text-emerald-800 dark:text-emerald-200 leading-relaxed">{q.answer_hint}</p>
+              <div className="alert-tip mt-3 animate-fade-up">
+                <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{q.a}</p>
               </div>
             )}
           </div>
@@ -678,33 +669,35 @@ function InterviewStep({ s }) {
 
 function PracticalStep({ s, diagramType }) {
   const [step, setStep] = useState(0);
+
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="mb-4">
-        <span className="tag-orange">{s.scenario}</span>
-        <div className="alert-info mt-3">{parseLatexContent(s.description)}</div>
+      <div className="alert-info mb-4">
+        <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{s.scenario}</p>
       </div>
-      <div className="space-y-3 mb-4">
-        {[
-          { label: 'Calcul des sollicitations de calcul', latex: s.resolution_latex_1 },
-          { label: 'Détermination des contraintes', latex: s.resolution_latex_2 },
-          { label: 'Vérification du critère de sécurité', latex: s.resolution_latex_3 },
-        ].map((r, i) => (
-          <div key={i} className="w-full max-w-full overflow-hidden">
-            <div className="flex items-center gap-2 mb-1">
+      <div className="space-y-3 mb-5">
+        {s.phases.map((ph, i) => (
+          <div
+            key={i}
+            className={`rounded-xl border p-4 transition-all ${
+              i <= step
+                ? 'bg-slate-50 dark:bg-slate-800/70 border-teal-300 dark:border-cyan-500/40 shadow-xs'
+                : 'opacity-50 border-slate-200 dark:border-slate-700/30'
+            }`}
+          >
+            <div className="flex items-center gap-3 mb-2">
               <div className="step-badge">{i + 1}</div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{r.label}</p>
+              <p className="text-base font-bold text-slate-900 dark:text-white">{ph.title}</p>
             </div>
-            {(step > i || i === 0) ? (
-              <div className="formula-card animate-fade-up w-full max-w-full overflow-x-auto">
-                <div className="overflow-x-auto max-w-full py-1 math-scroll">
-                  <SafeBlockMath math={r.latex} />
-                </div>
-              </div>
+            {i <= step ? (
+              <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{ph.action}</p>
             ) : (
-              <button onClick={() => setStep(i)} className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:border-slate-700 px-3 py-2 rounded-xl transition-colors font-medium shadow-sm">
-                Afficher l'étape {i + 1} →
+              <button
+                onClick={() => setStep(i)}
+                className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold cursor-pointer"
+              >
+                Déverrouiller l'étape {i + 1} →
               </button>
             )}
           </div>
@@ -713,7 +706,7 @@ function PracticalStep({ s, diagramType }) {
       <DiagramViewer type={s.diagramType || diagramType} title="Schéma d'Exécution & Détails du Cas Pratique" />
       {step >= 2 && (
         <div className="alert-warning mt-4 animate-fade-up">
-          <p className="text-sm text-orange-800 dark:text-orange-200 font-semibold">⚠️ Conclusion : {s.conclusion}</p>
+          <p className="text-base text-orange-900 dark:text-orange-200 font-bold">⚠️ Conclusion d'ingénierie : {s.conclusion}</p>
         </div>
       )}
     </Section>
@@ -722,7 +715,7 @@ function PracticalStep({ s, diagramType }) {
 
 function SummaryStep({ s }) {
   return (
-    <Section className="border-blue-300 dark:border-sky-500/30 bg-blue-50/50 dark:bg-sky-500/5">
+    <Section className="border-teal-300 dark:border-cyan-500/30 bg-teal-50/40 dark:bg-slate-900/50">
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="prose-custom">{parseLatexContent(s.content)}</div>
     </Section>
@@ -733,14 +726,14 @@ function KeyPointsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid gap-2.5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {s.points.map((pt, i) => (
           <div
             key={i}
-            className="flex items-start gap-2.5 rounded-xl bg-white dark:bg-slate-800/90 border border-blue-200/90 dark:border-slate-700/80 p-3.5 shadow-xs transition-all hover:border-blue-300 dark:hover:border-slate-600"
+            className="flex items-start gap-3 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 p-4 shadow-2xs transition-all hover:border-teal-300 dark:hover:border-slate-600"
           >
-            <span className="text-amber-500 dark:text-amber-400 shrink-0 text-base mt-0.5">⭐</span>
-            <div className="text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-semibold leading-relaxed break-words flex-1">
+            <span className="text-amber-500 dark:text-amber-400 shrink-0 text-lg mt-0.5">⭐</span>
+            <div className="text-base text-slate-900 dark:text-slate-100 font-semibold leading-relaxed break-words flex-1">
               {renderInline(pt)}
             </div>
           </div>
@@ -756,37 +749,37 @@ function SelfAssessmentStep({ s }) {
   const pct = Math.round((checked.length / s.objectives.length) * 100);
 
   return (
-    <Section className="border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-500/5">
+    <Section className="border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20">
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{s.description}</p>
-      <div className="space-y-2 mb-4">
+      <p className="text-base text-slate-700 dark:text-slate-300 mb-4 font-medium">{s.description}</p>
+      <div className="space-y-2.5 mb-5">
         {s.objectives.map((obj, i) => (
-          <label key={i} className="flex items-start gap-3 cursor-pointer rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/40 p-2 transition-colors">
+          <label key={i} className="flex items-start gap-3 cursor-pointer rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 p-3 transition-colors">
             <input
               type="checkbox"
               checked={checked.includes(i)}
               onChange={() => toggle(i)}
-              className="mt-0.5 accent-emerald-600 dark:accent-emerald-500"
+              className="mt-1 accent-emerald-600 dark:accent-emerald-500 w-4 h-4"
             />
-            <span className={`text-sm transition-colors ${checked.includes(i) ? 'text-emerald-700 dark:text-emerald-300 line-through font-medium' : 'text-slate-700 dark:text-slate-300'}`}>{obj}</span>
+            <span className={`text-base transition-colors ${checked.includes(i) ? 'text-emerald-700 dark:text-emerald-300 line-through font-medium' : 'text-slate-800 dark:text-slate-200'}`}>{obj}</span>
           </label>
         ))}
       </div>
-      <div className="rounded-xl bg-white dark:bg-slate-800/60 p-4 border border-slate-200 dark:border-transparent shadow-sm">
-        <div className="flex justify-between text-xs mb-2">
-          <span className="text-slate-600 dark:text-slate-400 font-medium">Objectifs atteints</span>
-          <span className={`font-bold font-mono ${pct >= 80 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 50 ? 'text-amber-600 dark:text-yellow-400' : 'text-slate-500 dark:text-slate-400'}`}>{pct}%</span>
+      <div className="rounded-xl bg-white dark:bg-slate-800/80 p-4 border border-slate-200 dark:border-transparent shadow-sm">
+        <div className="flex justify-between text-sm mb-2 font-semibold">
+          <span className="text-slate-700 dark:text-slate-300">Objectifs atteints</span>
+          <span className={`font-mono ${pct >= 80 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 50 ? 'text-amber-600 dark:text-yellow-400' : 'text-slate-500'}`}>{pct}%</span>
         </div>
-        <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
           <div
             className={`h-full rounded-full transition-all duration-500 ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-400'}`}
             style={{ width: `${pct}%` }}
           />
         </div>
         {pct === 100 && (
-          <div className="mt-3 text-center">
-            <p className="text-2xl">🏆</p>
-            <p className="text-emerald-700 dark:text-emerald-300 font-bold text-sm mt-1">Leçon complétée ! Félicitations !</p>
+          <div className="mt-3.5 text-center">
+            <p className="text-3xl">🏆</p>
+            <p className="text-emerald-700 dark:text-emerald-300 font-bold text-base mt-1">Leçon validée avec succès ! Félicitations !</p>
           </div>
         )}
       </div>
@@ -800,7 +793,7 @@ export default function LessonCanvas({ module, theme }) {
   const [angle, setAngle] = useState(35);
   const [hypotenuse, setHypotenuse] = useState(10);
   const [showSciCalc, setShowSciCalc] = useState(false);
-  const [activeTab, setActiveTab] = useState('widget'); // 'widget' | 'diagram'
+  const [activeTab, setActiveTab] = useState('widget'); // 'widget' | 'diagram' | 'cheatsheet' | 'glossary'
   const contentRef = useRef(null);
 
   // Load lesson dynamically for ALL 35 modules
@@ -829,7 +822,7 @@ export default function LessonCanvas({ module, theme }) {
         <Section key={s.id}>
           <StepHeader step={s.id} title={s.title} icon={s.icon} />
           <div className="alert-info">
-            <p className="text-sm text-blue-700 dark:text-sky-300">{s.note}</p>
+            <p className="text-base text-teal-800 dark:text-cyan-300 font-medium">{s.note}</p>
           </div>
         </Section>
       );
@@ -845,34 +838,34 @@ export default function LessonCanvas({ module, theme }) {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-0 sm:mx-auto overflow-x-hidden px-0">
+    <div className="w-full max-w-5xl mx-auto overflow-x-hidden space-y-6">
       {showSciCalc && <SciCalc onClose={() => setShowSciCalc(false)} />}
 
-      {/* Lesson Header */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-gradient-to-br from-blue-50 via-sky-50/60 to-white dark:from-slate-900 dark:via-slate-900 dark:to-blue-950/50 p-3.5 sm:p-6 mb-4 sm:mb-6 relative overflow-hidden w-full max-w-full mx-0 shadow-sm">
-        <div className="absolute inset-0 eng-grid-bg opacity-40 dark:opacity-60 pointer-events-none" />
-        <div className="relative">
-          <div className="flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+      {/* Lesson Header Banner */}
+      <div className="rounded-3xl border border-teal-200/80 dark:border-slate-800 bg-gradient-to-br from-teal-50/70 via-cyan-50/40 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 relative overflow-hidden w-full max-w-full mx-0 shadow-sm">
+        <div className="absolute inset-0 eng-grid-bg opacity-30 dark:opacity-50 pointer-events-none" />
+        <div className="relative space-y-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 sm:gap-3 mb-2.5 sm:mb-3 flex-wrap">
-                <span className="text-xl sm:text-2xl shrink-0">{module.icon}</span>
-                <span className="tag-blue">Module {module.id}</span>
-                <span className="tag-green">🔓 Accès Libre</span>
-                <span className={`tag-${lesson.level.includes('Débutant') ? 'green' : 'orange'}`}>{lesson.level}</span>
-                <span className="tag-blue">{lesson.duration}</span>
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
+                <span className="text-2xl sm:text-3xl shrink-0">{module.icon}</span>
+                <span className="tag-blue text-xs font-bold">Module {module.id}</span>
+                <span className="tag-green text-xs font-bold">🔓 Accès Libre</span>
+                <span className={`tag-${lesson.level.includes('Débutant') ? 'green' : 'orange'} text-xs font-bold`}>{lesson.level}</span>
+                <span className="tag-blue text-xs font-bold">{lesson.duration}</span>
               </div>
-              <p className="text-[10px] sm:text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold mb-1">{lesson.subtitle}</p>
-              <h2 className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight break-words">{lesson.title}</h2>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-2.5 sm:mt-3">
+              <p className="text-xs sm:text-sm uppercase tracking-widest text-teal-700 dark:text-cyan-400 font-bold mb-1.5">{lesson.subtitle}</p>
+              <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight break-words">{lesson.title}</h2>
+              <div className="flex flex-wrap gap-2 mt-3.5">
                 {lesson.tags.map(t => (
-                  <span key={t} className="text-[10px] sm:text-xs bg-white text-slate-600 border border-slate-200 dark:bg-slate-800/80 dark:text-slate-400 dark:border-slate-700 px-2 py-0.5 rounded-full shadow-sm">{t}</span>
+                  <span key={t} className="text-xs bg-white text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full shadow-2xs font-medium">{t}</span>
                 ))}
               </div>
             </div>
-            <div className="shrink-0 w-full sm:w-auto mt-1 sm:mt-0">
+            <div className="shrink-0 w-full sm:w-auto">
               <button
                 onClick={() => setShowSciCalc(true)}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-violet-50 hover:bg-violet-100 border border-violet-300 text-violet-700 dark:bg-violet-600/20 dark:hover:bg-violet-600/30 dark:border-violet-500/30 dark:text-violet-300 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white px-5 py-3 rounded-2xl text-sm font-bold transition-all shadow-md cursor-pointer"
               >
                 🧮 Calculatrice Scientifique
               </button>
@@ -880,16 +873,16 @@ export default function LessonCanvas({ module, theme }) {
           </div>
 
           {/* Step progress bar */}
-          <div className="mt-4 sm:mt-5">
-            <div className="flex justify-between text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mb-1">
-              <span>{lesson.steps.length} étapes pédagogiques</span>
-              <span>100% déverrouillé</span>
+          <div className="pt-2">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium">
+              <span>{lesson.steps.length} étapes pédagogiques complètes</span>
+              <span>100% Déverrouillé</span>
             </div>
-            <div className="flex gap-0.5 sm:gap-1">
+            <div className="flex gap-1">
               {lesson.steps.map(s => (
                 <div
                   key={s.id}
-                  className="h-1.5 flex-1 rounded-full bg-blue-500/60 dark:bg-sky-500/60"
+                  className="h-2 flex-1 rounded-full bg-teal-500/70 dark:bg-cyan-500/70"
                   title={`${s.id}. ${s.title}`}
                 />
               ))}
@@ -898,91 +891,99 @@ export default function LessonCanvas({ module, theme }) {
         </div>
       </div>
 
-      {/* Two-column layout (Single-column on mobile) */}
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-4 sm:gap-6 w-full max-w-full mx-0">
-        {/* Left: Main content (all steps) */}
-        <div ref={contentRef} className="space-y-4 sm:space-y-5 w-full max-w-full min-w-0 mx-0 overflow-x-hidden">
-          {lesson.steps.map(s => renderStep(s))}
-        </div>
+      {/* ── Main Stream of 23 Canonical Steps (100% Reading Area) ── */}
+      <div ref={contentRef} className="space-y-6 w-full max-w-full min-w-0">
+        {lesson.steps.map(s => renderStep(s))}
+      </div>
 
-        {/* Right: Sticky interactive panel */}
-        <aside className="space-y-4 sm:space-y-5 w-full max-w-full min-w-0 mx-0">
-          <div className="sticky top-4 space-y-4">
-            {/* Tabs */}
-            <div className="flex gap-2 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-inner">
-              {[
-                { key: 'widget', label: '🔢 Calculateur' },
-                { key: 'diagram', label: '📐 Diagramme SVG' },
-              ].map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`flex-1 py-2 rounded-xl text-xs font-semibold transition-all ${
-                    activeTab === tab.key
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Calculator Widget */}
-            {activeTab === 'widget' && (
-              <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-4 sm:p-5 w-full max-w-full overflow-hidden shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-blue-600 dark:text-sky-400 text-xs uppercase tracking-widest font-semibold">Calculateur Trigonométrique & Sollicitations</span>
-                </div>
-                <TrigWidget angle={angle} setAngle={setAngle} hypotenuse={hypotenuse} setHypotenuse={setHypotenuse} />
-              </div>
-            )}
-
-            {/* Interactive SVG Diagram Tab */}
-            {activeTab === 'diagram' && (
-              <DiagramViewer type={diagramType} title={`Diagramme Interactif — ${module.title}`} />
-            )}
-
-            {/* Quick reference formulas — always visible */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-4 w-full max-w-full overflow-hidden shadow-sm">
-              <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold mb-3">Aide-mémoire & Formules Clés</p>
-              <div className="space-y-2 text-xs">
-                {[
-                  { label: 'Équilibre', formula: '\\sum \\vec{F} = \\vec{0}, \\quad \\sum \\vec{M} = \\vec{0}' },
-                  { label: 'Contrainte', formula: '\\sigma = \\frac{N}{A} + \\frac{M \\cdot y}{I}' },
-                  { label: 'Eurocode ELU', formula: '1{,}35 G + 1{,}50 Q \\le f_{yd}' },
-                  { label: 'Hooke', formula: '\\sigma = E \\cdot \\varepsilon' },
-                ].map(item => (
-                  <div key={item.label} className="flex items-center gap-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 px-3 py-2 overflow-x-auto max-w-full border border-slate-100 dark:border-transparent">
-                    <span className="tag-blue w-20 text-center shrink-0">{item.label}</span>
-                    <div className="overflow-x-auto max-w-full py-0.5">
-                      <SafeInlineMath math={item.formula} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Bilingual mini-glossary */}
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900/80 p-4 w-full max-w-full overflow-hidden shadow-sm">
-              <p className="text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold mb-3">Glossaire de la leçon</p>
-              <div className="space-y-2">
-                {[
-                  { fr: 'Contrainte normale', en: 'Normal Stress (σ)' },
-                  { fr: 'Effort tranchant', en: 'Shear Force (V)' },
-                  { fr: 'Moment fléchissant', en: 'Bending Moment (M)' },
-                  { fr: 'Armature tendue', en: 'Tension Rebar (As)' },
-                  { fr: 'Nappe phréatique', en: 'Water Table' },
-                ].map(g => (
-                  <div key={g.en} className="flex justify-between text-xs py-1.5 border-b border-slate-100 dark:border-slate-800/60">
-                    <span className="text-slate-900 dark:text-white font-medium">{g.fr}</span>
-                    <span className="text-blue-600 dark:text-sky-400 font-mono font-medium">{g.en}</span>
-                  </div>
-                ))}
-              </div>
+      {/* ── Interactive Engineering Workstation & Tools (Bottom Dock) ── */}
+      <div className="rounded-3xl border border-teal-200 dark:border-slate-800 bg-gradient-to-br from-teal-50/50 via-cyan-50/30 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 shadow-lg space-y-5 my-6">
+        {/* Workstation Header & Tabs */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 dark:border-slate-800 pb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center text-lg shadow-md">
+              🧰
+            </span>
+            <div>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-teal-700 dark:text-cyan-400">Atelier Pratique & Outils Numériques</span>
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Poste de Calcul & Aide-Mémoire du Module</h3>
             </div>
           </div>
-        </aside>
+
+          {/* Tabs */}
+          <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner text-xs font-semibold">
+            {[
+              { key: 'widget', label: '🔢 Calculateur Interactif' },
+              { key: 'diagram', label: '📐 Schéma Interactif' },
+              { key: 'cheatsheet', label: '💡 Formules Clés' },
+              { key: 'glossary', label: '📖 Lexique Bilingue' },
+            ].map(tab => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
+                  activeTab === tab.key
+                    ? 'bg-teal-600 text-white shadow-md font-bold'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Active Tab Content */}
+        <div className="w-full">
+          {activeTab === 'widget' && (
+            <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <TrigWidget angle={angle} setAngle={setAngle} hypotenuse={hypotenuse} setHypotenuse={setHypotenuse} />
+            </div>
+          )}
+          {activeTab === 'diagram' && (
+            <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <DiagramViewer type={diagramType} title={`Diagramme Interactif — ${module.title}`} />
+            </div>
+          )}
+          {activeTab === 'cheatsheet' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {[
+                { label: 'Équilibre fondamental', formula: '\\sum \\vec{F} = \\vec{0}, \\quad \\sum \\vec{M} = \\vec{0}' },
+                { label: 'Contrainte normale (Navier)', formula: '\\sigma = \\frac{N}{A} + \\frac{M \\cdot y}{I}' },
+                { label: 'Combinaison fondamentale ELU', formula: '1{,}35 G + 1{,}50 Q \\le f_{yd}' },
+                { label: 'Loi de Hooke 1D', formula: '\\sigma = E \\cdot \\varepsilon' },
+                { label: 'Cisaillement Jourawski', formula: '\\tau_{max} = 1{,}5 \\cdot \\frac{V}{A}' },
+                { label: 'Capacité portante Terzaghi', formula: 'q_u = c N_c + q N_q + \\frac{1}{2} \\gamma B N_\\gamma' },
+              ].map(item => (
+                <div key={item.label} className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-2xs">
+                  <span className="tag-blue mb-1.5 inline-block text-[11px] font-bold">{item.label}</span>
+                  <div className="overflow-x-auto py-1">
+                    <SafeInlineMath math={item.formula} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {activeTab === 'glossary' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              {[
+                { fr: 'Contrainte normale', en: 'Normal Stress (σ)' },
+                { fr: 'Effort tranchant', en: 'Shear Force (V)' },
+                { fr: 'Moment fléchissant', en: 'Bending Moment (M)' },
+                { fr: 'Armature tendue', en: 'Tension Rebar (As)' },
+                { fr: 'Hauteur utile', en: 'Effective Depth (d)' },
+                { fr: 'Enrobage nominal', en: 'Nominal Concrete Cover (c_nom)' },
+                { fr: 'Nappe phréatique', en: 'Water Table' },
+                { fr: 'Limite d\'élasticité', en: 'Yield Strength (f_yk)' },
+              ].map(g => (
+                <div key={g.en} className="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 text-sm">
+                  <span className="text-slate-900 dark:text-white font-medium">{g.fr}</span>
+                  <span className="text-teal-700 dark:text-cyan-400 font-mono text-xs font-semibold">{g.en}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

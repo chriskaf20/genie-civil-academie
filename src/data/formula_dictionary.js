@@ -956,15 +956,151 @@ export const VARIABLE_DICTIONARY = {
   }
 };
 
+export const DOMAIN_VARIABLE_OVERRIDES = {
+  maths: {
+    'H': {
+      symbol: 'H',
+      name: "Hypoténuse (côté le plus long)",
+      unit: '\\text{m ou mm}',
+      role: "Longueur du côté opposé à l'angle droit dans un triangle rectangle (H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}).",
+      category: 'Trigonométrie'
+    },
+    '\\text{opp}': {
+      symbol: '\\text{opp}',
+      name: "Côté Opposé",
+      unit: '\\text{m ou mm}',
+      role: "Longueur du côté situé en face de l'angle aigu \\theta considéré.",
+      category: 'Trigonométrie'
+    },
+    '\\text{adj}': {
+      symbol: '\\text{adj}',
+      name: "Côté Adjacent",
+      unit: '\\text{m ou mm}',
+      role: "Longueur du côté adjacent formant l'angle \\theta avec l'hypoténuse.",
+      category: 'Trigonométrie'
+    },
+    '\\theta': {
+      symbol: '\\theta',
+      name: "Angle aigu d'inclinaison",
+      unit: '° \\text{ (degrés)}',
+      role: "Angle par rapport à l'horizontale permettant de calculer la pente : p(\\%) = \\tan(\\theta) \\times 100.",
+      category: 'Trigonométrie'
+    }
+  },
+  hydraulique: {
+    'H': {
+      symbol: 'H',
+      name: "Charge hydraulique totale",
+      unit: '\\text{mCE (mètres de colonne d\'eau)}',
+      role: "Énergie mécanique totale du fluide par unité de poids (Théorème de Bernoulli).",
+      category: 'Hydraulique'
+    },
+    'Q': {
+      symbol: 'Q',
+      name: "Débit volumique",
+      unit: '\\text{m}^3/\\text{s} \\text{ ou } \\text{L/s}',
+      role: "Volume d'eau s'écoulant à travers la section par seconde : Q = v \\cdot A.",
+      category: 'Hydraulique'
+    },
+    'v': {
+      symbol: 'v',
+      name: "Vitesse moyenne d'écoulement",
+      unit: '\\text{m/s}',
+      role: "Vitesse moyenne de l'eau dans la conduite (vitesse d'autocurage \\ge 0{,}7\\text{ m/s}).",
+      category: 'Hydraulique'
+    },
+    'D': {
+      symbol: 'D',
+      name: "Diamètre intérieur de la canalisation",
+      unit: '\\text{mm ou m}',
+      role: "Diamètre hydraulique utile de passage de l'eau.",
+      category: 'Hydraulique'
+    },
+    'J': {
+      symbol: 'J',
+      name: "Perte de charge linéaire unitaire",
+      unit: '\\text{m/m ou mm/m}',
+      role: "Dissipation d'énergie par frottement visqueux par mètre linéaire de tuyau.",
+      category: 'Hydraulique'
+    }
+  },
+  geotechnique: {
+    'H': {
+      symbol: 'H',
+      name: "Hauteur du soutènement ou couche de sol",
+      unit: '\\text{m}',
+      role: "Hauteur géométrique du mur de soutènement ou épaisseur du massif géologique.",
+      category: 'Géotechnique'
+    },
+    'B': {
+      symbol: 'B',
+      name: "Largeur de la semelle de fondation",
+      unit: '\\text{m}',
+      role: "Largeur de contact sol-fondation gouvernant la capacité portante.",
+      category: 'Fondations'
+    },
+    'q_u': {
+      symbol: 'q_u',
+      name: "Capacité portante ultime du sol",
+      unit: '\\text{kPa ou MPa}',
+      role: "Pression limite de rupture du sol sous la semelle calculée selon Terzaghi.",
+      category: 'Géotechnique'
+    }
+  },
+  fondations: {
+    'H': {
+      symbol: 'H',
+      name: "Hauteur de l'ouvrage ou fiche du pieu",
+      unit: '\\text{m}',
+      role: "Profondeur d'encastrement ou longueur du pieu dans le bon sol porteur.",
+      category: 'Fondations'
+    },
+    'B': {
+      symbol: 'B',
+      name: "Largeur de la semelle",
+      unit: '\\text{m}',
+      role: "Largeur transversale de la fondation superficielle.",
+      category: 'Fondations'
+    }
+  },
+  beton_arme: {
+    'h': {
+      symbol: 'h',
+      name: "Hauteur totale de section",
+      unit: '\\text{mm ou cm}',
+      role: "Hauteur transversale totale de la poutre (prédimensionnement usuel L/15 à L/10).",
+      category: 'Béton Armé'
+    },
+    'b': {
+      symbol: 'b',
+      name: "Largeur de la section",
+      unit: '\\text{mm ou cm}',
+      role: "Largeur transversale de l'élément en béton armé.",
+      category: 'Béton Armé'
+    },
+    'd': {
+      symbol: 'd',
+      name: "Hauteur utile",
+      unit: '\\text{mm ou cm}',
+      role: "Distance de la fibre comprimée au centre de gravité des armatures (d \\approx 0{,}9h).",
+      category: 'Béton Armé'
+    }
+  }
+};
+
 /**
- * Extraction intelligente et robuste des variables d'une formule LaTeX.
- * Filtre les doublons et classe par pertinence physique.
+ * Extraction intelligente, contextualisée et robuste des variables d'une formule LaTeX.
+ * Filtre les doublons et adapte la signification selon le module (maths, hydraulique, géotech, etc.).
  */
-export function extractVariablesFromLatex(latex = '', customVariables = []) {
+export function extractVariablesFromLatex(latex = '', customVariables = [], moduleSlug = '') {
+  const normSlug = (moduleSlug || '').replace(/-/g, '_').toLowerCase();
+  const domainOverrides = DOMAIN_VARIABLE_OVERRIDES[normSlug] || {};
+
   if (customVariables && customVariables.length > 0) {
     return customVariables.map(v => {
       const cleanSym = String(v.symbol || '').trim();
-      const dictMatch = VARIABLE_DICTIONARY[cleanSym] || VARIABLE_DICTIONARY[cleanSym.replace(/\\/g, '')];
+      const override = domainOverrides[cleanSym] || domainOverrides[cleanSym.replace(/\\/g, '')];
+      const dictMatch = override || VARIABLE_DICTIONARY[cleanSym] || VARIABLE_DICTIONARY[cleanSym.replace(/\\/g, '')];
       return {
         symbol: v.symbol || dictMatch?.symbol || 'x',
         name: v.name || dictMatch?.name || 'Grandeur physique',
@@ -987,7 +1123,8 @@ export function extractVariablesFromLatex(latex = '', customVariables = []) {
     const escaped = sym.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
     const regex = new RegExp(`(^|[^a-zA-Z0-9_])${escaped}([^a-zA-Z0-9_]|$)`);
     if (regex.test(latex)) {
-      const item = VARIABLE_DICTIONARY[sym];
+      // Priorité à l'override contextuel du domaine
+      const item = domainOverrides[sym] || VARIABLE_DICTIONARY[sym];
       if (item && !seenSymbols.has(item.symbol)) {
         seenSymbols.add(item.symbol);
         foundVars.push(item);

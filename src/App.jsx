@@ -32,7 +32,7 @@ export default function App() {
   );
   const [view, setView] = useState('dashboard'); // 'dashboard' | 'lesson'
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [rightPanelOpen, setRightPanelOpen] = useState(true);
+  const [rightPanelOpen, setRightPanelOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [showSciCalc, setShowSciCalc] = useState(false);
   const [showMobileGlossary, setShowMobileGlossary] = useState(false);
@@ -103,7 +103,6 @@ export default function App() {
     : 'bg-slate-50 text-slate-900 eng-grid-bg-light';
 
   const sidebarBg = isDark ? 'bg-slate-900 border-slate-800/60' : 'bg-white border-slate-200';
-  const rightBg = isDark ? 'bg-slate-950 border-slate-800/60' : 'bg-white border-slate-200';
   const headerBg = isDark ? 'bg-slate-900/95 border-slate-800/60' : 'bg-white/95 border-slate-200';
 
   return (
@@ -126,8 +125,35 @@ export default function App() {
         </div>
       )}
 
+      {/* Right Drawer Panel for Extra Tools */}
+      {rightPanelOpen && (
+        <div className="fixed inset-0 z-50 overflow-hidden flex justify-end animate-fade-in">
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
+            onClick={() => setRightPanelOpen(false)}
+          />
+          <div className={`relative w-full max-w-md h-full shadow-2xl z-10 flex flex-col ${sidebarBg} border-l border-slate-200 dark:border-slate-800 animate-slide-left`}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🧰</span>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">Outils & Ressources Complémentaires</p>
+              </div>
+              <button
+                onClick={() => setRightPanelOpen(false)}
+                className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-5">
+              <SidebarRight module={selectedModule} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Compact Header Bar ── */}
-      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-2 py-1.5 sm:px-4 md:py-3 md:px-6 flex items-center gap-2 sm:gap-3 z-30 w-full max-w-full overflow-hidden`}
+      <header className={`shrink-0 border-b ${headerBg} backdrop-blur-md px-2 py-1.5 sm:px-4 md:py-2.5 md:px-6 flex items-center gap-2 sm:gap-3 z-30 w-full max-w-full overflow-hidden`}
         style={{ background: isDark ? 'rgba(15,23,42,0.95)' : 'rgba(255,255,255,0.95)' }}>
         
         {/* Logo & brand */}
@@ -135,10 +161,10 @@ export default function App() {
           {/* Sidebar toggle (desktop) */}
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="sidebar-toggle hidden md:flex w-8 h-8 items-center justify-center rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-base"
-            title={sidebarOpen ? 'Masquer la navigation' : 'Afficher la navigation'}
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800/90 dark:hover:bg-slate-750 dark:text-slate-200 text-xs font-semibold transition-all border border-slate-200 dark:border-slate-700/60 shadow-2xs cursor-pointer"
+            title={sidebarOpen ? 'Masquer le sommaire' : 'Afficher le sommaire (35 Modules)'}
           >
-            {sidebarOpen ? '◀' : '▶'}
+            <span>{sidebarOpen ? '◀ Masquer le sommaire' : '▶ Sommaire (35 Modules)'}</span>
           </button>
 
           {/* Mobile menu trigger */}
@@ -151,11 +177,11 @@ export default function App() {
           </button>
 
           {/* Logo — clickable to go home */}
-          <button onClick={goHome} className="flex items-center gap-2 group">
+          <button onClick={goHome} className="flex items-center gap-2 group cursor-pointer">
             <GceaLogoSvg size={30} isDark={isDark} className="md:w-[34px] md:h-[34px] group-hover:scale-105 transition-transform duration-200" />
             <div>
               <div className="flex items-center gap-1.5">
-                <p className="text-[10px] md:text-xs uppercase tracking-widest text-blue-600 dark:text-sky-400 font-semibold leading-tight group-hover:text-blue-700 dark:group-hover:text-sky-300 transition-colors">Académie Génie Civil</p>
+                <p className="text-[10px] md:text-xs uppercase tracking-widest text-teal-600 dark:text-cyan-400 font-semibold leading-tight group-hover:text-teal-700 dark:group-hover:text-cyan-300 transition-colors">Académie Génie Civil</p>
                 <span className="tag-green text-[8px] md:text-[9px]">Accès Libre</span>
               </div>
               <p className="text-xs md:text-sm font-bold text-slate-900 dark:text-white leading-tight hidden sm:block">Global Civil Engineering Academy</p>
@@ -168,17 +194,17 @@ export default function App() {
           {view === 'lesson' ? (
             <button
               onClick={goHome}
-              className="flex items-center gap-2.5 text-sm bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700/50 dark:hover:bg-slate-750 px-3.5 py-1 rounded-full transition-all group shadow-sm"
+              className="flex items-center gap-2.5 text-sm bg-slate-100 text-slate-800 border border-slate-200 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700/50 dark:hover:bg-slate-750 px-3.5 py-1 rounded-full transition-all group shadow-sm cursor-pointer"
             >
               <span className="text-lg">{selectedModule.icon}</span>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-blue-600 dark:text-sky-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
+                <span className="text-xs text-teal-600 dark:text-cyan-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
                 <p className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{selectedModule.title}</p>
               </div>
               <span className="text-[10px] text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>
             </button>
           ) : (
-            <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-500/10 dark:text-sky-400 dark:border-blue-500/20 px-3.5 py-1 rounded-full font-medium shadow-sm">
+            <div className="flex items-center gap-2 text-sm bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:text-cyan-400 dark:border-teal-500/20 px-3.5 py-1 rounded-full font-medium shadow-sm">
               <span className="text-xs">🏠 Tableau de Bord — {totalCount} Modules Déverrouillés</span>
             </div>
           )}
@@ -198,7 +224,7 @@ export default function App() {
                 style={{ width: `${Math.max(3, progressPct)}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-blue-600 dark:text-sky-400 font-mono">{progressPct}%</span>
+            <span className="text-xs font-bold text-teal-600 dark:text-cyan-400 font-mono">{progressPct}%</span>
           </div>
 
           <div className="w-px h-5 bg-slate-300 dark:bg-slate-700 hidden sm:block" />
@@ -206,19 +232,19 @@ export default function App() {
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-transparent dark:hover:bg-slate-800 dark:text-slate-300 text-xs md:text-sm border border-slate-200 dark:border-transparent"
+            className="w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center transition-all bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-transparent dark:hover:bg-slate-800 dark:text-slate-300 text-xs md:text-sm border border-slate-200 dark:border-transparent cursor-pointer"
             title={isDark ? 'Mode clair' : 'Mode sombre'}
           >
             {isDark ? '☀️' : '🌙'}
           </button>
 
-          {/* Right panel toggle */}
+          {/* Right panel / tools toggle */}
           <button
             onClick={() => setRightPanelOpen(p => !p)}
-            className="hidden xl:flex w-8 h-8 rounded-lg items-center justify-center transition-all hover:bg-slate-100 text-slate-600 dark:hover:bg-slate-800 text-xs dark:text-slate-400"
-            title={rightPanelOpen ? 'Masquer le panneau' : 'Afficher le panneau'}
+            className="flex items-center gap-1.5 px-2.5 py-1 md:px-3 md:py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-all shadow-2xs cursor-pointer"
+            title="Outils & Ressources complémentaires"
           >
-            {rightPanelOpen ? '▶' : '◀'}
+            <span>🧰 Outils</span>
           </button>
         </div>
       </header>
@@ -279,10 +305,10 @@ export default function App() {
           </div>
         </aside>
 
-        {/* ── Main Content ── */}
-        <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-0 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
+        {/* ── Main Content (100% Reading Area) ── */}
+        <main className={`flex-1 overflow-y-auto overflow-x-hidden pb-16 md:pb-8 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
           <div className={`min-h-full w-full max-w-full overflow-x-hidden ${isDark ? 'eng-grid-bg' : ''}`}>
-            <div className="px-2 py-3 sm:px-4 md:px-6 w-full max-w-full overflow-x-hidden">
+            <div className="px-3 py-4 sm:px-6 md:px-8 w-full max-w-full overflow-x-hidden">
               {view === 'dashboard' ? (
                 <Dashboard
                   onSelectModule={selectModule}
@@ -295,20 +321,6 @@ export default function App() {
             </div>
           </div>
         </main>
-
-        {/* ── Right Panel (Desktop) ── */}
-        <aside
-          className={`
-            ${rightPanelOpen ? 'w-96' : 'w-0'} sidebar-left shrink-0
-            border-l ${rightBg} overflow-hidden
-            hidden xl:flex flex-col
-          `}
-          style={{ transition: 'width 0.25s cubic-bezier(0.4,0,0.2,1)' }}
-        >
-          <div className="w-96 flex flex-col h-full p-4 overflow-y-auto">
-            <SidebarRight module={selectedModule} />
-          </div>
-        </aside>
       </div>
 
       {/* ── Fixed Bottom Navigation Bar (Mobile) ── */}
