@@ -549,3 +549,128 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+/* ── Lesson plates (planches): hand-drawn course boards ─────────────────────── */
+.planche {
+  --f-font: 'Kalam', 'Segoe Print', 'Comic Sans MS', cursive;
+  --f-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-paper: #ffffff;
+  --f-frame: #cbd5e1;
+  --f-ink: #1d4ed8;
+  --f-ink-soft: rgba(29, 78, 216, 0.1);
+  --f-red: #dc2626;
+  --f-red-soft: rgba(220, 38, 38, 0.1);
+  --f-txt: #0f172a;
+  --f-txt-soft: rgba(15, 23, 42, 0.08);
+  --f-mute: #64748b;
+  --f-mute-soft: rgba(100, 116, 139, 0.12);
+  --f-green: #15803d;
+  --f-green-soft: rgba(21, 128, 61, 0.12);
+  --f-orange: #c2410c;
+  --f-orange-soft: rgba(234, 88, 12, 0.12);
+  --f-water: #0284c7;
+  --f-water-soft: rgba(14, 165, 233, 0.16);
+  --f-soil: #92400e;
+  --f-soil-soft: rgba(180, 83, 9, 0.13);
+  --f-grey: #6b7280;
+  --f-grey-soft: rgba(107, 114, 128, 0.15);
+  --f-violet: #7c3aed;
+  --f-violet-soft: rgba(124, 58, 237, 0.12);
+  background: var(--f-paper);
+  border: 1.5px solid var(--f-frame);
+  border-radius: 18px;
+  padding: 14px 16px 12px;
+  margin: 1.25rem auto;
+  max-width: 760px;
+  color: var(--f-txt);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 10px 28px -16px rgba(15, 23, 42, 0.25);
+}
+.dark .planche {
+  --f-paper: #0b1324;
+  --f-frame: #334155;
+  --f-ink: #7dd3fc;
+  --f-ink-soft: rgba(125, 211, 252, 0.12);
+  --f-red: #fb7185;
+  --f-red-soft: rgba(251, 113, 133, 0.13);
+  --f-txt: #e2e8f0;
+  --f-txt-soft: rgba(226, 232, 240, 0.08);
+  --f-mute: #94a3b8;
+  --f-mute-soft: rgba(148, 163, 184, 0.12);
+  --f-green: #4ade80;
+  --f-green-soft: rgba(74, 222, 128, 0.12);
+  --f-orange: #fdba74;
+  --f-orange-soft: rgba(253, 186, 116, 0.13);
+  --f-water: #38bdf8;
+  --f-water-soft: rgba(56, 189, 248, 0.16);
+  --f-soil: #d6a76c;
+  --f-soil-soft: rgba(214, 167, 108, 0.14);
+  --f-grey: #94a3b8;
+  --f-grey-soft: rgba(148, 163, 184, 0.16);
+  --f-violet: #c4b5fd;
+  --f-violet-soft: rgba(196, 181, 253, 0.13);
+  box-shadow: none;
+}
+.planche-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.planche-title {
+  font-family: var(--f-font);
+  font-weight: 700;
+  color: var(--f-red);
+  text-transform: uppercase;
+  font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  line-height: 1.2;
+  margin: 0;
+}
+.planche-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--f-sans);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--f-txt);
+  border: 1.5px solid var(--f-frame);
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.planche-dots { display: inline-flex; gap: 2px; }
+.planche-dots span { width: 4px; height: 4px; border-radius: 50%; background: var(--f-frame); }
+.planche-dots span.on { background: var(--f-red); }
+.planche-formulas { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0 2px; }
+.planche-formula {
+  border: 2.5px solid var(--f-red);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--f-red);
+  max-width: 100%;
+  overflow-x: auto;
+}
+.planche-formula .katex { color: var(--f-red); font-size: 1.2em; }
+.planche-svg { display: block; width: 100%; height: auto; margin: 8px auto 0; overflow: visible; }
+.planche-notes {
+  margin: 6px 4px 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--f-font);
+  font-size: clamp(1rem, 2.3vw, 1.15rem);
+  line-height: 1.45;
+  color: var(--f-txt);
+}
+.planche-notes li { margin: 2px 0; }
+.planche-notes li::before { content: '• '; color: var(--f-ink); font-weight: 700; }
+.planche-math .katex { font-size: 0.95em; color: var(--f-ink); }
+.planche figcaption {
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--f-frame);
+  font-family: var(--f-sans);
+  font-size: 12px;
+  color: var(--f-mute);
+}
+@media (max-width: 480px) {
+  .planche { padding: 10px 10px 10px; border-radius: 14px; }
+  .planche-badge { font-size: 9px; padding: 2px 7px; }
+}

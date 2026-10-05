@@ -284,8 +284,8 @@ où $d$ est la distance perpendiculaire de A à la droite d'action de $\\vec{F}$
         {
           context: "Bureau d'études — Vérification d'un portique acier R+3",
           scenario: "Portique acier bi-articulé à la base (rotule), traverse horizontale de portée 12 m. Charges : G = 40 kN/m (vertical) + W = 8 kN/m (vent horizontal sur montant de hauteur 6 m).",
-          decomposition_latex: "R_{Ay} = R_{By} = \\frac{40 \\times 12}{2} = 240 \\text{ kN} \\quad R_{Ax} = W \\times h = 8 \\times 6 = 48 \\text{ kN (vent repris en base)}",
-          lesson: "M_pied = Rx × h = 48 × 6 = 288 kN·m à l'encastrement fictif des poteaux. → Combinaison ELU : 1,35G + 1,50W → vérification M_Ed ≤ M_Rd du profilé sélectionné.",
+          decomposition_latex: "R_{Ay} = R_{By} = \\frac{40 \\times 12}{2} = 240 \\text{ kN} \\quad R_{Ax} + R_{Bx} = W \\times h = 8 \\times 6 = 48 \\text{ kN (vent repris en base)}",
+          lesson: "Les pieds étant articulés, le moment y est nul : le vent crée des moments maximaux aux angles du portique (liaison poteau-traverse) et un couple vertical qui augmente une réaction d'appui et diminue l'autre. Le partage exact des réactions horizontales demande un calcul hyperstatique (portique bi-articulé, 1 fois hyperstatique). → Combinaisons ELU 1,35G + 1,50W, vérification M_Ed ≤ M_Rd.",
         },
       ],
     },
@@ -505,8 +505,8 @@ où $d$ est la distance perpendiculaire de A à la droite d'action de $\\vec{F}$
       description: `**Mise en situation** : Bureau d'études, Toulouse. Un hangar industriel de 24 m de portée, poteaux de 9 m de hauteur, bi-articulé à la base. Charges : G = 15 kN/m (toiture) + Q = 8 kN/m (neige) + W = 6 kN/m (vent horizontal). Combinaison ELU : 1,35G + 1,50Q + 0,90W.`,
       resolution_latex_1: "q_{ELU} = 1{,}35 \\times 15 + 1{,}50 \\times 8 = 20{,}25 + 12 = 32{,}25 \\text{ kN/m (vertical)}",
       resolution_latex_2: "w_{ELU} = 0{,}90 \\times 6 = 5{,}4 \\text{ kN/m (horizontal)} \\quad R_{Ay} = R_{By} = \\frac{32{,}25 \\times 24}{2} = 387 \\text{ kN}",
-      resolution_latex_3: "R_{Ax} = w_{ELU} \\times h = 5{,}4 \\times 9 = 48{,}6 \\text{ kN} \\quad M_{traverse,milieu} = \\frac{32{,}25 \\times 24^2}{8} = 2322 \\text{ kN·m}",
-      conclusion: "M_Ed = 2322 kN·m sur la traverse + M_pied = 48,6 × 9 = 437 kN·m sur les poteaux. → Sélection d'un profilé IPE 600 ou HEA 600 pour la traverse selon EC3 (M_Rd ≥ 2322 kN·m).",
+      resolution_latex_3: "R_{Ax} + R_{Bx} = w_{ELU} \\times h = 5{,}4 \\times 9 = 48{,}6 \\text{ kN} \\quad M_{traverse,milieu} = \\frac{32{,}25 \\times 24^2}{8} = 2322 \\text{ kN·m}",
+      conclusion: "qL²/8 = 2 322 kN·m est le moment d'une traverse simplement appuyée : c'est une borne supérieure. Dans le portique bi-articulé, la continuité aux angles transfère une partie de ce moment dans les poteaux (moment nul aux pieds articulés, maximal en tête), et le vent ajoute des moments aux angles. Un calcul hyperstatique (ou un logiciel) donne la répartition exacte avant le choix des profilés selon l'EC3.",
     },
 
     {

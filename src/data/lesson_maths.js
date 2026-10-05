@@ -671,10 +671,10 @@ $$q(x) \\xrightarrow{\\int} -V(x) \\xrightarrow{\\int} -M(x) \\xrightarrow{\\int
       examples: [
         {
           title: 'Exemple : Calcul de flèche sur poutre acier IPE 300',
-          given: 'L = 6.0 m, q = 12 kN/m (0.012 N/mm), E = 210 000 MPa, I = 8356 cm⁴ (83.56×10⁶ mm⁴)',
+          given: 'L = 6.0 m, q = 12 kN/m (12 N/mm), E = 210 000 MPa, I = 8356 cm⁴ (83.56×10⁶ mm⁴)',
           find: 'Calculer la flèche w_max et vérifier ELS (L/250)',
-          solution_latex: 'w_{max} = \\frac{5 \\times 0{,}012 \\times 6000^4}{384 \\times 210000 \\times 83{,}56 \\times 10^6} = \\frac{77{,}76 \\times 10^12}{6{,}734 \\times 10^12} = 11{,}55 \\text{ mm}',
-          result: 'w_max = 11.55 mm ≤ L/250 = 24.0 mm — Conforme à l\'ELS ✓',
+          solution_latex: 'w_{max} = \\frac{5 \\times 12 \\times 6000^4}{384 \\times 210000 \\times 83{,}56 \\times 10^6} = \\frac{7{,}776 \\times 10^{16}}{6{,}738 \\times 10^{15}} = 11{,}54 \\text{ mm}',
+          result: 'w_max = 11,54 mm ≤ L/250 = 24.0 mm — Conforme à l\'ELS ✓',
         },
       ],
     },
@@ -688,7 +688,7 @@ $$q(x) \\xrightarrow{\\int} -V(x) \\xrightarrow{\\int} -M(x) \\xrightarrow{\\int
     { id: 17, key: 'quiz', title: 'Quiz d\'évaluation rapide', icon: '🎯', type: 'quiz', questions: [{ id: 'q1', question: 'Quelle est la dérivée de l\'effort tranchant V(x) ?', options: [{ id: 'a', text: '-q(x)' }, { id: 'b', text: 'M(x)' }], correct: 'a', explanation: 'dV(x)/dx = -q(x).' }] },
     { id: 18, key: 'exam_questions', title: 'Questions d\'examen universitaire', icon: '🎓', type: 'exam', questions: ['Intégrer l\'équation d\'Euler-Bernoulli pour une poutre encastrée-appuyée (structure hyperstatique).'] },
     { id: 19, key: 'interview_questions', title: 'Questions d\'entretien d\'embauche technique', icon: '💼', type: 'interview', questions: [{ question: 'Comment trouvez-vous l\'emplacement du moment fléchissant maximal sur une poutre sollicitée par une charge trapézoïdale ?', answer_hint: 'En annulant l\'effort tranchant V(x) = 0 par résolution d\'équation du second degré.' }] },
-    { id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'rebar_beam', scenario: 'Vérification de la flèche d\'un plancher de bureau', description: 'Portée L = 7.50 m, charge q = 18 kN/m. Poutre béton armé 30×60 cm.', resolution_latex_1: 'I = \\frac{b h^3}{12} = \\frac{300 \\times 600^3}{12} = 5{,}40 \\times 10^9 \\text{ mm}^4', resolution_latex_2: 'E_cd = 32000 / 1.5 = 21333 \\text{ MPa}', resolution_latex_3: 'w_{max} = \\frac{5 \\times 0.018 \\times 7500^4}{384 \\times 21333 \\times 5.40 \\times 10^9} = 6{,}44 \\text{ mm} \\le 30.0 \\text{ mm}', conclusion: 'Flèche 6.44 mm très inférieure à la limite ELS L/250 (30 mm). Structure validée.' },
+    { id: 20, key: 'practical_case', title: 'Cas pratique professionnel — Scénario réel', icon: '🔧', type: 'practical', diagramType: 'rebar_beam', scenario: 'Vérification de la flèche d\'un plancher de bureau', description: 'Portée L = 7.50 m, charge q = 18 kN/m. Poutre béton armé 30×60 cm.', resolution_latex_1: 'I = \\frac{b h^3}{12} = \\frac{300 \\times 600^3}{12} = 5{,}40 \\times 10^9 \\text{ mm}^4', resolution_latex_2: 'E_{cm} = 32\\,000 \\text{ MPa (section non fissurée, court terme)}', resolution_latex_3: 'w_{max} = \\frac{5 \\times 18 \\times 7500^4}{384 \\times 32\\,000 \\times 5{,}40 \\times 10^9} = 4{,}29 \\text{ mm} \\le 30.0 \\text{ mm}', conclusion: 'Flèche instantanée de 4,29 mm (section non fissurée), très inférieure à la limite ELS L/250 = 30 mm. Avec la fissuration et le fluage, la flèche réelle est 2 à 4 fois plus grande : la marge reste suffisante.' },
     { id: 21, key: 'summary', title: 'Résumé exécutif', icon: '📋', type: 'summary', content: 'Le calcul différentiel relie les charges, les sollicitations internes (V, M) et les déformations (w) de manière analytique exacte.' },
     { id: 22, key: 'key_points', title: 'Points clés à retenir', icon: '⭐', type: 'keypoints', points: ['q = -dV/dx', 'V = dM/dx', 'EI w\'\' = -M', 'w_max = 5qL⁴/384EI'] },
     { id: 23, key: 'self_assessment', title: 'Module de vérification de la compréhension', icon: '🏆', type: 'self_assessment', description: 'Acquis :', objectives: ['Je sais dériver M(x) pour trouver V(x)', 'Je sais calculer la flèche w_max', 'Je valide le critère ELS'] },

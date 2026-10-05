@@ -13,6 +13,9 @@ import { getLessonEntries } from '../data/lesson_registry.js';
 import { TECH_TERMS } from '../data/tech_terms.js';
 import { useLesson } from '../hooks/useLesson.js';
 import { splitMathBlocks, tokenizeInline } from '../utils/latex.js';
+import { Planches } from './figures/Planche.jsx';
+import { useFigures } from '../figures/index.js';
+import { principlePlate } from '../figures/auto.jsx';
 
 // Diagram types drawn by DiagramViewer. Any other lesson diagram is shown as a process flow.
 const DRAWN_DIAGRAMS = new Set(['plan_coffrage', 'bim_workflow', 'topographie_nivellement', 'force_decomposition', 'rebar_beam', 'road_profile', 'soil_profile', 'bridge_structure', 'trig_interactive']);
@@ -21,6 +24,11 @@ const TRIG_DOMAINS = new Set(['maths', 'topographie', 'physique']);
 const BEAM_DOMAINS = new Set(['rdm', 'mecanique', 'structures', 'beton_arme', 'precontrainte', 'metal', 'bois', 'ponts']);
 
 const isDrawn = type => DRAWN_DIAGRAMS.has(type);
+
+/** Plates of the lesson shown in a given step (matched on the step key). */
+const platesFor = (figs = [], key) => figs.filter(f => f.steps.includes(key));
+/** Plates for the "schéma" step and the workstation's diagram tab. */
+const diagramPlates = (figs = []) => platesFor(figs, 'diagrams');
 
 // ── Rich text ────────────────────────────────────────────────────────────────
 
@@ -231,8 +239,17 @@ function ApplicationsStep({ s }) {
   );
 }
 
-function TheoryStep({ s, lessonDiagram, domain }) {
+function TheoryStep({ s, lessonDiagram, domain, figs, hasPlates, total }) {
   const diagram = s.diagramType || lessonDiagram;
+  if (hasPlates) {
+    return (
+      <Section>
+        <StepHeader step={s.id} title={s.title} icon={s.icon} />
+        <div className="prose-custom mb-5"><RichText text={s.content} /></div>
+        <Planches figs={platesFor(figs, s.key)} total={total} />
+      </Section>
+    );
+  }
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
@@ -248,7 +265,7 @@ function TheoryStep({ s, lessonDiagram, domain }) {
   );
 }
 
-function FormulasStep({ s, lessonDiagram, domain }) {
+function FormulasStep({ s, lessonDiagram, domain, figs, hasPlates, total }) {
   const formulas = s.formulas || [];
   const diagram = s.diagramType || lessonDiagram;
   return (
@@ -267,12 +284,14 @@ function FormulasStep({ s, lessonDiagram, domain }) {
           />
         ))}
       </div>
-      {isDrawn(diagram) && <DiagramViewer type={diagram} title="Illustration des équations & sollicitations" />}
+      {hasPlates
+        ? <Planches figs={platesFor(figs, s.key)} total={total} />
+        : isDrawn(diagram) && <DiagramViewer type={diagram} title="Illustration des équations & sollicitations" />}
     </Section>
   );
 }
 
-function StepByStepStep({ s }) {
+function StepByStepStep({ s, figs, total }) {
   const [revealed, setRevealed] = useState([]);
   const toggle = n => setRevealed(prev => (prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n]));
   const steps = s.steps_demo || [];
@@ -285,6 +304,7 @@ function StepByStepStep({ s }) {
           <p className="text-base text-slate-700 dark:text-slate-200 mt-1.5 leading-relaxed">{renderInline(s.problem)}</p>
         </div>
       )}
+      <Planches figs={platesFor(figs, s.key)} total={total} />
       <ol className="space-y-2.5">
         {steps.map((step, i) => {
           const n = step.n || i + 1;
@@ -375,7 +395,7 @@ function HypothesesStep({ s }) {
   );
 }
 
-function ExamplesSimpleStep({ s }) {
+function ExamplesSimpleStep({ s, figs, total }) {
   const examples = s.examples || [];
   return (
     <Section>
@@ -405,11 +425,12 @@ function ExamplesSimpleStep({ s }) {
           </article>
         ))}
       </div>
+      <Planches figs={platesFor(figs, s.key)} total={total} />
     </Section>
   );
 }
 
-function RealExamplesStep({ s }) {
+function RealExamplesStep({ s, figs, total }) {
   const examples = s.examples || [];
   return (
     <Section>
@@ -429,22 +450,26 @@ function RealExamplesStep({ s }) {
           </article>
         ))}
       </div>
+      <Planches figs={platesFor(figs, s.key)} total={total} />
     </Section>
   );
 }
 
-function DiagramStep({ s, lessonDiagram }) {
+function DiagramStep({ s, lessonDiagram, figs, hasPlates, total }) {
   const items = s.diagram_description || [];
   const diagram = s.diagramType || lessonDiagram;
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      {s.description && (
+      {/* The builder's default description only introduces the list of stages, which plates replace. */}
+      {s.description && !(hasPlates && /^Les étapes clés/.test(s.description)) && (
         <div className="alert-info mb-4">
           <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{renderInline(s.description)}</p>
         </div>
       )}
-      {isDrawn(diagram) ? (
+      {hasPlates ? (
+        <Planches figs={diagramPlates(figs)} total={total} />
+      ) : isDrawn(diagram) ? (
         <>
           {items.length > 0 && (
             <ul className="space-y-1.5 mb-5 list-disc ml-5 text-sm text-slate-600 dark:text-slate-300">
@@ -738,7 +763,7 @@ function InterviewStep({ s }) {
   );
 }
 
-function PracticalStep({ s, lessonDiagram }) {
+function PracticalStep({ s, lessonDiagram, figs, hasPlates, total }) {
   const resolutions = Object.keys(s)
     .filter(k => /^resolution_latex_\d+$/.test(k) && s[k])
     .sort((a, b) => Number(a.split('_').pop()) - Number(b.split('_').pop()))
@@ -774,7 +799,9 @@ function PracticalStep({ s, lessonDiagram }) {
           </li>
         ))}
       </ol>
-      {isDrawn(diagram) && <DiagramViewer type={diagram} title="Schéma d'exécution du cas pratique" />}
+      {hasPlates
+        ? <Planches figs={platesFor(figs, s.key)} total={total} />
+        : isDrawn(diagram) && <DiagramViewer type={diagram} title="Schéma d'exécution du cas pratique" />}
       {allShown && s.conclusion && (
         <div className="alert-warning mt-4 animate-fade-up">
           <p className="text-base text-orange-900 dark:text-orange-200 font-semibold">⚠️ Conclusion : {renderInline(s.conclusion)}</p>
@@ -847,7 +874,7 @@ function collectTerms(lesson) {
     .slice(0, 12);
 }
 
-function Workstation({ lesson, domain, moduleTitle }) {
+function Workstation({ lesson, domain, moduleTitle, figs = [], hasPlates }) {
   const [tab, setTab] = useState('tool');
   const [angle, setAngle] = useState(35);
   const [hypotenuse, setHypotenuse] = useState(10);
@@ -899,7 +926,8 @@ function Workstation({ lesson, domain, moduleTitle }) {
       {tab === 'tool' && (
         <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">{tool.node}</div>
       )}
-      {tab === 'diagram' && (
+      {tab === 'diagram' && hasPlates && <Planches figs={diagramPlates(figs)} total={figs.length} />}
+      {tab === 'diagram' && !hasPlates && (
         isDrawn(lesson.diagramType)
           ? <DiagramViewer type={lesson.diagramType} title={diagramStep?.title} />
           : <DiagramViewer type="process_flow" items={diagramStep?.diagram_description || []} title={diagramStep?.title} />
@@ -976,6 +1004,13 @@ export default function LessonCanvas({ module, lessonIndex = 0, onSelectLesson, 
   const index = Math.min(Math.max(0, lessonIndex), Math.max(0, entries.length - 1));
   const entry = entries[index];
   const { status, lesson, error, retry } = useLesson(entry);
+  const { expected: hasPlates, figures } = useFigures(entry?.key);
+  // A lesson without its own "schéma de principe" plate gets one drawn from the step's stages.
+  const plates = useMemo(() => {
+    if (!figures.length || figures.some(f => f.steps.includes('diagrams'))) return figures;
+    const auto = principlePlate(lesson?.steps?.find(st => st.type === 'interactive_diagram'));
+    return auto ? [...figures, { ...auto, n: figures.length + 1 }] : figures;
+  }, [figures, lesson]);
   const progress = (entry && lessonProgress[entry.key]) || {};
 
   const saveProgress = patch => entry && onLessonProgress?.(entry.key, patch);
@@ -983,7 +1018,7 @@ export default function LessonCanvas({ module, lessonIndex = 0, onSelectLesson, 
   const renderStep = s => {
     if (!s?.type) return null;
     const key = `${entry.key}-${s.id ?? s.key}`;
-    const common = { s, lessonDiagram: lesson.diagramType, domain: entry.domain };
+    const common = { s, lessonDiagram: lesson.diagramType, domain: entry.domain, figs: plates, hasPlates, total: plates.length };
     switch (s.type) {
       case 'definition': return <DefinitionStep key={key} {...common} />;
       case 'importance': return <ContentStep key={key} {...common} />;
@@ -1119,7 +1154,7 @@ export default function LessonCanvas({ module, lessonIndex = 0, onSelectLesson, 
                 </ErrorBoundary>
               ))}
             </div>
-            <Workstation key={entry.key} lesson={lesson} domain={entry.domain} moduleTitle={module?.title} />
+            <Workstation key={entry.key} lesson={lesson} domain={entry.domain} moduleTitle={module?.title} figs={plates} hasPlates={hasPlates} />
           </>
         )}
       </div>
