@@ -7,7 +7,7 @@ export const lesson_topographie = {
   subtitle: "Module 22 — Topographie, Géodésie & SIG",
   level: 'Intermédiaire',
   duration: '40h',
-  diagramType: 'trig_interactive',
+  diagramType: 'topographie_nivellement',
   tags: ['Topographie', 'Géodésie', 'GNSS', 'Lambert-93', 'Nivellement', 'Station Totale', 'QGIS', 'SIG'],
 
   steps: [
@@ -91,7 +91,7 @@ export const lesson_topographie = {
       title: "Théorie — Géodésie, Projection Lambert-93 & Nivellement",
       icon: '📐',
       type: 'theory',
-      diagramType: 'trig_interactive',
+      diagramType: 'topographie_nivellement',
       content: `### 1. La Projection Conique Conforme Lambert-93 (France métropolitaine)
 
 La Terre (modelée par l'ellipsoïde **IAG GRS80 / RGF93**) est projetée platement sur un cône tangent.
@@ -104,19 +104,19 @@ La Terre (modelée par l'ellipsoïde **IAG GRS80 / RGF93**) est projetée platem
 
 Détermination de la différence d'altitude $\\Delta H_{A \\to B}$ entre deux points $A$ et $B$ à l'aide d'un niveau optique et d'une mire graduée :
 
-$$\\Delta H_{A \\to B} = L_{arrière} - L_{avant}$$
+$$\\Delta H_{A \\to B} = L_{AR} - L_{AV}$$
 
-- $L_{arrière}$ = lecture sur la mire au point $A$ (visée arrière)
-- $L_{avant}$ = lecture sur la mire au point $B$ (visée avant)
+- $L_{AR}$ = lecture sur la mire au point $A$ (visée arrière)
+- $L_{AV}$ = lecture sur la mire au point $B$ (visée avant)
 
 Altitude du point B :
-$$H_B = H_A + \\Delta H_{A \\to B} = H_A + (L_{arrière} - L_{avant})$$
+$$Z_B = Z_A + \\Delta H_{A \\to B} = Z_A + (L_{AR} - L_{AV})$$
 
 ### 3. Cheminement encadré & Erreur de fermeture ($f_H$)
 
-Pour garantir l'exactitude d'un nivellement entre deux repères connus $H_{départ}$ et $H_{arrivée}$ :
+Pour garantir l'exactitude d'un nivellement entre deux repères connus $Z_{départ}$ et $Z_{arrivée}$ :
 
-$$f_H = \\sum \\Delta H_{mesurés} - (H_{arrivée} - H_{départ}) \\le T_H = \\pm 2{,}5 \\cdot \\sigma \\cdot \\sqrt{L_{km}} \\quad [\\text{mm}]$$
+$$f_H = \\sum \\Delta H_{mesurés} - (Z_{arrivée} - Z_{départ}) \\le T_H = \\pm 2{,}5 \\cdot \\sigma \\cdot \\sqrt{L_{km}} \\quad [\\text{mm}]$$
 
 Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compensée proportionnellement aux distances.`,
     },
@@ -124,40 +124,64 @@ Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compe
     {
       id: 5,
       key: 'formulas',
-      title: "Formules essentielles — Calculs Topographiques & Trigo",
+      title: "Formules essentielles — Calculs Topographiques & Nivellement",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'trig_interactive',
+      diagramType: 'topographie_nivellement',
       formulas: [
+        {
+          name: "Calcul de la Dénivelée Directe par Nivellement (ΔH_AB)",
+          latex: "\\Delta H_{AB} = L_{AR} - L_{AV}",
+          description: "Différence d'altitude entre le point A (mire arrière) et le point B (mire avant).",
+          variables: [
+            { symbol: '\\Delta H_{AB}', name: "Dénivelée entre les points A et B", unit: '\\text{m}', role: "Variation de hauteur algébrique (+ en montée, - en descente).", category: 'Nivellement' },
+            { symbol: 'L_{AR}', name: "Lecture sur mire arrière (Point A)", unit: '\\text{m}', role: "Pointage au fil niveleur horizontal sur le repère connu.", category: 'Nivellement' },
+            { symbol: 'L_{AV}', name: "Lecture sur mire avant (Point B)", unit: '\\text{m}', role: "Pointage sur le point à déterminer.", category: 'Nivellement' }
+          ]
+        },
+        {
+          name: "Altitude finale déterminée du Point B (Z_B)",
+          latex: "Z_B = Z_A + \\Delta H_{AB} = Z_A + (L_{AR} - L_{AV})",
+          description: "Cote altimétrique NGF du point B calculée par transmission directe.",
+          variables: [
+            { symbol: 'Z_B', name: "Altitude du point B", unit: '\\text{m NGF}', role: "Cote recherchée pour l'implantation de l'ouvrage.", category: 'Altimétrie' },
+            { symbol: 'Z_A', name: "Altitude connue du repère A", unit: '\\text{m NGF}', role: "Cote de référence de départ.", category: 'Altimétrie' },
+            { symbol: 'L_{AR}', name: "Lecture arrière", unit: '\\text{m}', role: "Visée sur le point d'appui initial.", category: 'Nivellement' },
+            { symbol: 'L_{AV}', name: "Lecture avant", unit: '\\text{m}', role: "Visée sur le point d'intérêt.", category: 'Nivellement' }
+          ]
+        },
         {
           name: "Calcul des Coordonnées Polaires vers Rectangulaires",
           latex: "X_B = X_A + D_{h,AB} \\cdot \\sin(G_{AB}) \\qquad Y_B = Y_A + D_{h,AB} \\cdot \\cos(G_{AB})",
-          description: "GAB = gisement de A vers B [en grades : 400 grads = 360°], Dh,AB = distance horizontale réduite à l'horizon.",
+          description: "GAB = gisement de A vers B [en grades : 400 grads = 360°], Dh,AB = distance horizontale.",
+          variables: [
+            { symbol: 'X_B, Y_B', name: "Coordonnées planes du point B", unit: '\\text{m}', role: "Positionnement en Lambert-93.", category: 'Géodésie' },
+            { symbol: 'X_A, Y_A', name: "Coordonnées de la station A", unit: '\\text{m}', role: "Position de l'instrument sur le canevas.", category: 'Géodésie' },
+            { symbol: 'D_{h,AB}', name: "Distance horizontale réduite", unit: '\\text{m}', role: "Distance mesurée projetée sur le plan cartographique.", category: 'Topométrie' },
+            { symbol: 'G_{AB}', name: "Gisement de visée", unit: '\\text{gon}', role: "Angle par rapport au Nord géographique.", category: 'Topométrie' }
+          ]
         },
         {
-          name: "Calcul du Gisement G_AB à partir des coordonnées",
-          latex: "G_{AB} = \\text{atan2}(X_B - X_A, Y_B - Y_A) \\quad [\\text{gon / grads}] \\qquad D_{h,AB} = \\sqrt{(X_B - X_A)^2 + (Y_B - Y_A)^2}",
-          description: "Le gisement est l'angle orienté dans le sens horaire entre l'axe du Nord (Y) et la direction AB (0 à 400 grads).",
+          name: "Nivellement trigonométrique à la Station Totale",
+          latex: "\\Delta H_{AB} = D_i \\cdot \\cos(V) + h_{station} - h_{prisme}",
+          description: "Di = distance inclinée mesurée au laser, V = angle zénithal, hs = hauteur d'axe optique, hp = hauteur de voyant.",
+          variables: [
+            { symbol: '\\Delta H_{AB}', name: "Dénivelée trigonométrique", unit: '\\text{m}', role: "Différence d'altitude calculée par visée tachéométrique.", category: 'Nivellement' },
+            { symbol: 'D_i', name: "Distance inclinée laser", unit: '\\text{m}', role: "Trajet direct rayon lumineux instrument-prisme.", category: 'Topométrie' },
+            { symbol: 'V', name: "Angle zénithal", unit: '\\text{gon}', role: "Angle vertical compté depuis le zénith (0 gon).", category: 'Topométrie' },
+            { symbol: 'h_{station}', name: "Hauteur de la station", unit: '\\text{m}', role: "Hauteur de l'axe de tourillonnement au-dessus du clou d'arpentage.", category: 'Topométrie' },
+            { symbol: 'h_{prisme}', name: "Hauteur de canne du prisme", unit: '\\text{m}', role: "Hauteur du centre du réflecteur.", category: 'Topométrie' }
+          ]
         },
         {
-          name: "Nivellement trigonométrique (Station Totale)",
-          latex: "\\Delta H_{AB} = D_i \\cdot \\cos(V) + h_{station} - h_{mire} = D_h \\cdot \\cot(V) + h_s - h_m",
-          description: "Di = distance inclinée mesurée au laser, V = angle zénithal (0 grad au zénith, 100 grads à l'horizon), hs = hauteur de l'appareil, hm = hauteur du prisme.",
-        },
-        {
-          name: "Correction de sphéricité et réfraction terrestre (Nivellement)",
-          latex: "c_r = \\frac{(1 - k) \\cdot D_h^2}{2 \\cdot R_{Terre}} \\approx 0{,}067 \\cdot \\left(\\frac{D_h}{1000}\\right)^2 \\quad [\\text{m}]",
-          description: "k ≈ 0,13 (coef de réfraction). Nécessaire pour les visées de nivellement de plus de 100 m (ou visées réciproques simultanées).",
-        },
-        {
-          name: "Conversion Degrés <-> Grades (Gons)",
-          latex: "1 \\text{ grad (gon)} = 0{,}9^\\circ = 54' \\qquad 400 \\text{ grads} = 360^\\circ = 2\\pi \\text{ rad}",
-          description: "La topographie francophone travaille exclusivement en GRADES (gons) et canti-grades (cgon).",
-        },
-        {
-          name: "Tolérance de fermeture géométrique de cheminement (T_H)",
-          latex: "T_H = \\sigma_{unit} \\cdot \\sqrt{N_{stations}} \\quad [\\text{mm}] \\qquad T_H = 2{,}5 \\cdot \\sqrt{L_{km}} \\quad [\\text{mm}]",
-          description: "Critère de rejet d'un cheminement de nivellement de précision selon les fascicules topographiques de l'IGN.",
+          name: "Tolérance de fermeture de nivellement (T_H)",
+          latex: "T_H = 2{,}5 \\cdot \\sigma \\cdot \\sqrt{L_{km}} \\quad [\\text{mm}]",
+          description: "Critère de validation réglementaire d'un cheminement de nivellement encadré.",
+          variables: [
+            { symbol: 'T_H', name: "Tolérance d'écart de fermeture", unit: '\\text{mm}', role: "Erreur maximale tolérée avant rejet du levé.", category: 'Tolérances' },
+            { symbol: '\\sigma', name: "Écart-type instrumental", unit: '\\text{mm/km}', role: "Précision nominale certifiée du niveau optique.", category: 'Instruments' },
+            { symbol: 'L_{km}', name: "Longueur totale du parcours", unit: '\\text{km}', role: "Distance cumulée des visées de cheminement.", category: 'Nivellement' }
+          ]
         },
       ],
     },
@@ -251,7 +275,7 @@ Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compe
       title: "Exemple réel — Implantation d'un viaduc ferroviaire LGV",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'trig_interactive',
+      diagramType: 'topographie_nivellement',
       examples: [
         {
           context: "Implantation des axes de piles — Viaduc LGV de 600 m",
@@ -268,7 +292,7 @@ Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compe
       title: "Schéma topographique — Mesures angulaires & Nivellement",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'trig_interactive',
+      diagramType: 'topographie_nivellement',
       description: "Visualisez le principe du nivellement direct (visée arrière et avant sur mire graduée) et le système des coordonnées polaires (Gisement G, Angle zénithal V, Distance inclinée et projection horizontale).",
       diagram_description: [
         "Schéma du nivellement direct : Niveau optique, visée arrière Larrière, visée avant Lavant, axe optique horizontal",

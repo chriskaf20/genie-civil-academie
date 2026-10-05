@@ -26,3 +26,6 @@ dist-ssr/
 
 # Temporary workspace files
 tmp/
+
+# Vite writes these next to vite.config.js while loading it
+*.timestamp-*.mjs

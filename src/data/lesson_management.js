@@ -1,13 +1,13 @@
-// ── Lesson: Management de Projet, PERT/CPM & Earned Value — Module 33 ─────────
+// ── Lesson: Management de Projet, PERT/CPM & Earned Value — Module 25 ─────────
 export const lesson_management = {
-  moduleId: 33,
+  moduleId: 25,
   slug: 'management',
   lessonIndex: 1,
   title: "Management de Projet, Méthode PERT/CPM, Earned Value & Direction de Travaux",
-  subtitle: "Module 33 — Management de Projet & Direction de Travaux",
+  subtitle: "Module 25 — Management de Projet & Planification",
   level: 'Intermédiaire',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Management', 'PERT', 'CPM', 'Chemin Critique', 'Earned Value', 'EVM', 'CPI', 'SPI', 'Primavera'],
 
   steps: [
@@ -82,7 +82,7 @@ export const lesson_management = {
       title: "Théorie — Réseau PERT, Marges & Indicateurs EVM",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. Calcul du Réseau PERT & Des Marges
 
 Pour chaque tâche $i \\to j$ de durée $d_{ij}$ :
@@ -104,8 +104,8 @@ $$ML_i = \\min_{j} (t_{e,j}) - t_{e,i} - d_{ij}$$
 
 ### 3. Les Indices de Performance EVM
 
-$$CPI = \\frac{EV}{AC} \\quad (\\text{Indice de performance des coûts : } CPI > 1 \\implies \\text{Sous-budget})\\$$
-$$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI > 1 \\implies \\text{En avance})\\$$
+$$CPI = \\frac{EV}{AC} \\quad (\\text{Indice de performance des coûts : } CPI > 1 \\implies \\text{Sous-budget})$$
+$$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI > 1 \\implies \\text{En avance})$$
 
 - **Estimation à l'Achèvement (EAC)** : $EAC = \\frac{BAC}{CPI}$.`,
     },
@@ -116,27 +116,48 @@ $$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI 
       title: "Formules essentielles — PERT, EVM & Pilotage",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Marge Totale d'une tâche (MT)",
           latex: "MT_i = t_{l,j} - t_{e,i} - d_{ij} \\quad [\\text{jours}] \\qquad (MT = 0 \\implies \\text{Tâche Critique})",
-          description: "t_{l,j} = date au plus tard de l'étape suivante, t_{e,i} = date au plus tôt de l'étape de départ, d = durée.",
+          description: "tl,j = date au plus tard de l'étape d'arrivée j, te,i = date au plus tôt de l'étape de départ i, dij = durée de la tâche.",
+          variables: [
+            { symbol: "MT_i", name: "Marge totale", unit: "jours", role: "Retard admissible sans décaler la fin du projet." },
+            { symbol: "t_{l,j}", name: "Date au plus tard de l'étape j", unit: "jour", role: "Étape d'arrivée de la tâche." },
+            { symbol: "t_{e,i}", name: "Date au plus tôt de l'étape i", unit: "jour", role: "Étape de départ de la tâche." },
+            { symbol: "d_{ij}", name: "Durée de la tâche", unit: "jours", role: "Tâche i → j." },
+          ],
         },
         {
           name: "Cost Variance (Écart de Coût CV)",
-          latex: "CV = EV - AC \\quad [\\text{\\euro}] \\qquad (CV > 0 \\implies \\text{Économie})",
+          latex: "CV = EV - AC \\quad [\\text{€}] \\qquad (CV > 0 \\implies \\text{Économie})",
           description: "EV = Valeur Acquise, AC = Coût Réel engagé.",
+          variables: [
+            { symbol: "CV", name: "Écart de coût", unit: "€", role: "> 0 : économie ; < 0 : dépassement." },
+            { symbol: "EV", name: "Valeur acquise", unit: "€", role: "Budget du travail réellement effectué." },
+            { symbol: "AC", name: "Coût réel", unit: "€", role: "Dépenses engagées à date." },
+          ],
         },
         {
           name: "Schedule Variance (Écart de Délais SV)",
-          latex: "SV = EV - PV \\quad [\\text{\\euro}] \\qquad (SV < 0 \\implies \\text{Retard})",
+          latex: "SV = EV - PV \\quad [\\text{€}] \\qquad (SV < 0 \\implies \\text{Retard})",
           description: "PV = Valeur Planifiée initiale.",
+          variables: [
+            { symbol: "SV", name: "Écart de délai", unit: "€", role: "< 0 : retard." },
+            { symbol: "EV", name: "Valeur acquise", unit: "€", role: "Budget du travail réellement effectué." },
+            { symbol: "PV", name: "Valeur planifiée", unit: "€", role: "Budget du travail prévu à date." },
+          ],
         },
         {
           name: "Estimation à l'Achèvement Finale (EAC)",
-          latex: "EAC = \\frac{BAC}{CPI} \\quad [\\text{\\euro}]",
+          latex: "EAC = \\frac{BAC}{CPI} \\quad [\\text{€}]",
           description: "BAC = Budget At Completion (Budget initial total), CPI = EV / AC.",
+          variables: [
+            { symbol: "EAC", name: "Estimation à l'achèvement", unit: "€", role: "Coût final prévisible." },
+            { symbol: "BAC", name: "Budget initial total", unit: "€", role: "Budget at completion." },
+            { symbol: "CPI", name: "Indice de performance des coûts", unit: "-", role: "EV / AC (< 1 : dépassement)." },
+          ],
         },
       ],
     },
@@ -166,9 +187,9 @@ $$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI 
       icon: '📏',
       type: 'units',
       table: [
-        { grandeur: "Planned Value (PV)", si: "€ HT ou € TTC", imperial: "$ USD", conversion: "Budget prévu des travaux planifiés à la date t" },
-        { grandeur: "Earned Value (EV)", si: "€ HT (EV = %avancement × BAC)", imperial: "$ USD", conversion: "Valeur budgétaire du travail réellement exécuté" },
-        { grandeur: "Actual Cost (AC)", si: "€ HT", imperial: "$ USD", conversion: "Dépenses réelles comptabilisées" },
+        { grandeur: "Planned Value (PV)", si: "€ HT ou € TTC", imperial: "USD", conversion: "Budget prévu des travaux planifiés à la date t" },
+        { grandeur: "Earned Value (EV)", si: "€ HT (EV = %avancement × BAC)", imperial: "USD", conversion: "Valeur budgétaire du travail réellement exécuté" },
+        { grandeur: "Actual Cost (AC)", si: "€ HT", imperial: "USD", conversion: "Dépenses réelles comptabilisées" },
         { grandeur: "CPI (Cost Performance Index)", si: "Adimensionnel (ex: 1,05 = 5% d'économie)", imperial: "-", conversion: "CPI = EV / AC (Indicateur d'efficience financière)" },
         { grandeur: "SPI (Schedule Performance Index)", si: "Adimensionnel (ex: 0,90 = 10% de retard)", imperial: "-", conversion: "SPI = EV / PV (Indicateur de cadence temporelle)" },
       ],
@@ -227,7 +248,7 @@ $$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI 
       title: "Exemple réel — Le Pilotage du Grand Paris Express",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Construction de 200 km de lignes de métro automatique et 68 gares (Budget 35 milliards d'euros)",
@@ -244,7 +265,7 @@ $$SPI = \\frac{EV}{PV} \\quad (\\text{Indice de performance des délais : } SPI 
       title: "Schéma d'un Réseau PERT & Courbe en S de la Valeur Acquise",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez le réseau PERT avec mise en évidence du chemin critique rouge, le diagramme de Gantt avec marges libres et la courbe en S (PV, EV, AC).",
       diagram_description: [
         "Graphe PERT : Nœuds d'étapes, arcs de tâches avec durées, dates au plus tôt/tard et chemin critique rouge",

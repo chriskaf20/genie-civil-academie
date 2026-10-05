@@ -1,10 +1,10 @@
-// ── Lesson: Physique Fondamentale & Physique des Matériaux — Module 02 ─────────
+// ── Lesson: Physique Fondamentale & Physique des Matériaux — Module 2 ─────────
 export const lesson_physique = {
   moduleId: 2,
   slug: 'physique',
   lessonIndex: 1,
   title: "Physique Fondamentale, Mécanique Classique & Thermodynamique",
-  subtitle: "Module 02 — Physique Appliquée au Génie Civil",
+  subtitle: "Module 02 — Physique fondamentale & Physique des matériaux",
   level: 'Débutant',
   duration: '35h',
   diagramType: 'force_decomposition',
@@ -24,10 +24,10 @@ export const lesson_physique = {
 
 ### Les 3 grands piliers de la physique du génie civil :
 1. **La Mécanique Newtonienne (Statique & Dynamique)** : Étude du mouvement et de l'équilibre des corps sous l'action des forces extérieures (pesanteur, vent, séisme, frottement).
-2. **La Thermodynamique & Dilatation Thermique** : Analyse des variations dimensionnelles ($\Delta L = \alpha \cdot L \cdot \Delta T$) subies par les structures sous l'effet des cycles climatiques d'été et d'hiver.
-3. **La Thermique du Bâtiment (Conduction, Convection, Rayonnement)** : Transfert de chaleur à travers l'enveloppe et isolation énergétique (Loi de Fourier $q = -\lambda \nabla T$).
+2. **La Thermodynamique & Dilatation Thermique** : Analyse des variations dimensionnelles ($\\Delta L = \\alpha \\cdot L \\cdot \\Delta T$) subies par les structures sous l'effet des cycles climatiques d'été et d'hiver.
+3. **La Thermique du Bâtiment (Conduction, Convection, Rayonnement)** : Transfert de chaleur à travers l'enveloppe et isolation énergétique (Loi de Fourier $q = -\\lambda \\nabla T$).
 
-> 💡 **La merveille de la nature** : Le béton ($\alpha \approx 10 \times 10^{-6}\text{ K}^{-1}$) et l'acier ($\alpha \approx 12 \times 10^{-6}\text{ K}^{-1}$) ont des coefficients de dilatation thermique quasi identiques ! C'est ce qui rend l'association du Béton Armé possible sans destruction par cisaillement thermique.`,
+> 💡 **La merveille de la nature** : Le béton ($\\alpha \\approx 10 \\times 10^{-6}\\text{ K}^{-1}$) et l'acier ($\\alpha \\approx 12 \\times 10^{-6}\\text{ K}^{-1}$) ont des coefficients de dilatation thermique quasi identiques ! C'est ce qui rend l'association du Béton Armé possible sans destruction par cisaillement thermique.`,
     },
 
     {
@@ -39,10 +39,10 @@ export const lesson_physique = {
       content: `Ignorer les principes fondamentaux de la physique entraîne la fissuration prématurée des ouvrages ou leur ruine thermique et mécanique.
 
 - **Évitement du blocage thermique des ponts** : Un tablier de pont de 100 m s'allonge de plus de 5 cm entre l'hiver (-10°C) et l'été (+40°C). Sans joint de dilatation, les réactions d'encastrement ruineraient les culées.
-- **Préservation du confort thermique des bâtiments** : Maîtriser la résistance thermique $R = e / \lambda$ permet de diviser la consommation de chauffage par 5.
-- **Sécurité sous actions climatiques** : La pression dynamique du vent varie comme le carré de la vitesse ($q_p \propto v^2$). Une tempête à 160 km/h exerce 4 fois plus d'effort qu'un vent à 80 km/h !
+- **Préservation du confort thermique des bâtiments** : Maîtriser la résistance thermique $R = e / \\lambda$ permet de diviser la consommation de chauffage par 5.
+- **Sécurité sous actions climatiques** : La pression dynamique du vent varie comme le carré de la vitesse ($q_p \\propto v^2$). Une tempête à 160 km/h exerce 4 fois plus d'effort qu'un vent à 80 km/h !
 
-> ⚠️ **Règle d'or** : "La physique ne négocie jamais. Si une dilatation thermique est bloquée, la contrainte engendrée $\sigma_{th} = E \cdot \alpha \cdot \Delta T$ est indépendante de la longueur de la pièce !"`,
+> ⚠️ **Règle d'or** : "La physique ne négocie jamais. Si une dilatation thermique est bloquée, la contrainte engendrée $\\sigma_{th} = E \\cdot \\alpha \\cdot \\Delta T$ est indépendante de la longueur de la pièce !"`,
     },
 
     {
@@ -117,26 +117,54 @@ $$Q = \\frac{\\lambda \\cdot A \\cdot (T_{int} - T_{ext})}{e} = \\frac{A \\cdot 
           name: "Allongement thermique (ΔL_th)",
           latex: "\\Delta L_{th} = \\alpha \\cdot L_0 \\cdot \\Delta T \\quad [\\text{m}]",
           description: "α = coefficient de dilatation thermique [K⁻¹], L0 = longueur initiale [m], ΔT = variation de température [°C ou K].",
+          variables: [
+            { symbol: "\\Delta L_{th}", name: "Allongement thermique", unit: "m", role: "Variation de longueur libre." },
+            { symbol: "\\alpha", name: "Coefficient de dilatation", unit: "K⁻¹", role: "Béton ≈ 10 × 10⁻⁶, acier ≈ 12 × 10⁻⁶ K⁻¹." },
+            { symbol: "L_0", name: "Longueur initiale", unit: "m", role: "Longueur à la température de référence." },
+            { symbol: "\\Delta T", name: "Variation de température", unit: "K", role: "Écart de température (1 K = 1 °C d'écart)." },
+          ],
         },
         {
           name: "Contrainte thermique sous blocage hyperstatique",
           latex: "\\sigma_{th} = E \\cdot \\alpha \\cdot \\Delta T \\quad [\\text{MPa}]",
           description: "Remarquer que la contrainte thermique est indépendante de la longueur de la pièce !",
+          variables: [
+            { symbol: "\\sigma_{th}", name: "Contrainte thermique", unit: "MPa", role: "Contrainte créée si la dilatation est empêchée." },
+            { symbol: "E", name: "Module d'Young", unit: "MPa", role: "Rigidité du matériau." },
+            { symbol: "\\alpha", name: "Coefficient de dilatation", unit: "K⁻¹", role: "Propriété du matériau." },
+            { symbol: "\\Delta T", name: "Variation de température", unit: "K", role: "Écart de température." },
+          ],
         },
         {
           name: "Pression dynamique du vent d'après l'Eurocode 1",
           latex: "q_p = \\frac{1}{2} \\cdot \\rho_{air} \\cdot v_b^2 \\cdot c_e(z) \\quad [\\text{N/m}^2]",
           description: "ρ_air ≈ 1,25 kg/m³, vb = vitesse de base du vent [m/s], ce(z) = coefficient d'exposition.",
+          variables: [
+            { symbol: "q_p", name: "Pression dynamique de pointe", unit: "N/m²", role: "Pression de référence du vent à la hauteur z." },
+            { symbol: "\\rho_{air}", name: "Masse volumique de l'air", unit: "kg/m³", role: "≈ 1,25 kg/m³." },
+            { symbol: "v_b", name: "Vitesse de référence du vent", unit: "m/s", role: "Donnée par la carte de l'annexe nationale." },
+            { symbol: "c_e(z)", name: "Coefficient d'exposition", unit: "-", role: "Dépend de la hauteur et de la rugosité du terrain." },
+          ],
         },
         {
           name: "Résistance thermique d'une paroi multicouche",
           latex: "R_{total} = R_{si} + \\sum_{i} \\frac{e_i}{\\lambda_i} + R_{se} \\quad [\\text{m}^2\\cdot\\text{K/W}]",
           description: "e_i = épaisseur des couches [m], λ_i = conductivité thermique [W/m·K], Rsi et Rse = résistances superficielles.",
+          variables: [
+            { symbol: "R_{total}", name: "Résistance thermique totale", unit: "m²·K/W", role: "Plus elle est élevée, plus la paroi isole." },
+            { symbol: "R_{si}, R_{se}", name: "Résistances superficielles", unit: "m²·K/W", role: "Échanges intérieur et extérieur (≈ 0,13 et 0,04)." },
+            { symbol: "e_i", name: "Épaisseur de la couche i", unit: "m", role: "Épaisseur de chaque matériau." },
+            { symbol: "\\lambda_i", name: "Conductivité thermique", unit: "W/(m·K)", role: "Laine minérale ≈ 0,035 ; béton ≈ 2,0." },
+          ],
         },
         {
           name: "Coefficient de transmission thermique U",
           latex: "U = \\frac{1}{R_{total}} \\quad [\\text{W/m}^2\\cdot\\text{K}]",
           description: "Plus U est faible, plus la paroi est isolante.",
+          variables: [
+            { symbol: "U", name: "Coefficient de transmission", unit: "W/(m²·K)", role: "Flux traversant 1 m² pour 1 K d'écart." },
+            { symbol: "R_{total}", name: "Résistance thermique totale", unit: "m²·K/W", role: "Somme des résistances de la paroi." },
+          ],
         },
       ],
     },

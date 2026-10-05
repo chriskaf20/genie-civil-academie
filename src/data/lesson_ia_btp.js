@@ -1,13 +1,13 @@
-// ── Lesson: IA, Machine Learning & Computer Vision — Module 35 ───────────────
+// ── Lesson: IA, Machine Learning & Computer Vision — Module 30 ───────────────
 export const lesson_ia_btp = {
-  moduleId: 35,
-  slug: 'carriere',
+  moduleId: 30,
+  slug: 'ia_btp',
   lessonIndex: 1,
   title: "IA, Machine Learning & Vision par Ordinateur appliqués au Génie Civil",
-  subtitle: "Module 35 — Intelligence Artificielle & Innovation BTP",
+  subtitle: "Module 30 — IA & Machine Learning appliqués au Génie Civil",
   level: 'Avancé',
   duration: '45h',
-  diagramType: 'rebar_beam',
+  diagramType: 'process_flow',
   tags: ['IA', 'Machine Learning', 'Computer Vision', 'CNN', 'YOLO', 'Optimisation Topologique', 'Inspection', 'Drones'],
 
   steps: [
@@ -82,7 +82,7 @@ export const lesson_ia_btp = {
       title: "Théorie — Réseaux Convolutifs (CNN), Matrice de Confusion & Generative Design",
       icon: '📐',
       type: 'theory',
-      diagramType: 'rebar_beam',
+      diagramType: 'process_flow',
       content: `### 1. Fonctionnement d'un Réseau Convolutif (CNN pour la détection de fissures)
 
 Un modèle de Computer Vision (ex: ResNet / YOLO) transforme une matrice de pixels $I(x,y)$ en prédiction de classe (ex: \`Fissure\` vs \`Béton Sain\`) :
@@ -119,12 +119,17 @@ $$\\min_{\\mathbf{x}} V(\\mathbf{x}) = \\sum_{i=1}^N x_i \\cdot v_i \\qquad \\te
       title: "Formules essentielles — Métriques d'IA & Vision par Ordinateur",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'rebar_beam',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Score F1 (Équilibre Précision / Rappel)",
           latex: "F_1 = 2 \\cdot \\frac{P \\cdot R}{P + R} \\quad (F_1 \\ge 0{,}90 \\text{ requis pour valider un modèle d'inspection})",
           description: "P = TP / (TP + FP), R = TP / (TP + FN). Évite les faux positifs et les fissures manquées.",
+          variables: [
+            { symbol: "F_1", name: "Score F1", unit: "-", role: "Moyenne harmonique de la précision et du rappel." },
+            { symbol: "P", name: "Précision", unit: "-", role: "TP / (TP + FP) : part des détections correctes." },
+            { symbol: "R", name: "Rappel", unit: "-", role: "TP / (TP + FN) : part des fissures trouvées." },
+          ],
         },
         {
           name: "Intersection over Union (IoU) pour la localisation de fissures",
@@ -134,7 +139,13 @@ $$\\min_{\\mathbf{x}} V(\\mathbf{x}) = \\sum_{i=1}^N x_i \\cdot v_i \\qquad \\te
         {
           name: "Erreur Quadratique Moyenne (MSE - Régression de résistance)",
           latex: "MSE = \\frac{1}{n} \\sum_{i=1}^{n} (y_i - \\hat{y}_i)^2 \\quad [\\text{MPa}^2]",
-          description: "y_i = résistance réelle mesurée sur éprouvette, y_chapeau = résistance prédite par l'IA.",
+          description: "yi = résistance réelle mesurée sur éprouvette, ŷi = résistance prédite par l'IA, n = nombre d'éprouvettes.",
+          variables: [
+            { symbol: "MSE", name: "Erreur quadratique moyenne", unit: "MPa²", role: "Plus elle est faible, meilleure est la prédiction." },
+            { symbol: "n", name: "Nombre d'éprouvettes", unit: "-", role: "Taille du jeu de test." },
+            { symbol: "y_i", name: "Résistance mesurée", unit: "MPa", role: "Sur éprouvette." },
+            { symbol: "\\hat{y}_i", name: "Résistance prédite", unit: "MPa", role: "Sortie du modèle d'IA." },
+          ],
         },
       ],
     },
@@ -223,7 +234,7 @@ $$\\min_{\\mathbf{x}} V(\\mathbf{x}) = \\sum_{i=1}^N x_i \\cdot v_i \\qquad \\te
       title: "Exemple réel — L'Inspection des 30 000 km de Voies Ferrées de la SNCF",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'rebar_beam',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Inspection continue des rails, caténaires et balises du réseau ferroviaire français",
@@ -240,7 +251,7 @@ $$\\min_{\\mathbf{x}} V(\\mathbf{x}) = \\sum_{i=1}^N x_i \\cdot v_i \\qquad \\te
       title: "Schéma d'un Réseau Neuronal Convolutif (CNN) & Generative Design",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'rebar_beam',
+      diagramType: 'process_flow',
       description: "Visualisez l'architecture d'un réseau CNN pour la détection de dégradations sur le béton, le principe du masque de segmentation 3D et le résultat d'un Generative Design.",
       diagram_description: [
         "Architecture CNN : Image d'entrée, couches de convolution (Extraction de features), Pooling et classification Softmax",
@@ -440,7 +451,7 @@ $$\\min_{\\mathbf{x}} V(\\mathbf{x}) = \\sum_{i=1}^N x_i \\cdot v_i \\qquad \\te
 1. **Computer Vision (CNN/YOLO)** : Inspection automatique des fissures et désordres par drone.
 2. **Machine Learning Régression** : Prédiction de la résistance du béton d'après sa formulation.
 3. **Generative Design** : Sculptage de structures optimisées réduisant la matière de 40%.
-4. **Métriques de Validation** : Précision, Rappel et F1-Score ($F_1 \ge 0{,}90$).
+4. **Métriques de Validation** : Précision, Rappel et F1-Score ($F_1 \\ge 0{,}90$).
 5. **Sécurité HSE** : Caméras intelligentes contrôlant le port des EPI en temps réel.
 6. **Human-in-the-Loop** : L'ingénieur humain valide toujours les décisions de l'IA.`,
     },

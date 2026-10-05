@@ -1,13 +1,13 @@
-// ── Lesson: Énergies Renouvelables & Efficacité Énergétique — Module 32 ────────
+// ── Lesson: Énergies Renouvelables & Efficacité Énergétique — Module 27 ────────
 export const lesson_energie = {
-  moduleId: 32,
-  slug: 'qualite',
+  moduleId: 27,
+  slug: 'energie',
   lessonIndex: 1,
   title: "Énergies Renouvelables, Efficacité Énergétique du Bâtiment & Smart Grids",
-  subtitle: "Module 32 — Énergies & Performance Énergétique du BTP",
+  subtitle: "Module 27 — Génie de l'Environnement & Éco-construction",
   level: 'Intermédiaire',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Énergies', 'Géothermie', 'Pieux Géothermiques', 'Photovoltaïque', 'PAC', 'COP', 'BEPOS', 'RE2020'],
 
   steps: [
@@ -82,7 +82,7 @@ export const lesson_energie = {
       title: "Théorie — COP des PAC, Géothermie sur Pieux & Solaire PV",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. Coefficient de Performance (COP) d'une Pompe à Chaleur
 
 Le $COP$ caractérise l'efficacité énergétique de la PAC (rapport entre la chaleur restituée $Q_{chaud}$ et le travail électrique consommé par le compresseur $W_{élec}$) :
@@ -97,7 +97,7 @@ La puissance thermique $P_{pieu}$ extraite d'un fût de pieu en béton armé éq
 
 $$P_{pieu} = q_{lin\\acute{e}aire} \\cdot L_{pieu} \\quad [\\text{W}]$$
 
-- $q_{linéaire}$ = extraction thermique linéique ($\approx 40\\text{ à } 60\\text{ W/m}$ de pieu dans un sol saturé en eau).
+- $q_{linéaire}$ = extraction thermique linéique ($\\approx 40\\text{ à } 60\\text{ W/m}$ de pieu dans un sol saturé en eau).
 - $L_{pieu}$ = profondeur utile du pieu [m].
 
 ### 3. Production Électrique Photovoltaïque ($E_{pv}$)
@@ -106,7 +106,7 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
 
 - $P_{crête}$ = puissance installée en kilo-Watt crête [kWc] ($P_{crête} = A \\cdot \\eta_{pv}$).
 - $H_{irradiance}$ = irradiation solaire annuelle [kWh/m²/an] (ex: 1 300 kWh/m²/an dans le Sud de la France).
-- $PR$ = Performance Ratio ($\approx 0{,}75 \\text{ à } 0{,}80$, intégrant les pertes d'onduleur et d'échauffement).`,
+- $PR$ = Performance Ratio ($\\approx 0{,}75 \\text{ à } 0{,}80$, intégrant les pertes d'onduleur et d'échauffement).`,
     },
 
     {
@@ -115,27 +115,49 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
       title: "Formules essentielles — Énergies & Performance Énergétique",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Coefficient de Performance d'une PAC (COP)",
           latex: "COP = \\frac{Q_{\\text{restituée}}}{W_{\\text{électrique}}} \\quad (COP_{\\text{géothermie}} \\approx 4{,}0 \\text{ à } 5{,}0)",
           description: "Q_restituée = énergie thermique fournie au bâtiment, W_électrique = énergie électrique consommée.",
+          variables: [
+            { symbol: "COP", name: "Coefficient de performance", unit: "-", role: "≈ 4 à 5 en géothermie." },
+            { symbol: "Q_{\\text{restituée}}", name: "Chaleur fournie", unit: "kWh", role: "Énergie thermique restituée au bâtiment." },
+            { symbol: "W_{\\text{électrique}}", name: "Électricité consommée", unit: "kWh", role: "Compresseur et auxiliaires." },
+          ],
         },
         {
           name: "Puissance thermique totale d'un champ de pieux géothermiques",
           latex: "P_{\\text{total}} = N_{\\text{pieux}} \\cdot q_{\\text{linéaire}} \\cdot L_{\\text{pieu}} \\quad [\\text{kW}]",
           description: "N = nombre de pieux actifs, q = 45 à 55 W/m, L = longueur de chaque pieu.",
+          variables: [
+            { symbol: "P_{\\text{total}}", name: "Puissance thermique totale", unit: "kW", role: "Puissance extraite du sol." },
+            { symbol: "N_{\\text{pieux}}", name: "Nombre de pieux équipés", unit: "-", role: "Pieux géothermiques actifs." },
+            { symbol: "q_{\\text{linéaire}}", name: "Puissance par mètre de pieu", unit: "W/m", role: "45 à 55 W/m (÷ 1 000 pour obtenir des kW)." },
+            { symbol: "L_{\\text{pieu}}", name: "Longueur de pieu", unit: "m", role: "Longueur équipée de chaque pieu." },
+          ],
         },
         {
           name: "Surface de panneaux photovoltaïques nécessaire",
           latex: "A_{\\text{pv}} = \\frac{P_{\\text{visée}}}{\\text{Ensol} \\cdot \\eta_{\\text{capteur}}} \\quad [\\text{m}^2]",
-          description: "η_capteur = rendement des cellules photovoltaïques (18% à 22%).",
+          description: "P_visée = production annuelle visée [kWh/an], Ensol = irradiation solaire annuelle sur le plan des modules [kWh/m²·an], η_capteur = rendement des modules photovoltaïques (18 % à 22 %). En pratique, on ajoute un ratio de performance ≈ 0,8 (pertes onduleur, câbles, température).",
+          variables: [
+            { symbol: "A_{\\text{pv}}", name: "Surface de modules", unit: "m²", role: "Surface de capteurs à installer." },
+            { symbol: "P_{\\text{visée}}", name: "Production annuelle visée", unit: "kWh/an", role: "Besoin à couvrir." },
+            { symbol: "\\text{Ensol}", name: "Irradiation annuelle", unit: "kWh/(m²·an)", role: "Sur le plan des modules (≈ 1 200 à 1 800 en France)." },
+            { symbol: "\\eta_{\\text{capteur}}", name: "Rendement des modules", unit: "-", role: "0,18 à 0,22." },
+          ],
         },
         {
-          name: "Bilan Énergétique BEPOS (RE2020)",
+          name: "Bilan énergétique d'un bâtiment à énergie positive (BEPOS)",
           latex: "E_{\\text{net}} = E_{\\text{produite, EnR}} - E_{\\text{consommée, EP}} > 0 \\quad [\\text{kWh/m}^2\\cdot\\text{an}]",
-          description: "Un bâtiment BEPOS produit plus d'énergie renouvelable qu'il n'en consomme en énergie primaire.",
+          description: "Un bâtiment à énergie positive (BEPOS, label Effinergie : ce n'est pas une exigence de la RE2020) produit plus d'énergie renouvelable qu'il n'en consomme en énergie primaire.",
+          variables: [
+            { symbol: "E_{\\text{net}}", name: "Bilan énergétique", unit: "kWh/(m²·an)", role: "> 0 pour un bâtiment à énergie positive." },
+            { symbol: "E_{\\text{produite, EnR}}", name: "Énergie renouvelable produite", unit: "kWh/(m²·an)", role: "Photovoltaïque, solaire thermique…" },
+            { symbol: "E_{\\text{consommée, EP}}", name: "Consommation en énergie primaire", unit: "kWh/(m²·an)", role: "Tous usages." },
+          ],
         },
       ],
     },
@@ -226,7 +248,7 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
       title: "Exemple réel — La Tour Elithis Danube à Strasbourg (Bâtiment BEPOS)",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Tour de logements R+16 à énergie positive d'une surface de 4 500 m²",
@@ -243,7 +265,7 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
       title: "Schéma d'un pieu géothermique & Circuit thermodynamique de PAC",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez la coupe d'un pieu de fondation équipé de tubes géothermiques PEHD, le cycle thermodynamique d'une Pompe à Chaleur (Évaporateur, Compresseur, Condenseur, Détendeur) et le bilan solaire PV.",
       diagram_description: [
         "Pieu Géothermique : Armatures béton avec boucles de tubes PEHD moulées et circulation du fluide caloporteur",
@@ -445,9 +467,9 @@ $$E_{pv} = P_{cr\\hat{e}te} \\cdot H_{irradiance} \\cdot PR \\quad [\\text{kWh/a
 
 1. **BEPOS (RE2020)** : Bâtiment produisant plus d'énergie qu'il n'en consomme ($E_{produite} > E_{consommée}$).
 2. **Géothermie sur Pieux** : Utilisation des fondations béton pour échanger avec le sol à 12-14°C.
-3. **Pompes à Chaleur (PAC)** : Rendement caractérisé par le $COP = Q_{restituée} / W_{élec} \ge 4{,}0$.
+3. **Pompes à Chaleur (PAC)** : Rendement caractérisé par le $COP = Q_{restituée} / W_{élec} \\ge 4{,}0$.
 4. **Geocooling** : Rafraîchissement estival ultra-économique par circulation directe dans le sol.
-5. **Solaire Photovoltaïque** : Production $E = P_{crête} \cdot H \cdot PR$ (1 kWc $\approx 5\text{ m}^2$).
+5. **Solaire Photovoltaïque** : Production $E = P_{crête} \\cdot H \\cdot PR$ (1 kWc $\\approx 5\\text{ m}^2$).
 6. **Smart Grids** : Pilotage intelligent de l'autoconsommation et de la recharge électrique.`,
     },
 

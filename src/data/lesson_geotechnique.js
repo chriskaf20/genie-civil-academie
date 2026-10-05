@@ -4,7 +4,7 @@ export const lesson_geotechnique = {
   slug: 'geotechnique',
   lessonIndex: 1,
   title: 'Capacité Portante & Mécanique des Sols',
-  subtitle: 'Module 13 — Géotechnique & Mécanique des Sols',
+  subtitle: "Module 13 — Géotechnique & Mécanique des sols",
   level: 'Avancé',
   duration: '55h',
   diagramType: 'soil_profile',
@@ -128,32 +128,67 @@ $$I_C = \\frac{W_L - W}{I_P} \\quad \\begin{cases} I_C > 1 & \\text{Sol solide/r
         {
           name: "Capacité portante de Terzaghi — Semelle filante",
           latex: "q_u = c \\cdot N_c + q \\cdot N_q + \\frac{1}{2} \\cdot \\gamma \\cdot B \\cdot N_\\gamma",
-          description: "c = cohésion [kPa], q = contrainte effective au niveau de la fondation [kPa], γ = poids volumique du sol [kN/m³], B = largeur de la semelle [m], Nc/Nq/Nγ = facteurs de portance (fonction de φ)"
+          description: "c = cohésion [kPa], q = contrainte effective au niveau de la fondation [kPa], γ = poids volumique du sol [kN/m³], B = largeur de la semelle [m], Nc/Nq/Nγ = facteurs de portance (fonction de φ)",
+          variables: [
+            { symbol: "q_u", name: "Capacité portante ultime", unit: "kPa", role: "Contrainte de rupture du sol sous la semelle." },
+            { symbol: "c", name: "Cohésion", unit: "kPa", role: "Cohésion effective ou non drainée selon le calcul." },
+            { symbol: "q", name: "Surcharge latérale", unit: "kPa", role: "γ·D_f, poids des terres au niveau de la base." },
+            { symbol: "\\gamma", name: "Poids volumique du sol", unit: "kN/m³", role: "Sous la fondation (déjaugé sous la nappe)." },
+            { symbol: "B", name: "Largeur de la semelle", unit: "m", role: "Petit côté de la fondation." },
+            { symbol: "N_c, N_q, N_\\gamma", name: "Facteurs de portance", unit: "-", role: "Fonctions de l'angle de frottement φ." },
+          ],
         },
         {
-          name: "Facteurs de portance de Meyerhof (φ = 30°)",
-          latex: "N_c = 30{,}14 \\quad N_q = 18{,}40 \\quad N_\\gamma = 22{,}40 \\quad (\\varphi = 30°)",
-          description: "Valeurs pour sol frottant (sable dense). Pour argile saturée non drainée : φu=0 → Nc=5,14 ; Nq=1 ; Nγ=0"
+          name: "Facteurs de portance pour φ = 30° (Eurocode 7, annexe D)",
+          latex: "N_c = 30{,}14 \\quad N_q = 18{,}40 \\quad N_\\gamma = 20{,}09\\ (\\text{EC7}) \\quad (\\varphi = 30°)",
+          description: "Nc et Nq (Prandtl-Reissner) sont communs à toutes les méthodes ; Nγ varie selon l'auteur : 15,67 (Meyerhof), 20,09 (EC7 annexe D), 22,40 (Vesic). Pour une argile saturée non drainée : φu = 0 → Nc = 5,14 ; Nq = 1 ; Nγ = 0.",
+          variables: [
+            { symbol: "N_c, N_q", name: "Facteurs de cohésion et de profondeur", unit: "-", role: "Prandtl-Reissner : 30,14 et 18,40 pour φ = 30°." },
+            { symbol: "N_\\gamma", name: "Facteur de surface", unit: "-", role: "Vesic : 22,40 ; Meyerhof : 15,67 ; EC7 annexe D : 20,09 pour φ = 30°." },
+          ],
         },
         {
           name: "Contrainte admissible nette de la fondation",
           latex: "q_{adm} = \\frac{q_u - q}{F_s} \\quad \\text{avec } F_s = 2{,}5 \\text{ à } 3{,}0",
-          description: "Fs = coefficient de sécurité global (2,5 en conditions drainées, 3,0 en non drainé). q = contrainte géostatique au niveau de la fondation = γ·Df"
+          description: "Fs = coefficient de sécurité global (2,5 en conditions drainées, 3,0 en non drainé). q = contrainte géostatique au niveau de la fondation = γ·Df",
+          variables: [
+            { symbol: "q_{adm}", name: "Contrainte admissible nette", unit: "kPa", role: "Surcharge nette que la fondation peut transmettre." },
+            { symbol: "q_u", name: "Capacité portante ultime", unit: "kPa", role: "Résultat de Terzaghi." },
+            { symbol: "q", name: "Contrainte géostatique", unit: "kPa", role: "γ·D_f au niveau de la base." },
+            { symbol: "F_s", name: "Coefficient de sécurité global", unit: "-", role: "2,5 à 3,0." },
+          ],
         },
         {
           name: "Tassement de consolidation primaire (Terzaghi)",
           latex: "s_c = \\frac{C_c}{1 + e_0} \\cdot H \\cdot \\log\\left(\\frac{\\sigma'_{v0} + \\Delta\\sigma'_v}{\\sigma'_{v0}}\\right)",
-          description: "Cc = indice de compression, e0 = indice des vides initial, H = épaisseur de la couche compressible [m], σ'v0 = contrainte effective initiale, Δσ'v = surcharge appliquée"
+          description: "Cc = indice de compression, e0 = indice des vides initial, H = épaisseur de la couche compressible [m], σ'v0 = contrainte effective initiale, Δσ'v = surcharge appliquée",
+          variables: [
+            { symbol: "s_c", name: "Tassement de consolidation", unit: "m", role: "Tassement final de la couche argileuse." },
+            { symbol: "C_c", name: "Indice de compression", unit: "-", role: "Pente de la courbe œdométrique." },
+            { symbol: "e_0", name: "Indice des vides initial", unit: "-", role: "Avant chargement." },
+            { symbol: "H", name: "Épaisseur de la couche compressible", unit: "m", role: "Épaisseur d'argile." },
+            { symbol: "\\sigma'_{v0}", name: "Contrainte effective initiale", unit: "kPa", role: "Au milieu de la couche." },
+            { symbol: "\\Delta\\sigma'_v", name: "Surcharge effective", unit: "kPa", role: "Apportée par l'ouvrage au milieu de la couche." },
+          ],
         },
         {
           name: "Degré de consolidation — Solution de Terzaghi",
           latex: "U(t) = 1 - \\frac{8}{\\pi^2} \\sum_{m=0}^{\\infty} \\frac{1}{(2m+1)^2} \\exp\\left(-\\frac{(2m+1)^2 \\pi^2}{4} T_v\\right)",
-          description: "Tv = cv·t/H²dr = facteur temps (cv = coefficient de consolidation [m²/an], Hdr = distance de drainage [m]). Approximation : U ≈ 1,128√Tv pour Tv < 0,217"
+          description: "Tv = cv·t/H²dr = facteur temps (cv = coefficient de consolidation [m²/an], Hdr = distance de drainage [m]). Approximation : U ≈ 1,128√Tv pour Tv < 0,217",
+          variables: [
+            { symbol: "U(t)", name: "Degré de consolidation", unit: "-", role: "Part du tassement final atteinte à l'instant t." },
+            { symbol: "T_v", name: "Facteur temps", unit: "-", role: "c_v·t / H_dr²." },
+            { symbol: "m", name: "Indice de la série", unit: "-", role: "Somme sur m = 0, 1, 2…" },
+          ],
         },
         {
           name: "Pression de Rankine — Poussée des terres (état actif)",
           latex: "K_a = \\tan^2\\left(45° - \\frac{\\varphi}{2}\\right) = \\frac{1 - \\sin\\varphi}{1 + \\sin\\varphi}",
-          description: "Ka = coefficient de poussée active. Force de poussée totale : Ea = ½·Ka·γ·H². Pour φ=30° : Ka = 0,333 (sable)."
+          description: "Ka = coefficient de poussée active. Force de poussée totale : Ea = ½·Ka·γ·H². Pour φ=30° : Ka = 0,333 (sable).",
+          variables: [
+            { symbol: "K_a", name: "Coefficient de poussée active", unit: "-", role: "0,333 pour φ = 30°." },
+            { symbol: "\\varphi", name: "Angle de frottement interne", unit: "°", role: "Propriété du sol." },
+          ],
         },
       ],
     },
@@ -168,7 +203,7 @@ $$I_C = \\frac{W_L - W}{I_P} \\quad \\begin{cases} I_C > 1 & \\text{Sol solide/r
       steps_demo: [
         { n: 1, text: "Données : B = 2 m, Df = 1,5 m, c = 0 kPa, φ = 32°, γ = 19 kN/m³, Fs = 3,0" },
         { n: 2, text: "Contrainte géostatique au niveau de la fondation : q = γ·Df = 19 × 1,5 = 28,5 kPa" },
-        { n: 3, text: "Facteurs de portance pour φ=32° (Meyerhof) : Nc = 35,49 | Nq = 23,18 | Nγ = 30,22" },
+        { n: 3, text: "Facteurs de portance pour φ=32° (Nc, Nq de Prandtl ; Nγ de Vesic) : Nc = 35,49 | Nq = 23,18 | Nγ = 30,22" },
         { n: 4, text: "Capacité portante ultime (Terzaghi, semelle carrée) : qu = 1,3·c·Nc + q·Nq + 0,4·γ·B·Nγ" },
         { n: 5, text: "qu = 1,3 × 0 × 35,49 + 28,5 × 23,18 + 0,4 × 19 × 2 × 30,22 = 0 + 660,6 + 459,4 = 1120 kPa" },
         { n: 6, text: "Contrainte admissible nette : q_adm = (qu - q) / Fs = (1120 - 28,5) / 3,0 = 363,8 kPa" },

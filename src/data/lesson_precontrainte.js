@@ -1,10 +1,10 @@
-// ── Lesson: Béton Précontraint & Eurocode 2 Part 2 — Module 11 ─────────────────
+// ── Lesson: Béton Précontraint & Eurocode 2 Part 2 — Module 10 ─────────────────
 export const lesson_precontrainte = {
-  moduleId: 11,
+  moduleId: 10,
   slug: 'precontrainte',
   lessonIndex: 1,
   title: "Béton Précontraint par Pré-tension & Post-tension (Eurocode 2)",
-  subtitle: "Module 11 — Béton Précontraint & Eurocode 2 Part 2",
+  subtitle: "Module 10 — Béton Précontraint",
   level: 'Avancé',
   duration: '45h',
   diagramType: 'bridge_structure',
@@ -124,33 +124,80 @@ La force de précontrainte décroît dans le temps : $P(t) = P_{max} - \\Delta P
       formulas: [
         {
           name: "Caractéristique mécanique des torons Y1860S7 (T15S / 15,7 mm)",
-          latex: "A_{p1} = 150 \\text{ mm}^2 \\quad f_{pk} = 1860 \\text{ MPa} \\quad f_{p0,1k} = 1600 \\text{ MPa} \\quad P_{max1} = 0{,}85 \\cdot A_{p1} \\cdot f_{pk} = 237{,}15 \\text{ kN}",
-          description: "Section d'un toron T15S = 150 mm². Tension maximale au vérin autorisée à la mise en tension : σp,max = min(0,80 fpk ; 0,90 fp0,1k) = 1440 MPa.",
+          latex: "A_{p1} = 150 \\text{ mm}^2 \\quad f_{pk} = 1860 \\text{ MPa} \\quad f_{p0,1k} = 1600 \\text{ MPa} \\quad P_{max1} = A_{p1} \\cdot \\sigma_{p,max} = 150 \\times 1440 = 216 \\text{ kN}",
+          description: "Section d'un toron T15S = 150 mm². Tension maximale au vérin à la mise en tension (EC2 §5.10.2.1) : σp,max = min(0,80 fpk ; 0,90 fp0,1k) = min(1 488 ; 1 440) = 1 440 MPa, soit 216 kN par toron.",
+          variables: [
+            { symbol: "A_{p1}", name: "Section d'un toron", unit: "mm²", role: "150 mm² pour un T15S." },
+            { symbol: "f_{pk}", name: "Résistance caractéristique à la rupture", unit: "MPa", role: "1 860 MPa (Y1860)." },
+            { symbol: "f_{p0,1k}", name: "Limite conventionnelle d'élasticité", unit: "MPa", role: "Contrainte à 0,1 % de déformation résiduelle." },
+            { symbol: "\\sigma_{p,max}", name: "Contrainte maximale au vérin", unit: "MPa", role: "min(0,80 f_pk ; 0,90 f_p0,1k) = 1 440 MPa." },
+            { symbol: "P_{max1}", name: "Force maximale par toron", unit: "kN", role: "A_p1 × σ_p,max." },
+          ],
         },
         {
           name: "Formule globale de pertes différées (EN 1992-1-1 §5.10.6)",
           latex: "\\Delta P_{c+s+r} = A_p \\cdot \\frac{\\varepsilon_{cs} \\cdot E_p + \\Delta \\sigma_{pr} + \\frac{E_p}{E_{cm}} \\cdot \\varphi(t,t_0) \\cdot \\sigma_{c,QP}}{1 + \\frac{E_p}{E_{cm}} \\cdot \\frac{A_p}{A_c} \\left(1 + \\frac{A_c \\cdot y_p^2}{I_c}\\right) \\left(1 + 0{,}8 \\cdot \\varphi(t,t_0)\\right)}",
           description: "Calcul rigoureux couplé des pertes différées par retrait (cs), fluage (c) et relaxation des aciers (r).",
+          variables: [
+            { symbol: "\\Delta P_{c+s+r}", name: "Pertes différées", unit: "N", role: "Perte de précontrainte due au retrait, au fluage et à la relaxation." },
+            { symbol: "A_p", name: "Section des armatures de précontrainte", unit: "mm²", role: "Section totale du câble." },
+            { symbol: "\\varepsilon_{cs}", name: "Déformation de retrait", unit: "-", role: "Retrait total estimé du béton." },
+            { symbol: "E_p", name: "Module de l'acier de précontrainte", unit: "MPa", role: "≈ 195 000 MPa pour les torons." },
+            { symbol: "\\Delta \\sigma_{pr}", name: "Perte par relaxation", unit: "MPa", role: "Relaxation de l'acier." },
+            { symbol: "E_{cm}", name: "Module du béton", unit: "MPa", role: "Module sécant moyen." },
+            { symbol: "\\varphi(t,t_0)", name: "Coefficient de fluage", unit: "-", role: "Fluage entre la mise en tension t₀ et l'instant t." },
+            { symbol: "\\sigma_{c,QP}", name: "Contrainte dans le béton au niveau du câble", unit: "MPa", role: "Sous charges quasi permanentes." },
+            { symbol: "A_c, I_c", name: "Aire et inertie de la section de béton", unit: "mm², mm⁴", role: "Caractéristiques de la section." },
+            { symbol: "y_p", name: "Excentricité du câble", unit: "mm", role: "Distance du câble au centre de gravité." },
+          ],
         },
         {
           name: "Fusau de passage du câble (Limites d'excentrement ep)",
           latex: "e_{p,min}(x) \\le e_p(x) \\le e_{p,max}(x) \\qquad e_{p,min} = -r^2/v' + \\frac{M_{max}}{P} \\qquad e_{p,max} = r^2/v + \\frac{M_{min}}{P}",
           description: "r² = I/A = rayon de giration au carré. Le tracé du câble doit impérativement rester dans le fuseau de passage pour éviter toute traction du béton.",
+          variables: [
+            { symbol: "e_p(x)", name: "Excentricité du câble", unit: "mm", role: "Position du câble par rapport au centre de gravité." },
+            { symbol: "r^2", name: "Rayon de giration au carré", unit: "mm²", role: "r² = I/A." },
+            { symbol: "v, v'", name: "Distances aux fibres extrêmes", unit: "mm", role: "Fibres supérieure et inférieure." },
+            { symbol: "M_{max}, M_{min}", name: "Moments extrêmes", unit: "N·mm", role: "Enveloppe des moments de service." },
+            { symbol: "P", name: "Force de précontrainte", unit: "N", role: "Force en service." },
+          ],
         },
         {
           name: "Vérification ELS de décompression (Classe 1)",
           latex: "\\sigma_{inf} = \\frac{P_{\\infty}}{A_c} + \\frac{P_{\\infty} \\cdot e_p}{I_c} \\cdot v - \\frac{M_{g+q,QP}}{I_c} \\cdot v \\ge 0 \\quad [\\text{MPa}]",
           description: "Sous combinaison quasi-permanente ELS, la contrainte dans la fibre inférieure doit rester strictement compressive (≥ 0 MPa).",
+          variables: [
+            { symbol: "\\sigma_{inf}", name: "Contrainte en fibre inférieure", unit: "MPa", role: "Doit rester une compression (≥ 0)." },
+            { symbol: "P_{\\infty}", name: "Précontrainte finale", unit: "N", role: "Après toutes les pertes." },
+            { symbol: "A_c, I_c", name: "Aire et inertie du béton", unit: "mm², mm⁴", role: "Section homogène." },
+            { symbol: "e_p", name: "Excentricité du câble", unit: "mm", role: "Sous le centre de gravité." },
+            { symbol: "v", name: "Distance à la fibre inférieure", unit: "mm", role: "Depuis le centre de gravité." },
+            { symbol: "M_{g+q,QP}", name: "Moment quasi permanent", unit: "N·mm", role: "Poids propre + part quasi permanente des charges." },
+          ],
         },
         {
           name: "Résistance ultime en flexion ELU (M_Rd avec aciers de précontrainte)",
           latex: "M_{Rd} = A_p \\cdot f_{pd} \\cdot d_p + A_s \\cdot f_{yd} \\cdot d_s - 0{,}5 \\cdot F_{c,max} \\cdot z",
           description: "fpd = fp0,1k / γp (γp = 1,15). À l'ELU, la contrainte dans les torons atteint la limite d'élasticité de calcul fpd.",
+          variables: [
+            { symbol: "M_{Rd}", name: "Moment résistant", unit: "kN·m", role: "Capacité de la section à l'ELU." },
+            { symbol: "A_p, f_{pd}", name: "Section et résistance de calcul des torons", unit: "mm², MPa", role: "f_pd = f_p0,1k / 1,15." },
+            { symbol: "d_p", name: "Hauteur utile des torons", unit: "mm", role: "Depuis la fibre comprimée." },
+            { symbol: "A_s, f_{yd}", name: "Section et résistance des aciers passifs", unit: "mm², MPa", role: "Armatures de béton armé." },
+            { symbol: "d_s", name: "Hauteur utile des aciers passifs", unit: "mm", role: "Depuis la fibre comprimée." },
+            { symbol: "F_{c,max}, z", name: "Résultante de compression et bras de levier", unit: "N, mm", role: "Bloc de béton comprimé." },
+          ],
         },
         {
           name: "Effort de poussée au vide (Câble courbe de rayon R)",
           latex: "p_{vide} = \\frac{P}{R} \\quad [\\text{kN/m}]",
           description: "Poussée radiale exercée par un câble courbe de rayon R sur le béton. Doit être reprise par des étriers d'ancrage de poussée au vide.",
+          variables: [
+            { symbol: "p_{vide}", name: "Poussée radiale", unit: "kN/m", role: "Force exercée par le câble courbe sur le béton." },
+            { symbol: "P", name: "Force dans le câble", unit: "kN", role: "Tension du câble." },
+            { symbol: "R", name: "Rayon de courbure", unit: "m", role: "Rayon du tracé." },
+          ],
         },
       ],
     },
@@ -356,7 +403,7 @@ La force de précontrainte décroît dans le temps : $P(t) = P_{max} - \\Delta P
           text: "Une poutre précontrainte sous force centree P = 3,0 MN possède une section A = 0,80 m² et un moment extérieur M = 600 kNm. Le câble est centré (ep = 0). Calculer les contraintes en fibre supérieure et inférieure (v = v' = 0,50 m, I = 0,0667 m⁴).",
           hint: "σ = P/A ± M·v/I. (Convertir MN et MNm).",
           answer_latex: "\\sigma_0 = \\frac{3{,}0}{0{,}80} = +3{,}75 \\text{ MPa} \\qquad \\sigma_M = \\frac{0{,}600 \\times 0{,}50}{0{,}0667} = +4{,}50 \\text{ MPa}",
-          answer_latex: "\\sigma_{sup} = +3{,}75 - 4{,}50 = -0{,}75 \\text{ MPa (Traction)} \\qquad \\sigma_{inf} = +3{,}75 + 4{,}50 = +8{,}25 \\text{ MPa (Compression)}",
+          answer_latex_2: "\\sigma_{sup} = +3{,}75 - 4{,}50 = -0{,}75 \\text{ MPa (Traction)} \\qquad \\sigma_{inf} = +3{,}75 + 4{,}50 = +8{,}25 \\text{ MPa (Compression)}",
           answer_text: "σ_sup = -0,75 MPa (Traction) | σ_inf = +8,25 MPa (Compression).",
         },
         {
@@ -484,11 +531,11 @@ La force de précontrainte décroît dans le temps : $P(t) = P_{max} - \\Delta P
       type: 'summary',
       content: `### Le Béton Précontraint en 6 fondamentaux
 
-1. **Principe** : Compression préalable ($P$) annulant les tractions créées par les charges extérieures ($\sigma = \frac{P}{A} + \frac{P e_p y}{I} + \frac{M y}{I}$).
+1. **Principe** : Compression préalable ($P$) annulant les tractions créées par les charges extérieures ($\\sigma = \\frac{P}{A} + \\frac{P e_p y}{I} + \\frac{M y}{I}$).
 2. **Pré-tension vs Post-tension** : Pré-tension sur banc usine (adhérence direct) | Post-tension sur chantier (câbles en gaines injectées).
 3. **Torons Haute Résistance** : Torons 7 fils Y1860S7 ($f_{pk} = 1860\\text{ MPa}$, $f_{p0,1k} = 1600\\text{ MPa}$).
 4. **Pertes de Précontrainte** : Instantanées (frottement, recul d'ancrage) + Différées à 50 ans (retrait, fluage $\\varphi \\approx 2{,}5$, relaxation).
-5. **Classes ELS** : Classe 1 ($\sigma_{inf} \\ge 0$, aucune traction) | Classe 2 ($\\sigma_{inf} \\ge -f_{ctm}$) | Classe 3 ($w_{max} \\le 0{,}2\\text{ mm}$).
+5. **Classes ELS** : Classe 1 ($\\sigma_{inf} \\ge 0$, aucune traction) | Classe 2 ($\\sigma_{inf} \\ge -f_{ctm}$) | Classe 3 ($w_{max} \\le 0{,}2\\text{ mm}$).
 6. **Zones d'Ancrage** : Têtes d'ancrage Freyssinet nécessitant un ferraillage d'épanouissement très dense (frete et maillage anti-éclatement).`,
     },
 

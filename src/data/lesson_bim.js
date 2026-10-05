@@ -1,13 +1,13 @@
-// ── Lesson: BIM, CAO & Modélisation 3D — Module 05 ───────────────────────────
+// ── Lesson: BIM, CAO & Modélisation 3D — Module 5 ───────────────────────────
 export const lesson_bim = {
   moduleId: 5,
   slug: 'bim',
   lessonIndex: 1,
   title: "BIM, CAO, Interopérabilité IFC & Modélisation 3D",
-  subtitle: "Module 05 — BIM, CAO & Modélisation 3D",
+  subtitle: "Module 05 — DAO & Technologies BIM",
   level: 'Intermédiaire',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'bim_workflow',
   tags: ['BIM', 'IFC', 'LOD', 'Revit', 'Navisworks', 'OpenBIM', '4D-5D-7D', 'Clash Detection', 'CAO'],
 
   steps: [
@@ -88,7 +88,7 @@ export const lesson_bim = {
       title: "Théorie — Formats IFC, Niveaux de Détail (LOD) & Charte BIM",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       content: `### 1. Le Format Ouvert IFC (Industry Foundation Classes - ISO 16739)
 
 L'**IFC** est le format standard international libre et neutre (non propriétaire) développé par **buildingSMART** pour garantir l'OpenBIM.
@@ -124,32 +124,46 @@ Le **BCF** est un format d'échange ouvert pour signaler les problèmes et clash
       title: "Formules & Indicateurs — Productivité & Métrés BIM",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       formulas: [
         {
           name: "Extraction dynamique du volume de béton (V_beton)",
-          latex: "V_{b\\acute{e}ton,tot} = \\sum_{i=1}^{N} \\text{IfcSlab}_i.Volume + \\sum_{j=1}^{M} \\text{IfcWall}_j.Volume \\quad [\\text{m}^3]",
-          description: "Calculé automatiquement par requêtes SQL/BIM dans Revit/Navisworks en éliminant les volumes d'intersections (Boolean Join).",
+          latex: "V_{beton,tot} = \\sum_{i=1}^{N} V_{Slab,i} + \\sum_{j=1}^{M} V_{Wall,j}",
+          description: "Calculé automatiquement par requêtes BIM dans Revit/Navisworks en éliminant les volumes d'intersections.",
+          variables: [
+            { symbol: 'V_{beton,tot}', name: "Volume total net de béton", unit: '\\text{m}^3', role: "Volume cumulé extrait des objets IFC après découpes.", category: 'Quantités' },
+            { symbol: 'V_{Slab,i}', name: "Volume de la dalle i", unit: '\\text{m}^3', role: "Volume géométrique de plancher IFC.", category: 'Quantités' },
+            { symbol: 'V_{Wall,j}', name: "Volume du voile j", unit: '\\text{m}^3', role: "Volume géométrique de voile porteur IFC.", category: 'Quantités' }
+          ]
         },
         {
           name: "Taux d'acier au m³ de béton (Ratio d'Armatures)",
-          latex: "Ratio_{acier} = \\frac{\\sum \\text{IfcRebar}.Mass}{V_{b\\acute{e}ton,tot}} \\quad [\\text{kg/m}^3]",
-          description: "Indicateur clé de prédimensionnement : Dalle = 70-90 kg/m³ | Poutre = 100-140 kg/m³ | Voile voiles banchés = 60-80 kg/m³.",
+          latex: "Ratio_{acier} = \\frac{M_{acier,tot}}{V_{beton,tot}}",
+          description: "Indicateur clé de contrôle : Dalle = 70-90 kg/m³ | Poutre = 100-140 kg/m³ | Voile = 60-80 kg/m³.",
+          variables: [
+            { symbol: 'Ratio_{acier}', name: "Ratio d'armatures structurales", unit: '\\text{kg/m}^3', role: "Consommation moyenne d'acier par m³ coulé.", category: 'Ratios' },
+            { symbol: 'M_{acier,tot}', name: "Masse totale d'acier ferraillé", unit: '\\text{kg}', role: "Poids total extrait des objets IfcRebar.", category: 'Quantités' },
+            { symbol: 'V_{beton,tot}', name: "Volume total de béton", unit: '\\text{m}^3', role: "Cubature totale de béton de la structure.", category: 'Quantités' }
+          ]
         },
         {
           name: "Calcul du coût global prévisionnel (BIM 5D)",
-          latex: "\\text{Co\\hat{u}t Total} = \\sum_{k=1}^{P} \\left( \\text{Quantit\\acute{e}}_k \\times \\text{Prix Unitaire}_k \\right)",
+          latex: "C_{total} = \\sum_{k=1}^{P} \\left( Q_k \\times P_k \\right)",
           description: "La maquette BIM 5D réactualise le devis quantitatif estimatif (DQE) en temps réel à chaque modification géométrique.",
-        },
-        {
-          name: "Rendement d'extraction automatique des métrés",
-          latex: "\\Delta T_{m\\acute{e}tr\\acute{e}} = \\frac{T_{manuel} - T_{BIM}}{T_{manuel}} \\times 100 \\quad (\\approx 70\\% \\text{ à } 85\\% \\text{ de gain de temps})",
-          description: "Temps passé pour établir un métré complet réduit de 3 jours à 2 heures grâce à l'extraction automatique des données IFC.",
+          variables: [
+            { symbol: 'C_{total}', name: "Coût global estimatif", unit: '€ \\text{ ou } \\text{FCFA}', role: "Montant financier global du lot concerné.", category: 'Économie' },
+            { symbol: 'Q_k', name: "Quantité de l'ouvrage élémentaire k", unit: '\\text{m}^3, \\text{m}^2, \\text{kg}', role: "Métré direct extrait des maquettes IFC.", category: 'Métré' },
+            { symbol: 'P_k', name: "Prix unitaire de l'ouvrage k", unit: '€/\\text{unité}', role: "Bordereau des prix unitaires (BPU) de l'entreprise.", category: 'Économie' }
+          ]
         },
         {
           name: "Tolérance géométrique de détection des clashs (Clash Hard)",
-          latex: "\\text{Clash Condition} : \\text{Distance}(Obj_A, Obj_B) < \\delta_{tol\\acute{e}rance} \\quad (\\delta = 0 \\text{ mm à } 10 \\text{ mm})",
-          description: "Paramètre de réglage des logiciels de synthèse pour détecter les chevauchements physiques de matières.",
+          latex: "d(Obj_A, Obj_B) < \\delta_{tol}",
+          description: "Paramètre de détection automatique des chevauchements physiques de matières.",
+          variables: [
+            { symbol: 'd(Obj_A, Obj_B)', name: "Distance spatiale inter-objets", unit: '\\text{mm}', role: "Distance mesurée entre deux solides géométriques 3D.", category: 'Synthèse' },
+            { symbol: '\\delta_{tol}', name: "Tolérance admissible de clash", unit: '\\text{mm}', role: "Seuil de sensibilité paramétré (ex: 0 à 10 mm).", category: 'Synthèse' }
+          ]
         },
       ],
     },
@@ -243,7 +257,7 @@ Le **BCF** est un format d'échange ouvert pour signaler les problèmes et clash
       title: "Exemple réel — Synthèse BIM du CHU de Nantes",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       examples: [
         {
           context: "Grand projet hospitalier de 225 000 m²",
@@ -260,7 +274,7 @@ Le **BCF** est un format d'échange ouvert pour signaler les problèmes et clash
       title: "Schéma du processus BIM & Interopérabilité IFC",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       description: "Visualisez le workflow d'échange OpenBIM centralisé par le format IFC et la plateforme CDE, le principe de la détection de clashs 3D et le cycle des dimensions BIM 3D à 7D.",
       diagram_description: [
         "Workflow OpenBIM : Export IFC des maquettes Archicad/Revit/Tekla vers la plateforme CDE et le logiciel de synthèse Navisworks",

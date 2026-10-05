@@ -1,10 +1,10 @@
-// ── Lesson: Pathologie, Diagnostic & Réhabilitation — Module 29 ───────────────
+// ── Lesson: Pathologie, Diagnostic & Réhabilitation — Module 32 ───────────────
 export const lesson_pathologie = {
-  moduleId: 29,
+  moduleId: 32,
   slug: 'pathologie',
   lessonIndex: 1,
   title: "Pathologie, Diagnostic, Essais Non-Destructifs & Réhabilitation des Ouvrages",
-  subtitle: "Module 29 — Pathologie & Inspection du Génie Civil",
+  subtitle: "Module 32 — Pathologie, Diagnostic & Réhabilitation des Ouvrages",
   level: 'Avancé',
   duration: '40h',
   diagramType: 'rebar_beam',
@@ -104,8 +104,8 @@ La concentration en chlorures $C(x,t)$ à une profondeur $x$ au bout d'un temps 
 
 $$C(x,t) = C_s \\cdot \\left( 1 - \\text{erf}\\left( \\frac{x}{2 \\sqrt{D_{cl} \\cdot t}} \\right) \\right)$$
 
-- $D_{cl}$ = coefficient de diffusion apparente des chlorures [$\text{cm}^2/\text{s}$].
-- $\text{erf}$ = fonction d'erreur mathématique.
+- $D_{cl}$ = coefficient de diffusion apparente des chlorures [$\\text{cm}^2/\\text{s}$].
+- $\\text{erf}$ = fonction d'erreur mathématique.
 
 ### 3. Calcul du Renforcement par Fibre de Carbone (PRFC)
 
@@ -113,7 +113,7 @@ Le moment résistant additionnel apporté par la lame de carbone collée en sous
 
 $$\\Delta M_{Rd} = A_f \\cdot f_{fd} \\cdot (h - x_N)$$
 
-- $A_f$ = section de la lame de carbone [mm²], $f_{fd}$ = contrainte de calcul du carbone ($\approx 1500\\text{ à } 2000\\text{ MPa}$).`,
+- $A_f$ = section de la lame de carbone [mm²], $f_{fd}$ = contrainte de calcul du carbone ($\\approx 1500\\text{ à } 2000\\text{ MPa}$).`,
     },
 
     {
@@ -128,21 +128,37 @@ $$\\Delta M_{Rd} = A_f \\cdot f_{fd} \\cdot (h - x_N)$$
           name: "Temps d'amorçage de la corrosion par carbonatation",
           latex: "t_{init} = \\left( \\frac{c}{K_{carb}} \\right)^2 \\quad [\\text{années}]",
           description: "c = enrobage des armatures en mm, Kcarb = coefficient de carbonatation en mm/√an.",
+          variables: [
+            { symbol: "t_{init}", name: "Durée d'amorçage", unit: "ans", role: "Temps pour que la carbonatation atteigne les aciers." },
+            { symbol: "c", name: "Enrobage", unit: "mm", role: "Épaisseur de béton devant les armatures." },
+            { symbol: "K_{carb}", name: "Coefficient de carbonatation", unit: "mm/√an", role: "Mesuré sur carottes (test à la phénolphtaléine)." },
+          ],
         },
         {
           name: "Vitesse d'impulsion ultrasonique dans le béton (UPV)",
-          latex: "V = \\frac{L}{\\Delta t} \\quad [\\text{m/s}] \\qquad (V > 4000 \\text{ m/s : Béton d'excellente qualité})",
-          description: "L = distance entre émetteur et récepteur, Δt = temps de transit. V < 3000 m/s indique un béton fissuré ou dégradé.",
+          latex: "V = \\frac{L}{\\Delta t} \\quad [\\text{m/s}] \\qquad (V > 4500 \\text{ m/s : béton excellent})",
+          description: "L = distance entre émetteur et récepteur, Δt = temps de transit. Repères usuels : > 4 500 m/s excellent, 3 500 à 4 500 m/s bon, 3 000 à 3 500 m/s douteux ; V < 3 000 m/s indique un béton fissuré ou dégradé.",
+          variables: [
+            { symbol: "V", name: "Vitesse de propagation", unit: "m/s", role: "Indicateur de compacité du béton." },
+            { symbol: "L", name: "Distance de mesure", unit: "m", role: "Entre émetteur et récepteur." },
+            { symbol: "\\Delta t", name: "Temps de transit", unit: "s", role: "Mesuré par l'appareil (en µs)." },
+          ],
         },
         {
           name: "Seuil critique de corrosion par les chlorures",
           latex: "C_{crit} \\approx 0{,}40\\% \\text{ de chlorures par rapport au poids de ciment}",
-          description: "Au-delà de ce seuil, la couche de passivation de l'acier est détruite et la corrosion pîqûre commence.",
+          description: "Au-delà de ce seuil, la couche de passivation de l'acier est détruite et la corrosion par piqûres commence.",
         },
         {
           name: "Contrainte ultime de la lame de carbone (PRFC)",
           latex: "\\sigma_f = E_f \\cdot \\varepsilon_f \\le f_{fb} \\quad (E_f \\approx 165\\text{ à } 210 \\text{ GPa}, \\varepsilon_{f,max} \\approx 0{,}8\\%)",
           description: "Limiter la déformation du carbone pour éviter le décollement prématuré de la lame (Peeling).",
+          variables: [
+            { symbol: "\\sigma_f", name: "Contrainte dans la lame", unit: "MPa", role: "Contrainte de calcul du composite." },
+            { symbol: "E_f", name: "Module du carbone", unit: "GPa", role: "165 à 210 GPa." },
+            { symbol: "\\varepsilon_f", name: "Déformation de la lame", unit: "-", role: "Limitée à ≈ 0,8 % (décollement)." },
+            { symbol: "f_{fb}", name: "Contrainte limite de décollement", unit: "MPa", role: "Dépend de l'adhérence au béton support." },
+          ],
         },
       ],
     },
@@ -175,7 +191,7 @@ $$\\Delta M_{Rd} = A_f \\cdot f_{fd} \\cdot (h - x_N)$$
         { grandeur: "Coefficient de carbonatation Kcarb", si: "mm/√an", imperial: "in/√yr", conversion: "Béton C25/30 Kcarb ≈ 3 à 5 mm/√an | Béton C50/60 Kcarb < 1,5 mm/√an" },
         { grandeur: "Potentiel de corrosion E_corr", si: "mV / CSE (Électrode Cu/CuSO4)", imperial: "mV", conversion: "E < -350 mV → Risque de corrosion active > 90%" },
         { grandeur: "Résistivité électrique du béton ρ_e", si: "kΩ·cm ou Ω·m", imperial: "kΩ·in", conversion: "ρ_e < 5 kΩ·cm → Vitesse de corrosion très élevée" },
-        { grandeur: "Vitesse ultrasonique UPV", si: "m/s ou km/s", imperial: "ft/s", conversion: "> 4000 m/s: Excellent | 3500-4000 m/s: Bon | < 3000 m/s: Fissuré" },
+        { grandeur: "Vitesse ultrasonique UPV", si: "m/s ou km/s", imperial: "ft/s", conversion: "> 4500 m/s : excellent | 3500-4500 m/s : bon | 3000-3500 m/s : douteux | < 3000 m/s : fissuré ou dégradé" },
         { grandeur: "Conductivité des chlorures D_cl", si: "cm²/s (ex: 10⁻⁸ cm²/s)", imperial: "sq in/sec", conversion: "Détermine la vitesse de pénétration des ions sel" },
       ],
       note: "⚠️ ATTENTION : Les essais non-destructifs (NDT) comme le scléromètre ou les ultrasons nécessitent impérativement un **étalonnage sur carottes extraites** pour fournir des valeurs absolues de résistance en MPa !",
@@ -336,7 +352,7 @@ $$\\Delta M_{Rd} = A_f \\cdot f_{fd} \\cdot (h - x_N)$$
           text: "Une auscultation ultrasonore sur une poutre de 0,80 m d'épaisseur donne un temps de transit Δt = 200 µs (0,000200 s). Calculer la vitesse ultrasonique V et évaluer la qualité du béton.",
           hint: "V = L / Δt.",
           answer_latex: "V = \\frac{0{,}80 \\text{ m}}{0{,}000200 \\text{ s}} = 4000 \\text{ m/s}",
-          answer_text: "Vitesse V = 4 000 m/s (Béton de très bonne qualité, compact et non fissuré).",
+          answer_text: "Vitesse V = 4 000 m/s (béton de bonne qualité, compact et non fissuré).",
         },
         {
           id: 'ex_pat_3',

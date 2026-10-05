@@ -4,10 +4,10 @@ export const lesson_bois = {
   slug: 'bois',
   lessonIndex: 1,
   title: "Conception, Dimensionnement & Eurocode 5 des Structures Bois",
-  subtitle: "Module 12 — Construction Bois & Eurocode 5",
+  subtitle: "Module 12 — Construction Bois",
   level: 'Intermédiaire',
   duration: '40h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Eurocode 5', 'Bois', 'GL24h', 'CLT', 'kmod', 'kdef', 'Carbonisation', 'Assemblages', 'Shed'],
 
   steps: [
@@ -37,7 +37,7 @@ export const lesson_bois = {
       title: "Pourquoi la construction bois est en pleine expansion",
       icon: '⚠️',
       type: 'importance',
-      content: `Porté par la réglementation environnementale (RE2020), le bois est le seul matériau de construction majeur **renouvelable et stockeur de carbone** ($\approx 1\\text{ tonne de } \\text{CO}_2$ stockée par m³ de bois).
+      content: `Porté par la réglementation environnementale (RE2020), le bois est le seul matériau de construction majeur **renouvelable et stockeur de carbone** ($\\approx 1\\text{ tonne de } \\text{CO}_2$ stockée par m³ de bois).
 
 - **Performances thermo-acoustiques** : Le bois est un isolant naturel (conductivité $\\lambda \\approx 0{,}13\\text{ W/mK}$, soit 12 fois plus isolant que le béton et 400 fois plus que l'acier).
 - **Comportement remarquable au Feu** : Le bois brûle de manière très prévisible avec une vitesse de carbonisation lente ($\\beta_0 = 0{,}65\\text{ mm/min}$). La couche charbonnée superficielle isole le cœur du bois qui conserve 100% de ses capacités mécaniques.
@@ -87,7 +87,7 @@ export const lesson_bois = {
       title: "Théorie — Classes de Service, kmod, kdef & Dimensionnement (Eurocode 5)",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. Les Classes de Service (EN 1995-1-1 §2.3.1.3)
 
 - **Classe de Service 1** : Humidité de l'air $< 65\\%$ ($w_{bois} \\le 12\\%$) — Bâtiments chauffés intérieurs (locaux d'habitation, bureaux).
@@ -123,37 +123,76 @@ $$w_{fin} = w_{inst,G} \\cdot (1 + k_{def}) + w_{inst,Q,1} \\cdot (1 + \\psi_{2,
       title: "Formules essentielles — Eurocode 5 (NF EN 1995-1-1)",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Résistance de calcul en flexion du bois (f_m,d)",
           latex: "f_{m,d} = k_{mod} \\cdot \\frac{f_{m,k}}{\\gamma_M} \\qquad \\sigma_{m,d} = \\frac{M_{Ed}}{W_y} \\le f_{m,d}",
           description: "fmk = résistance caractéristique en flexion (ex: 24 MPa pour C24 et GL24h). Wy = b · h² / 6.",
+          variables: [
+            { symbol: "f_{m,d}", name: "Résistance de calcul en flexion", unit: "MPa", role: "Valeur à ne pas dépasser." },
+            { symbol: "k_{mod}", name: "Coefficient de modification", unit: "-", role: "Selon la durée de la charge et la classe de service (0,6 à 1,1)." },
+            { symbol: "f_{m,k}", name: "Résistance caractéristique en flexion", unit: "MPa", role: "24 MPa pour C24 et GL24h." },
+            { symbol: "\\gamma_M", name: "Coefficient partiel", unit: "-", role: "1,3 bois massif ; 1,25 lamellé-collé." },
+            { symbol: "\\sigma_{m,d}", name: "Contrainte de flexion de calcul", unit: "MPa", role: "M_Ed / W_y." },
+            { symbol: "M_{Ed}, W_y", name: "Moment de calcul et module de section", unit: "N·mm, mm³", role: "W_y = b·h²/6." },
+          ],
         },
         {
           name: "Vérification au Flambement des Poteaux Bois (k_c)",
           latex: "\\sigma_{c,0,d} = \\frac{N_{Ed}}{A} \\le f_{c,0,d,crit} = k_c \\cdot f_{c,0,d} \\qquad f_{c,0,d} = k_{mod} \\cdot \\frac{f_{c,0,k}}{\\gamma_M}",
           description: "kc = coefficient de réduction pour le flambement dépendant de l'élancement λ et du facteur d'imperfection βc (0,2 pour massif, 0,1 pour GL).",
+          variables: [
+            { symbol: "\\sigma_{c,0,d}", name: "Contrainte de compression axiale", unit: "MPa", role: "N_Ed / A." },
+            { symbol: "N_{Ed}, A", name: "Effort normal de calcul et aire", unit: "N, mm²", role: "Section nette du poteau." },
+            { symbol: "k_c", name: "Coefficient de flambement", unit: "-", role: "Fonction de l'élancement relatif (≤ 1)." },
+            { symbol: "f_{c,0,d}", name: "Résistance de calcul en compression axiale", unit: "MPa", role: "k_mod · f_c,0,k / γ_M." },
+            { symbol: "f_{c,0,k}", name: "Résistance caractéristique", unit: "MPa", role: "21 MPa pour C24." },
+          ],
         },
         {
           name: "Vérification au Déversement des Poutres (k_crit)",
           latex: "\\sigma_{m,d} \\le k_{crit} \\cdot f_{m,d} \\qquad k_{crit} = \\begin{cases} 1{,}00 & \\text{si } \\lambda_{rel,m} \\le 0{,}75 \\\\ 1{,}56 - 0{,}75 \\lambda_{rel,m} & \\text{si } 0{,}75 < \\lambda_{rel,m} \\le 1{,}4 \\\\ 1 / \\lambda_{rel,m}^2 & \\text{si } \\lambda_{rel,m} > 1{,}4 \\end{cases}",
           description: "kcrit = coefficient de déversement pour la semelle comprimée non maintenue latéralement.",
+          variables: [
+            { symbol: "\\sigma_{m,d}", name: "Contrainte de flexion", unit: "MPa", role: "Contrainte de calcul." },
+            { symbol: "k_{crit}", name: "Coefficient de déversement", unit: "-", role: "1,0 si la poutre est stable latéralement." },
+            { symbol: "f_{m,d}", name: "Résistance de calcul en flexion", unit: "MPa", role: "Voir formule précédente." },
+            { symbol: "\\lambda_{rel,m}", name: "Élancement relatif en flexion", unit: "-", role: "√(f_m,k / σ_m,crit)." },
+          ],
         },
         {
           name: "Résistance au Cisaillement / Effort Tranchant (f_v,d)",
           latex: "\\tau_{d} = 1{,}5 \\cdot \\frac{V_{Ed}}{b_{ef} \\cdot h} \\le f_{v,d} = k_{mod} \\cdot \\frac{f_{v,k}}{\\gamma_M} \\qquad (b_{ef} = k_{cr} \\cdot b)",
           description: "kcr = 0,67 (coefficient de prise en compte des fentes de séchage en flexion).",
+          variables: [
+            { symbol: "\\tau_d", name: "Contrainte de cisaillement", unit: "MPa", role: "Maximale au niveau de l'axe neutre." },
+            { symbol: "V_{Ed}", name: "Effort tranchant de calcul", unit: "N", role: "Aux appuis." },
+            { symbol: "b_{ef}, h", name: "Largeur efficace et hauteur", unit: "mm", role: "b_ef = k_cr · b." },
+            { symbol: "k_{cr}", name: "Coefficient de fissuration", unit: "-", role: "0,67 (fentes de séchage)." },
+            { symbol: "f_{v,d}", name: "Résistance de calcul au cisaillement", unit: "MPa", role: "k_mod · f_v,k / γ_M (f_v,k = 4,0 MPa pour C24)." },
+          ],
         },
         {
           name: "Épaisseur carbonisée au feu après durée t (d_char)",
           latex: "d_{char} = \\beta_0 \\cdot t_{feu} \\quad [\\text{mm}] \\qquad \\beta_0 = 0{,}65 \\text{ mm/min (Résineux/GL)}",
           description: "Pour 60 min de feu (R60) : dchar = 0,65 × 60 = 39,0 mm de couche carbonisée retirée de la section brute.",
+          variables: [
+            { symbol: "d_{char}", name: "Épaisseur carbonisée", unit: "mm", role: "Profondeur de bois transformée en charbon." },
+            { symbol: "\\beta_0", name: "Vitesse de carbonisation", unit: "mm/min", role: "0,65 mm/min pour les résineux." },
+            { symbol: "t_{feu}", name: "Durée d'exposition au feu", unit: "min", role: "30, 60 ou 90 min selon la stabilité exigée." },
+          ],
         },
         {
           name: "Limites de flèche ELS usuelles (Eurocode 5)",
           latex: "w_{inst} \\le \\frac{L}{300} \\qquad w_{net,fin} \\le \\frac{L}{250} \\qquad w_{fin} \\le \\frac{L}{150 \\text{ à } 200}",
           description: "winst = flèche instantanée sous charge variable, wfin = flèche finale fluide à long terme.",
+          variables: [
+            { symbol: "w_{inst}", name: "Flèche instantanée", unit: "mm", role: "Sous charge variable." },
+            { symbol: "w_{net,fin}", name: "Flèche nette finale", unit: "mm", role: "Après fluage, contreflèche déduite." },
+            { symbol: "w_{fin}", name: "Flèche finale", unit: "mm", role: "Totale à long terme." },
+            { symbol: "L", name: "Portée", unit: "mm", role: "Distance entre appuis." },
+          ],
         },
       ],
     },
@@ -248,7 +287,7 @@ $$w_{fin} = w_{inst,G} \\cdot (1 + k_{def}) + w_{inst,Q,1} \\cdot (1 + \\psi_{2,
       title: "Exemple réel — Le Centre Aquatique Olympique de Saint-Denis (Paris 2024)",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Plus grande charpente concave en bois lamellé-collé au monde (Portée de 80 m)",
@@ -265,7 +304,7 @@ $$w_{fin} = w_{inst,G} \\cdot (1 + k_{def}) + w_{inst,Q,1} \\cdot (1 + \\psi_{2,
       title: "Schéma — Poutre Bois, Carbonisation au Feu & Assemblage Broché",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez le comportement orthotrope du bois (fibres longitudinales vs transversales), la section résiduelle efficace après carbonisation au feu et un assemblage à broches métalliques encastrées.",
       diagram_description: [
         "Structure du bois : Anisotropie des 3 axes (Longitudinal L, Radial R, Tangentiel T) et sensibilité à l'eau",

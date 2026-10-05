@@ -1,10 +1,10 @@
-// ── Lesson: Génie Parasismique & Eurocode 8 — Module 27 ──────────────────────
+// ── Lesson: Génie Parasismique & Eurocode 8 — Module 8 ──────────────────────
 export const lesson_seisme = {
-  moduleId: 27,
-  slug: 'environnement',
+  moduleId: 8,
+  slug: 'seisme',
   lessonIndex: 1,
   title: "Génie Parasismique, Eurocode 8 & Protection des Structures",
-  subtitle: "Module 27 — Ingénierie Sismique & Vulnérabilité",
+  subtitle: "Module 08 — Analyse avancée des structures",
   level: 'Avancé',
   duration: '45h',
   diagramType: 'rebar_beam',
@@ -122,26 +122,53 @@ $$S_d(T) = a_g \\cdot S \\cdot \\frac{2{,}5}{q}$$
           name: "Force sismique de base Fb",
           latex: "F_b = S_d(T_1) \\cdot m \\cdot \\lambda \\quad [\\text{kN}]",
           description: "m = masse totale équivalente du bâtiment, Sd(T1) = valeur du spectre de calcul en m/s².",
+          variables: [
+            { symbol: "F_b", name: "Effort tranchant à la base", unit: "kN", role: "Force sismique horizontale totale." },
+            { symbol: "S_d(T_1)", name: "Ordonnée du spectre de calcul", unit: "m/s²", role: "Lue sur le spectre pour la période T₁." },
+            { symbol: "m", name: "Masse sismique totale", unit: "t", role: "G + ψ₂·Q des niveaux au-dessus des fondations." },
+            { symbol: "\\lambda", name: "Coefficient de correction", unit: "-", role: "0,85 si T₁ ≤ 2T_C et plus de deux niveaux, sinon 1,0." },
+          ],
         },
         {
           name: "Accélération spectrale sur le plateau (T_B ≤ T ≤ T_C)",
           latex: "S_d(T) = a_{gr} \\cdot \\gamma_I \\cdot S \\cdot \\frac{2{,}5}{q} \\quad [\\text{m/s}^2]",
           description: "Le coefficient de comportement q divise directement la force sismique d'un facteur 2 à 4 !",
+          variables: [
+            { symbol: "S_d(T)", name: "Accélération spectrale de calcul", unit: "m/s²", role: "Valeur du plateau du spectre." },
+            { symbol: "a_{gr}", name: "Accélération de référence", unit: "m/s²", role: "Selon la zone de sismicité." },
+            { symbol: "\\gamma_I", name: "Coefficient d'importance", unit: "-", role: "0,8 à 1,4 selon la catégorie d'importance du bâtiment." },
+            { symbol: "S", name: "Paramètre de sol", unit: "-", role: "Amplification selon la classe de sol (A à E)." },
+            { symbol: "q", name: "Coefficient de comportement", unit: "-", role: "Capacité de dissipation (1,5 à 5 selon la structure)." },
+          ],
         },
         {
           name: "Distribution de la force sismique par étage (Fi)",
           latex: "F_i = F_b \\cdot \\frac{z_i \\cdot m_i}{\\sum (z_j \\cdot m_j)}",
           description: "zi = hauteur de l'étage i au-dessus de la base. Les étages supérieurs reçoivent les forces les plus fortes.",
+          variables: [
+            { symbol: "F_i", name: "Force à l'étage i", unit: "kN", role: "Part de F_b appliquée au niveau i." },
+            { symbol: "F_b", name: "Effort tranchant à la base", unit: "kN", role: "Force sismique totale." },
+            { symbol: "z_i", name: "Hauteur du niveau i", unit: "m", role: "Au-dessus du niveau d'application de l'action sismique." },
+            { symbol: "m_i", name: "Masse du niveau i", unit: "t", role: "Masse sismique du niveau." },
+          ],
         },
         {
           name: "Joint sismique minimal entre 2 bâtiments",
           latex: "d_s = \\sqrt{d_1^2 + d_2^2} \\ge 40 \\text{ mm}",
           description: "d1 et d2 sont les déplacements maximaux calculés au niveau du sommet de chaque bâtiment.",
+          variables: [
+            { symbol: "d_s", name: "Largeur du joint", unit: "mm", role: "Distance libre entre les deux bâtiments." },
+            { symbol: "d_1, d_2", name: "Déplacements maximaux", unit: "mm", role: "Déplacements de calcul des deux bâtiments au niveau considéré." },
+          ],
         },
         {
           name: "Condition d'étage souple (Soft Storey)",
           latex: "K_{étage,i} \\ge 0{,}70 \\cdot K_{étage,i+1}",
           description: "Empêcher qu'un étage ne soit nettement moins rigide que l'étage supérieur (cause majeure d'effondrement).",
+          variables: [
+            { symbol: "K_{étage,i}", name: "Rigidité latérale de l'étage i", unit: "kN/m", role: "Effort horizontal pour un déplacement relatif unité." },
+            { symbol: "K_{étage,i+1}", name: "Rigidité de l'étage supérieur", unit: "kN/m", role: "Étage situé juste au-dessus." },
+          ],
         },
       ],
     },

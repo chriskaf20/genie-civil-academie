@@ -7,7 +7,7 @@ export const lesson_materiaux = {
   subtitle: "Module 23 — Science & Technologie des Matériaux",
   level: 'Intermédiaire',
   duration: '40h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Matériaux', 'Béton', 'Dreux-Gorisse', 'Acier', 'S355', 'Bois', 'BAP', 'Bas Carbone', 'Durabilité'],
 
   steps: [
@@ -86,7 +86,7 @@ export const lesson_materiaux = {
       title: "Théorie — Hydratation du Ciment & Formulation de Dreux-Gorisse",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. La réaction d'hydratation du Ciment Portland (CEM I)
 
 Le ciment est composé de silicate tricalcique ($C_3S$) et dicalcique ($C_2S$). Lors de l'ajout d'eau :
@@ -94,7 +94,7 @@ Le ciment est composé de silicate tricalcique ($C_3S$) et dicalcique ($C_2S$). 
 $$C_3S + H_2O \\longrightarrow C-S-H + Ca(OH)_2 \\quad (\\text{Portlandite})$$
 
 - **C-S-H (Silicates de Calcium Hydratés)** : Gel fibreux assurant la résistance mécanique et la cohésion du béton.
-- **$\text{Ca(OH)}_2$ (Portlandite)** : Base forte ($pH \approx 12{,}5$) qui crée un milieu alcalin **passivant les aciers armatures** contre la rouille.
+- **$\\text{Ca(OH)}_2$ (Portlandite)** : Base forte ($pH \\approx 12{,}5$) qui crée un milieu alcalin **passivant les aciers armatures** contre la rouille.
 
 ### 2. Formulation du béton selon Dreux-Gorisse
 
@@ -117,36 +117,63 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
       title: "Formules essentielles — Propriétés Mécaniques & Durabilité",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Formule de Bolomey (Résistance du béton à 28 jours)",
           latex: "f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E} - 0{,}5 \\right) \\quad [\\text{MPa}]",
           description: "C = dosage en ciment [kg/m³], E = dosage en eau efficace [L/m³], fce = classe vraie du ciment, KB = coef granulaire (0,50 pour granulats courants).",
+          variables: [
+            { symbol: "f_{cm28}", name: "Résistance moyenne à 28 jours", unit: "MPa", role: "Résistance en compression visée." },
+            { symbol: "K_B", name: "Coefficient granulaire", unit: "-", role: "≈ 0,50 pour des granulats courants." },
+            { symbol: "f_{ce}", name: "Classe vraie du ciment", unit: "MPa", role: "Résistance réelle du ciment à 28 jours." },
+            { symbol: "C", name: "Dosage en ciment", unit: "kg/m³", role: "Masse de ciment par m³." },
+            { symbol: "E", name: "Dosage en eau efficace", unit: "L/m³", role: "Eau disponible pour l'hydratation." },
+          ],
         },
         {
           name: "Module de déformation longitudinale du béton (Ecm)",
           latex: "E_{cm} = 22 \\cdot \\left( \\frac{f_{cm}}{10} \\right)^{0{,}3} \\quad [\\text{GPa}]",
           description: "fcm = fck + 8 MPa. Pour un béton C30/37 : fcm = 38 MPa → Ecm ≈ 33 GPa (33 000 MPa).",
+          variables: [
+            { symbol: "E_{cm}", name: "Module sécant du béton", unit: "GPa", role: "Module moyen à 28 jours." },
+            { symbol: "f_{cm}", name: "Résistance moyenne en compression", unit: "MPa", role: "fck + 8 MPa." },
+          ],
         },
         {
           name: "Module d'élasticité & Ductilité de l'Acier (S355 / B500)",
-          latex: "E_{acier} = 210\\,000 \\text{ MPa} \\qquad \\varepsilon_{yd} = \\frac{f_{yd}}{E_s} = \\frac{435}{210\\,000} = 2{,}07 \\times 10^{-3} \\quad (0{,}207\\%)",
-          description: "fyd = fyk / 1,15. fyk = 500 MPa (B500B). Allongement sous charge maximale Agt ≥ 5% (Classe B) ou ≥ 7,5% (Classe C hautement ductile).",
+          latex: "E_a = 210\\,000 \\text{ MPa (EC3)} \\quad E_s = 200\\,000 \\text{ MPa (EC2)} \\qquad \\varepsilon_{yd} = \\frac{f_{yd}}{E_s} = \\frac{434{,}8}{200\\,000} = 2{,}17 \\times 10^{-3} \\quad (0{,}217\\,\\%)",
+          description: "Ea = module des aciers de construction (S235 à S355, EC3) ; Es = module des armatures de béton armé (EC2). fyd = fyk / 1,15 = 500 / 1,15 = 434,8 MPa (B500B). Allongement sous charge maximale Agt ≥ 5 % (classe B) ou ≥ 7,5 % (classe C hautement ductile).",
+          variables: [
+            { symbol: "E_a", name: "Module d'Young de l'acier de construction", unit: "MPa", role: "210 000 MPa (EC3)." },
+            { symbol: "E_s", name: "Module d'Young des armatures", unit: "MPa", role: "200 000 MPa (EC2)." },
+            { symbol: "\\varepsilon_{yd}", name: "Déformation à la limite d'élasticité", unit: "-", role: "Début du palier plastique." },
+            { symbol: "f_{yd}", name: "Limite d'élasticité de calcul", unit: "MPa", role: "fyk / 1,15 = 434,8 MPa (B500)." },
+          ],
         },
         {
-          name: "Loi de fente de carbonatation du béton (Profondeur x_c)",
-          latex: "x_c(t) = K_{carb} \\cdot \\sqrt{t} \\quad [\\text{mm}] \\qquad K_{carb} \\propto \\frac{\\sqrt{CO_2}}{E/C}",
-          description: "t = temps en années. Si Kcarb = 4 mm/√an → xc(50 ans) = 4 × √50 = 28,3 mm d'enrobage carbonaté.",
+          name: "Progression de la carbonatation du béton (profondeur x_c)",
+          latex: "x_c(t) = K_{carb} \\cdot \\sqrt{t} \\quad [\\text{mm}]",
+          description: "t = âge du béton [années], Kcarb = coefficient de carbonatation [mm/√an] ; il augmente avec la teneur en CO2 de l'air et avec le rapport E/C (béton plus poreux). Si Kcarb = 4 mm/√an → xc(50 ans) = 4 × √50 = 28,3 mm d'enrobage carbonaté.",
+          variables: [
+            { symbol: "x_c(t)", name: "Profondeur carbonatée", unit: "mm", role: "Distance du front de carbonatation à la surface." },
+            { symbol: "K_{carb}", name: "Coefficient de carbonatation", unit: "mm/√an", role: "Augmente avec la teneur en CO₂ et le rapport E/C." },
+            { symbol: "t", name: "Âge du béton", unit: "ans", role: "Durée d'exposition." },
+          ],
         },
         {
           name: "Résistance au feu du bois (Vitesse de carbonisation β0)",
           latex: "d_{char} = \\beta_0 \\cdot t_{feu} \\quad [\\text{mm}] \\qquad \\beta_0 \\approx 0{,}65 \\text{ mm/min (Résineux)}",
-          description: "La couche charbonnée isolante protège le cœur du bois qui conserve 100% de sa capacité portante sous la zone carbonisée.",
+          description: "La couche charbonnée isole le cœur du bois. Méthode de la section réduite (EC5-1-2) : on retire dchar et une couche de résistance nulle d0 = 7 mm ; le reste de la section conserve ses propriétés à froid.",
+          variables: [
+            { symbol: "d_{char}", name: "Épaisseur carbonisée", unit: "mm", role: "Bois transformé en charbon." },
+            { symbol: "\\beta_0", name: "Vitesse de carbonisation", unit: "mm/min", role: "0,65 mm/min pour les résineux massifs." },
+            { symbol: "t_{feu}", name: "Durée d'exposition au feu", unit: "min", role: "Durée de stabilité exigée." },
+          ],
         },
         {
           name: "Masse volumique des matériaux courants",
-          latex: "\\rho_{béton\\,armé} = 2500 \\text{ kg/m}^3 \\quad \\rho_{acier} = 7850 \\text{ kg/m}^3 \\quad \\rho_{bois} = 450-600 \\text{ kg/m}^3",
+          latex: "\\rho_{\\text{béton armé}} = 2500 \\text{ kg/m}^3 \\quad \\rho_{\\text{acier}} = 7850 \\text{ kg/m}^3 \\quad \\rho_{\\text{bois}} = 450 \\text{ à } 600 \\text{ kg/m}^3",
           description: "Masse volumique fondamentale pour les calculs de charges permanentes G.",
         },
       ],
@@ -242,7 +269,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
       title: "Exemple réel — Béton Bas Carbone du Grand Paris Express",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Voussoirs de tunnel du Grand Paris Express (Ligne 16 et 17)",
@@ -259,7 +286,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
       title: "Schéma — Courbe de Féret/Bolomey & Diagramme Acier",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez la relation entre le rapport C/E et la résistance en compression du béton à 28 jours, ainsi que le diagramme contrainte-déformation (σ-ε) de l'acier de construction S355 et du béton comprimé.",
       diagram_description: [
         "Courbe de Bolomey : Évolution quasi-linéaire de fcm28 en fonction du rapport C/E",
@@ -362,7 +389,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
           text: "Une éprouvette cylindrique en acier d'armature B500B de diamètre 16 mm (section S0 = 201 mm²) est soumise à un essai de traction. 1) Calculer la force d'élasticité théorique F_y (fyk = 500 MPa). 2) Si la force maximale mesurée à rupture est F_u = 118,6 kN, calculer la résistance à la traction f_u et le ratio de ductilité f_u / f_y (Vérifier si f_u / f_y ≥ 1,08 pour la Classe B).",
           hint: "Fy = S0 · fyk. fu = Fu / S0.",
           answer_latex: "F_y = 201 \\times 500 = 100\\,500 \\text{ N} = 100{,}5 \\text{ kN} \\qquad f_u = \\frac{118\\,600}{201} = 590{,}05 \\text{ MPa}",
-          answer_latex: "\\frac{f_u}{f_y} = \\frac{590}{500} = 1{,}18 \\ge 1{,}08 \\quad \\checkmark \\quad (\\text{Classe B conforme})",
+          answer_latex_2: "\\frac{f_u}{f_y} = \\frac{590}{500} = 1{,}18 \\ge 1{,}08 \\quad \\checkmark \\quad (\\text{Classe B conforme})",
           answer_text: "Fy = 100,5 kN | fu = 590 MPa | Ratio fu/fy = 1,18 ≥ 1,08 → Acier de Classe B parfaitement ductile.",
         },
       ],
@@ -498,7 +525,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
       points: [
         "Rapport Eau/Ciment (E/C) : le paramètre n°1 régissant la résistance et la durabilité du béton",
         "Formule de Bolomey : fcm28 = KB · fce · (C/E - 0,5) [MPa]",
-        "Module d'élasticité de l'acier E = 210 000 MPa | Béton C30/37 Ecm ≈ 33 000 MPa",
+        "Module d'élasticité : acier de charpente 210 000 MPa, armatures 200 000 MPa (EC2) | Béton C30/37 Ecm ≈ 33 000 MPa",
         "Carbonatation du béton : xc = K_carb · √t — désalcalinise le béton et déclenche la rouille des aciers",
         "Aciers B500B / B500C : fyk = 500 MPa, classe B/C hautement ductile pour zones sismiques",
         "Interdiction de rajouter de l'eau sur chantier dans la toupie de béton !",

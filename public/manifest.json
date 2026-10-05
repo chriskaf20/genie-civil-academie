@@ -1,96 +1,73 @@
 {
   "name": "Global Civil Engineering Academy",
   "short_name": "GCEA",
-  "description": "Plateforme interactive d'apprentissage du Génie Civil — 35 modules, 23 étapes, formules KaTeX, schémas SVG et exercices corrigés.",
+  "description": "Plateforme interactive d'apprentissage du Génie Civil — 35 modules, leçons en 23 étapes, formules KaTeX, schémas et exercices corrigés, utilisable hors ligne.",
+  "id": "/",
   "start_url": "/",
-  "display": "standalone",
-  "orientation": "portrait-primary",
-  "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
-  "lang": "fr-FR",
   "scope": "/",
-  "categories": ["education", "engineering"],
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "fr-FR",
   "dir": "ltr",
+  "categories": ["education", "productivity"],
   "icons": [
-    {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
-    }
+    { "src": "/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "screenshots": [
     {
-      "src": "/screenshots/dashboard.png",
-      "sizes": "1366x641",
+      "src": "/screenshots/dashboard-wide.png",
+      "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Tableau de bord — 35 modules de Génie Civil"
+      "label": "Tableau de bord — catalogue des 35 modules de génie civil"
     },
     {
-      "src": "/screenshots/lesson.png",
-      "sizes": "1366x641",
+      "src": "/screenshots/lesson-wide.png",
+      "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Leçon interactive avec formules KaTeX et exercices"
+      "label": "Leçon interactive avec formules KaTeX et exercices corrigés"
+    },
+    {
+      "src": "/screenshots/lesson-narrow.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Leçon sur mobile"
     }
   ],
   "shortcuts": [
     {
-      "name": "Accueil & Catalogue",
+      "name": "Tableau de bord",
       "short_name": "Accueil",
-      "description": "Retourner au tableau de bord des 35 modules",
+      "description": "Catalogue des 35 modules",
       "url": "/",
-      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
-      "name": "Module Béton Armé",
-      "short_name": "Béton Armé",
-      "description": "Ouvrir directement le module Béton Armé & Eurocode 2",
+      "name": "Béton armé — Eurocode 2",
+      "short_name": "Béton armé",
+      "description": "Ouvrir directement le module Béton armé",
       "url": "/?module=beton-arme",
-      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Résistance des matériaux",
+      "short_name": "RDM",
+      "description": "Ouvrir directement le module RDM",
+      "url": "/?module=rdm",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" }]
     }
   ],
   "prefer_related_applications": false

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
+import { getLessonEntries, countLessons } from '../data/lesson_registry.js';
 
 const CATEGORY_COLORS = {
   blue: { bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-200 dark:border-blue-500/30', text: 'text-blue-600 dark:text-blue-400', glow: 'shadow-blue-500/5 dark:shadow-blue-500/10' },
@@ -69,12 +70,16 @@ function ModuleCard({ module, onSelect, isDone }) {
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] text-slate-500 dark:text-slate-400">⏱ {module.duration}</span>
             <span className="text-slate-400 dark:text-slate-600 text-[10px]">·</span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">{module.lessons?.length || 0} leçons</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">{lessonCountLabel(getLessonEntries(module).length)}</span>
           </div>
         </div>
       </div>
     </button>
   );
+}
+
+function lessonCountLabel(count) {
+  return count > 1 ? `${count} leçons` : `${count} leçon`;
 }
 
 function CategorySection({ cat, onSelect, completedIds }) {
@@ -109,8 +114,9 @@ function CategorySection({ cat, onSelect, completedIds }) {
 }
 
 export default function Dashboard({ onSelectModule, completedIds = [] }) {
-  const totalHours = modules.reduce((acc, m) => acc + parseInt(m.duration), 0);
-  const totalLessons = modules.reduce((acc, m) => acc + (m.lessons?.length || 0), 0);
+  const totalHours = modules.reduce((acc, m) => acc + (parseInt(m.duration, 10) || 0), 0);
+  const totalLessons = countLessons();
+  const exploredPct = Math.round((completedIds.length / modules.length) * 100);
 
   const featuredModules = useMemo(() =>
     FEATURED_MODULES.map(id => modules.find(m => m.id === id)).filter(Boolean),
@@ -138,7 +144,7 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
               </div>
               <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed max-w-lg">
                 La plateforme d'apprentissage progressif et exhaustif du Génie Civil. 
-                De zéro à ingénieur accompli — <strong className="text-blue-600 dark:text-sky-400">35 modules, 120+ leçons, 1200+ heures de contenu.</strong>
+                De zéro à ingénieur accompli — <strong className="text-blue-600 dark:text-sky-400">{modules.length} modules, {totalLessons} leçons interactives de 23 étapes, {totalHours} heures de formation.</strong>
               </p>
               <div className="flex flex-wrap gap-2 mt-4">
                 <span className="tag-green">🔓 Accès Libre 100%</span>
@@ -149,16 +155,16 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
             </div>
             <div className="shrink-0 w-full md:w-auto">
               <div className="rounded-2xl border border-sky-300 dark:border-sky-500/30 bg-white/80 dark:bg-sky-500/5 p-5 text-center min-w-[140px] shadow-sm">
-                <p className="text-4xl font-black text-blue-600 dark:text-sky-400 font-mono">35</p>
-                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Modules Déverrouillés</p>
+                <p className="text-4xl font-black text-blue-600 dark:text-sky-400 font-mono">{modules.length}</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Modules en accès libre</p>
                 <div className="mt-2 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full transition-all duration-700"
-                    style={{ width: `${Math.max(3, Math.round((completedIds.length / 35) * 100))}%` }}
+                    style={{ width: `${Math.max(3, exploredPct)}%` }}
                   />
                 </div>
                 <p className="text-[10px] text-slate-500 mt-1 font-medium">
-                  {completedIds.length}/{35} explorés ({Math.round((completedIds.length / 35) * 100)}%)
+                  {completedIds.length}/{modules.length} explorés ({exploredPct}%)
                 </p>
               </div>
             </div>
@@ -168,10 +174,10 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
 
       {/* Global Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard value="35" label="Modules Complets" icon="📚" color={CATEGORY_COLORS.blue} />
-        <StatCard value={`${totalLessons}+`} label="Leçons détaillées" icon="📖" color={CATEGORY_COLORS.violet} />
-        <StatCard value={`${totalHours}h`} label="Contenu structuré" icon="⏱" color={CATEGORY_COLORS.orange} />
-        <StatCard value="∞" label="Accès Illimité" icon="🔓" color={CATEGORY_COLORS.emerald} />
+        <StatCard value={modules.length} label="Modules" icon="📚" color={CATEGORY_COLORS.blue} />
+        <StatCard value={totalLessons} label="Leçons de 23 étapes" icon="📖" color={CATEGORY_COLORS.violet} />
+        <StatCard value={`${totalHours}h`} label="Volume de formation indicatif" icon="⏱" color={CATEGORY_COLORS.orange} />
+        <StatCard value="∞" label="Accès illimité" icon="🔓" color={CATEGORY_COLORS.emerald} />
       </div>
 
       {/* Featured Modules */}
@@ -236,7 +242,7 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
       <div>
         <div className="flex items-center gap-3 mb-6">
           <span className="text-lg">🗂️</span>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Tous les 35 Modules — Catalogue Complet</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Les {modules.length} modules — catalogue complet</h2>
         </div>
         <div className="space-y-8">
           {categories.map(cat => (

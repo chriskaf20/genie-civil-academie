@@ -1,10 +1,10 @@
 // ── Lesson: Béton Armé — Conception & Calcul ───────────────────────────────────
 export const lesson_beton_arme = {
   moduleId: 9,
-  slug: 'beton-arme',
+  slug: 'beton_arme',
   lessonIndex: 1,
   title: 'Flexion Simple — Dimensionnement des Armatures',
-  subtitle: 'Module 09 — Béton Armé (Eurocode 2)',
+  subtitle: "Module 09 — Conception & Calcul en Béton Armé",
   level: 'Avancé',
   duration: '70h',
   diagramType: 'rebar_beam',
@@ -93,29 +93,61 @@ $$M_{Ed} \\le M_{Rd} = 0{,}8 \\cdot f_{cd} \\cdot b \\cdot x_u \\cdot \\left(d -
       diagramType: 'rebar_beam',
       formulas: [
         {
-          name: 'Résistance de calcul du béton (compression)',
-          latex: 'f_{cd} = \\alpha_{cc} \\cdot \\frac{f_{ck}}{\\gamma_c} = \\frac{0{,}85 \\times f_{ck}}{1{,}5} \\quad [\\text{MPa}]',
-          description: 'fck = résistance caractéristique cylindrique [MPa], γc = 1,50 (béton coulé en place), αcc = 0,85'
+          name: "Résistance de calcul du béton (compression)",
+          latex: "f_{cd} = \\alpha_{cc} \\cdot \\frac{f_{ck}}{\\gamma_c} = \\frac{0{,}85 \\times f_{ck}}{1{,}5} \\quad [\\text{MPa}]",
+          description: "fck = résistance caractéristique cylindrique [MPa], γc = 1,50 (béton coulé en place), αcc = 0,85",
+          variables: [
+            { symbol: "f_{cd}", name: "Résistance de calcul", unit: "MPa", role: "Valeur utilisée dans les calculs ELU." },
+            { symbol: "\\alpha_{cc}", name: "Coefficient des effets à long terme", unit: "-", role: "L'annexe nationale française retient 1,0 ; la valeur 0,85 de cette leçon (ancien BAEL, certaines annexes) est plus prudente." },
+            { symbol: "f_{ck}", name: "Résistance caractéristique", unit: "MPa", role: "Mesurée sur cylindre à 28 jours (C25/30 → 25 MPa)." },
+            { symbol: "\\gamma_c", name: "Coefficient partiel du béton", unit: "-", role: "1,5 en situation durable." },
+          ],
         },
         {
-          name: 'Résistance de calcul de l\'acier',
-          latex: 'f_{yd} = \\frac{f_{yk}}{\\gamma_s} = \\frac{500}{1{,}15} = 434{,}8 \\text{ MPa (HA 500)}',
-          description: 'fyk = limite élastique caractéristique [MPa], γs = 1,15 (acier). Pour acier S500 (HA): fyd = 434.8 MPa'
+          name: "Résistance de calcul de l'acier",
+          latex: "f_{yd} = \\frac{f_{yk}}{\\gamma_s} = \\frac{500}{1{,}15} = 434{,}8 \\text{ MPa (HA 500)}",
+          description: "fyk = limite élastique caractéristique [MPa], γs = 1,15 (acier). Pour acier S500 (HA): fyd = 434.8 MPa",
+          variables: [
+            { symbol: "f_{yd}", name: "Limite d'élasticité de calcul", unit: "MPa", role: "434,8 MPa pour un acier B500." },
+            { symbol: "f_{yk}", name: "Limite d'élasticité caractéristique", unit: "MPa", role: "500 MPa pour un acier B500." },
+            { symbol: "\\gamma_s", name: "Coefficient partiel de l'acier", unit: "-", role: "1,15 en situation durable." },
+          ],
         },
         {
-          name: 'Calcul des armatures longitudinales — Méthode simplifiée',
-          latex: 'A_s = \\frac{M_{Ed}}{0{,}9 \\cdot d \\cdot f_{yd}} \\quad \\text{(1ère approximation)}',
-          description: 'Formule simplifiée avec bras de levier z ≈ 0,9·d. Valide si x_u ≤ 0,45·d (zone pivot A-B).'
+          name: "Calcul des armatures longitudinales — Méthode simplifiée",
+          latex: "A_s = \\frac{M_{Ed}}{0{,}9 \\cdot d \\cdot f_{yd}} \\quad \\text{(1ère approximation)}",
+          description: "Formule simplifiée avec bras de levier z ≈ 0,9·d. Valide si x_u ≤ 0,45·d (zone pivot A-B).",
+          variables: [
+            { symbol: "A_s", name: "Section d'armatures tendues", unit: "mm²", role: "Section d'acier à placer en zone tendue." },
+            { symbol: "M_{Ed}", name: "Moment de calcul", unit: "N·mm", role: "Moment ELU à reprendre." },
+            { symbol: "d", name: "Hauteur utile", unit: "mm", role: "Distance de la fibre comprimée au centre des aciers tendus." },
+            { symbol: "f_{yd}", name: "Limite d'élasticité de calcul", unit: "MPa", role: "f_yk / 1,15." },
+          ],
         },
         {
-          name: 'Armatures minimales réglementaires (EC2 art. 9.2.1.1)',
-          latex: 'A_{s,min} = \\max\\left(0{,}26 \\cdot \\frac{f_{ctm}}{f_{yk}} \\cdot b_t \\cdot d \\;,\\; 0{,}0013 \\cdot b_t \\cdot d\\right)',
-          description: 'fctm = 0,30·fck^(2/3) pour béton C20 à C50. Ne jamais descendre en-dessous de A_s,min.'
+          name: "Armatures minimales réglementaires (EC2 art. 9.2.1.1)",
+          latex: "A_{s,min} = \\max\\left(0{,}26 \\cdot \\frac{f_{ctm}}{f_{yk}} \\cdot b_t \\cdot d \\;,\\; 0{,}0013 \\cdot b_t \\cdot d\\right)",
+          description: "fctm = 0,30·fck^(2/3) pour béton C20 à C50. Ne jamais descendre en-dessous de A_s,min.",
+          variables: [
+            { symbol: "A_{s,min}", name: "Section minimale", unit: "mm²", role: "Évite une rupture fragile à la fissuration." },
+            { symbol: "f_{ctm}", name: "Résistance moyenne en traction", unit: "MPa", role: "0,30·f_ck^(2/3) jusqu'à C50/60." },
+            { symbol: "f_{yk}", name: "Limite d'élasticité de l'acier", unit: "MPa", role: "500 MPa pour B500." },
+            { symbol: "b_t", name: "Largeur moyenne de la zone tendue", unit: "mm", role: "Largeur de l'âme pour une poutre rectangulaire." },
+            { symbol: "d", name: "Hauteur utile", unit: "mm", role: "Hauteur utile de la section." },
+          ],
         },
         {
-          name: 'Vérification de l\'effort tranchant (béton seul, sans armatures)',
-          latex: 'V_{Rd,c} = \\left[C_{Rd,c} \\cdot k \\cdot \\left(100 \\cdot \\rho_l \\cdot f_{ck}\\right)^{1/3}\\right] \\cdot b_w \\cdot d',
-          description: 'CRd,c = 0,18/γc = 0,12 ; k = 1 + √(200/d) ≤ 2,0 ; ρl = As/(bw·d) ≤ 0,02'
+          name: "Vérification de l'effort tranchant (béton seul, sans armatures)",
+          latex: "V_{Rd,c} = \\left[C_{Rd,c} \\cdot k \\cdot \\left(100 \\cdot \\rho_l \\cdot f_{ck}\\right)^{1/3}\\right] \\cdot b_w \\cdot d",
+          description: "CRd,c = 0,18/γc = 0,12 ; k = 1 + √(200/d) ≤ 2,0 ; ρl = As/(bw·d) ≤ 0,02",
+          variables: [
+            { symbol: "V_{Rd,c}", name: "Résistance à l'effort tranchant sans armatures", unit: "N", role: "À comparer à V_Ed." },
+            { symbol: "C_{Rd,c}", name: "Coefficient", unit: "-", role: "0,18/γ_c = 0,12." },
+            { symbol: "k", name: "Coefficient d'échelle", unit: "-", role: "1 + √(200/d) ≤ 2,0, avec d en mm." },
+            { symbol: "\\rho_l", name: "Taux d'armatures longitudinales", unit: "-", role: "A_sl / (b_w·d) ≤ 0,02." },
+            { symbol: "f_{ck}", name: "Résistance caractéristique du béton", unit: "MPa", role: "Classe du béton." },
+            { symbol: "b_w, d", name: "Largeur et hauteur utile", unit: "mm", role: "Dimensions de l'âme." },
+          ],
         },
       ],
     },

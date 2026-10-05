@@ -1,13 +1,13 @@
-// ── Lesson: BIM Management, IFC/BCF & Coordination 4D/5D — Module 34 ─────────
+// ── Lesson: BIM Management, IFC/BCF & Coordination 4D/5D — Module 5 ─────────
 export const lesson_bim_management = {
-  moduleId: 34,
-  slug: 'cas',
+  moduleId: 5,
+  slug: 'bim_management',
   lessonIndex: 1,
   title: "BIM Management, Collaboration IFC/BCF, CDE & Coordination 4D/5D",
-  subtitle: "Module 34 — BIM Management & Processus Numériques",
+  subtitle: "Module 05 — DAO & Technologies BIM",
   level: 'Avancé',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'bim_workflow',
   tags: ['BIM', 'BIM Management', 'IFC', 'BCF', 'CDE', 'ISO 19650', 'LOD', 'Navisworks', 'Solibri'],
 
   steps: [
@@ -84,7 +84,7 @@ export const lesson_bim_management = {
       title: "Théorie — Architecture IFC, BCF & Norme ISO 19650",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       content: `### 1. La Hiérarchie Spatiale des Fichiers IFC (ISO 16739)
 
 La structure orientée objet d'un fichier IFC suit une arborescence rigide :
@@ -115,22 +115,35 @@ Au lieu de réexporter une maquette IFC lourde de 500 Mo à chaque correction, l
       title: "Formules essentielles — Maturité BIM & Indicateurs",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       formulas: [
         {
           name: "Calcul du Niveau de Besoin en Information (LOIN)",
           latex: "\\text{LOIN} = \\text{LOG (Niveau de détail Géométrique)} + \\text{LOI (Niveau de détail Informationnel)}",
           description: "Remplace la notion floue de LOD en séparant la forme 3D (LOG) des attributs de la base de données (LOI).",
+          variables: [
+            { symbol: "\\text{LOG}", name: "Niveau de détail géométrique", unit: "-", role: "Précision de la forme 3D des objets." },
+            { symbol: "\\text{LOI}", name: "Niveau d'information", unit: "-", role: "Attributs et propriétés attachés aux objets." },
+          ],
         },
         {
           name: "Taux de Résolution des Clashs (CRR)",
           latex: "CRR = \\frac{N_{\\text{clashs résolus}}}{N_{\\text{clashs totaux identifiés}}} \\times 100 \\quad [\\%]",
           description: "Doit atteindre 100% avant le lancement de la fabrication des éléments en usine ou sur chantier.",
+          variables: [
+            { symbol: "CRR", name: "Taux de résolution", unit: "%", role: "Part des conflits résolus." },
+            { symbol: "N_{\\text{clashs résolus}}", name: "Conflits résolus", unit: "-", role: "Clashs traités et validés en réunion de synthèse." },
+            { symbol: "N_{\\text{clashs totaux identifiés}}", name: "Conflits détectés", unit: "-", role: "Clashs remontés par l'outil de détection." },
+          ],
         },
         {
           name: "Gain de temps sur la Synthèse 3D grâce au BIM",
           latex: "\\Delta T_{\\text{synthèse}} = T_{\\text{synthèse 2D classique}} \\times (0{,}40 \\text{ à } 0{,}60)",
           description: "Le BIM réduit la durée des réunions de synthèse de 50% grâce à la visualisation 3D des conflits.",
+          variables: [
+            { symbol: "\\Delta T_{\\text{synthèse}}", name: "Temps gagné", unit: "h", role: "Réduction de la durée de synthèse." },
+            { symbol: "T_{\\text{synthèse 2D classique}}", name: "Durée de synthèse en 2D", unit: "h", role: "Temps de référence sans maquette 3D." },
+          ],
         },
       ],
     },
@@ -220,7 +233,7 @@ Au lieu de réexporter une maquette IFC lourde de 500 Mo à chaque correction, l
       title: "Exemple réel — Le BIM 4D/5D du Grand Paris Express (Ligne 15 Sud)",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       examples: [
         {
           context: "Construction simultanée de 16 gares et 33 km de tunnels en milieu urbain dense",
@@ -237,7 +250,7 @@ Au lieu de réexporter une maquette IFC lourde de 500 Mo à chaque correction, l
       title: "Schéma du Workflow ISO 19650 (CDE) & Dimensions du BIM 3D à 7D",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'bim_workflow',
       description: "Visualisez l'organisation d'un Environnement Commun de Données CDE (WIP, Shared, Published, Archived) et l'arbre des dimensions BIM 3D, 4D, 5D, 6D, 7D.",
       diagram_description: [
         "Workflow CDE ISO 19650 : Circulation des maquettes IFC du statut WIP (Travail) vers SHARED (Synthèse) puis PUBLISHED (Bon pour exécution)",

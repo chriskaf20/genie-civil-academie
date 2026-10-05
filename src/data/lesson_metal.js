@@ -1,13 +1,13 @@
-// ── Lesson: Construction Métallique & Eurocode 3 — Module 10 ──────────────────
+// ── Lesson: Construction Métallique & Eurocode 3 — Module 11 ──────────────────
 export const lesson_metal = {
-  moduleId: 10,
+  moduleId: 11,
   slug: 'metal',
   lessonIndex: 1,
   title: "Conception, Dimensionnement & Eurocode 3 des Structures Métalliques",
-  subtitle: "Module 10 — Construction Métallique & Eurocode 3",
+  subtitle: "Module 11 — Construction Métallique",
   level: 'Avancé',
   duration: '45h',
-  diagramType: 'bridge_structure',
+  diagramType: 'force_decomposition',
   tags: ['Eurocode 3', 'Acier', 'S355', 'IPE', 'HEA', 'Flambement', 'Déversement', 'Assemblages', 'Boulons HR'],
 
   steps: [
@@ -90,7 +90,7 @@ export const lesson_metal = {
       title: "Théorie — Classification des Sections & Flambement (Eurocode 3)",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'force_decomposition',
       content: `### 1. Classification des Sections en Compression / Flexion (EN 1993-1-1 §5.5)
 
 Les parois d'un profilé sont caractérisées par leur élancement $\\lambda_p = \\frac{c}{t \\cdot \\varepsilon}$ avec $\\varepsilon = \\sqrt{\\frac{235}{f_y}}$ :
@@ -124,37 +124,76 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
       title: "Formules essentielles — Eurocode 3 (NF EN 1993-1-1 & 1-8)",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'force_decomposition',
       formulas: [
         {
           name: "Moment plastique résistant d'une poutre (Classe 1 ou 2)",
           latex: "M_{pl,Rd} = \\frac{W_{pl,y} \\cdot f_y}{\\gamma_{M0}} \\quad [\\text{kNm}] \\qquad (\\gamma_{M0} = 1{,}00)",
           description: "Wply = module de résistance plastique par rapport à l'axe fort y-y (donné dans les catalogues de profilés IPE/HEA).",
+          variables: [
+            { symbol: "M_{pl,Rd}", name: "Moment résistant plastique", unit: "kN·m", role: "Capacité en flexion d'une section compacte." },
+            { symbol: "W_{pl,y}", name: "Module plastique", unit: "mm³", role: "Donné dans les catalogues de profilés." },
+            { symbol: "f_y", name: "Limite d'élasticité", unit: "MPa", role: "235 MPa (S235), 355 MPa (S355)." },
+            { symbol: "\\gamma_{M0}", name: "Coefficient partiel", unit: "-", role: "1,00." },
+          ],
         },
         {
           name: "Résistance au Déversement d'une poutre (M_b,Rd)",
           latex: "M_{b,Rd} = \\chi_{LT} \\cdot \\frac{W_{pl,y} \\cdot f_y}{\\gamma_{M1}} \\quad [\\text{kNm}]",
           description: "χLT = coefficient de réduction pour le déversement dépendant de l'élancement réduit λLT et du moment critique Mcr.",
+          variables: [
+            { symbol: "M_{b,Rd}", name: "Moment résistant au déversement", unit: "kN·m", role: "Tient compte de l'instabilité latérale." },
+            { symbol: "\\chi_{LT}", name: "Coefficient de réduction", unit: "-", role: "Fonction de l'élancement réduit λ_LT (≤ 1)." },
+            { symbol: "W_{pl,y}", name: "Module plastique", unit: "mm³", role: "Module de la section." },
+            { symbol: "f_y", name: "Limite d'élasticité", unit: "MPa", role: "Nuance de l'acier." },
+            { symbol: "\\gamma_{M1}", name: "Coefficient partiel", unit: "-", role: "1,00." },
+          ],
         },
         {
           name: "Résistance d'un boulon au cisaillement (F_v,Rd)",
           latex: "F_{v,Rd} = \\frac{\\alpha_v \\cdot f_{ub} \\cdot A_s}{\\gamma_{M2}} \\quad [\\text{kN}]",
           description: "αv = 0,6 pour classes 4.6, 5.6, 8.8 (0,5 pour 10.9 avec filetage dans le plan de cisaillement). γM2 = 1,25.",
+          variables: [
+            { symbol: "F_{v,Rd}", name: "Résistance au cisaillement par plan", unit: "kN", role: "Pour un plan de cisaillement." },
+            { symbol: "\\alpha_v", name: "Coefficient", unit: "-", role: "0,6 (classes 4.6, 5.6, 8.8) ; 0,5 (10.9) si le filetage est dans le plan." },
+            { symbol: "f_{ub}", name: "Résistance à la traction du boulon", unit: "MPa", role: "800 MPa pour 8.8, 1 000 MPa pour 10.9." },
+            { symbol: "A_s", name: "Section résistante (filetée) du boulon", unit: "mm²", role: "Par exemple 245 mm² pour un M20." },
+            { symbol: "\\gamma_{M2}", name: "Coefficient partiel", unit: "-", role: "1,25." },
+          ],
         },
         {
           name: "Résistance d'un cordon de soudure d'angle (F_w,Rd)",
           latex: "f_{vw,d} = \\frac{f_u / \\sqrt{3}}{\\beta_w \\cdot \\gamma_{M2}} \\qquad F_{w,Rd} = a \\cdot L_{eff} \\cdot f_{vw,d}",
-          description: "a = gorge de la soudure (a ≥ 0,7 t_min), βw = facteur de corrélation (0,8 pour S235, 0,85 pour S355), γM2 = 1,25.",
+          description: "a = épaisseur de gorge (au moins 3 mm), βw = facteur de corrélation (0,80 pour S235, 0,85 pour S275, 0,90 pour S355), γM2 = 1,25.",
+          variables: [
+            { symbol: "f_{vw,d}", name: "Résistance de calcul au cisaillement de la soudure", unit: "MPa", role: "Méthode simplifiée de l'EC3-1-8." },
+            { symbol: "f_u", name: "Résistance à la traction de l'acier", unit: "MPa", role: "360 MPa (S235), 470 MPa (S355)." },
+            { symbol: "\\beta_w", name: "Facteur de corrélation", unit: "-", role: "0,80 (S235), 0,85 (S275), 0,90 (S355)." },
+            { symbol: "\\gamma_{M2}", name: "Coefficient partiel", unit: "-", role: "1,25." },
+            { symbol: "a", name: "Épaisseur de gorge", unit: "mm", role: "Au moins 3 mm." },
+            { symbol: "L_{eff}", name: "Longueur efficace", unit: "mm", role: "Longueur du cordon hors cratères." },
+          ],
         },
         {
           name: "Élancement d'un poteau (λ)",
           latex: "\\lambda = \\frac{L_{cr}}{i_y} \\quad \\text{ou} \\quad \\frac{L_{cr}}{i_z} \\qquad i = \\sqrt{\\frac{I}{A}} \\quad (\\text{rayon de giration})",
           description: "Lcr = longueur de flambement dépendante des conditions aux limites (articulé-articulé Lcr = L, encastré-libre Lcr = 2L).",
+          variables: [
+            { symbol: "\\lambda", name: "Élancement", unit: "-", role: "Rapport longueur de flambement / rayon de giration." },
+            { symbol: "L_{cr}", name: "Longueur de flambement", unit: "mm", role: "L (articulé-articulé), 2L (console)." },
+            { symbol: "i_y, i_z", name: "Rayons de giration", unit: "mm", role: "Selon l'axe de flambement étudié." },
+            { symbol: "I, A", name: "Inertie et aire de la section", unit: "mm⁴, mm²", role: "Caractéristiques du profilé." },
+          ],
         },
         {
           name: "Effort de précontrainte d'un boulon HR (F_p,C)",
           latex: "F_{p,C} = 0{,}7 \\cdot f_{ub} \\cdot A_s \\quad [\\text{kN}]",
           description: "fub = résistance ultime à la traction du boulon (ex: 800 MPa pour 8.8, 1000 MPa pour 10.9). As = section résistante de la tige.",
+          variables: [
+            { symbol: "F_{p,C}", name: "Précontrainte du boulon", unit: "kN", role: "Effort de serrage visé." },
+            { symbol: "f_{ub}", name: "Résistance à la traction du boulon", unit: "MPa", role: "800 (8.8) ou 1 000 MPa (10.9)." },
+            { symbol: "A_s", name: "Section résistante", unit: "mm²", role: "Section filetée du boulon." },
+          ],
         },
       ],
     },
@@ -207,7 +246,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
         { type: 'warning', text: "ATTENTION : La longueur de flambement $L_{cr}$ dépend des liaisons réelles aux extrémités. Poteau en console (encastré-libre) : $L_{cr} = 2{,}0 L$ ! Une sous-estimation de $L_{cr}$ divise la sécurité par 4 !" },
         { type: 'warning', text: "Déversement : Une poutre en I non maintenue latéralement déverse sous l'effet de la compression de sa semelle supérieure. Placer des contreventements ou liaisons avec la dalle." },
         { type: 'tip', text: "Boulons HR (Haute Résistance) : Les boulons 8.8 et 10.9 doivent être serrés au couple avec rondelles sous tête et sous écrou pour développer la précontrainte de frottement." },
-        { type: 'warning', text: "Assemblage soudé : La gorge d'un cordon d'angle $a$ doit satisfaire $a \\ge 0{,}7 \\cdot t_{min}$ pour éviter les fissurations à chaud lors du refroidissement." },
+        { type: 'warning', text: "Assemblage soudé : l'EC3-1-8 impose une gorge $a \\ge 3\\text{ mm}$ ; la bonne pratique limite aussi $a \\le 0{,}7 \\cdot t_{min}$. Sur tôles épaisses, un cordon trop petit refroidit trop vite et risque la fissuration à froid." },
       ],
     },
 
@@ -248,13 +287,13 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
       title: "Exemple réel — Charpente d'une halle logistique de 36 m de portée",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'force_decomposition',
       examples: [
         {
           context: "Plateforme logistique d'Amazon (Portée 36 m sans poteau intermédiaire)",
-          scenario: "Conception d'une traverse en poutre reconstituée soudée (PRS) à hauteur variable (h = 1200 mm aux appuis, h = 600 mm au faîtage) en acier S355. Maintien au déversement assuré par des braconniers connectés aux pannes IPE 180.",
+          scenario: "Conception d'une traverse en poutre reconstituée soudée (PRS) à hauteur variable (h = 1200 mm aux appuis, h = 600 mm au faîtage) en acier S355. Maintien au déversement assuré par des bracons connectés aux pannes IPE 180.",
           decomposition_latex: "N_{Ed} = 420 \\text{ kN} \\quad M_{Ed} = 1\\,450 \\text{ kNm} \\quad \\Rightarrow \\quad M_{b,Rd} = 1\\,680 \\text{ kNm} \\quad (\\chi_{LT} = 0{,}78)",
-          lesson: "La disposition stratégique des braconniers a permis d'augmenter χLT de 0,42 à 0,78, évitant d'épaissir les semelles de la poutre et économisant 18 tonnes d'acier sur l'ensemble du hall.",
+          lesson: "La disposition stratégique des bracons a permis d'augmenter χLT de 0,42 à 0,78, évitant d'épaissir les semelles de la poutre et économisant 18 tonnes d'acier sur l'ensemble du hall.",
         },
       ],
     },
@@ -265,7 +304,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
       title: "Schéma — Poteau au flambement & Assemblage par platine d'about",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'force_decomposition',
       description: "Visualisez la déformée de flambement axiale d'un poteau, la déformée de déversement d'une poutre en I et la répartition des efforts dans une platine d'about boulonnée par boulons HR.",
       diagram_description: [
         "Flambement d'un poteau : Compression axiale NEd, déformée transversale v(x) et inertie Iz",
@@ -284,7 +323,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
         {
           mistake: "Négliger le déversement des poutres fléchies",
           trap: "Dimensionner une poutre métallique uniquement à la flexion simple $M_{Ed} \\le M_{pl,Rd}$ sans vérifier l'instabilité latérale de déversement ($M_{b,Rd} = \\chi_{LT} M_{pl,Rd}$)",
-          fix: "Le déversement peut faire chuter la capacité de la poutre de 50 à 70% ! Toujours calculer $\\chi_{LT}$ ou maintenir la semelle comprimée par un bac acier collaborant ou des braconniers.",
+          fix: "Le déversement peut faire chuter la capacité de la poutre de 50 à 70% ! Toujours calculer $\\chi_{LT}$ ou maintenir la semelle comprimée par un bac acier collaborant ou des bracons.",
         },
         {
           mistake: "Sous-estimer la longueur de flambement $L_{cr}$",
@@ -294,7 +333,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
         {
           mistake: "Positionner des trous de boulons trop près des bords d'acier",
           trap: "Placer un boulon avec une pince $e_1$ ou $e_2 < 1{,}2 d_0$ (distance au bord)",
-          fix: "Risque de ruine par pincement/arrachement de la tôle (pression de diamant). Respecter scrupuleusement les pinces minimales Eurocode 3 : $e_1 \\ge 1{,}2 d_0$ et $e_2 \\ge 1{,}2 d_0$.",
+          fix: "Risque de ruine par pincement/arrachement de la tôle (pression diamétrale). Respecter scrupuleusement les pinces minimales Eurocode 3 : $e_1 \\ge 1{,}2 d_0$ et $e_2 \\ge 1{,}2 d_0$.",
         },
         {
           mistake: "Oublier de vérifier la flèche sous charges de service (ELS)",
@@ -437,7 +476,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
       questions: [
         "Démontrez la méthode de calcul du coefficient de réduction au flambement χz selon la norme NF EN 1993-1-1. Expliquez le rôle de la courbe de flambement, du facteur d'imperfection α et de l'élancement réduit λ_barre.",
         "Exposez le phénomène de déversement des poutres métalliques fléchies. Comment calcule-t-on le moment critique élastique de déversement M_cr et quelles sont les dispositions constructives pour s'en affranchir ?",
-        "Détaillez le dimensionnement d'un assemblage par platine d'about boulonnée (Méthode des composantes selon NF EN 1993-1-8 : T-stub / T-élément en flexion, pression de diamant, cisaillement et traction des boulons).",
+        "Détaillez le dimensionnement d'un assemblage par platine d'about boulonnée (Méthode des composantes selon NF EN 1993-1-8 : T-stub / T-élément en flexion, pression diamétrale, cisaillement et traction des boulons).",
         "Présentez le comportement des structures métalliques sous l'action du feu (Eurocode 3 Partie 1-2). Expliquez l'évolution du facteur d'adaptation thermique k_y,θ et k_E,θ en fonction de la température critique θ_cr.",
       ],
     },
@@ -455,7 +494,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
         },
         {
           question: "Quelle est la différence entre un boulon ordinaire (ex: classe 8.8 travaillé au cisaillement) et un boulon HR prétensionné (résistant au glissement) ?",
-          answer_hint: "Un boulon ordinaire travaille en appui/pression de diamant et cisaillement direct de la tige (avec un léger jeu dans le trou d_0 = d + 2 mm). Un boulon HR prétensionné est serré à un couple élevé (F_p,C = 0,7 fub As) : la pression entre les tôles crée une force de frottement qui empêche tout glissement de l'assemblage (indispensable pour les charges dynamiques et la fatigue).",
+          answer_hint: "Un boulon ordinaire travaille en appui/pression diamétrale et cisaillement direct de la tige (avec un léger jeu dans le trou d_0 = d + 2 mm). Un boulon HR prétensionné est serré à un couple élevé (F_p,C = 0,7 fub As) : la pression entre les tôles crée une force de frottement qui empêche tout glissement de l'assemblage (indispensable pour les charges dynamiques et la fatigue).",
         },
         {
           question: "Comment dimensionnez-vous le pied de poteau articulé d'un hangar métallique ?",
@@ -523,7 +562,7 @@ $$\\chi = \\frac{1}{\\Phi + \\sqrt{\\Phi^2 - \\bar{\\lambda}^2}} \\le 1{,}0 \\qq
         "Je maîtrise le calcul de la résistance plastique en flexion M_pl,Rd et en traction N_t,Rd",
         "Je sais calculer l'élancement réduit et la résistance au flambement N_b,Rd d'un poteau comprimé",
         "Je comprends le phénomène de déversement (χLT) et les moyens de stabilisation des poutres",
-        "Je sais dimensionner une attache boulonnée au cisaillement F_v,Rd et à la pression de diamant",
+        "Je sais dimensionner une attache boulonnée au cisaillement F_v,Rd et à la pression diamétrale",
         "Je sais calculer la résistance d'un cordon de soudure d'angle F_w,Rd",
         "J'ai résolu les 3 exercices d'Eurocode 3 avec succès",
         "J'ai obtenu 3/3 au quiz de construction métallique",

@@ -4,7 +4,7 @@ export const lesson_rdm = {
   slug: 'rdm',
   lessonIndex: 1,
   title: 'Contraintes Normales & Moments Fléchissants',
-  subtitle: 'Module 07 — Résistance des Matériaux (RDM)',
+  subtitle: "Module 07 — Résistance des Matériaux (RDM)",
   level: 'Intermédiaire',
   duration: '55h',
   diagramType: 'force_decomposition',
@@ -93,29 +93,58 @@ $$\\sigma(y) = \\frac{M_z \\cdot y}{I_z}$$
       diagramType: 'force_decomposition',
       formulas: [
         {
-          name: 'Moment fléchissant maximal — Charge uniforme',
-          latex: 'M_{max} = \\frac{q \\cdot L^2}{8} \\quad \\text{(poutre bi-appuyée, charge uniforme)}',
-          description: 'q = charge linéaire [kN/m], L = portée [m]. Exemple : q=20 kN/m, L=6m → M_max=90 kN·m'
+          name: "Moment fléchissant maximal — Charge uniforme",
+          latex: "M_{max} = \\frac{q \\cdot L^2}{8} \\quad \\text{(poutre bi-appuyée, charge uniforme)}",
+          description: "q = charge linéaire [kN/m], L = portée [m]. Exemple : q=20 kN/m, L=6m → M_max=90 kN·m",
+          variables: [
+            { symbol: "M_{max}", name: "Moment maximal", unit: "kN·m", role: "À mi-portée." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie." },
+            { symbol: "L", name: "Portée", unit: "m", role: "Distance entre appuis." },
+          ],
         },
         {
-          name: 'Moment fléchissant maximal — Charge ponctuelle centrée',
-          latex: 'M_{max} = \\frac{P \\cdot L}{4} \\quad \\text{(charge ponctuelle P au centre)}',
-          description: 'P = charge concentrée [kN]. Exemple : P=100 kN, L=5m → M_max=125 kN·m'
+          name: "Moment fléchissant maximal — Charge ponctuelle centrée",
+          latex: "M_{max} = \\frac{P \\cdot L}{4} \\quad \\text{(charge ponctuelle P au centre)}",
+          description: "P = charge concentrée [kN]. Exemple : P=100 kN, L=5m → M_max=125 kN·m",
+          variables: [
+            { symbol: "M_{max}", name: "Moment maximal", unit: "kN·m", role: "Sous la charge, à mi-portée." },
+            { symbol: "P", name: "Charge ponctuelle", unit: "kN", role: "Appliquée au milieu de la portée." },
+            { symbol: "L", name: "Portée", unit: "m", role: "Distance entre appuis." },
+          ],
         },
         {
-          name: 'Contrainte normale maximale (flexion simple)',
-          latex: '\\sigma_{max} = \\frac{M_{max}}{W_{el}} = \\frac{M_{max} \\cdot v_{max}}{I_z}',
-          description: 'W_el = module de résistance élastique [cm³]. σ doit rester ≤ f_yd pour les aciers'
+          name: "Contrainte normale maximale (flexion simple)",
+          latex: "\\sigma_{max} = \\frac{M_{max}}{W_{el}} = \\frac{M_{max} \\cdot v_{max}}{I_z}",
+          description: "W_el = module de résistance élastique [cm³]. σ doit rester ≤ f_yd pour les aciers",
+          variables: [
+            { symbol: "\\sigma_{max}", name: "Contrainte maximale", unit: "MPa", role: "Dans la fibre la plus éloignée de l'axe neutre." },
+            { symbol: "M_{max}", name: "Moment maximal", unit: "N·mm", role: "Convertir les kN·m en N·mm (× 10⁶)." },
+            { symbol: "W_{el}", name: "Module élastique de la section", unit: "mm³", role: "W = I / v (b·h²/6 pour un rectangle)." },
+            { symbol: "v_{max}", name: "Distance de la fibre extrême", unit: "mm", role: "h/2 pour une section symétrique." },
+            { symbol: "I_z", name: "Moment d'inertie", unit: "mm⁴", role: "Inertie par rapport à l'axe de flexion." },
+          ],
         },
         {
-          name: 'Flèche maximale — Charge uniforme, poutre bi-appuyée',
-          latex: 'f_{max} = \\frac{5 \\cdot q \\cdot L^4}{384 \\cdot E \\cdot I} \\quad \\le \\frac{L}{250} \\text{ (ELS)}',
-          description: 'Vérification de la flèche à l\'État Limite de Service (ELS). E en MPa, I en mm⁴, q en N/mm'
+          name: "Flèche maximale — Charge uniforme, poutre bi-appuyée",
+          latex: "f_{max} = \\frac{5 \\cdot q \\cdot L^4}{384 \\cdot E \\cdot I} \\quad \\le \\frac{L}{250} \\text{ (ELS)}",
+          description: "Vérification de la flèche à l'État Limite de Service (ELS). E en MPa, I en mm⁴, q en N/mm",
+          variables: [
+            { symbol: "f_{max}", name: "Flèche maximale", unit: "mm", role: "À mi-portée ; limite courante L/250." },
+            { symbol: "q", name: "Charge uniforme", unit: "N/mm", role: "1 kN/m = 1 N/mm." },
+            { symbol: "L", name: "Portée", unit: "mm", role: "Distance entre appuis." },
+            { symbol: "E", name: "Module d'Young", unit: "MPa", role: "Acier : 210 000 MPa." },
+            { symbol: "I", name: "Moment d'inertie", unit: "mm⁴", role: "Inertie de flexion." },
+          ],
         },
         {
-          name: 'Effort tranchant maximal',
-          latex: 'V_{max} = \\frac{q \\cdot L}{2} \\quad \\text{(charge uniforme, bi-appuyée)}',
-          description: 'Effort tranchant aux appuis — sollicite les armatures transversales (étriers)'
+          name: "Effort tranchant maximal",
+          latex: "V_{max} = \\frac{q \\cdot L}{2} \\quad \\text{(charge uniforme, bi-appuyée)}",
+          description: "Effort tranchant aux appuis — sollicite les armatures transversales (étriers)",
+          variables: [
+            { symbol: "V_{max}", name: "Effort tranchant maximal", unit: "kN", role: "Aux appuis." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie." },
+            { symbol: "L", name: "Portée", unit: "m", role: "Distance entre appuis." },
+          ],
         },
       ],
     },

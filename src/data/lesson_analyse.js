@@ -1,10 +1,10 @@
-// ── Lesson: Analyse Structurelle & Éléments Finis — Module 08 ──────────────────
+// ── Lesson: Analyse Structurelle & Éléments Finis — Module 8 ──────────────────
 export const lesson_analyse = {
   moduleId: 8,
-  slug: 'structures',
+  slug: 'analyse',
   lessonIndex: 1,
   title: "Analyse Structurelle Avancée, Méthode des Éléments Finis (MEF) & Dynamique",
-  subtitle: "Module 08 — Analyse Structurelle & Éléments Finis",
+  subtitle: "Module 08 — Analyse avancée des structures",
   level: 'Avancé',
   duration: '60h',
   diagramType: 'rebar_beam',
@@ -130,31 +130,64 @@ $$\\det \\left( [K] - \\omega_n^2 [M] \\right) = 0 \\quad \\Rightarrow \\quad f_
           name: "Fréquence propre fondamentale d'un système à 1 ddl (Oscillateur)",
           latex: "f_0 = \\frac{1}{2\\pi} \\cdot \\sqrt{\\frac{k}{m}} \\quad [\\text{Hz}] \\qquad T_0 = 2\\pi \\cdot \\sqrt{\\frac{m}{k}} \\quad [\\text{s}]",
           description: "m = masse oscillante [kg], k = rigidité latérale équivalente de la structure [N/m] (ex: k = 3EI/L³ pour un poteau console).",
+          variables: [
+            { symbol: "f_0", name: "Fréquence propre", unit: "Hz", role: "Nombre d'oscillations libres par seconde." },
+            { symbol: "T_0", name: "Période propre", unit: "s", role: "Durée d'une oscillation, T₀ = 1/f₀." },
+            { symbol: "k", name: "Rigidité latérale", unit: "N/m", role: "Force pour un déplacement unité (3EI/L³ pour une console)." },
+            { symbol: "m", name: "Masse oscillante", unit: "kg", role: "Masse participant au mouvement." },
+          ],
         },
         {
           name: "Rigidité latérale d'un poteau encastré-articulé et encastré-encastré",
           latex: "k_{\\text{encastré-libre}} = \\frac{3EI}{L^3} \\qquad k_{\\text{encastré-encastré}} = \\frac{12EI}{L^3}",
           description: "La rigidité d'un poteau biconnecté aux deux extrémités est 4 fois supérieure à celle d'un poteau en console !",
+          variables: [
+            { symbol: "k", name: "Rigidité latérale du poteau", unit: "N/m", role: "Effort horizontal en tête pour un déplacement unité." },
+            { symbol: "E", name: "Module d'Young", unit: "Pa", role: "Rigidité du matériau." },
+            { symbol: "I", name: "Moment d'inertie", unit: "m⁴", role: "Inertie de flexion du poteau." },
+            { symbol: "L", name: "Hauteur du poteau", unit: "m", role: "Longueur entre l'encastrement et la tête." },
+          ],
         },
         {
           name: "Facteur d'amplification dynamique sous charge harmonique (D)",
           latex: "D = \\frac{1}{\\sqrt{\\left(1 - \\left(\\frac{f}{f_0}\\right)^2\\right)^2 + \\left(2 \\xi \\frac{f}{f_0}\\right)^2}}",
           description: "f = fréquence d'excitation extérieure, ξ = taux d'amortissement critique (ξ ≈ 2% à 5% pour le béton/acier). À la résonance (f = f0) : D ≈ 1 / (2ξ) = 10 à 25 !",
+          variables: [
+            { symbol: "D", name: "Facteur d'amplification", unit: "-", role: "Rapport réponse dynamique / réponse statique." },
+            { symbol: "f", name: "Fréquence d'excitation", unit: "Hz", role: "Fréquence de la charge (machine, piétons…)." },
+            { symbol: "f_0", name: "Fréquence propre", unit: "Hz", role: "Fréquence propre de la structure." },
+            { symbol: "\\xi", name: "Taux d'amortissement", unit: "-", role: "2 à 5 % pour le béton et l'acier." },
+          ],
         },
         {
           name: "Calcul de contrainte Von Mises en MEF 2D/3D",
           latex: "\\sigma_{VM} = \\sqrt{\\sigma_x^2 - \\sigma_x \\sigma_y + \\sigma_y^2 + 3 \\tau_{xy}^2}",
           description: "Critère de plastification de Von Mises utilisé pour évaluer les contraintes équivalentes dans les voiles et platines d'acier.",
+          variables: [
+            { symbol: "\\sigma_{VM}", name: "Contrainte équivalente de Von Mises", unit: "MPa", role: "À comparer à la limite d'élasticité." },
+            { symbol: "\\sigma_x, \\sigma_y", name: "Contraintes normales", unit: "MPa", role: "Contraintes dans les deux directions du plan." },
+            { symbol: "\\tau_{xy}", name: "Contrainte de cisaillement", unit: "MPa", role: "Contrainte tangente dans le plan." },
+          ],
         },
         {
           name: "Estimation de la période fondamentale d'un bâtiment (Eurocode 8)",
           latex: "T_1 = C_t \\cdot H^{3/4} \\quad [\\text{s}] \\qquad (C_t = 0{,}085 \\text{ pour acier, } 0{,}075 \\text{ pour béton, } 0{,}050 \\text{ pour voiles})",
           description: "H = hauteur totale du bâtiment en mètres. Permet de vérifier l'ordre de grandeur de la période propre calculée par le logiciel.",
+          variables: [
+            { symbol: "T_1", name: "Période fondamentale", unit: "s", role: "Valeur approchée pour un bâtiment de hauteur H ≤ 40 m." },
+            { symbol: "C_t", name: "Coefficient de structure", unit: "-", role: "0,085 acier, 0,075 béton, 0,050 autres structures." },
+            { symbol: "H", name: "Hauteur du bâtiment", unit: "m", role: "Hauteur depuis les fondations ou le sommet d'un soubassement rigide." },
+          ],
         },
         {
           name: "Masse Modale Effective (Eurocode 8)",
           latex: "\\sum_{j=1}^{K} m_j^* \\ge 0{,}90 \\cdot M_{total} \\quad (90\\% \\text{ de la masse totale})",
           description: "Critère réglementaire Eurocode 8 exigeant de retenir suffisamment de modes de vibration dans l'analyse spectrale.",
+          variables: [
+            { symbol: "m_j^*", name: "Masse modale effective du mode j", unit: "kg", role: "Part de la masse mise en mouvement par le mode j." },
+            { symbol: "K", name: "Nombre de modes retenus", unit: "-", role: "Modes pris en compte dans l'analyse spectrale." },
+            { symbol: "M_{total}", name: "Masse totale", unit: "kg", role: "Masse sismique de la structure." },
+          ],
         },
       ],
     },

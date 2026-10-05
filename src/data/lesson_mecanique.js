@@ -1,10 +1,10 @@
-// ── Lesson: Mécanique des Structures & Statique — Module 06 ────────────────────
+// ── Lesson: Mécanique des Structures & Statique — Module 6 ────────────────────
 export const lesson_mecanique = {
   moduleId: 6,
   slug: 'mecanique',
   lessonIndex: 1,
   title: 'Statique & Mécanique des Structures',
-  subtitle: 'Module 06 — Mécanique des Structures',
+  subtitle: "Module 06 — Mécanique des structures & des fluides",
   level: 'Intermédiaire',
   duration: '50h',
   diagramType: 'force_decomposition',
@@ -127,31 +127,65 @@ où $d$ est la distance perpendiculaire de A à la droite d'action de $\\vec{F}$
           name: "Réactions d'appui — Poutre bi-appuyée, charge uniforme",
           latex: "R_A = R_B = \\frac{q \\cdot L}{2} \\quad \\text{(symétrie)} \\qquad R_A + R_B = q \\cdot L",
           description: "q = charge uniforme [kN/m], L = portée [m]. Pour une charge non symétrique P à distance a de A : Ra = P(L-a)/L, Rb = P·a/L",
+          variables: [
+            { symbol: "R_A, R_B", name: "Réactions d'appui", unit: "kN", role: "Forces verticales aux appuis A et B." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie sur toute la portée." },
+            { symbol: "L", name: "Portée", unit: "m", role: "Distance entre appuis." },
+          ],
         },
         {
           name: "Moment fléchissant — Section x de la poutre (charge uniforme)",
           latex: "M(x) = R_A \\cdot x - \\frac{q \\cdot x^2}{2} = \\frac{qx}{2}(L - x)",
           description: "Parabole du 2ème degré. Maximum en x = L/2 : M_max = qL²/8. Nul aux appuis (conditions aux limites de la rotule).",
+          variables: [
+            { symbol: "M(x)", name: "Moment fléchissant", unit: "kN·m", role: "Moment dans la section d'abscisse x." },
+            { symbol: "R_A", name: "Réaction d'appui en A", unit: "kN", role: "qL/2 pour une charge uniforme." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie." },
+            { symbol: "x", name: "Abscisse de la section", unit: "m", role: "Mesurée depuis l'appui A." },
+            { symbol: "L", name: "Portée", unit: "m", role: "Distance entre appuis." },
+          ],
         },
         {
           name: "Effort tranchant — Section x (charge uniforme, bi-appuyée)",
           latex: "V(x) = R_A - q \\cdot x = \\frac{qL}{2} - qx",
           description: "Linéaire. V = +Ra à gauche (x=0), V = -Rb à droite (x=L). Annulation en x=L/2 (là où M est maximal).",
+          variables: [
+            { symbol: "V(x)", name: "Effort tranchant", unit: "kN", role: "Effort tranchant dans la section d'abscisse x." },
+            { symbol: "R_A", name: "Réaction d'appui en A", unit: "kN", role: "qL/2." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie." },
+            { symbol: "x", name: "Abscisse de la section", unit: "m", role: "Mesurée depuis l'appui A." },
+          ],
         },
         {
           name: "Effort normal dans une barre de treillis",
           latex: "N_i = \\frac{F}{\\cos\\theta} \\quad \\text{(barre inclinée à } \\theta \\text{ sous force verticale } F\\text{)}",
           description: "Positive = traction, Négative = compression. Méthode des nœuds : équilibre de chaque nœud libre ΣFx=0, ΣFy=0.",
+          variables: [
+            { symbol: "N_i", name: "Effort normal de la barre", unit: "kN", role: "Positif en traction, négatif en compression." },
+            { symbol: "F", name: "Force verticale au nœud", unit: "kN", role: "Charge appliquée au nœud étudié." },
+            { symbol: "\\theta", name: "Inclinaison de la barre", unit: "°", role: "Angle de la barre avec la verticale." },
+          ],
         },
         {
           name: "Moment à l'encastrement — Console sous charge uniforme",
           latex: "M_{enc} = -\\frac{q \\cdot L^2}{2} \\quad \\text{(moment d'encastrement, négatif = tension en dessus)}",
           description: "Valeur double du moment d'une bi-appuyée à portée identique. Signe négatif : zone tendue en fibre supérieure de la console.",
+          variables: [
+            { symbol: "M_{enc}", name: "Moment d'encastrement", unit: "kN·m", role: "Négatif : fibre supérieure tendue." },
+            { symbol: "q", name: "Charge uniforme", unit: "kN/m", role: "Charge répartie sur la console." },
+            { symbol: "L", name: "Longueur de la console", unit: "m", role: "Porte-à-faux." },
+          ],
         },
         {
           name: "Condition de stabilité — Pas de mécanisme cinématique",
-          latex: "n_s = 3m - (r - s) = 0 \\quad \\text{(isostatique)} \\quad n_s < 0 \\Rightarrow \\text{mécanisme (instable !)}",
-          description: "ns = degré d'hyperstaticité. ns = 0 : isostatique. ns > 0 : hyperstatique (ns équations de compatibilité supplémentaires). ns < 0 : mécanisme → structure instable à interdire !",
+          latex: "h = r + l - 3n \\quad \\begin{cases} h = 0 & \\text{isostatique} \\\\ h > 0 & \\text{hyperstatique} \\\\ h < 0 & \\text{mécanisme (instable)} \\end{cases}",
+          description: "Structure plane : chaque solide apporte 3 équations d'équilibre. h = 0 : isostatique ; h > 0 : hyperstatique (h équations de compatibilité supplémentaires) ; h < 0 : mécanisme, la structure est instable. Exemple : poutre sur un appui double et un appui simple → r = 3, n = 1 → h = 0.",
+          variables: [
+            { symbol: "h", name: "Degré d'hyperstaticité", unit: "-", role: "h = 0 isostatique, h > 0 hyperstatique, h < 0 mécanisme." },
+            { symbol: "r", name: "Inconnues de liaison aux appuis", unit: "-", role: "Appui simple : 1 ; articulation : 2 ; encastrement : 3." },
+            { symbol: "l", name: "Inconnues des liaisons internes", unit: "-", role: "Articulation entre deux barres : 2 ; liaison rigide : 3." },
+            { symbol: "n", name: "Nombre de solides", unit: "-", role: "Chaque solide plan apporte 3 équations d'équilibre." },
+          ],
         },
       ],
     },
