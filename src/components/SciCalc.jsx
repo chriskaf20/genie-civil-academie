@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { evaluate, formatResult } from '../utils/calculator.js';
 
 const KEYS = [
   ['7', '8', '9', '÷', 'sin'],
@@ -14,57 +15,28 @@ export default function SciCalc({ onClose }) {
   const [expr, setExpr] = useState('');
   const [mode, setMode] = useState('DEG'); // DEG | RAD
 
-  const toRad = (deg) => (deg * Math.PI) / 180;
+  const update = next => {
+    setExpr(next);
+    setDisplay(next || '0');
+  };
 
   const handleKey = (key) => {
-    try {
-      if (key === 'C') { setDisplay('0'); setExpr(''); return; }
-      if (key === '⌫') {
-        setExpr(prev => prev.slice(0, -1) || '');
-        setDisplay(expr.slice(0, -1) || '0');
-        return;
+    if (key === 'C') { update(''); return; }
+    if (key === '⌫') { update(expr.slice(0, -1)); return; }
+    if (key === 'DEG') { setMode(m => (m === 'DEG' ? 'RAD' : 'DEG')); return; }
+    if (key === '±') { update(expr.startsWith('-') ? expr.slice(1) : `-${expr}`); return; }
+    if (key === '=') {
+      try {
+        const result = formatResult(evaluate(expr, mode));
+        setExpr(result);
+        setDisplay(result);
+      } catch (error) {
+        setDisplay(error.message || 'Erreur');
       }
-      if (key === 'DEG') { setMode(m => m === 'DEG' ? 'RAD' : 'DEG'); return; }
-      if (key === '=') {
-        let expression = expr
-          .replace(/×/g, '*')
-          .replace(/÷/g, '/')
-          .replace(/π/g, String(Math.PI))
-          .replace(/e/g, String(Math.E));
-
-        if (mode === 'DEG') {
-          expression = expression
-            .replace(/sin\(([^)]+)\)/g, (_, v) => `Math.sin(${toRad(parseFloat(v))})`)
-            .replace(/cos\(([^)]+)\)/g, (_, v) => `Math.cos(${toRad(parseFloat(v))})`)
-            .replace(/tan\(([^)]+)\)/g, (_, v) => `Math.tan(${toRad(parseFloat(v))})`);
-        } else {
-          expression = expression
-            .replace(/sin\(/g, 'Math.sin(')
-            .replace(/cos\(/g, 'Math.cos(')
-            .replace(/tan\(/g, 'Math.tan(');
-        }
-        expression = expression
-          .replace(/√\(/g, 'Math.sqrt(')
-          .replace(/\^/g, '**');
-
-        // eslint-disable-next-line no-eval
-        const result = Function('"use strict"; return (' + expression + ')')();
-        const rounded = parseFloat(result.toFixed(10));
-        setDisplay(String(rounded));
-        setExpr(String(rounded));
-        return;
-      }
-      if (key === '±') {
-        setExpr(prev => prev.startsWith('-') ? prev.slice(1) : '-' + prev);
-        return;
-      }
-
-      const append = key === 'sin' ? 'sin(' : key === 'cos' ? 'cos(' : key === 'tan' ? 'tan(' : key === '√' ? '√(' : key;
-      setExpr(prev => (prev === '0' ? append : prev + append));
-      setDisplay(prev => (prev === '0' ? append : prev + append));
-    } catch {
-      setDisplay('Erreur');
+      return;
     }
+    const append = ['sin', 'cos', 'tan', '√'].includes(key) ? `${key}(` : key;
+    update(expr + append);
   };
 
   return (

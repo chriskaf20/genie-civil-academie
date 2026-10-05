@@ -25,7 +25,7 @@ export const lesson_routes = {
 ### Les 3 axes de la géométrie routière :
 1. **Tracé en plan** : Vue de dessus — succession d'alignements droits, d'arcs de cercle ($R$) et de raccordements à courbure variable (**clothoïdes**).
 2. **Profil en long** : Coupe longitudinale — ligne rouge du projet par rapport au terrain naturel (pentes, rampes, raccordements paraboles creux/bosse).
-3. **Profil en travers** : Coupe transversale — largeur des voies, devers ($\delta$), accotements, fossés et couches de la structure de chaussée.
+3. **Profil en travers** : Coupe transversale — largeur des voies, devers ($\\delta$), accotements, fossés et couches de la structure de chaussée.
 
 ### Le dimensionnement de structure :
 - **Chaussée souple** : Enrobés bitumineux sur graves non traitées (GNT).
@@ -128,31 +128,69 @@ $$A^2 = R \\cdot L$$
           name: "Rayon minimal absolu en plan (R_min)",
           latex: "R_{min} = \\frac{V^2}{127 \\cdot (f_{t,max} + d_{max})}",
           description: "V = vitesse en km/h, ft,max = frottement transversal maximal, dmax = devers maximal (généralement 7% hors agglomération, 2,5% en ville).",
+          variables: [
+            { symbol: "R_{min}", name: "Rayon minimal", unit: "m", role: "Plus petit rayon admissible à la vitesse V." },
+            { symbol: "V", name: "Vitesse de référence", unit: "km/h", role: "Vitesse de conception de la route." },
+            { symbol: "f_{t,max}", name: "Frottement transversal mobilisable", unit: "-", role: "Diminue quand la vitesse augmente." },
+            { symbol: "d_{max}", name: "Dévers maximal", unit: "-", role: "0,07 hors agglomération." },
+          ],
         },
         {
           name: "Distance d'arrêt de sécurité (d_a)",
           latex: "d_a = v \\cdot t_r + \\frac{v^2}{2g \\cdot (f_l \\pm i)}",
           description: "tr = temps de réaction (1,5 à 2 s), fl = coefficient de frottement longitudinal, i = pente du profil en long (+ montée, - descente).",
+          variables: [
+            { symbol: "d_a", name: "Distance d'arrêt", unit: "m", role: "Réaction + freinage." },
+            { symbol: "v", name: "Vitesse", unit: "m/s", role: "Vitesse du véhicule." },
+            { symbol: "t_r", name: "Temps de réaction", unit: "s", role: "1,5 à 2 s." },
+            { symbol: "f_l", name: "Frottement longitudinal", unit: "-", role: "Adhérence pneu-chaussée (≈ 0,35 à 0,45)." },
+            { symbol: "i", name: "Déclivité", unit: "-", role: "+ en montée, − en descente." },
+          ],
         },
         {
           name: "Raccordement vertical parabolique (Bosse / PVG)",
           latex: "R_v = \\frac{d_a^2}{2 \\cdot (\\sqrt{h_1} + \\sqrt{h_2})^2}",
           description: "Rv = rayon du raccordement concave ou convexe [m], h1 = hauteur des yeux du conducteur (1,00 m), h2 = hauteur de l'obstacle (0,15 m à 0,60 m).",
+          variables: [
+            { symbol: "R_v", name: "Rayon du raccordement", unit: "m", role: "Rayon du sommet de côte." },
+            { symbol: "d_a", name: "Distance de visibilité requise", unit: "m", role: "Distance d'arrêt." },
+            { symbol: "h_1", name: "Hauteur de l'œil du conducteur", unit: "m", role: "1,00 m." },
+            { symbol: "h_2", name: "Hauteur de l'obstacle", unit: "m", role: "0,15 à 0,60 m." },
+          ],
         },
         {
           name: "Trafic cumulé équivalent (NE) — Essieu de 130 kN",
           latex: "NE = 365 \\cdot T_{PL} \\cdot \\frac{(1 + t)^N - 1}{\\ln(1 + t)} \\cdot CAM",
           description: "TPL = trafic poids lourds initial par jour et par sens, t = taux d'accroissement annuel du trafic, N = durée de dimensionnement (20 à 30 ans), CAM = coefficient d'agressivité moyenne.",
+          variables: [
+            { symbol: "NE", name: "Nombre d'essieux équivalents", unit: "-", role: "Trafic cumulé de 130 kN sur la durée de service." },
+            { symbol: "T_{PL}", name: "Trafic poids lourds initial", unit: "PL/jour", role: "Par sens." },
+            { symbol: "t", name: "Taux d'accroissement annuel", unit: "-", role: "0,02 pour 2 % par an." },
+            { symbol: "N", name: "Durée de dimensionnement", unit: "ans", role: "20 à 30 ans." },
+            { symbol: "CAM", name: "Coefficient d'agressivité moyen", unit: "-", role: "Agressivité d'un PL moyen." },
+          ],
         },
         {
           name: "Contrainte/Déformation sous charge (Modèle de Burmister)",
           latex: "\\varepsilon_z = \\frac{\\sigma_z}{E_k} \\cdot f(\\nu) \\quad \\text{et} \\quad \\varepsilon_t = \\text{déformation de traction en base de couche}",
           description: "Équations intégrées dans le logiciel Alizé-LCPC pour vérifier εt < εadm (couches liées) et εz < εadm (sol support/GNT).",
+          variables: [
+            { symbol: "\\varepsilon_z", name: "Déformation verticale", unit: "-", role: "Sur le sol support ou la couche non liée." },
+            { symbol: "\\sigma_z", name: "Contrainte verticale", unit: "MPa", role: "Au toit de la couche." },
+            { symbol: "E_k", name: "Module de la couche", unit: "MPa", role: "Module de rigidité." },
+            { symbol: "\\nu", name: "Coefficient de Poisson", unit: "-", role: "0,25 à 0,35." },
+            { symbol: "\\varepsilon_t", name: "Déformation de traction", unit: "-", role: "À la base des couches liées." },
+          ],
         },
         {
           name: "Module de la couche de forme / Sol support (CBR / EV2)",
           latex: "E_{sol} \\approx 10 \\cdot CBR \\quad [\\text{MPa}] \\qquad \\text{ou} \\qquad E_{sol} = f(EV_2)",
           description: "Relation empirique courante : sol à CBR = 5 → E ≈ 50 MPa (PFS2). Utilisé pour déterminer l'épaisseur de couche de forme.",
+          variables: [
+            { symbol: "E_{sol}", name: "Module du sol support", unit: "MPa", role: "Utilisé dans le calcul de la chaussée." },
+            { symbol: "CBR", name: "Indice portant californien", unit: "%", role: "Résultat de l'essai CBR." },
+            { symbol: "EV_2", name: "Module à l'essai de plaque", unit: "MPa", role: "Second cycle de chargement." },
+          ],
         },
       ],
     },

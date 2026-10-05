@@ -1,13 +1,13 @@
-// ── Lesson: Adaptation au Changement Climatique — Module 31 ─────────────────
+// ── Lesson: Adaptation au Changement Climatique — Module 27 ─────────────────
 export const lesson_climat = {
-  moduleId: 31,
+  moduleId: 27,
   slug: 'climat',
   lessonIndex: 1,
   title: "Adaptation des Infrastructures au Changement Climatique & Résilience",
-  subtitle: "Module 31 — Climat, Risques Climatiques & Résilience des Ouvrages",
+  subtitle: "Module 27 — Génie de l'Environnement & Éco-construction",
   level: 'Avancé',
   duration: '35h',
-  diagramType: 'soil_profile',
+  diagramType: 'process_flow',
   tags: ['Climat', 'Résilience', 'GIEC', 'RGA', 'Inondation', 'Pluie Centennale', 'Adaptation', 'SFN'],
 
   steps: [
@@ -55,7 +55,7 @@ export const lesson_climat = {
       examples: [
         {
           context: "Protection contre le Retrait-Gonflement des Argiles (RGA)",
-          text: "Approfondissement des fondations superficielles à au moins 1,50 m, trottoirs périphériques étanches anti-évaporation et écrans anti-racines.",
+          text: "Approfondissement des fondations superficielles (au moins 0,80 m en exposition moyenne et 1,20 m en exposition forte), trottoirs périphériques étanches anti-évaporation et écrans anti-racines.",
         },
         {
           context: "Solutions Fondées sur la Nature (SFN) pour l'Eau de Pluie",
@@ -82,7 +82,7 @@ export const lesson_climat = {
       title: "Théorie — Loi de Clausius-Clapeyron & Retrait-Gonflement des Argiles",
       icon: '📐',
       type: 'theory',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       content: `### 1. La Loi de Clausius-Clapeyron (Intensification des Pluies)
 
 La pression de vapeur de saturation de l'eau dans l'air augmente de façon exponentielle avec la température $T$ (en Kelvin) :
@@ -113,27 +113,49 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       title: "Formules essentielles — Risques Climatiques & Résilience",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Amplification des précipitations intenses (Clausius-Clapeyron)",
           latex: "i_{\\text{futur}}(T) = i_{\\text{actuel}}(T) \\cdot (1 + 0{,}07 \\cdot \\Delta T_{\\text{globe}})",
           description: "i = intensité de la pluie centennale en mm/h, ΔT_globe = élévation de température moyenne prévue par le scénario GIEC.",
+          variables: [
+            { symbol: "i_{\\text{futur}}(T)", name: "Intensité de pluie future", unit: "mm/h", role: "Pour la période de retour T." },
+            { symbol: "i_{\\text{actuel}}(T)", name: "Intensité de pluie actuelle", unit: "mm/h", role: "Statistiques historiques." },
+            { symbol: "T", name: "Période de retour", unit: "ans", role: "10, 30 ou 100 ans." },
+            { symbol: "\\Delta T_{\\text{globe}}", name: "Réchauffement moyen", unit: "°C", role: "Selon le scénario du GIEC (≈ +7 % de pluie par °C)." },
+          ],
         },
         {
-          name: "Profondeur minimale de fondation sous risque RGA (NF P 94-261)",
-          latex: "D_{\\text{ancrage}} \\ge 0{,}80 \\text{ m (Zone nord/courante)} \\quad | \\quad D_{\\text{ancrage}} \\ge 1{,}50 \\text{ m (Zone RGA fort / sud)}",
-          description: "Assure un ancrage sous la zone de dessiccation saisonnière du sol argileux.",
+          name: "Profondeur minimale d'ancrage des fondations en zone argileuse (RGA)",
+          latex: "D_{\\text{ancrage}} \\ge 0{,}80 \\text{ m (exposition moyenne)} \\quad | \\quad D_{\\text{ancrage}} \\ge 1{,}20 \\text{ m (exposition forte)}",
+          description: "Disposition forfaitaire de l'arrêté du 22 juillet 2020 (loi ELAN) pour les maisons en zone d'exposition moyenne ou forte au retrait-gonflement des argiles : l'ancrage passe sous la zone de dessiccation saisonnière du sol argileux.",
         },
         {
           name: "Calcul de l'albédo et température de surface d'un revêtement",
           latex: "T_{\\text{surface}} = T_{\\text{air}} + \\frac{\\alpha_{\\text{absorb}} \\cdot I_{\\text{solaire}} - \\varepsilon \\sigma T^4}{h_c}",
-          description: "Un albédo élevé (revêtement clair α_absorb = 0,2) réduit la température de surface de 20°C par rapport à l'asphalte noir (α_absorb = 0,9).",
+          description: "α_absorb = 1 − albédo. Un albédo élevé (revêtement clair, α_absorb = 0,2) peut réduire la température de surface d'environ 20 °C par rapport à l'asphalte noir (α_absorb = 0,9).",
+          variables: [
+            { symbol: "T_{\\text{surface}}", name: "Température de surface", unit: "°C", role: "Du revêtement." },
+            { symbol: "T_{\\text{air}}", name: "Température de l'air", unit: "°C", role: "Ambiante." },
+            { symbol: "\\alpha_{\\text{absorb}}", name: "Coefficient d'absorption solaire", unit: "-", role: "1 − albédo." },
+            { symbol: "I_{\\text{solaire}}", name: "Rayonnement solaire", unit: "W/m²", role: "≈ 800 à 1 000 W/m² en été." },
+            { symbol: "\\varepsilon", name: "Émissivité", unit: "-", role: "≈ 0,9 pour les revêtements courants." },
+            { symbol: "\\sigma", name: "Constante de Stefan-Boltzmann", unit: "W/(m²·K⁴)", role: "5,67 × 10⁻⁸." },
+            { symbol: "T", name: "Température absolue de surface", unit: "K", role: "Pour le terme de rayonnement." },
+            { symbol: "h_c", name: "Coefficient d'échange convectif", unit: "W/(m²·K)", role: "≈ 10 à 25 selon le vent." },
+          ],
         },
         {
           name: "Débit de pointe de ruissellement (Méthode Rationnelle)",
           latex: "Q_p = C \\cdot i(T) \\cdot A \\quad [\\text{m}^3\\text{/s}]",
           description: "C = coefficient de ruissellement (C=0,9 en ville imperméabilisée, C=0,2 en noue végétalisée), i = intensité pluvieuse, A = surface du bassin versant.",
+          variables: [
+            { symbol: "Q_p", name: "Débit de pointe", unit: "m³/s", role: "Débit maximal ruisselé." },
+            { symbol: "C", name: "Coefficient de ruissellement", unit: "-", role: "0,9 en ville imperméabilisée, 0,2 en noue végétalisée." },
+            { symbol: "i(T)", name: "Intensité de pluie", unit: "m/s", role: "Pour la période de retour T (mm/h ÷ 3,6 × 10⁶)." },
+            { symbol: "A", name: "Surface du bassin versant", unit: "m²", role: "Surface drainée." },
+          ],
         },
       ],
     },
@@ -223,7 +245,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       title: "Exemple réel — La Réaménagement des Quais de la Garonne à Bordeaux",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Aménagement des berges du fleuve soumises aux marées et crues amplifiées par le changement climatique",
@@ -240,7 +262,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       title: "Schéma du mécanisme RGA & Noue végétalisée SFN",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       description: "Visualisez le phénomène de dessiccation des argiles sous fondation superficielle (RGA) et le principe de fonctionnement d'une noue paysagère d'infiltration SFN.",
       diagram_description: [
         "Retrait-Gonflement des Argiles (RGA) : Zone de dessiccation estivale sous le niveau de fondation créant un vide et une fissure en biseau",
@@ -259,7 +281,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
         {
           mistake: "Dimensionner une fondation en sol argileux à seulement 0,50 m de profondeur",
           trap: "Considérer que la profondeur d'ancrage 'hors gel' de 0,50 m suffit en zone argileuse",
-          fix: "En zone RGA moyen à fort, l'ancrage doit descendre à au moins 1,50 m (voir 2,0 m) pour dépasser la zone de dessiccation estivale !",
+          fix: "En zone d'exposition moyenne ou forte, l'ancrage doit descendre à au moins 0,80 m ou 1,20 m (davantage si l'étude de sol le demande) pour dépasser la zone de dessiccation estivale !",
         },
         {
           mistake: "Tout bétonner pour 'se protéger' des inondations (Effet boomerang)",
@@ -296,7 +318,8 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       type: 'norms',
       norms: [
         { code: "Loi Climat & Résilience (2021)", description: "Loi française portant lutte contre le dérèglement climatique et renforcement de la résilience (Objectif ZAN : Zéro Artificialisation Nette)." },
-        { code: "NF P 94-261 (Annexe RGA)", description: "Justification des fondations superficielles — Prescriptions particulières relatives au Retrait-Gonflement des Argiles." },
+        { code: "Arrêté du 22 juillet 2020 (loi ELAN)", description: "Techniques particulières de construction en zone d'exposition moyenne ou forte au retrait-gonflement des argiles : ancrage minimal des fondations (0,80 m / 1,20 m) et dispositions constructives associées." },
+        { code: "NF P 94-261", description: "Justification des fondations superficielles (norme d'application nationale de l'Eurocode 7)." },
         { code: "NF EN ISO 14090", description: "Adaptation au changement climatique — Principes, exigences et lignes directrices pour les infrastructures." },
         { code: "Arrêté du 22 juillet 2020", description: "Règlementation relative à la prévention des désordres créés par le retrait-gonflement des sols argileux." },
       ],
@@ -322,10 +345,10 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
           id: 'ex_cli_2',
           number: 2,
           difficulty: 'Moyen',
-          text: "Quelle doit être la profondeur minimale de fondation d'une maison construite sur sol argileux très plastique (Ip = 32%) située dans le sud de la France sous la norme NF P 94-261 ?",
-          hint: "Zone RGA fort = 1,50 m minimum.",
-          answer_latex: "D_{ancrage} \\ge 1{,}50 \\text{ m (sous le niveau du sol fini)}",
-          answer_text: "Profondeur minimale d'ancrage = 1,50 m.",
+          text: "Quelle doit être la profondeur minimale d'ancrage des fondations d'une maison construite sur un sol argileux très plastique (Ip = 32 %) classé en zone d'exposition forte au retrait-gonflement (arrêté du 22 juillet 2020) ?",
+          hint: "Exposition forte = 1,20 m minimum (0,80 m en exposition moyenne).",
+          answer_latex: "D_{ancrage} \\ge 1{,}20 \\text{ m}",
+          answer_text: "Profondeur minimale d'ancrage = 1,20 m.",
         },
         {
           id: 'ex_cli_3',
@@ -440,7 +463,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
 
 1. **Abandon de la stationnarité** : Concevoir les ouvrages sous les climats futurs du GIEC (2050/2100).
 2. **Loi de Clausius-Clapeyron** : $+7\\%$ d'humidité et d'intensité de pluie par $^\\circ\\text{C}$ de réchauffement.
-3. **Risque RGA** : Ancrage des fondations superficielles $\\ge 1{,}50\\text{ m}$ en sol argileux gonflant.
+3. **Risque RGA** : Ancrage des fondations superficielles $\\ge 1{,}20\\text{ m}$ en zone d'exposition forte au retrait-gonflement.
 4. **Solutions Fondées sur la Nature (SFN)** : Noues et jardins de pluie privilégiés au tout béton.
 5. **Montée des eaux** : Surélévation des quais et digues ($+0{,}50\\text{ à } +1{,}10\\text{ m}$).
 6. **Réduction des Îlots de Chaleur** : Albédo élevé, végétalisation et isolation à forte inertie.`,
@@ -454,7 +477,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       type: 'keypoints',
       points: [
         "Clausius-Clapeyron : +7% d'humidité atmosphérique par °C",
-        "RGA : Ancrage fondation ≥ 1,50 m dans les argiles",
+        "RGA : ancrage des fondations ≥ 0,80 m (exposition moyenne) et ≥ 1,20 m (exposition forte)",
         "SFN : Noues végétalisées pour infiltrer à la source",
         "Albédo clair = réduction de 20°C en surface",
         "Plateforme DRIAS Météo-France pour les projections climatiques",
@@ -470,7 +493,7 @@ $$Z_{digue} = MHWN + S_m + \\Delta Z_{SLR} + R_{runup} + \\text{Marge}_{sécurit
       description: "Validez vos compétences en ingénierie de l'adaptation au climat :",
       objectives: [
         "Je sais calculer l'amplification des pluies extrêmes par la loi de Clausius-Clapeyron",
-        "Je maîtrise les préconisations de fondation sous risque RGA (NF P 94-261)",
+        "Je maîtrise les préconisations de fondation sous risque RGA (arrêté du 22 juillet 2020)",
         "Je sais dimensionner des Solutions Fondées sur la Nature (SFN) de gestion pluviale",
         "J'ai résolu les 3 exercices d'adaptation climatique avec succès",
         "J'ai obtenu 3/3 au quiz climat et résilience",

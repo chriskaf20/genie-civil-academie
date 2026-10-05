@@ -20,7 +20,7 @@ export const lesson_maths_trig = {
       content: `La **trigonométrie de base** étudie les relations fondamentales entre les angles et les côtés d'un triangle rectangle. Le **théorème de Pythagore** établit la relation géométrique directe entre les carrés des trois côtés.
 
 En génie civil :
-- **SOH-CAH-TOA** définit les rapports trigonométriques ($\sin$, $\cos$, $\tan$).
+- **SOH-CAH-TOA** définit les rapports trigonométriques ($\\sin$, $\\cos$, $\\tan$).
 - **La règle du 3-4-5** est l'outil ultime de chantier pour tracer un angle droit d'une précision millimétrique.`,
     },
     {
@@ -43,19 +43,63 @@ En génie civil :
       id: 4, key: 'theory', title: 'Bases théoriques', icon: '📐', type: 'theory', diagramType: 'trig_interactive',
       content: `Dans tout triangle rectangle dont un angle aigu est $\\theta$ :
 - **Hypoténuse ($H$)** : côté opposé à l'angle droit (le plus long).
-- **Côté Opposé ($\text{opp}$)** : côté en face de l'angle $\\theta$.
-- **Côté Adjacent ($\text{adj}$)** : côté formant l'angle $\\theta$ avec l'hypoténuse.
+- **Côté Opposé ($\\text{opp}$)** : côté en face de l'angle $\\theta$.
+- **Côté Adjacent ($\\text{adj}$)** : côté formant l'angle $\\theta$ avec l'hypoténuse.
 
-Théorème de Pythagore : $H^2 = \text{adj}^2 + \text{opp}^2$`,
+Théorème de Pythagore : $H^2 = \\text{adj}^2 + \\text{opp}^2$`,
     },
     {
       id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'trig_interactive',
       formulas: [
-        { name: 'Théorème de Pythagore', latex: 'H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}', description: 'Calcul de l\'hypoténuse ou diagonale' },
-        { name: 'Sinus (SOH)', latex: '\\sin(\\theta) = \\frac{\\text{opp}}{H}', description: 'Rapport opposé sur hypoténuse' },
-        { name: 'Cosinus (CAH)', latex: '\\cos(\\theta) = \\frac{\\text{adj}}{H}', description: 'Rapport adjacent sur hypoténuse' },
-        { name: 'Tangente (TOA)', latex: '\\tan(\\theta) = \\frac{\\text{opp}}{\\text{adj}}', description: 'Calcul du pourcentage de pente : p(\\%) = \\tan(\\theta) \\cdot 100' },
-        { name: 'Identité fondamentale', latex: '\\sin^2(\\theta) + \\cos^2(\\theta) = 1', description: 'Relation toujours vérifiée sur le cercle unité' },
+        {
+          name: "Théorème de Pythagore",
+          latex: "H = \\sqrt{\\text{adj}^2 + \\text{opp}^2}",
+          description: "Calcul de l'hypoténuse ou diagonale",
+          variables: [
+            { symbol: "H", name: "Hypoténuse", unit: "m", role: "Côté opposé à l'angle droit, le plus long du triangle." },
+            { symbol: "\\text{adj}", name: "Côté adjacent", unit: "m", role: "Côté de l'angle droit qui touche l'angle étudié." },
+            { symbol: "\\text{opp}", name: "Côté opposé", unit: "m", role: "Côté de l'angle droit situé en face de l'angle étudié." },
+          ],
+        },
+        {
+          name: "Sinus (SOH)",
+          latex: "\\sin(\\theta) = \\frac{\\text{opp}}{H}",
+          description: "Rapport opposé sur hypoténuse",
+          variables: [
+            { symbol: "\\theta", name: "Angle étudié", unit: "°", role: "Angle aigu du triangle rectangle." },
+            { symbol: "\\text{opp}", name: "Côté opposé", unit: "m", role: "Côté en face de l'angle θ." },
+            { symbol: "H", name: "Hypoténuse", unit: "m", role: "Côté opposé à l'angle droit." },
+          ],
+        },
+        {
+          name: "Cosinus (CAH)",
+          latex: "\\cos(\\theta) = \\frac{\\text{adj}}{H}",
+          description: "Rapport adjacent sur hypoténuse",
+          variables: [
+            { symbol: "\\theta", name: "Angle étudié", unit: "°", role: "Angle aigu du triangle rectangle." },
+            { symbol: "\\text{adj}", name: "Côté adjacent", unit: "m", role: "Côté de l'angle droit qui touche θ." },
+            { symbol: "H", name: "Hypoténuse", unit: "m", role: "Côté opposé à l'angle droit." },
+          ],
+        },
+        {
+          name: "Tangente (TOA)",
+          latex: "\\tan(\\theta) = \\frac{\\text{opp}}{\\text{adj}}",
+          description: "Calcul du pourcentage de pente : $p(\\%) = \\tan(\\theta) \\cdot 100$",
+          variables: [
+            { symbol: "\\theta", name: "Angle de pente", unit: "°", role: "Angle entre l'horizontale et la pente." },
+            { symbol: "\\text{opp}", name: "Dénivelée", unit: "m", role: "Différence de hauteur (côté opposé)." },
+            { symbol: "\\text{adj}", name: "Distance horizontale", unit: "m", role: "Projection horizontale (côté adjacent)." },
+            { symbol: "p", name: "Pente", unit: "%", role: "p = 100·tan θ : 10 % correspond à 5,7°." },
+          ],
+        },
+        {
+          name: "Identité fondamentale",
+          latex: "\\sin^2(\\theta) + \\cos^2(\\theta) = 1",
+          description: "Relation toujours vérifiée sur le cercle unité",
+          variables: [
+            { symbol: "\\theta", name: "Angle quelconque", unit: "°", role: "L'identité est vraie pour tout angle." },
+          ],
+        },
       ],
     },
     {
@@ -227,10 +271,47 @@ $\\frac{a}{\\sin(A)} = \\frac{b}{\\sin(B)} = \\frac{c}{\\sin(C)} = 2R$ (où $R$ 
     {
       id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'trig_interactive',
       formulas: [
-        { name: 'Al-Kashi (Côté a)', latex: 'a = \\sqrt{b^2 + c^2 - 2bc \\cos(A)}', description: 'Calcul du côté opposé à l\'angle connu A' },
-        { name: 'Al-Kashi (Angle A)', latex: '\\cos(A) = \\frac{b^2 + c^2 - a^2}{2bc}', description: 'Calcul d\'un angle lorsque les 3 côtés sont connus' },
-        { name: 'Loi des Sinus', latex: '\\frac{\\sin(A)}{a} = \\frac{\\sin(B)}{b} = \\frac{\\sin(C)}{c}', description: 'Calcul d\'un côté ou angle par proportionnalité' },
-        { name: 'Aire d\'un triangle quelconque', latex: '\\text{Aire} = \\frac{1}{2} a b \\sin(C) = \\sqrt{s(s-a)(s-b)(s-c)}', description: 'Formule trigonométrique et formule d\'Héron (s = demi-périmètre)' },
+        {
+          name: "Al-Kashi (Côté a)",
+          latex: "a = \\sqrt{b^2 + c^2 - 2bc \\cos(A)}",
+          description: "Calcul du côté opposé à l'angle connu A",
+          variables: [
+            { symbol: "a", name: "Côté cherché", unit: "m", role: "Côté opposé à l'angle A." },
+            { symbol: "b", name: "Premier côté connu", unit: "m", role: "Côté adjacent à l'angle A." },
+            { symbol: "c", name: "Second côté connu", unit: "m", role: "Autre côté adjacent à l'angle A." },
+            { symbol: "A", name: "Angle compris", unit: "°", role: "Angle entre les côtés b et c." },
+          ],
+        },
+        {
+          name: "Al-Kashi (Angle A)",
+          latex: "\\cos(A) = \\frac{b^2 + c^2 - a^2}{2bc}",
+          description: "Calcul d'un angle lorsque les 3 côtés sont connus",
+          variables: [
+            { symbol: "A", name: "Angle cherché", unit: "°", role: "Angle opposé au côté a." },
+            { symbol: "a", name: "Côté opposé à A", unit: "m", role: "Côté en face de l'angle cherché." },
+            { symbol: "b", name: "Côté adjacent", unit: "m", role: "Premier côté qui forme l'angle A." },
+            { symbol: "c", name: "Côté adjacent", unit: "m", role: "Second côté qui forme l'angle A." },
+          ],
+        },
+        {
+          name: "Loi des Sinus",
+          latex: "\\frac{\\sin(A)}{a} = \\frac{\\sin(B)}{b} = \\frac{\\sin(C)}{c}",
+          description: "Calcul d'un côté ou angle par proportionnalité",
+          variables: [
+            { symbol: "A, B, C", name: "Angles du triangle", unit: "°", role: "Leur somme vaut 180°." },
+            { symbol: "a, b, c", name: "Côtés opposés", unit: "m", role: "Le côté a est en face de l'angle A, etc." },
+          ],
+        },
+        {
+          name: "Aire d'un triangle quelconque",
+          latex: "\\text{Aire} = \\frac{1}{2} a b \\sin(C) = \\sqrt{s(s-a)(s-b)(s-c)}",
+          description: "Formule trigonométrique et formule d'Héron (s = demi-périmètre)",
+          variables: [
+            { symbol: "a, b", name: "Deux côtés", unit: "m", role: "Côtés qui encadrent l'angle C." },
+            { symbol: "C", name: "Angle compris", unit: "°", role: "Angle entre les côtés a et b." },
+            { symbol: "s", name: "Demi-périmètre", unit: "m", role: "s = (a + b + c) / 2 (formule de Héron)." },
+          ],
+        },
       ],
     },
     {
@@ -352,10 +433,45 @@ export const lesson_maths_vectors = {
     {
       id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'force_decomposition',
       formulas: [
-        { name: 'Projection horizontale', latex: 'F_x = F \\cos(\\theta)', description: 'Composante de la force sur l\'axe x' },
-        { name: 'Projection verticale', latex: 'F_y = F \\sin(\\theta)', description: 'Composante de la force sur l\'axe y' },
-        { name: 'Norme du vecteur force', latex: 'F = \\sqrt{F_x^2 + F_y^2}', description: 'Intensité résultante de la force' },
-        { name: 'Moment d\'une force par rapport à un point O', latex: 'M_{/O} = F \\cdot d', description: 'd = bras de levier perpendiculaire à la ligne d\'action' },
+        {
+          name: "Projection horizontale",
+          latex: "F_x = F \\cos(\\theta)",
+          description: "Composante de la force sur l'axe x",
+          variables: [
+            { symbol: "F_x", name: "Composante horizontale", unit: "kN", role: "Projection de la force sur l'axe x." },
+            { symbol: "F", name: "Intensité de la force", unit: "kN", role: "Norme du vecteur force." },
+            { symbol: "\\theta", name: "Angle avec l'horizontale", unit: "°", role: "Angle entre la force et l'axe x." },
+          ],
+        },
+        {
+          name: "Projection verticale",
+          latex: "F_y = F \\sin(\\theta)",
+          description: "Composante de la force sur l'axe y",
+          variables: [
+            { symbol: "F_y", name: "Composante verticale", unit: "kN", role: "Projection de la force sur l'axe y." },
+            { symbol: "F", name: "Intensité de la force", unit: "kN", role: "Norme du vecteur force." },
+            { symbol: "\\theta", name: "Angle avec l'horizontale", unit: "°", role: "Angle entre la force et l'axe x." },
+          ],
+        },
+        {
+          name: "Norme du vecteur force",
+          latex: "F = \\sqrt{F_x^2 + F_y^2}",
+          description: "Intensité résultante de la force",
+          variables: [
+            { symbol: "F", name: "Résultante", unit: "kN", role: "Intensité de la force." },
+            { symbol: "F_x, F_y", name: "Composantes", unit: "kN", role: "Projections sur deux axes perpendiculaires." },
+          ],
+        },
+        {
+          name: "Moment d'une force par rapport à un point O",
+          latex: "M_{/O} = F \\cdot d",
+          description: "d = bras de levier perpendiculaire à la ligne d'action",
+          variables: [
+            { symbol: "M_{/O}", name: "Moment par rapport à O", unit: "kN·m", role: "Effet de rotation de la force autour de O." },
+            { symbol: "F", name: "Intensité de la force", unit: "kN", role: "Norme de la force." },
+            { symbol: "d", name: "Bras de levier", unit: "m", role: "Distance perpendiculaire entre O et la ligne d'action." },
+          ],
+        },
       ],
     },
     {
@@ -466,11 +582,58 @@ $$q(x) \\xrightarrow{\\int} -V(x) \\xrightarrow{\\int} -M(x) \\xrightarrow{\\int
     {
       id: 5, key: 'formulas', title: 'Formules et équations mathématiques', icon: '🔢', type: 'formulas', diagramType: 'rebar_beam',
       formulas: [
-        { name: 'Relation Charge - Tranchant', latex: '\\frac{dV(x)}{dx} = -q(x)', description: 'La dérivée du tranchant est l\'opposé de la charge' },
-        { name: 'Relation Tranchant - Moment', latex: '\\frac{dM(x)}{dx} = V(x)', description: 'Le moment est maximal quand V(x) = 0' },
-        { name: 'Équation différentielle de la ligne moyenne', latex: 'EI \\frac{d^2 w(x)}{dx^2} = -M(x)', description: 'Équation d\'Euler-Bernoulli' },
-        { name: 'Flèche max poutre travée simple (charge q)', latex: 'w_{max} = \\frac{5 q L^4}{384 E I}', description: 'Flèche au milieu de la portée (x = L/2)' },
-        { name: 'Intégration d\'un volume de terrassement', latex: '\\text{Vol} = \\int_{x_1}^{x_2} S(x) \\, dx \\approx \\sum \\frac{S_i + S_{i+1}}{2} \\cdot d_i', description: 'Méthode des aires moyennes' },
+        {
+          name: "Relation Charge - Tranchant",
+          latex: "\\frac{dV(x)}{dx} = -q(x)",
+          description: "La dérivée du tranchant est l'opposé de la charge",
+          variables: [
+            { symbol: "V(x)", name: "Effort tranchant", unit: "kN", role: "Effort tranchant dans la section d'abscisse x." },
+            { symbol: "q(x)", name: "Charge répartie", unit: "kN/m", role: "Charge par mètre au point x (positive vers le bas)." },
+            { symbol: "x", name: "Abscisse", unit: "m", role: "Position le long de la poutre." },
+          ],
+        },
+        {
+          name: "Relation Tranchant - Moment",
+          latex: "\\frac{dM(x)}{dx} = V(x)",
+          description: "Le moment est maximal quand V(x) = 0",
+          variables: [
+            { symbol: "M(x)", name: "Moment fléchissant", unit: "kN·m", role: "Moment dans la section d'abscisse x." },
+            { symbol: "V(x)", name: "Effort tranchant", unit: "kN", role: "Pente du diagramme des moments." },
+          ],
+        },
+        {
+          name: "Équation différentielle de la ligne moyenne",
+          latex: "EI \\frac{d^2 w(x)}{dx^2} = -M(x)",
+          description: "Équation d'Euler-Bernoulli",
+          variables: [
+            { symbol: "E", name: "Module d'Young", unit: "MPa", role: "Rigidité du matériau." },
+            { symbol: "I", name: "Moment d'inertie", unit: "mm⁴", role: "Inertie de la section par rapport à l'axe de flexion." },
+            { symbol: "w(x)", name: "Flèche", unit: "mm", role: "Déplacement vertical de la fibre moyenne." },
+            { symbol: "M(x)", name: "Moment fléchissant", unit: "kN·m", role: "Moment dans la section d'abscisse x." },
+          ],
+        },
+        {
+          name: "Flèche max poutre travée simple (charge q)",
+          latex: "w_{max} = \\frac{5 q L^4}{384 E I}",
+          description: "Flèche au milieu de la portée (x = L/2)",
+          variables: [
+            { symbol: "w_{max}", name: "Flèche maximale", unit: "mm", role: "Atteinte à mi-portée." },
+            { symbol: "q", name: "Charge uniforme", unit: "N/mm", role: "Charge par unité de longueur (1 kN/m = 1 N/mm)." },
+            { symbol: "L", name: "Portée", unit: "mm", role: "Distance entre appuis." },
+            { symbol: "E", name: "Module d'Young", unit: "MPa", role: "Rigidité du matériau." },
+            { symbol: "I", name: "Moment d'inertie", unit: "mm⁴", role: "Inertie de flexion de la section." },
+          ],
+        },
+        {
+          name: "Intégration d'un volume de terrassement",
+          latex: "\\text{Vol} = \\int_{x_1}^{x_2} S(x) \\, dx \\approx \\sum \\frac{S_i + S_{i+1}}{2} \\cdot d_i",
+          description: "Méthode des aires moyennes",
+          variables: [
+            { symbol: "S(x)", name: "Aire du profil en travers", unit: "m²", role: "Section de déblai ou de remblai à l'abscisse x." },
+            { symbol: "S_i, S_{i+1}", name: "Aires de deux profils successifs", unit: "m²", role: "Mesurées sur les profils en travers." },
+            { symbol: "d_i", name: "Distance entre profils", unit: "m", role: "Espacement des deux profils." },
+          ],
+        },
       ],
     },
     {

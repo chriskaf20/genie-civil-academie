@@ -1,152 +1,188 @@
-import { useState, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import DiagramViewer from './DiagramViewer.jsx';
 import TrigWidget from './TrigWidget.jsx';
+import BeamCalculator from './BeamCalculator.jsx';
+import UnitConverter from './UnitConverter.jsx';
 import SciCalc from './SciCalc.jsx';
 import FormulaExplainer from './FormulaExplainer.jsx';
 import StructuralSketches from './StructuralSketches.jsx';
 import { SafeInlineMath, SafeBlockMath } from './SafeMath.jsx';
-import TechTooltip, { enhanceTextWithTerms } from './TechTooltip.jsx';
+import { enhanceTextWithTerms } from './TechTooltip.jsx';
 import ErrorBoundary from './ErrorBoundary.jsx';
-import { getLessonForModule } from '../data/lesson_generator.js';
+import { getLessonEntries } from '../data/lesson_registry.js';
+import { TECH_TERMS } from '../data/tech_terms.js';
+import { useLesson } from '../hooks/useLesson.js';
+import { splitMathBlocks, tokenizeInline } from '../utils/latex.js';
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// Diagram types drawn by DiagramViewer. Any other lesson diagram is shown as a process flow.
+const DRAWN_DIAGRAMS = new Set(['plan_coffrage', 'bim_workflow', 'topographie_nivellement', 'force_decomposition', 'rebar_beam', 'road_profile', 'soil_profile', 'bridge_structure', 'trig_interactive']);
+const SKETCH_DOMAINS = new Set(['rdm', 'beton_arme', 'precontrainte', 'metal', 'bois', 'geotechnique', 'fondations']);
+const TRIG_DOMAINS = new Set(['maths', 'topographie', 'physique']);
+const BEAM_DOMAINS = new Set(['rdm', 'mecanique', 'structures', 'beton_arme', 'precontrainte', 'metal', 'bois', 'ponts']);
 
-function parseLatexContent(text) {
+const isDrawn = type => DRAWN_DIAGRAMS.has(type);
+
+// ── Rich text ────────────────────────────────────────────────────────────────
+
+function renderTokens(tokens, keyPrefix = '') {
+  return tokens.map((token, i) => {
+    const key = `${keyPrefix}${i}`;
+    switch (token.kind) {
+      case 'math':
+        return (
+          <span key={key} className="inline-block px-0.5 align-baseline text-slate-900 dark:text-slate-100 font-medium">
+            <SafeInlineMath math={token.value} />
+          </span>
+        );
+      case 'bold':
+        return <strong key={key} className="text-slate-900 dark:text-white font-bold">{renderTokens(token.children, `${key}-`)}</strong>;
+      case 'italic':
+        return <em key={key} className="italic">{renderTokens(token.children, `${key}-`)}</em>;
+      case 'code':
+        return <code key={key} className="bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs mono font-semibold">{token.value}</code>;
+      default:
+        return <span key={key}>{enhanceTextWithTerms(token.value)}</span>;
+    }
+  });
+}
+
+/** One line of lesson text with $math$, **bold**, *italic*, `code` and term tooltips. */
+function renderInline(text) {
+  if (text === undefined || text === null || text === '') return null;
+  if (typeof text === 'number') return String(text);
+  if (typeof text !== 'string') return renderInline(text.text ?? text.description ?? text.title ?? '');
+  return renderTokens(tokenizeInline(text));
+}
+
+const TABLE_ROW = /^\s*\|(.*)\|\s*$/;
+const TABLE_SEPARATOR = /^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$/;
+const splitCells = line => line.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+
+/** Multi-line lesson text: headings, quotes, bullet and numbered lists, Markdown tables, $$ display math. */
+function RichText({ text }) {
   if (!text) return null;
+  const nodes = [];
+  let list = null;
+  let table = null;
+  const flushList = () => {
+    if (!list) return;
+    const Tag = list.ordered ? 'ol' : 'ul';
+    nodes.push(
+      <Tag key={`list-${nodes.length}`} className={`${list.ordered ? 'list-decimal' : 'list-disc'} ml-5 my-2 space-y-1.5 text-slate-700 dark:text-slate-200 text-base leading-relaxed`}>
+        {list.items}
+      </Tag>
+    );
+    list = null;
+  };
+  const flushTable = () => {
+    if (!table) return;
+    const [head, ...body] = table.hasHeader ? table.rows : [null, ...table.rows];
+    nodes.push(
+      <div key={`table-${nodes.length}`} className="w-full overflow-x-auto my-3 table-scroll">
+        <table className="w-full text-left text-sm border border-slate-200 dark:border-slate-700/80 border-collapse">
+          {head && (
+            <thead className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100">
+              <tr>{head.map((c, i) => <th key={i} className="px-3 py-2 border border-slate-200 dark:border-slate-700/80 font-semibold">{renderInline(c)}</th>)}</tr>
+            </thead>
+          )}
+          <tbody className="text-slate-700 dark:text-slate-200">
+            {body.map((row, r) => (
+              <tr key={r} className="odd:bg-white even:bg-slate-50 dark:odd:bg-slate-900 dark:even:bg-slate-800/50">
+                {row.map((c, i) => <td key={i} className="px-3 py-2 border border-slate-200 dark:border-slate-700/80 align-top">{renderInline(c)}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+    table = null;
+  };
+  const flushAll = () => { flushList(); flushTable(); };
 
-  // Split on block math equations $$...$$
-  const blocks = String(text).split(/(\$\$[\s\S]+?\$\$)/g);
-
-  return blocks.map((block, bi) => {
-    const trimmed = block.trim();
-    if (trimmed.startsWith('$$') && trimmed.endsWith('$$')) {
-      const math = trimmed.slice(2, -2).trim();
-      return (
-        <div key={bi} className="overflow-x-auto max-w-full py-2.5 my-3 math-scroll text-center">
-          <SafeBlockMath math={math} />
+  splitMathBlocks(text).forEach((part, bi) => {
+    if (part.kind === 'block') {
+      flushAll();
+      nodes.push(
+        <div key={`math-${bi}`} className="overflow-x-auto max-w-full py-2.5 my-3 math-scroll text-center">
+          <SafeBlockMath math={part.value} />
         </div>
       );
+      return;
     }
-
-    const lines = block.split('\n');
-    return lines.map((line, li) => {
+    part.value.split('\n').forEach((rawLine, li) => {
       const key = `${bi}-${li}`;
-      const lineTrim = line.trim();
-
+      const line = rawLine.trimEnd();
+      if (TABLE_ROW.test(line)) {
+        flushList();
+        if (!table) table = { rows: [], hasHeader: false };
+        if (TABLE_SEPARATOR.test(line)) table.hasHeader = table.rows.length === 1;
+        else table.rows.push(splitCells(line));
+        return;
+      }
+      flushTable();
+      const bullet = line.match(/^\s*[-•]\s+(.*)$/);
+      const numbered = line.match(/^\s*\d+[.)]\s+(.*)$/);
+      if (bullet || numbered) {
+        const ordered = Boolean(numbered);
+        if (list && list.ordered !== ordered) flushList();
+        if (!list) list = { ordered, items: [] };
+        list.items.push(<li key={key} className="break-words">{renderInline((bullet || numbered)[1])}</li>);
+        return;
+      }
+      flushList();
+      if (line.trim() === '') return;
       if (line.startsWith('### ')) {
-        return (
-          <h4 key={key} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2.5 break-words">
-            {renderInline(line.slice(4))}
-          </h4>
-        );
-      }
-      if (line.startsWith('## ')) {
-        return (
-          <h3 key={key} className="text-xl font-bold text-slate-900 dark:text-white mt-6 mb-3 break-words">
-            {renderInline(line.slice(3))}
-          </h3>
-        );
-      }
-      if (line.startsWith('> ')) {
-        return (
-          <blockquote key={key} className="border-l-4 border-teal-500 dark:border-cyan-500 pl-4 py-2.5 my-3 text-teal-950 dark:text-cyan-100 text-base italic break-words bg-teal-50/60 dark:bg-slate-900/70 rounded-r-xl leading-relaxed">
+        nodes.push(<h4 key={key} className="text-lg font-bold text-slate-900 dark:text-white mt-5 mb-2.5 break-words">{renderInline(line.slice(4))}</h4>);
+      } else if (line.startsWith('## ')) {
+        nodes.push(<h3 key={key} className="text-xl font-bold text-slate-900 dark:text-white mt-6 mb-3 break-words">{renderInline(line.slice(3))}</h3>);
+      } else if (line.startsWith('> ')) {
+        nodes.push(
+          <blockquote key={key} className="border-l-4 border-teal-500 dark:border-cyan-500 pl-4 py-2.5 my-3 text-teal-950 dark:text-cyan-100 text-base break-words bg-teal-50/60 dark:bg-slate-900/70 rounded-r-xl leading-relaxed">
             {renderInline(line.slice(2))}
           </blockquote>
         );
+      } else {
+        nodes.push(<p key={key} className="text-slate-700 dark:text-slate-200 text-base leading-relaxed my-2 break-words">{renderInline(line)}</p>);
       }
-      if (line.startsWith('- ')) {
-        return (
-          <li key={key} className="text-slate-700 dark:text-slate-200 text-base ml-5 list-disc leading-relaxed my-1.5 break-words">
-            {renderInline(line.slice(2))}
-          </li>
-        );
-      }
-      if (/^\d+\.\s/.test(line)) {
-        const match = line.match(/^(\d+\.)\s(.*)$/);
-        return (
-          <li key={key} className="text-slate-700 dark:text-slate-200 text-base ml-5 list-decimal leading-relaxed my-1.5 break-words">
-            {renderInline(match ? match[2] : line)}
-          </li>
-        );
-      }
-      if (lineTrim === '') {
-        return null;
-      }
-      return (
-        <p key={key} className="text-slate-700 dark:text-slate-200 text-base leading-relaxed my-2 break-words">
-          {renderInline(line)}
-        </p>
-      );
     });
   });
+  flushAll();
+  return <>{nodes}</>;
 }
 
-function renderInline(text) {
-  if (!text) return null;
+// ── Layout pieces ────────────────────────────────────────────────────────────
 
-  // Unified tokenizer: $math$, **bold**, *italic*, `code`
-  const parts = String(text).split(/(\$[^$]+?\$|\*\*[^*]+?\*\*|\*[^*]+?\*|`[^`]+?`)/g);
-
-  return parts.map((part, i) => {
-    if (!part) return null;
-
-    if (part.startsWith('$') && part.endsWith('$')) {
-      const math = part.slice(1, -1).trim();
-      return (
-        <span key={i} className="inline-block px-0.5 align-baseline text-slate-900 dark:text-slate-100 font-medium">
-          <SafeInlineMath math={math} />
-        </span>
-      );
-    }
-    if (part.startsWith('**') && part.endsWith('**')) {
-      const inner = part.slice(2, -2);
-      return (
-        <strong key={i} className="text-slate-900 dark:text-white font-bold">
-          {renderInline(inner)}
-        </strong>
-      );
-    }
-    if (part.startsWith('*') && part.endsWith('*')) {
-      const inner = part.slice(1, -1);
-      return (
-        <em key={i} className="text-slate-700 dark:text-slate-200 italic">
-          {renderInline(inner)}
-        </em>
-      );
-    }
-    if (part.startsWith('`') && part.endsWith('`')) {
-      return (
-        <code key={i} className="bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-cyan-300 px-1.5 py-0.5 rounded text-xs mono font-semibold">
-          {part.slice(1, -1)}
-        </code>
-      );
-    }
-
-    return <span key={i}>{enhanceTextWithTerms(part)}</span>;
-  });
-}
-
-// ── Step Icon Badge ───────────────────────────────────────────────────────────
 function StepHeader({ step, title, icon }) {
   return (
     <div className="flex items-center gap-3 mb-4 sm:mb-5 pb-3 border-b border-slate-100 dark:border-slate-800">
       <div className="step-badge">{step || '•'}</div>
-      <span className="text-xl shrink-0">{icon || '📌'}</span>
-      <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">{title || 'Étape Pédagogique'}</h3>
+      <span className="text-xl shrink-0" aria-hidden="true">{icon || '📌'}</span>
+      <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug">{title || 'Étape pédagogique'}</h3>
     </div>
   );
 }
 
-// ── Section Card wrapper ──────────────────────────────────────────────────────
 function Section({ children, className = '' }) {
   return (
-    <div className={`rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-4 sm:p-6 card-hover animate-fade-up w-full max-w-full mx-0 overflow-hidden shadow-xs text-base ${className}`}>
+    <section className={`rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 p-4 sm:p-6 card-hover animate-fade-up w-full max-w-full mx-0 overflow-hidden shadow-xs text-base ${className}`}>
       {children}
+    </section>
+  );
+}
+
+function FormulaBox({ math, label }) {
+  if (!math) return null;
+  return (
+    <div className="formula-card w-full max-w-full overflow-x-auto">
+      {label && <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">{label}</p>}
+      <div className="overflow-x-auto max-w-full py-1 math-scroll">
+        <SafeBlockMath math={math} />
+      </div>
     </div>
   );
 }
 
-// ── Step renderers ────────────────────────────────────────────────────────────
+// ── Step renderers (one per step type) ───────────────────────────────────────
 
 function DefinitionStep({ s }) {
   return (
@@ -159,21 +195,21 @@ function DefinitionStep({ s }) {
         </div>
         {s.metier && (
           <div className="alert-info">
-            <p className="text-xs text-teal-800 dark:text-cyan-300 font-semibold uppercase tracking-wider mb-1">💼 Utilisation métier & Rôle Ingénieur</p>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{s.metier}</p>
+            <p className="text-xs text-teal-800 dark:text-cyan-300 font-semibold uppercase tracking-wider mb-1">💼 Utilisation métier & rôle de l'ingénieur</p>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{renderInline(s.metier)}</p>
           </div>
         )}
-        <div className="prose-custom">{parseLatexContent(s.content)}</div>
+        <div className="prose-custom"><RichText text={s.content} /></div>
       </div>
     </Section>
   );
 }
 
-function ImportanceStep({ s }) {
+function ContentStep({ s, className }) {
   return (
-    <Section>
+    <Section className={className}>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="prose-custom">{parseLatexContent(s.content)}</div>
+      <div className="prose-custom"><RichText text={s.content} /></div>
     </Section>
   );
 }
@@ -187,7 +223,7 @@ function ApplicationsStep({ s }) {
         {examples.map((ex, i) => (
           <div key={ex.context || i} className="rounded-xl bg-slate-50 dark:bg-slate-800/60 p-4 border border-slate-200 dark:border-slate-700/50 shadow-2xs">
             <span className="tag-orange mb-2.5 inline-block">{ex.context || 'Pratique'}</span>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{ex.text || ''}</p>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(ex.text)}</p>
           </div>
         ))}
       </div>
@@ -195,27 +231,26 @@ function ApplicationsStep({ s }) {
   );
 }
 
-function TheoryStep({ s, diagramType, moduleSlug }) {
-  const normSlug = (moduleSlug || '').replace(/-/g, '_').toLowerCase();
-  const isStructural = ['rdm', 'beton_arme', 'metal', 'geotechnique', 'fondations', 'bois', 'precontrainte'].includes(normSlug);
-
+function TheoryStep({ s, lessonDiagram, domain }) {
+  const diagram = s.diagramType || lessonDiagram;
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="prose-custom mb-5">{parseLatexContent(s.content)}</div>
-      {isStructural && (
+      <div className="prose-custom mb-5"><RichText text={s.content} /></div>
+      {SKETCH_DOMAINS.has(domain) && (
         <StructuralSketches
-          initialTab={normSlug === 'geotechnique' || normSlug === 'fondations' ? 'geotech' : 'section'}
-          title="Croquis de Dimensionnement — Section b×h, Contraintes & Axe Neutre"
+          initialTab={domain === 'geotechnique' || domain === 'fondations' ? 'geotech' : 'section'}
+          title="Croquis de dimensionnement — section, contraintes & axe neutre"
         />
       )}
-      <DiagramViewer type={s.diagramType || diagramType} title="Schéma Théorique & Cotations" />
+      {isDrawn(diagram) && <DiagramViewer type={diagram} title="Schéma théorique & cotations" />}
     </Section>
   );
 }
 
-function FormulasStep({ s, diagramType, moduleSlug }) {
+function FormulasStep({ s, lessonDiagram, domain }) {
   const formulas = s.formulas || [];
+  const diagram = s.diagramType || lessonDiagram;
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
@@ -223,63 +258,56 @@ function FormulasStep({ s, diagramType, moduleSlug }) {
         {formulas.map((f, i) => (
           <FormulaExplainer
             key={f.name || i}
-            formula={f}
             name={f.name}
             latex={f.latex}
             description={f.description}
             variables={f.variables}
             ruleOfThumb={f.ruleOfThumb}
-            domain={moduleSlug}
-            moduleSlug={moduleSlug}
+            domain={domain}
           />
         ))}
       </div>
-      <DiagramViewer type={s.diagramType || diagramType} title="Illustration des Équations & Sollicitations" />
+      {isDrawn(diagram) && <DiagramViewer type={diagram} title="Illustration des équations & sollicitations" />}
     </Section>
   );
 }
 
-function StepByStepSection({ s }) {
+function StepByStepStep({ s }) {
   const [revealed, setRevealed] = useState([]);
-  const toggle = (n) => setRevealed(prev => prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n]);
+  const toggle = n => setRevealed(prev => (prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n]));
   const steps = s.steps_demo || [];
-
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       {s.problem && (
         <div className="alert-info mb-4">
-          <p className="text-sm text-teal-900 dark:text-cyan-300 font-bold">📋 Énoncé du Problème :</p>
-          <p className="text-base text-slate-700 dark:text-slate-200 mt-1.5 italic leading-relaxed">{s.problem}</p>
+          <p className="text-sm text-teal-900 dark:text-cyan-300 font-bold">📋 Énoncé du problème :</p>
+          <p className="text-base text-slate-700 dark:text-slate-200 mt-1.5 leading-relaxed">{renderInline(s.problem)}</p>
         </div>
       )}
-      <div className="space-y-2.5">
+      <ol className="space-y-2.5">
         {steps.map((step, i) => {
-          const stepNum = step.n || (i + 1);
+          const n = step.n || i + 1;
+          const active = revealed.includes(n);
           return (
-            <div
-              key={stepNum}
-              onClick={() => toggle(stepNum)}
-              className="rounded-xl border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/50 p-3.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all"
-            >
-              <div className="flex items-center gap-3">
-                <div className="step-badge shrink-0">{stepNum}</div>
-                <p className={`text-base transition-colors ${revealed.includes(stepNum) ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
-                  {step.text}
-                </p>
-              </div>
-            </div>
+            <li key={n}>
+              <button
+                type="button"
+                onClick={() => toggle(n)}
+                className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-800/50 p-3.5 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all cursor-pointer"
+              >
+                <span className="flex items-start gap-3">
+                  <span className="step-badge shrink-0">{n}</span>
+                  <span className={`text-base leading-relaxed ${active ? 'text-slate-900 dark:text-white font-semibold' : 'text-slate-700 dark:text-slate-300'}`}>
+                    {renderInline(step.text)}
+                  </span>
+                </span>
+              </button>
+            </li>
           );
         })}
-      </div>
-      {s.result_latex && (
-        <div className="formula-card mt-4 w-full max-w-full overflow-x-auto">
-          <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">✅ Résultat & Dimensionnement :</p>
-          <div className="overflow-x-auto max-w-full py-1.5 math-scroll">
-            <SafeBlockMath math={s.result_latex} />
-          </div>
-        </div>
-      )}
+      </ol>
+      {s.result_latex && <div className="mt-4"><FormulaBox math={s.result_latex} label="✅ Résultat & dimensionnement :" /></div>}
     </Section>
   );
 }
@@ -289,23 +317,23 @@ function UnitsStep({ s }) {
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="overflow-x-auto max-w-full py-1 table-scroll">
-        <table className="w-full text-base text-left border-collapse">
+      <div className="w-full overflow-x-auto my-4 table-scroll">
+        <table className="w-full min-w-[560px] text-left text-sm border border-slate-200 dark:border-slate-700/80 rounded-xl overflow-hidden border-collapse">
           <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-700/60 pb-3">
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Grandeur</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Système SI</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 pr-4 font-bold">Système Impérial</th>
-              <th className="text-xs text-slate-500 dark:text-slate-400 uppercase pb-2.5 font-bold">Facteur de Conversion</th>
+            <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80">
+              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-teal-800 dark:text-cyan-400">Grandeur</th>
+              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Système SI</th>
+              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400">Système impérial</th>
+              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Conversion & remarque</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-700/60 bg-white dark:bg-slate-900/50">
             {table.map((row, i) => (
-              <tr key={row.grandeur || i} className="border-b border-slate-100 dark:border-slate-800/60">
-                <td className="py-2.5 pr-4 text-slate-900 dark:text-white font-medium whitespace-nowrap">{row.grandeur}</td>
-                <td className="py-2.5 pr-4 text-teal-700 dark:text-cyan-300 font-mono text-sm whitespace-nowrap font-bold">{row.si}</td>
-                <td className="py-2.5 pr-4 text-orange-600 dark:text-orange-300 font-mono text-sm whitespace-nowrap">{row.imperial}</td>
-                <td className="py-2.5 text-slate-600 dark:text-slate-300 text-sm leading-relaxed">{row.conversion}</td>
+              <tr key={row.grandeur || i} className={i % 2 === 0 ? 'bg-slate-50/40 dark:bg-slate-900/30' : ''}>
+                <td className="py-3 px-4 text-slate-900 dark:text-white font-medium">{renderInline(row.grandeur || row.name || '-')}</td>
+                <td className="py-3 px-4 text-teal-700 dark:text-cyan-300 font-semibold">{renderInline(row.si || '-')}</td>
+                <td className="py-3 px-4 text-orange-700 dark:text-orange-300">{renderInline(row.imperial || '-')}</td>
+                <td className="py-3 px-4 text-slate-700 dark:text-slate-300 leading-relaxed">{renderInline(row.conversion || '-')}</td>
               </tr>
             ))}
           </tbody>
@@ -313,41 +341,68 @@ function UnitsStep({ s }) {
       </div>
       {s.note && (
         <div className="alert-info mt-4">
-          <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{s.note}</p>
+          <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">{renderInline(s.note)}</p>
         </div>
       )}
     </Section>
   );
 }
 
+const HYPOTHESIS_STYLE = {
+  warning: { box: 'alert-warning', icon: '⚠️', label: 'Attention' },
+  info: { box: 'alert-info', icon: 'ℹ️', label: 'Hypothèse' },
+  tip: { box: 'alert-tip', icon: '💡', label: 'Conseil' },
+};
+
 function HypothesesStep({ s }) {
   const items = s.items || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-3">
-        {items.map((item, i) => (
-          <div key={i} className="flex gap-3 items-start rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 p-4">
-            <span className="text-teal-600 dark:text-cyan-400 font-bold shrink-0 mt-0.5">•</span>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(item)}</p>
-          </div>
-        ))}
-      </div>
+      <ul className="space-y-3">
+        {items.map((item, i) => {
+          const text = typeof item === 'string' ? item : item?.text;
+          const style = HYPOTHESIS_STYLE[item?.type] || HYPOTHESIS_STYLE.info;
+          return (
+            <li key={i} className={`${style.box} flex gap-3 items-start`}>
+              <span className="shrink-0 mt-0.5" aria-label={style.label}>{style.icon}</span>
+              <span className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(text)}</span>
+            </li>
+          );
+        })}
+      </ul>
     </Section>
   );
 }
 
 function ExamplesSimpleStep({ s }) {
-  const items = s.items || [];
+  const examples = s.examples || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items.map((item, i) => (
-          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4 shadow-2xs">
-            <span className="tag-blue mb-2.5 inline-block">{item.title || 'Cas d\'étude'}</span>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{item.content}</p>
-          </div>
+      <div className="space-y-4">
+        {examples.map((ex, i) => (
+          <article key={ex.title || i} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/40 p-4 sm:p-5 space-y-3">
+            <h4 className="text-base font-bold text-slate-900 dark:text-white">{renderInline(ex.title)}</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold mb-1">Données</p>
+                <p className="text-slate-800 dark:text-slate-200 leading-relaxed">{renderInline(ex.given)}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold mb-1">À déterminer</p>
+                <p className="text-teal-800 dark:text-cyan-300 font-medium leading-relaxed">{renderInline(ex.find)}</p>
+              </div>
+            </div>
+            <FormulaBox math={ex.solution_latex} />
+            <FormulaBox math={ex.solution_latex_2} />
+            {ex.result && (
+              <p className="flex items-start gap-2 text-sm text-emerald-700 dark:text-emerald-300 font-semibold">
+                <span aria-hidden="true">✅</span>
+                <span>{renderInline(ex.result)}</span>
+              </p>
+            )}
+          </article>
         ))}
       </div>
     </Section>
@@ -355,51 +410,52 @@ function ExamplesSimpleStep({ s }) {
 }
 
 function RealExamplesStep({ s }) {
-  const cases = s.cases || [];
+  const examples = s.examples || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {cases.map((c, i) => (
-          <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/40 p-4 space-y-2 shadow-2xs">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🏗️</span>
-              <p className="text-base font-bold text-slate-900 dark:text-white leading-tight">{c.project}</p>
-            </div>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{c.description}</p>
-            {c.solution && (
-              <div className="alert-tip mt-2">
-                <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300">💡 Solution ingénieur : {c.solution}</p>
+      <div className="space-y-4">
+        {examples.map((ex, i) => (
+          <article key={ex.context || i} className="rounded-xl border border-slate-200 dark:border-slate-700/40 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5 space-y-3">
+            <span className="tag-orange inline-block">{renderInline(ex.context)}</span>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(ex.scenario)}</p>
+            <FormulaBox math={ex.decomposition_latex} />
+            <FormulaBox math={ex.check_latex} />
+            {ex.lesson && (
+              <div className="alert-tip">
+                <p className="text-sm text-emerald-800 dark:text-emerald-200 leading-relaxed">💡 <strong>Leçon professionnelle :</strong> {renderInline(ex.lesson)}</p>
               </div>
             )}
-          </div>
+          </article>
         ))}
       </div>
     </Section>
   );
 }
 
-function DiagramStep({ s, diagramType }) {
-  const descriptions = s.diagram_description || [];
+function DiagramStep({ s, lessonDiagram }) {
+  const items = s.diagram_description || [];
+  const diagram = s.diagramType || lessonDiagram;
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       {s.description && (
-        <div className="alert-info mb-3.5">
-          <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{s.description}</p>
+        <div className="alert-info mb-4">
+          <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed font-medium">{renderInline(s.description)}</p>
         </div>
       )}
-      {descriptions.length > 0 && (
-        <ul className="space-y-1.5 mb-5">
-          {descriptions.map((d, i) => (
-            <li key={i} className="text-sm text-slate-600 dark:text-slate-300 flex gap-2">
-              <span>•</span>
-              <span dangerouslySetInnerHTML={{ __html: String(d).replace(/\*\*([^*]+)\*\*/g, '<strong class="text-slate-900 dark:text-slate-100 font-semibold">$1</strong>') }} />
-            </li>
-          ))}
-        </ul>
+      {isDrawn(diagram) ? (
+        <>
+          {items.length > 0 && (
+            <ul className="space-y-1.5 mb-5 list-disc ml-5 text-sm text-slate-600 dark:text-slate-300">
+              {items.map((d, i) => <li key={i}>{renderInline(d)}</li>)}
+            </ul>
+          )}
+          <DiagramViewer type={diagram} title="Schéma interactif & cotations principales" />
+        </>
+      ) : (
+        <DiagramViewer type="process_flow" items={items} title={s.title} />
       )}
-      <DiagramViewer type={s.diagramType || diagramType} title="Schéma Interactif & Cotations Principales" />
     </Section>
   );
 }
@@ -412,18 +468,18 @@ function MistakesStep({ s }) {
       <div className="space-y-4">
         {items.map((item, i) => (
           <div key={i} className="rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 p-4 space-y-2.5 shadow-2xs">
-            <div className="flex gap-2.5 items-start">
-              <span className="text-rose-500 text-lg shrink-0 mt-0.5">❌</span>
-              <p className="text-base text-rose-700 dark:text-rose-200 font-semibold leading-relaxed">{item.mistake}</p>
-            </div>
+            <p className="flex gap-2.5 items-start text-base text-rose-700 dark:text-rose-200 font-semibold leading-relaxed">
+              <span aria-hidden="true">❌</span>
+              <span>{renderInline(item.mistake)}</span>
+            </p>
             {item.trap && (
               <div className="alert-warning">
-                <p className="text-sm text-orange-900 dark:text-orange-200">⚠️ <strong>Piège technique</strong> : {item.trap}</p>
+                <p className="text-sm text-orange-900 dark:text-orange-200">⚠️ <strong>Piège :</strong> {renderInline(item.trap)}</p>
               </div>
             )}
             {item.fix && (
               <div className="alert-tip">
-                <p className="text-sm text-emerald-900 dark:text-emerald-200">✅ <strong>Correction & Règle de l'art</strong> : {item.fix}</p>
+                <p className="text-sm text-emerald-900 dark:text-emerald-200">✅ <strong>Règle de l'art :</strong> {renderInline(item.fix)}</p>
               </div>
             )}
           </div>
@@ -434,39 +490,30 @@ function MistakesStep({ s }) {
 }
 
 function TipsStep({ s }) {
-  const tips = s.tips || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="space-y-2.5">
-        {tips.map((tip, i) => (
-          <div key={i} className="flex gap-3 items-start rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-3.5">
-            <span className="text-emerald-600 dark:text-emerald-400 shrink-0 text-lg mt-0.5">💡</span>
-            <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{tip}</p>
-          </div>
+      <ul className="space-y-2.5">
+        {(s.tips || []).map((tip, i) => (
+          <li key={i} className="flex gap-3 items-start rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 p-3.5">
+            <span className="text-emerald-600 dark:text-emerald-400 shrink-0 text-lg" aria-hidden="true">💡</span>
+            <span className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{renderInline(tip)}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   );
 }
 
 function NormsStep({ s }) {
-  const norms = s.norms || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="space-y-2.5 w-full">
-        {norms.map((n, i) => (
-          <div
-            key={n.code || i}
-            className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3.5 rounded-xl bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200/80 dark:border-slate-700 p-3.5 w-full max-w-full overflow-hidden shadow-2xs"
-          >
-            <span className="tag-blue shrink-0 self-start text-xs font-mono font-bold px-2.5 py-1">
-              {n.code || 'NORM'}
-            </span>
-            <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed flex-1 min-w-0 break-words font-medium">
-              {renderInline(n.description)}
-            </p>
+        {(s.norms || []).map((n, i) => (
+          <div key={n.code || i} className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3.5 rounded-xl bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200/80 dark:border-slate-700 p-3.5 w-full max-w-full overflow-hidden shadow-2xs">
+            <span className="tag-blue shrink-0 self-start text-xs font-mono font-bold px-2.5 py-1">{n.code || 'Norme'}</span>
+            <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed flex-1 min-w-0 break-words">{renderInline(n.description)}</p>
           </div>
         ))}
       </div>
@@ -474,17 +521,19 @@ function NormsStep({ s }) {
   );
 }
 
-function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
+function ExercisesStep({ s, onOpenCalculator }) {
   const [answers, setAnswers] = useState({});
   const [revealed, setRevealed] = useState({});
   const exercises = s.exercises || [];
+  const difficultyTag = d => (d === 'Facile' ? 'tag-green' : d === 'Moyen' ? 'tag-blue' : 'tag-orange');
 
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="flex justify-end mb-3">
         <button
-          onClick={() => setShowSciCalc(true)}
+          type="button"
+          onClick={onOpenCalculator}
           className="flex items-center gap-2 text-xs bg-slate-100 hover:bg-violet-100 border border-violet-300 text-violet-700 dark:bg-slate-800 dark:hover:bg-violet-600/20 dark:border-violet-500/30 dark:text-violet-300 px-3.5 py-2 rounded-xl transition-all shadow-sm cursor-pointer"
         >
           🧮 Calculatrice scientifique
@@ -496,47 +545,39 @@ function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
           return (
             <div key={exId} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5">
               <div className="flex items-start gap-3 mb-3">
-                <div className="step-badge shrink-0">{ex.number || (i + 1)}</div>
-                <div>
-                  <span className={`tag-${ex.difficulty === 'Facile' ? 'green' : ex.difficulty === 'Moyen' ? 'blue' : 'orange'} mb-2 inline-block`}>
-                    {ex.difficulty || 'Exercice'}
-                  </span>
-                  <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{ex.text}</p>
+                <div className="step-badge shrink-0">{ex.number || i + 1}</div>
+                <div className="min-w-0">
+                  <span className={`${difficultyTag(ex.difficulty)} mb-2 inline-block`}>{ex.difficulty || 'Exercice'}</span>
+                  <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{renderInline(ex.text)}</p>
                 </div>
               </div>
-
               {ex.hint && (
                 <div className="alert-info mb-3">
-                  <p className="text-sm text-teal-800 dark:text-cyan-300 font-medium">💡 Indice : {ex.hint}</p>
+                  <p className="text-sm text-teal-800 dark:text-cyan-300 font-medium">💡 Indice : {renderInline(ex.hint)}</p>
                 </div>
               )}
-
+              <label className="sr-only" htmlFor={`answer-${exId}`}>Votre réponse à l'exercice {ex.number || i + 1}</label>
               <textarea
-                placeholder="Entrez votre raisonnement et résultat..."
+                id={`answer-${exId}`}
+                placeholder="Écrivez votre raisonnement et votre résultat…"
                 value={answers[exId] || ''}
                 onChange={e => setAnswers(prev => ({ ...prev, [exId]: e.target.value }))}
-                className="w-full rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 px-3.5 py-2.5 text-base text-slate-900 dark:text-slate-200 placeholder:text-slate-400 min-h-20 resize-none shadow-inner font-mono"
+                className="w-full rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900 px-3.5 py-2.5 text-base text-slate-900 dark:text-slate-200 placeholder:text-slate-400 min-h-20 resize-y shadow-inner font-mono"
               />
-
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={() => setRevealed(prev => ({ ...prev, [exId]: !prev[exId] }))}
-                  className="text-xs bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600 dark:text-slate-300 px-3.5 py-2 rounded-lg transition-colors font-medium shadow-sm cursor-pointer"
-                >
-                  {revealed[exId] ? 'Masquer correction' : '📋 Voir la solution détaillée'}
-                </button>
-              </div>
-
+              <button
+                type="button"
+                onClick={() => setRevealed(prev => ({ ...prev, [exId]: !prev[exId] }))}
+                aria-expanded={Boolean(revealed[exId])}
+                className="mt-3 text-xs bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-600 dark:text-slate-300 px-3.5 py-2 rounded-lg transition-colors font-medium shadow-sm cursor-pointer"
+              >
+                {revealed[exId] ? 'Masquer la correction' : '📋 Voir la correction détaillée'}
+              </button>
               {revealed[exId] && (
-                <div className="mt-4 formula-card animate-fade-up w-full max-w-full overflow-x-auto">
-                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-2 uppercase tracking-wide">✅ Solution :</p>
-                  {ex.answer_latex && (
-                    <div className="overflow-x-auto max-w-full py-1.5 math-scroll">
-                      <SafeBlockMath math={ex.answer_latex} />
-                    </div>
-                  )}
+                <div className="mt-4 space-y-2.5 animate-fade-up">
+                  <FormulaBox math={ex.answer_latex} label="✅ Correction :" />
+                  <FormulaBox math={ex.answer_latex_2} />
                   {ex.answer_text && (
-                    <p className="text-base text-emerald-800 dark:text-emerald-300 font-mono mt-2.5 break-words font-medium">{ex.answer_text}</p>
+                    <p className="text-base text-emerald-800 dark:text-emerald-300 font-medium break-words">{renderInline(ex.answer_text)}</p>
                   )}
                 </div>
               )}
@@ -548,95 +589,94 @@ function ExercisesStep({ s, showSciCalc, setShowSciCalc }) {
   );
 }
 
-function QuizStep({ s }) {
+function QuizStep({ s, bestScore, onScore }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const questions = s.questions || [];
+  const questions = (s.questions || []).map((q, i) => ({ ...q, id: q.id ?? `q${i + 1}` }));
+  const score = questions.filter(q => answers[q.id] === q.correct).length;
+  const pct = questions.length ? Math.round((score / questions.length) * 100) : 0;
 
-  const score = Object.entries(answers).filter(([qid, aid]) => {
-    const q = questions.find(q => String(q.id) === String(qid));
-    return q && q.correct === aid;
-  }).length;
-
-  const handleSubmit = () => setSubmitted(true);
-  const handleReset = () => { setAnswers({}); setSubmitted(false); };
+  const submit = () => {
+    setSubmitted(true);
+    onScore?.(pct);
+  };
 
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-
+      {typeof bestScore === 'number' && !submitted && (
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">🏅 Meilleur score enregistré : <strong>{bestScore}%</strong></p>
+      )}
       {submitted && questions.length > 0 && (
-        <div className={`rounded-xl p-4 mb-5 ${score >= questions.length * 0.8 ? 'alert-tip' : 'alert-warning'}`}>
+        <div className={`rounded-xl p-4 mb-5 ${pct >= 80 ? 'alert-tip' : 'alert-warning'}`} role="status">
           <p className="text-lg font-bold text-slate-900 dark:text-white">
-            {score >= questions.length * 0.8 ? '🏆' : score >= questions.length * 0.5 ? '📈' : '📚'} {' '}
-            Score : {score}/{questions.length} ({Math.round(score / questions.length * 100)}%)
+            {pct >= 80 ? '🏆' : pct >= 50 ? '📈' : '📚'} Score : {score}/{questions.length} ({pct}%)
           </p>
-          <p className="text-base mt-1.5 text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
-            {score === questions.length ? 'Excellent ! Maîtrise parfaite de toutes les compétences du module.' :
-             score >= questions.length * 0.8 ? 'Très bien ! Vous êtes prêt pour les applications de dimensionnement.' :
-             score >= questions.length * 0.5 ? 'Bonne assimilation globale. Révisez les points manqués.' :
-             'Relisez les étapes clés et repassez le quiz pour consolider vos acquis.'}
+          <p className="text-base mt-1.5 text-slate-700 dark:text-slate-200 leading-relaxed">
+            {pct === 100 ? 'Excellent ! Toutes les notions du module sont maîtrisées.'
+              : pct >= 80 ? 'Très bien ! Le quiz est validé (≥ 80 %).'
+                : pct >= 50 ? 'Bonne base. Relisez les explications des questions manquées.'
+                  : 'Relisez les étapes clés de la leçon puis refaites le quiz.'}
           </p>
         </div>
       )}
-
       <div className="space-y-5">
         {questions.map((q, qi) => {
-          const qId = q.id || `q-${qi}`;
-          const chosen = answers[qId];
-          const isSubmitted = submitted;
-          const options = q.options || [];
-
+          const chosen = answers[q.id];
           return (
-            <div key={qId} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5 shadow-sm">
+            <fieldset key={q.id || qi} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/30 p-4 sm:p-5 shadow-sm">
+              <legend className="sr-only">Question {qi + 1}</legend>
               <p className="text-base font-bold text-slate-900 dark:text-white mb-3.5">
                 <span className="text-teal-600 dark:text-cyan-400 mr-2">Q{qi + 1}.</span>
-                {q.question}
+                {renderInline(q.question)}
               </p>
               <div className="space-y-2.5">
-                {options.map((opt, oi) => {
-                  const optId = opt.id || String.fromCharCode(97 + oi);
+                {(q.options || []).map(opt => {
                   let cls = 'quiz-option rounded-xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-800/50 px-4 py-3 text-base text-slate-700 dark:text-slate-300 w-full text-left shadow-2xs transition-all cursor-pointer';
-                  if (isSubmitted) {
-                    if (optId === q.correct) cls += ' selected-correct';
-                    else if (optId === chosen && optId !== q.correct) cls += ' selected-incorrect';
-                  } else if (chosen === optId) {
+                  if (submitted) {
+                    if (opt.id === q.correct) cls += ' selected-correct';
+                    else if (opt.id === chosen) cls += ' selected-incorrect';
+                  } else if (chosen === opt.id) {
                     cls += ' bg-teal-50 border-teal-500 text-teal-900 dark:bg-teal-500/20 dark:border-cyan-500 dark:text-cyan-200 font-bold';
                   }
                   return (
                     <button
-                      key={optId}
-                      onClick={() => !isSubmitted && setAnswers(prev => ({ ...prev, [qId]: optId }))}
+                      type="button"
+                      key={opt.id}
+                      onClick={() => !submitted && setAnswers(prev => ({ ...prev, [q.id]: opt.id }))}
                       className={cls}
-                      disabled={isSubmitted}
+                      disabled={submitted}
+                      aria-pressed={chosen === opt.id}
                     >
-                      <span className="font-mono text-slate-400 dark:text-slate-500 mr-2.5">{String(optId).toUpperCase()})</span>
-                      {opt.text}
+                      <span className="font-mono text-slate-400 dark:text-slate-500 mr-2.5">{String(opt.id).toUpperCase()})</span>
+                      {renderInline(opt.text)}
                     </button>
                   );
                 })}
               </div>
-              {isSubmitted && q.explanation && (
+              {submitted && q.explanation && (
                 <div className="mt-3.5 text-sm alert-info">
-                  <p className="font-bold text-slate-900 dark:text-white">💡 Explication : {q.explanation}</p>
+                  <p className="text-slate-800 dark:text-slate-100">💡 <strong>Explication :</strong> {renderInline(q.explanation)}</p>
                 </div>
               )}
-            </div>
+            </fieldset>
           );
         })}
       </div>
-
-      <div className="mt-5 flex gap-3">
+      <div className="mt-5">
         {!submitted ? (
           <button
-            onClick={handleSubmit}
-            className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
+            type="button"
+            onClick={submit}
+            disabled={Object.keys(answers).length === 0}
+            className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md cursor-pointer"
           >
             Valider mes réponses
           </button>
         ) : (
           <button
-            onClick={handleReset}
+            type="button"
+            onClick={() => { setAnswers({}); setSubmitted(false); }}
             className="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-bold px-6 py-3 rounded-xl transition-all cursor-pointer"
           >
             Recommencer le quiz
@@ -648,69 +688,47 @@ function QuizStep({ s }) {
 }
 
 function ExamStep({ s }) {
-  const [showCriteria, setShowCriteria] = useState(false);
-  const criteria = s.criteria || [];
-
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="border border-amber-200 dark:border-amber-900/50 bg-amber-50/50 dark:bg-amber-950/20 rounded-xl p-4 sm:p-5 mb-4">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl">⏱️</span>
-          <p className="text-base font-bold text-amber-900 dark:text-amber-200">Sujet d'Épreuve — Durée : {s.duration || '3h'}</p>
-        </div>
-        <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{s.prompt}</p>
+      <ol className="space-y-3">
+        {(s.questions || []).map((q, i) => (
+          <li key={i} className="flex gap-3 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 p-4">
+            <span className="step-badge shrink-0">{i + 1}</span>
+            <span className="text-base text-slate-800 dark:text-slate-200 leading-relaxed">{renderInline(q)}</span>
+          </li>
+        ))}
+      </ol>
+      <div className="alert-info mt-4">
+        <p className="text-sm text-slate-700 dark:text-slate-300">🎓 Questions typiques d'un examen de licence ou de master en génie civil. Rédigez une réponse structurée : définitions, hypothèses, formules, application numérique, conclusion.</p>
       </div>
-
-      {criteria.length > 0 && (
-        <>
-          <button
-            onClick={() => setShowCriteria(p => !p)}
-            className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold mb-3 inline-block cursor-pointer"
-          >
-            {showCriteria ? 'Masquer la grille d\'évaluation' : '📋 Voir le barème et critères de notation'}
-          </button>
-
-          {showCriteria && (
-            <div className="space-y-2 mb-4 animate-fade-up">
-              {criteria.map((cr, i) => (
-                <div key={i} className="flex justify-between items-center text-sm p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-700 dark:text-slate-200">{cr.item}</span>
-                  <span className="tag-blue shrink-0">{cr.pts} pts</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </>
-      )}
     </Section>
   );
 }
 
 function InterviewStep({ s }) {
   const [revealed, setRevealed] = useState({});
-  const toggle = (i) => setRevealed(p => ({ ...p, [i]: !p[i] }));
-  const questions = s.questions || [];
-
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
       <div className="space-y-4">
-        {questions.map((q, i) => (
+        {(s.questions || []).map((q, i) => (
           <div key={i} className="rounded-xl border border-slate-200 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/40 p-4 sm:p-5">
-            <div className="flex items-start gap-3 mb-2.5">
-              <span className="text-lg">👔</span>
-              <p className="text-base font-bold text-slate-900 dark:text-white leading-snug">{q.q}</p>
-            </div>
+            <p className="flex items-start gap-3 mb-2.5 text-base font-bold text-slate-900 dark:text-white leading-snug">
+              <span aria-hidden="true">👔</span>
+              <span>{renderInline(q.question)}</span>
+            </p>
             <button
-              onClick={() => toggle(i)}
-              className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold mt-1 cursor-pointer"
+              type="button"
+              onClick={() => setRevealed(p => ({ ...p, [i]: !p[i] }))}
+              aria-expanded={Boolean(revealed[i])}
+              className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold cursor-pointer"
             >
-              {revealed[i] ? 'Masquer la réponse attendue' : '💡 Voir la réponse attendue par le recruteur'}
+              {revealed[i] ? 'Masquer la piste de réponse' : '💡 Voir la piste de réponse attendue'}
             </button>
             {revealed[i] && (
               <div className="alert-tip mt-3 animate-fade-up">
-                <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{q.a}</p>
+                <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed">{renderInline(q.answer_hint)}</p>
               </div>
             )}
           </div>
@@ -720,96 +738,77 @@ function InterviewStep({ s }) {
   );
 }
 
-function PracticalStep({ s, diagramType }) {
-  const [step, setStep] = useState(0);
-  const phases = s.phases || [];
+function PracticalStep({ s, lessonDiagram }) {
+  const resolutions = Object.keys(s)
+    .filter(k => /^resolution_latex_\d+$/.test(k) && s[k])
+    .sort((a, b) => Number(a.split('_').pop()) - Number(b.split('_').pop()))
+    .map(k => s[k]);
+  const [shown, setShown] = useState(1);
+  const allShown = shown >= resolutions.length;
+  const diagram = s.diagramType || lessonDiagram;
 
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      {s.scenario && (
-        <div className="alert-info mb-4">
-          <p className="text-base text-slate-800 dark:text-slate-200 leading-relaxed font-medium">{s.scenario}</p>
-        </div>
-      )}
-      <div className="space-y-3 mb-5">
-        {phases.map((ph, i) => (
-          <div
-            key={i}
-            className={`rounded-xl border p-4 transition-all ${
-              i <= step
-                ? 'bg-slate-50 dark:bg-slate-800/70 border-teal-300 dark:border-cyan-500/40 shadow-xs'
-                : 'opacity-50 border-slate-200 dark:border-slate-700/30'
-            }`}
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="step-badge">{i + 1}</div>
-              <p className="text-base font-bold text-slate-900 dark:text-white">{ph.title}</p>
-            </div>
-            {i <= step ? (
-              <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed">{ph.action}</p>
+      {s.scenario && <p className="tag-orange inline-block mb-3 leading-relaxed whitespace-normal">{renderInline(s.scenario)}</p>}
+      {s.description && <div className="alert-info mb-4"><RichText text={s.description} /></div>}
+      <ol className="space-y-3 mb-4">
+        {resolutions.slice(0, shown + 1).map((latex, i) => (
+          <li key={i} className="w-full max-w-full">
+            <p className="flex items-center gap-2 mb-1.5 text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wide">
+              <span className="step-badge">{i + 1}</span> Étape de résolution {i + 1}
+            </p>
+            {i < shown ? (
+              <FormulaBox math={latex} />
             ) : (
-              <button
-                onClick={() => setStep(i)}
-                className="text-xs text-teal-700 dark:text-cyan-400 hover:underline font-bold cursor-pointer"
-              >
-                Déverrouiller l'étape {i + 1} →
-              </button>
+              i === shown && (
+                <button
+                  type="button"
+                  onClick={() => setShown(i + 1)}
+                  className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:border-slate-700 px-3 py-2 rounded-xl transition-colors font-medium shadow-sm cursor-pointer"
+                >
+                  Afficher l'étape {i + 1} →
+                </button>
+              )
             )}
-          </div>
+          </li>
         ))}
-      </div>
-      <DiagramViewer type={s.diagramType || diagramType} title="Schéma d'Exécution & Détails du Cas Pratique" />
-      {step >= 2 && s.conclusion && (
+      </ol>
+      {isDrawn(diagram) && <DiagramViewer type={diagram} title="Schéma d'exécution du cas pratique" />}
+      {allShown && s.conclusion && (
         <div className="alert-warning mt-4 animate-fade-up">
-          <p className="text-base text-orange-900 dark:text-orange-200 font-bold">⚠️ Conclusion d'ingénierie : {s.conclusion}</p>
+          <p className="text-base text-orange-900 dark:text-orange-200 font-semibold">⚠️ Conclusion : {renderInline(s.conclusion)}</p>
         </div>
       )}
-    </Section>
-  );
-}
-
-function SummaryStep({ s }) {
-  return (
-    <Section className="border-teal-300 dark:border-cyan-500/30 bg-teal-50/40 dark:bg-slate-900/50">
-      <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="prose-custom">{parseLatexContent(s.content)}</div>
     </Section>
   );
 }
 
 function KeyPointsStep({ s }) {
-  const points = s.points || [];
   return (
     <Section>
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {points.map((pt, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-3 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 p-4 shadow-2xs transition-all hover:border-teal-300 dark:hover:border-slate-600"
-          >
-            <span className="text-amber-500 dark:text-amber-400 shrink-0 text-lg mt-0.5">⭐</span>
-            <div className="text-base text-slate-900 dark:text-slate-100 font-semibold leading-relaxed break-words flex-1">
-              {renderInline(pt)}
-            </div>
-          </div>
+      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {(s.points || []).map((pt, i) => (
+          <li key={i} className="flex items-start gap-3 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/90 dark:border-slate-700 p-4 shadow-2xs">
+            <span className="text-amber-500 dark:text-amber-400 shrink-0 text-lg" aria-hidden="true">⭐</span>
+            <span className="text-base text-slate-900 dark:text-slate-100 font-semibold leading-relaxed break-words">{renderInline(pt)}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   );
 }
 
-function SelfAssessmentStep({ s }) {
-  const [checked, setChecked] = useState([]);
+function SelfAssessmentStep({ s, checked = [], onChange }) {
   const objectives = s.objectives || [];
-  const toggle = (i) => setChecked(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]);
-  const pct = objectives.length > 0 ? Math.round((checked.length / objectives.length) * 100) : 100;
+  const toggle = i => onChange?.(checked.includes(i) ? checked.filter(x => x !== i) : [...checked, i]);
+  const pct = objectives.length ? Math.round((checked.length / objectives.length) * 100) : 0;
 
   return (
     <Section className="border-emerald-300 dark:border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-950/20">
       <StepHeader step={s.id} title={s.title} icon={s.icon} />
-      {s.description && <p className="text-base text-slate-700 dark:text-slate-300 mb-4 font-medium">{s.description}</p>}
+      {s.description && <p className="text-base text-slate-700 dark:text-slate-300 mb-4 font-medium">{renderInline(s.description)}</p>}
       <div className="space-y-2.5 mb-5">
         {objectives.map((obj, i) => (
           <label key={i} className="flex items-start gap-3 cursor-pointer rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 p-3 transition-colors">
@@ -819,7 +818,7 @@ function SelfAssessmentStep({ s }) {
               onChange={() => toggle(i)}
               className="mt-1 accent-emerald-600 dark:accent-emerald-500 w-4 h-4"
             />
-            <span className={`text-base transition-colors ${checked.includes(i) ? 'text-emerald-700 dark:text-emerald-300 line-through font-medium' : 'text-slate-800 dark:text-slate-200'}`}>{obj}</span>
+            <span className={`text-base ${checked.includes(i) ? 'text-emerald-700 dark:text-emerald-300 line-through' : 'text-slate-800 dark:text-slate-200'}`}>{renderInline(obj)}</span>
           </label>
         ))}
       </div>
@@ -829,228 +828,300 @@ function SelfAssessmentStep({ s }) {
           <span className={`font-mono ${pct >= 80 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 50 ? 'text-amber-600 dark:text-yellow-400' : 'text-slate-500'}`}>{pct}%</span>
         </div>
         <div className="h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-          <div
-            className={`h-full rounded-full transition-all duration-500 ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-400'}`}
-            style={{ width: `${pct}%` }}
-          />
+          <div className={`h-full rounded-full transition-all duration-500 ${pct >= 80 ? 'bg-emerald-500' : pct >= 50 ? 'bg-amber-500' : 'bg-slate-400'}`} style={{ width: `${pct}%` }} />
         </div>
         {pct === 100 && (
-          <div className="mt-3.5 text-center">
-            <p className="text-3xl">🏆</p>
-            <p className="text-emerald-700 dark:text-emerald-300 font-bold text-base mt-1">Leçon validée avec succès ! Félicitations !</p>
-          </div>
+          <p className="mt-3.5 text-center text-emerald-700 dark:text-emerald-300 font-bold text-base">🏆 Leçon validée — vos objectifs sont tous atteints.</p>
         )}
       </div>
     </Section>
   );
 }
 
-// ── Main Component ─────────────────────────────────────────────────────────────
+// ── Tools dock (adapted to the lesson's subject) ─────────────────────────────
 
-export default function LessonCanvas({ module, theme }) {
+function collectTerms(lesson) {
+  const text = JSON.stringify(lesson.steps);
+  return Object.values(TECH_TERMS)
+    .filter(t => new RegExp(`(^|[^A-Za-z0-9])${t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^A-Za-z0-9]|$)`).test(text))
+    .slice(0, 12);
+}
+
+function Workstation({ lesson, domain, moduleTitle }) {
+  const [tab, setTab] = useState('tool');
   const [angle, setAngle] = useState(35);
   const [hypotenuse, setHypotenuse] = useState(10);
-  const [showSciCalc, setShowSciCalc] = useState(false);
-  const [activeTab, setActiveTab] = useState('widget'); // 'widget' | 'diagram' | 'cheatsheet' | 'glossary'
-  const contentRef = useRef(null);
 
-  // Load lesson dynamically for ALL 35 modules with safe fallback
-  const lesson = getLessonForModule(module) || {};
-  const steps = Array.isArray(lesson.steps) ? lesson.steps : [];
-  const diagramType = lesson.diagramType || 'trig_interactive';
-  const level = String(lesson.level || module?.level || 'Intermédiaire');
-  const duration = String(lesson.duration || module?.duration || '40h');
-  const title = String(lesson.title || module?.title || 'Module de Formation');
-  const subtitle = String(lesson.subtitle || (module ? `Module ${module.id} — ${module.title}` : 'GCEA Academy'));
-  const tags = Array.isArray(lesson.tags) ? lesson.tags : (module?.category ? [module.category, level] : ['Génie Civil']);
+  const formulas = useMemo(() => (lesson.steps.find(s => s.type === 'formulas')?.formulas || []).slice(0, 8), [lesson]);
+  const terms = useMemo(() => collectTerms(lesson), [lesson]);
+  const diagramStep = lesson.steps.find(s => s.type === 'interactive_diagram');
+  const definition = lesson.steps.find(s => s.type === 'definition');
 
-  const renderStep = (s) => {
-    if (!s || !s.type) return null;
-    const props = { s, showSciCalc, setShowSciCalc, diagramType, moduleSlug: module?.slug };
-    switch (s.type) {
-      case 'definition': return <DefinitionStep key={s.id || s.key} {...props} />;
-      case 'importance': return <ImportanceStep key={s.id || s.key} {...props} />;
-      case 'applications': return <ApplicationsStep key={s.id || s.key} {...props} />;
-      case 'theory': return <TheoryStep key={s.id || s.key} {...props} />;
-      case 'formulas': return <FormulasStep key={s.id || s.key} {...props} />;
-      case 'stepbystep': return <StepByStepSection key={s.id || s.key} {...props} />;
-      case 'units': return <UnitsStep key={s.id || s.key} {...props} />;
-      case 'hypotheses': return <HypothesesStep key={s.id || s.key} {...props} />;
-      case 'examples_simple': return <ExamplesSimpleStep key={s.id || s.key} {...props} />;
-      case 'examples_real': return <RealExamplesStep key={s.id || s.key} {...props} />;
-      case 'interactive_diagram': return <DiagramStep key={s.id || s.key} {...props} />;
-      case 'mistakes': return <MistakesStep key={s.id || s.key} {...props} />;
-      case 'tips': return <TipsStep key={s.id || s.key} {...props} />;
-      case 'norms': return <NormsStep key={s.id || s.key} {...props} />;
-      case 'exercises': return <ExercisesStep key={s.id || s.key} {...props} />;
-      case 'corrections': return (
-        <Section key={s.id || s.key}>
-          <StepHeader step={s.id} title={s.title} icon={s.icon} />
-          <div className="alert-info">
-            <p className="text-base text-teal-800 dark:text-cyan-300 font-medium">{s.note || 'Correction et explications détaillées disponibles.'}</p>
+  const tool = TRIG_DOMAINS.has(domain)
+    ? { label: '📐 Triangle & trigonométrie', node: <TrigWidget angle={angle} setAngle={setAngle} hypotenuse={hypotenuse} setHypotenuse={setHypotenuse} /> }
+    : BEAM_DOMAINS.has(domain)
+      ? { label: '🏗️ Poutre isostatique', node: <BeamCalculator /> }
+      : { label: '🔁 Convertisseur d\'unités', node: <UnitConverter /> };
+
+  const tabs = [
+    { key: 'tool', label: tool.label },
+    { key: 'diagram', label: '📊 Schéma' },
+    { key: 'cheatsheet', label: '💡 Formules clés' },
+    { key: 'glossary', label: '📖 Lexique FR/EN' },
+  ];
+
+  return (
+    <div className="rounded-3xl border border-teal-200 dark:border-slate-800 bg-gradient-to-br from-teal-50/50 via-cyan-50/30 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 shadow-lg space-y-5 my-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2.5">
+          <span className="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center text-lg shadow-md" aria-hidden="true">🧰</span>
+          <div>
+            <span className="text-[10px] uppercase font-bold tracking-widest text-teal-700 dark:text-cyan-400">Atelier pratique</span>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Outils & aide-mémoire — {moduleTitle}</h3>
           </div>
-        </Section>
-      );
-      case 'quiz': return <QuizStep key={s.id || s.key} {...props} />;
-      case 'exam': return <ExamStep key={s.id || s.key} {...props} />;
-      case 'interview': return <InterviewStep key={s.id || s.key} {...props} />;
-      case 'practical': return <PracticalStep key={s.id || s.key} {...props} />;
-      case 'summary': return <SummaryStep key={s.id || s.key} {...props} />;
-      case 'keypoints': return <KeyPointsStep key={s.id || s.key} {...props} />;
-      case 'self_assessment': return <SelfAssessmentStep key={s.id || s.key} {...props} />;
+        </div>
+        <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner text-xs font-semibold" role="tablist">
+          {tabs.map(t => (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === t.key}
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${tab === t.key ? 'bg-teal-600 text-white shadow-md font-bold' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'}`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {tab === 'tool' && (
+        <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">{tool.node}</div>
+      )}
+      {tab === 'diagram' && (
+        isDrawn(lesson.diagramType)
+          ? <DiagramViewer type={lesson.diagramType} title={diagramStep?.title} />
+          : <DiagramViewer type="process_flow" items={diagramStep?.diagram_description || []} title={diagramStep?.title} />
+      )}
+      {tab === 'cheatsheet' && (
+        formulas.length ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+            {formulas.map(f => (
+              <div key={f.name} className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-2xs min-w-0">
+                <span className="tag-blue mb-1.5 inline-block text-[11px] font-bold">{f.name}</span>
+                <div className="overflow-x-auto py-1 math-scroll"><SafeInlineMath math={f.latex} /></div>
+              </div>
+            ))}
+          </div>
+        ) : <p className="text-sm text-slate-600 dark:text-slate-400">Cette leçon ne contient pas de formule.</p>
+      )}
+      {tab === 'glossary' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+          {definition?.fr && (
+            <div className="sm:col-span-2 p-2.5 rounded-xl bg-teal-50 dark:bg-slate-900 border border-teal-100 dark:border-slate-800 text-sm">
+              <p className="font-semibold text-slate-900 dark:text-white">🇫🇷 {definition.fr}</p>
+              {definition.en && <p className="text-teal-700 dark:text-cyan-400 mt-0.5">🇬🇧 {definition.en}</p>}
+            </div>
+          )}
+          {terms.map(t => (
+            <div key={t.term} className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 text-sm">
+              <p className="text-slate-900 dark:text-white font-semibold">{t.term} — <span className="font-normal">{t.full}</span></p>
+              {t.en && <p className="text-teal-700 dark:text-cyan-400 font-mono text-xs mt-0.5">{t.en}</p>}
+            </div>
+          ))}
+          {!terms.length && !definition?.fr && <p className="text-sm text-slate-600 dark:text-slate-400">Aucun terme technique référencé pour cette leçon.</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Lesson page ──────────────────────────────────────────────────────────────
+
+function LessonSelector({ entries, index, onSelect, progress }) {
+  if (entries.length < 2) return null;
+  return (
+    <nav aria-label="Leçons du module" className="flex flex-wrap gap-2 pt-1">
+      {entries.map((entry, i) => {
+        const validated = isValidated(progress[entry.key]);
+        const active = i === index;
+        return (
+          <button
+            type="button"
+            key={entry.key}
+            onClick={() => onSelect(i)}
+            aria-current={active ? 'page' : undefined}
+            className={`text-left text-xs sm:text-sm rounded-xl border px-3 py-2 transition-all cursor-pointer max-w-full ${active
+              ? 'bg-teal-600 border-teal-600 text-white shadow-md font-semibold'
+              : 'bg-white/80 border-slate-200 text-slate-700 hover:border-teal-400 dark:bg-slate-800/80 dark:border-slate-700 dark:text-slate-200'}`}
+          >
+            <span className="font-mono mr-1.5">{validated ? '✓' : `L${i + 1}`}</span>
+            {entry.title}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
+export function isValidated(progress) {
+  if (!progress) return false;
+  return (progress.quizBest ?? 0) >= 80 || Boolean(progress.allObjectives);
+}
+
+export default function LessonCanvas({ module, lessonIndex = 0, onSelectLesson, lessonProgress = {}, onLessonProgress }) {
+  const [showSciCalc, setShowSciCalc] = useState(false);
+  const entries = getLessonEntries(module);
+  const index = Math.min(Math.max(0, lessonIndex), Math.max(0, entries.length - 1));
+  const entry = entries[index];
+  const { status, lesson, error, retry } = useLesson(entry);
+  const progress = (entry && lessonProgress[entry.key]) || {};
+
+  const saveProgress = patch => entry && onLessonProgress?.(entry.key, patch);
+
+  const renderStep = s => {
+    if (!s?.type) return null;
+    const key = `${entry.key}-${s.id ?? s.key}`;
+    const common = { s, lessonDiagram: lesson.diagramType, domain: entry.domain };
+    switch (s.type) {
+      case 'definition': return <DefinitionStep key={key} {...common} />;
+      case 'importance': return <ContentStep key={key} {...common} />;
+      case 'applications': return <ApplicationsStep key={key} {...common} />;
+      case 'theory': return <TheoryStep key={key} {...common} />;
+      case 'formulas': return <FormulasStep key={key} {...common} />;
+      case 'stepbystep': return <StepByStepStep key={key} {...common} />;
+      case 'units': return <UnitsStep key={key} {...common} />;
+      case 'hypotheses': return <HypothesesStep key={key} {...common} />;
+      case 'examples_simple': return <ExamplesSimpleStep key={key} {...common} />;
+      case 'examples_real': return <RealExamplesStep key={key} {...common} />;
+      case 'interactive_diagram': return <DiagramStep key={key} {...common} />;
+      case 'mistakes': return <MistakesStep key={key} {...common} />;
+      case 'tips': return <TipsStep key={key} {...common} />;
+      case 'norms': return <NormsStep key={key} {...common} />;
+      case 'exercises': return <ExercisesStep key={key} {...common} onOpenCalculator={() => setShowSciCalc(true)} />;
+      case 'corrections':
+        return (
+          <Section key={key}>
+            <StepHeader step={s.id} title={s.title} icon={s.icon} />
+            <div className="alert-info"><p className="text-base text-teal-800 dark:text-cyan-300 font-medium">{renderInline(s.note || 'Les corrections détaillées sont disponibles sous chaque exercice.')}</p></div>
+          </Section>
+        );
+      case 'quiz':
+        return <QuizStep key={key} {...common} bestScore={progress.quizBest} onScore={pct => saveProgress({ quizBest: Math.max(pct, progress.quizBest ?? 0) })} />;
+      case 'exam': return <ExamStep key={key} {...common} />;
+      case 'interview': return <InterviewStep key={key} {...common} />;
+      case 'practical': return <PracticalStep key={key} {...common} />;
+      case 'summary': return <ContentStep key={key} {...common} className="border-teal-300 dark:border-cyan-500/30 bg-teal-50/40 dark:bg-slate-900/50" />;
+      case 'keypoints': return <KeyPointsStep key={key} {...common} />;
+      case 'self_assessment':
+        return (
+          <SelfAssessmentStep
+            key={key}
+            {...common}
+            checked={progress.checked || []}
+            onChange={checked => saveProgress({ checked, allObjectives: checked.length === (s.objectives || []).length })}
+          />
+        );
       default: return null;
     }
   };
+
+  const validated = isValidated(progress);
 
   return (
     <ErrorBoundary title="Erreur lors du chargement de la leçon">
       <div className="w-full max-w-5xl mx-auto overflow-x-hidden space-y-6">
         {showSciCalc && <SciCalc onClose={() => setShowSciCalc(false)} />}
 
-        {/* Lesson Header Banner */}
-        <div className="rounded-3xl border border-teal-200/80 dark:border-slate-800 bg-gradient-to-br from-teal-50/70 via-cyan-50/40 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 relative overflow-hidden w-full max-w-full mx-0 shadow-sm">
+        {/* Lesson header */}
+        <header className="rounded-3xl border border-teal-200/80 dark:border-slate-800 bg-gradient-to-br from-teal-50/70 via-cyan-50/40 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 relative overflow-hidden w-full max-w-full shadow-sm">
           <div className="absolute inset-0 eng-grid-bg opacity-30 dark:opacity-50 pointer-events-none" />
           <div className="relative space-y-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
-                  {module?.icon && <span className="text-2xl sm:text-3xl shrink-0">{module.icon}</span>}
-                  {module?.id && <span className="tag-blue text-xs font-bold">Module {module.id}</span>}
-                  <span className="tag-green text-xs font-bold">🔓 Accès Libre</span>
-                  <span className={`tag-${level.includes('Débutant') ? 'green' : 'orange'} text-xs font-bold`}>{level}</span>
-                  <span className="tag-blue text-xs font-bold">{duration}</span>
+                  {module?.icon && <span className="text-2xl sm:text-3xl shrink-0" aria-hidden="true">{module.icon}</span>}
+                  <span className="tag-blue text-xs font-bold">Module {module?.id}</span>
+                  {entries.length > 1 && <span className="tag-blue text-xs font-bold">Leçon {index + 1}/{entries.length}</span>}
+                  {lesson?.level && <span className={`${String(lesson.level).includes('Débutant') ? 'tag-green' : 'tag-orange'} text-xs font-bold`}>{lesson.level}</span>}
+                  {lesson?.duration && <span className="tag-blue text-xs font-bold">{lesson.duration}</span>}
+                  {validated && <span className="tag-green text-xs font-bold">✓ Leçon validée</span>}
                 </div>
-                <p className="text-xs sm:text-sm uppercase tracking-widest text-teal-700 dark:text-cyan-400 font-bold mb-1.5">{subtitle}</p>
-                <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight break-words">{title}</h2>
-                <div className="flex flex-wrap gap-2 mt-3.5">
-                  {tags.map((t, i) => (
-                    <span key={`${t}-${i}`} className="text-xs bg-white text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full shadow-2xs font-medium">{t}</span>
+                <p className="text-xs sm:text-sm uppercase tracking-widest text-teal-700 dark:text-cyan-400 font-bold mb-1.5">
+                  Module {module?.id} — {module?.title}
+                </p>
+                <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight break-words">{lesson?.title || entry?.title || module?.title}</h2>
+                {lesson?.tags?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3.5">
+                    {lesson.tags.map((t, i) => (
+                      <span key={`${t}-${i}`} className="text-xs bg-white text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full shadow-2xs font-medium">{t}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSciCalc(true)}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white px-5 py-3 rounded-2xl text-sm font-bold transition-all shadow-md cursor-pointer"
+              >
+                🧮 Calculatrice scientifique
+              </button>
+            </div>
+            <LessonSelector entries={entries} index={index} onSelect={i => onSelectLesson?.(i)} progress={lessonProgress} />
+            {lesson && (
+              <div className="pt-1">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium">
+                  <span>{lesson.steps.length} étapes pédagogiques</span>
+                  <span>Accès libre</span>
+                </div>
+                <div className="flex gap-1" aria-hidden="true">
+                  {lesson.steps.map((s, i) => (
+                    <div key={s.id || i} className="h-2 flex-1 rounded-full bg-teal-500/70 dark:bg-cyan-500/70" title={`${s.id || i + 1}. ${s.title || 'Étape'}`} />
                   ))}
                 </div>
               </div>
-              <div className="shrink-0 w-full sm:w-auto">
-                <button
-                  onClick={() => setShowSciCalc(true)}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white px-5 py-3 rounded-2xl text-sm font-bold transition-all shadow-md cursor-pointer"
-                >
-                  🧮 Calculatrice Scientifique
-                </button>
-              </div>
-            </div>
-
-            {/* Step progress bar */}
-            <div className="pt-2">
-              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium">
-                <span>{steps.length} étapes pédagogiques complètes</span>
-                <span>100% Déverrouillé</span>
-              </div>
-              <div className="flex gap-1">
-                {steps.map((s, i) => (
-                  <div
-                    key={s.id || i}
-                    className="h-2 flex-1 rounded-full bg-teal-500/70 dark:bg-cyan-500/70"
-                    title={`${s.id || (i + 1)}. ${s.title || 'Étape'}`}
-                  />
-                ))}
-              </div>
-            </div>
+            )}
           </div>
-        </div>
+        </header>
 
-        {/* ── Main Stream of 23 Canonical Steps (100% Reading Area) ── */}
-        <div ref={contentRef} className="space-y-6 w-full max-w-full min-w-0">
-          {steps.map(s => renderStep(s))}
-        </div>
+        {!entry && (
+          <Section><p className="text-base text-slate-700 dark:text-slate-200">Aucune leçon n'est encore disponible pour ce module.</p></Section>
+        )}
 
-        {/* ── Interactive Engineering Workstation & Tools (Bottom Dock) ── */}
-        <div className="rounded-3xl border border-teal-200 dark:border-slate-800 bg-gradient-to-br from-teal-50/50 via-cyan-50/30 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 p-4 sm:p-7 shadow-lg space-y-5 my-6">
-          {/* Workstation Header & Tabs */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-teal-100 dark:border-slate-800 pb-4">
-            <div className="flex items-center gap-2.5">
-              <span className="w-9 h-9 rounded-2xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center text-lg shadow-md">
-                🧰
-              </span>
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-widest text-teal-700 dark:text-cyan-400">Atelier Pratique & Outils Numériques</span>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">Poste de Calcul & Aide-Mémoire du Module</h3>
-              </div>
+        {entry && status === 'loading' && (
+          <Section>
+            <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300" role="status">
+              <span className="w-5 h-5 rounded-full border-2 border-teal-500 border-t-transparent animate-spin" aria-hidden="true" />
+              Chargement de la leçon « {entry.title} »…
             </div>
+          </Section>
+        )}
 
-            {/* Tabs */}
-            <div className="flex flex-wrap gap-1.5 p-1 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner text-xs font-semibold">
-              {[
-                { key: 'widget', label: '🔢 Calculateur Interactif' },
-                { key: 'diagram', label: '📐 Schéma Interactif' },
-                { key: 'cheatsheet', label: '💡 Formules Clés' },
-                { key: 'glossary', label: '📖 Lexique Bilingue' },
-              ].map(tab => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key)}
-                  className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer ${
-                    activeTab === tab.key
-                      ? 'bg-teal-600 text-white shadow-md font-bold'
-                      : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {tab.label}
-                </button>
+        {entry && status === 'error' && (
+          <Section>
+            <p className="text-base text-rose-700 dark:text-rose-300 font-semibold mb-2">La leçon n'a pas pu être chargée.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+              {typeof navigator !== 'undefined' && navigator.onLine === false
+                ? 'Vous êtes hors ligne et cette leçon n\'a pas encore été enregistrée sur cet appareil. Reconnectez-vous puis réessayez.'
+                : String(error?.message || 'Erreur inconnue.')}
+            </p>
+            <button type="button" onClick={retry} className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold cursor-pointer">🔄 Réessayer</button>
+          </Section>
+        )}
+
+        {status === 'ready' && lesson && (
+          <>
+            <div className="space-y-6 w-full max-w-full min-w-0">
+              {lesson.steps.map(s => (
+                <ErrorBoundary key={`${entry.key}-${s.id}`} title={`Erreur d'affichage — étape ${s.id}`}>
+                  {renderStep(s)}
+                </ErrorBoundary>
               ))}
             </div>
-          </div>
-
-          {/* Active Tab Content */}
-          <div className="w-full">
-            {activeTab === 'widget' && (
-              <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-                <TrigWidget angle={angle} setAngle={setAngle} hypotenuse={hypotenuse} setHypotenuse={setHypotenuse} />
-              </div>
-            )}
-            {activeTab === 'diagram' && (
-              <div className="rounded-2xl bg-white dark:bg-slate-950/80 p-4 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
-                <DiagramViewer type={diagramType} title={`Diagramme Interactif — ${module?.title || 'Ingénierie'}`} />
-              </div>
-            )}
-            {activeTab === 'cheatsheet' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {[
-                  { label: 'Équilibre fondamental', formula: '\\sum \\vec{F} = \\vec{0}, \\quad \\sum \\vec{M} = \\vec{0}' },
-                  { label: 'Contrainte normale (Navier)', formula: '\\sigma = \\frac{N}{A} + \\frac{M \\cdot y}{I}' },
-                  { label: 'Combinaison fondamentale ELU', formula: '1{,}35 G + 1{,}50 Q \\le f_{yd}' },
-                  { label: 'Loi de Hooke 1D', formula: '\\sigma = E \\cdot \\varepsilon' },
-                  { label: 'Cisaillement Jourawski', formula: '\\tau_{max} = 1{,}5 \\cdot \\frac{V}{A}' },
-                  { label: 'Capacité portante Terzaghi', formula: 'q_u = c N_c + q N_q + \\frac{1}{2} \\gamma B N_\\gamma' },
-                ].map(item => (
-                  <div key={item.label} className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-2xs">
-                    <span className="tag-blue mb-1.5 inline-block text-[11px] font-bold">{item.label}</span>
-                    <div className="overflow-x-auto py-1">
-                      <SafeInlineMath math={item.formula} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            {activeTab === 'glossary' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
-                {[
-                  { fr: 'Contrainte normale', en: 'Normal Stress (σ)' },
-                  { fr: 'Effort tranchant', en: 'Shear Force (V)' },
-                  { fr: 'Moment fléchissant', en: 'Bending Moment (M)' },
-                  { fr: 'Armature tendue', en: 'Tension Rebar (As)' },
-                  { fr: 'Hauteur utile', en: 'Effective Depth (d)' },
-                  { fr: 'Enrobage nominal', en: 'Nominal Concrete Cover (c_nom)' },
-                  { fr: 'Nappe phréatique', en: 'Water Table' },
-                  { fr: 'Limite d\'élasticité', en: 'Yield Strength (f_yk)' },
-                ].map(g => (
-                  <div key={g.en} className="flex justify-between items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 text-sm">
-                    <span className="text-slate-900 dark:text-white font-medium">{g.fr}</span>
-                    <span className="text-teal-700 dark:text-cyan-400 font-mono text-xs font-semibold">{g.en}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
+            <Workstation key={entry.key} lesson={lesson} domain={entry.domain} moduleTitle={module?.title} />
+          </>
+        )}
       </div>
     </ErrorBoundary>
   );

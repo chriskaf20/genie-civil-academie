@@ -4,10 +4,10 @@ export const lesson_chantier = {
   slug: 'chantier',
   lessonIndex: 1,
   title: "Organisation, Planification & Conduite de Chantier de BTP",
-  subtitle: "Module 24 — Organisation, Gestion & Conduite de Chantier",
+  subtitle: "Module 24 — Gestion de Chantier & Direction de Travaux",
   level: 'Intermédiaire',
   duration: '40h',
-  diagramType: 'bridge_structure',
+  diagramType: 'plan_coffrage',
   tags: ['Chantier', 'PIC', 'Gantt', 'PERT', 'Déboursé Sec', 'PPSPS', 'Grue', 'Méthodes', 'Budget'],
 
   steps: [
@@ -87,12 +87,12 @@ export const lesson_chantier = {
       title: "Théorie — Déboursé Sec, Prix de Vente & Chemin Critique (Gantt)",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       content: `### 1. La Décomposition Financière du Prix en BTP
 
 Pour calculer le Prix de Vente HT d'un ouvrage, on applique la cascade des coefficients d'étude de prix :
 
-$$\\text{Prix de Vente HT (PV_{HT})} = \\frac{\\text{Déboursé Sec (DS)} + \\text{Frais de Chantier (FC)}}{1 - (FG + B)}$$
+$$\\text{Prix de Vente HT } (PV_{HT}) = \\frac{\\text{Déboursé Sec (DS)} + \\text{Frais de Chantier (FC)}}{1 - (FG + B)}$$
 
 - **Déboursé Sec (DS)** : Coût direct strict des matériaux, de la main-d'œuvre directe (MOD) et du matériel spécifique affecté.
 - **Frais de Chantier (FC)** : Coûts d'installation (grue, base vie, fluides, encadrement de chantier).
@@ -118,37 +118,72 @@ Sur un **diagramme de Gantt** ou un **réseau PERT** :
       title: "Formules essentielles — Méthodes, Déboursé & Temps Unitaire",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       formulas: [
         {
           name: "Calcul des Heures de Main-d'Œuvre (H_MO)",
-          latex: "H_{MO} = \\sum_{k=1}^{N} \\left( \\text{Quantit\\acute{e}}_k \\times TU_k \\right) \\quad [\\text{heures}]",
+          latex: "H_{MO} = \\sum_{k=1}^{N} \\left( \\text{Quantité}_k \\times TU_k \\right) \\quad [\\text{heures}]",
           description: "TU = Temps Unitaire [h/m², h/m³, h/t]. Ex: 500 m² de voile × 1,2 h/m² = 600 heures de travail.",
+          variables: [
+            { symbol: "H_{MO}", name: "Heures de main-d'œuvre", unit: "h", role: "Total des heures pour l'ouvrage." },
+            { symbol: "\\text{Quantité}_k", name: "Quantité de l'ouvrage k", unit: "m², m³ ou t", role: "Issue du métré." },
+            { symbol: "TU_k", name: "Temps unitaire", unit: "h/unité", role: "Heures par m², m³ ou tonne." },
+            { symbol: "N", name: "Nombre d'ouvrages élémentaires", unit: "-", role: "Postes du devis." },
+          ],
         },
         {
           name: "Nombre d'ouvriers requis (Effectif journalier N_ouvriers)",
-          latex: "N_{ouvriers} = \\frac{H_{MO}}{\\text{Dur\\acute{e}e (jours)} \\times h_{journali\\grave{e}re}}",
+          latex: "N_{ouvriers} = \\frac{H_{MO}}{\\text{Durée (jours)} \\times h_{journalier}}",
           description: "Ex: 600 heures sur 10 jours ouvrés à 7h/jour → N = 600 / (10 × 7) = 8,57 → 9 ouvriers.",
+          variables: [
+            { symbol: "N_{ouvriers}", name: "Effectif journalier", unit: "-", role: "Arrondi à l'entier supérieur." },
+            { symbol: "H_{MO}", name: "Heures de main-d'œuvre", unit: "h", role: "Total à produire." },
+            { symbol: "\\text{Durée}", name: "Durée disponible", unit: "jours", role: "Jours ouvrés." },
+            { symbol: "h_{journalier}", name: "Heures par jour", unit: "h/jour", role: "7 à 8 h." },
+          ],
         },
         {
           name: "Déboursé Sec de Main-d'Œuvre (DS_MO)",
-          latex: "DS_{MO} = H_{MO} \\times DHO \\quad [\\euro] \\qquad (DHO = \\text{D\\acute{e}bours\\acute{e} Horaire Ouvrier \\approx 28 à 38 \\euro/h})",
+          latex: "DS_{MO} = H_{MO} \\times DHO \\quad [\\text{€}] \\qquad (DHO = \\text{déboursé horaire ouvrier} \\approx 28 \\text{ à } 38 \\text{ €/h})",
           description: "Le DHO comprend le salaire brut, les charges sociales (salaire chargé ≈ +70 à 80%), primes et paniers repas.",
+          variables: [
+            { symbol: "DS_{MO}", name: "Déboursé sec de main-d'œuvre", unit: "€", role: "Coût direct de la main-d'œuvre." },
+            { symbol: "H_{MO}", name: "Heures de main-d'œuvre", unit: "h", role: "Total des heures." },
+            { symbol: "DHO", name: "Déboursé horaire ouvrier", unit: "€/h", role: "Salaire chargé, primes et paniers." },
+          ],
         },
         {
           name: "Calcul de la Charge Maximale de Grue à Tour (P_grue)",
           latex: "P_{grue} = \\text{Poids du Banchage / Benne à béton} + \\text{Poids des Élingues} \\le P_{admissible}(R)",
           description: "La capacité de levage diminue avec la portée (rayon R). Ex: Grue de 6 tonnes au pied, 1,8 t en bout de flèche à 50 m.",
+          variables: [
+            { symbol: "P_{grue}", name: "Charge levée", unit: "t", role: "Charge et accessoires de levage." },
+            { symbol: "P_{admissible}(R)", name: "Charge admissible au rayon R", unit: "t", role: "Lue sur la courbe de charge de la grue." },
+            { symbol: "R", name: "Portée", unit: "m", role: "Distance de l'axe de la grue à la charge." },
+          ],
         },
         {
           name: "Marge Totale d'une Tâche (MT_i)",
-          latex: "MT_i = D_{t\\hat{a}t,max} - D_{t\\hat{a}t,min} = F_{t\\hat{a}t,max} - F_{t\\hat{a}t,min}",
-          description: "Si MTi = 0 → Tâche CRITIQUE (à suivre avec priorité absolue sur le planning).",
+          latex: "MT_i = D_{\\text{tard},i} - D_{\\text{tôt},i} = F_{\\text{tard},i} - F_{\\text{tôt},i}",
+          description: "D = date de début, F = date de fin de la tâche i, au plus tard ou au plus tôt. Si MTi = 0 → tâche CRITIQUE (à suivre avec priorité absolue sur le planning).",
+          variables: [
+            { symbol: "MT_i", name: "Marge totale", unit: "jours", role: "Retard possible sans décaler la fin du projet." },
+            { symbol: "D_{\\text{tard},i}, D_{\\text{tôt},i}", name: "Dates de début au plus tard et au plus tôt", unit: "jour", role: "Issues du calcul aller-retour du planning." },
+            { symbol: "F_{\\text{tard},i}, F_{\\text{tôt},i}", name: "Dates de fin au plus tard et au plus tôt", unit: "jour", role: "Date de début + durée." },
+          ],
         },
         {
           name: "Bilan financier du Coût de Revient (CR) et Marge Brute",
           latex: "CR = DS + FC + FG \\qquad \\text{Marge Brute} = PV_{HT} - CR = PV_{HT} \\cdot B",
           description: "Si le chantier dépasse son déboursé prévu (DS_réel > DS_prévu), la marge brute s'effondre.",
+          variables: [
+            { symbol: "CR", name: "Coût de revient", unit: "€", role: "DS + FC + FG." },
+            { symbol: "DS", name: "Déboursé sec", unit: "€", role: "Matériaux, main-d'œuvre, matériel." },
+            { symbol: "FC", name: "Frais de chantier", unit: "€", role: "Installations, encadrement, consommables." },
+            { symbol: "FG", name: "Frais généraux", unit: "€", role: "Part des frais du siège." },
+            { symbol: "PV_{HT}", name: "Prix de vente hors taxes", unit: "€", role: "Montant facturé." },
+            { symbol: "B", name: "Taux de marge brute", unit: "-", role: "Part du prix de vente." },
+          ],
         },
       ],
     },
@@ -182,7 +217,7 @@ Sur un **diagramme de Gantt** ou un **réseau PERT** :
       table: [
         { grandeur: "PIC (Plan d'Installation de Chantier)", si: "Document graphique échelles 1/200 à 1/500", imperial: "Site Layout Plan", conversion: "Fixe l'emplacement des grues, réseaux provisoires et cantonnements" },
         { grandeur: "PPSPS", si: "Plan Particulier de Sécurité et de Protection de la Santé", imperial: "Safety Plan", conversion: "Obligatoire (Loi du 31/12/1993) pour tous les chantiers soumis au CSPS" },
-        { grandeur: "DHO (Déboursé Horaire Ouvrier)", si: "€/heure", imperial: "$/hour", conversion: "Coût horaire moyen chargé d'un compagnon (ex: 30 à 38 €/h)" },
+        { grandeur: "DHO (Déboursé Horaire Ouvrier)", si: "€/heure", imperial: "USD/h", conversion: "Coût horaire moyen chargé d'un compagnon (ex: 30 à 38 €/h)" },
         { grandeur: "TU (Temps Unitaire)", si: "heures/unité (h/m², h/m³, h/kg)", imperial: "man-hours", conversion: "Rendement de la main-d'œuvre (ex: 1,2 h/m² de voile banché)" },
         { grandeur: "Chemin Critique (CPM)", si: "Jours / Semaines", imperial: "Critical Path", conversion: "Séquence de tâches à marge nulle déterminant la livraison du chantier" },
         { grandeur: "SOSED / Schéma Déchets", si: "Taux de valorisation %", imperial: "Waste Plan", conversion: "Tri à la source et suivi du bordereau de suivi des déchets (BSDD)" },
@@ -243,7 +278,7 @@ Sur un **diagramme de Gantt** ou un **réseau PERT** :
       title: "Exemple réel — Chantier de la Tour Hekla (La Défense)",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       examples: [
         {
           context: "Tour de 220 m de hauteur en milieu urbain hyper-dense",
@@ -260,7 +295,7 @@ Sur un **diagramme de Gantt** ou un **réseau PERT** :
       title: "Schéma d'un Plan d'Installation de Chantier (PIC) & Diagramme de Gantt",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       description: "Visualisez l'organisation spatiale d'un PIC (implantation grue, base vie, zones d'accès camions, stockages) et l'ordonnancement d'un diagramme de Gantt avec mise en évidence du Chemin Critique.",
       diagram_description: [
         "Plan d'Installation de Chantier (PIC) : Emprise du bâtiment, grue à tour avec flèche/contre-flèche, clôture, cantonnement et aires de livraison",

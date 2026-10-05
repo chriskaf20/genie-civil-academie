@@ -1,6 +1,15 @@
 import { useState, useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
+import { getLessonEntries } from '../data/lesson_registry.js';
 import { Search, LockKeyholeOpen, CheckCircle2 } from 'lucide-react';
+
+const LEVEL_FILTERS = [
+  { value: 'all', label: 'Tout' },
+  { value: 'Débutant', label: 'Débutant' },
+  { value: 'Intermédiaire', label: 'Intermédiaire' },
+  { value: 'Avancé', label: 'Avancé' },
+  { value: 'Tous niveaux', label: 'Tous niveaux' },
+];
 
 const CATEGORY_COLORS = {
   blue: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
@@ -29,20 +38,19 @@ const QUICK_SEARCH_CHIPS = ['Béton', 'RDM', 'BIM', 'Routes', 'Ponts', 'Sols', '
 export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
   const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState({});
-  const [filter, setFilter] = useState('Tous');
+  const [filter, setFilter] = useState('all');
 
   const filteredModules = useMemo(() => {
     const q = search.toLowerCase().trim();
     return modules.filter(m => {
-      const isLocked = false; // Total unlock on all modules
-      const matchTitle = m.title.toLowerCase().includes(q);
-      const matchDesc = m.description.toLowerCase().includes(q);
-      const matchCat = m.category.toLowerCase().includes(q);
-      const matchLessons = m.lessons && m.lessons.some(l => l.toLowerCase().includes(q));
-      
-      const matchSearch = !q || matchTitle || matchDesc || matchCat || matchLessons;
-      const matchFilter = filter === 'Tous' || m.level === filter;
-      return matchSearch && matchFilter && !isLocked;
+      const topics = [...(m.lessons || []), ...getLessonEntries(m).map(e => e.title)];
+      const matchSearch = !q
+        || m.title.toLowerCase().includes(q)
+        || m.description.toLowerCase().includes(q)
+        || m.category.toLowerCase().includes(q)
+        || topics.some(t => t.toLowerCase().includes(q));
+      const matchFilter = filter === 'all' || m.level === filter;
+      return matchSearch && matchFilter;
     });
   }, [search, filter]);
 
@@ -114,17 +122,19 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
 
       {/* Level filter */}
       <div className="flex gap-1 flex-wrap">
-        {['Tous', 'Débutant', 'Intermédiaire', 'Avancé'].map(lvl => (
+        {LEVEL_FILTERS.map(({ value, label }) => (
           <button
-            key={lvl}
-            onClick={() => setFilter(lvl)}
+            type="button"
+            key={value}
+            onClick={() => setFilter(value)}
+            aria-pressed={filter === value}
             className={`px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all ${
-              filter === lvl
+              filter === value
                 ? 'bg-blue-600 text-white shadow-sm'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >
-            {lvl}
+            {label}
           </button>
         ))}
       </div>
@@ -200,7 +210,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
         {Object.keys(grouped).length === 0 && (
           <div className="text-center text-slate-500 text-xs py-6">
             <p>Aucun module correspondant à "{search}"</p>
-            <button onClick={() => { setSearch(''); setFilter('Tous'); }} className="mt-2 text-blue-600 dark:text-sky-400 text-xs hover:underline">
+            <button type="button" onClick={() => { setSearch(''); setFilter('all'); }} className="mt-2 text-blue-600 dark:text-sky-400 text-xs hover:underline">
               Réinitialiser la recherche
             </button>
           </div>

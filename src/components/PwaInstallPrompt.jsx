@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react';
 
+const DISMISS_KEY = 'gcea-pwa-dismissed';
+
+function readDismissed() {
+  try { return localStorage.getItem(DISMISS_KEY) === 'true'; } catch { return false; }
+}
+
+function writeDismissed() {
+  try { localStorage.setItem(DISMISS_KEY, 'true'); } catch { /* storage unavailable */ }
+}
+
 /**
  * PwaInstallPrompt — Bannière d'installation PWA pour Global Civil Engineering Academy
  *
@@ -27,50 +37,62 @@ export default function PwaInstallPrompt({ isDark }) {
     }
 
     // Vérifier si l'utilisateur a déjà refusé
-    const dismissed = localStorage.getItem('gcea-pwa-dismissed');
-    if (dismissed === 'true') return;
+    if (readDismissed()) return undefined;
 
+    let timer;
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setInstallPrompt(e);
       // Délai de 3 secondes avant d'afficher la bannière pour ne pas interrompre le chargement
-      setTimeout(() => setShowInstallBanner(true), 3000);
+      timer = setTimeout(() => setShowInstallBanner(true), 3000);
+    };
+    const handleInstalled = () => {
+      setIsInstalled(true);
+      setShowInstallBanner(false);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-
-    // Détecter si l'app vient d'être installée
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setShowInstallBanner(false);
-    });
-
+    window.addEventListener('appinstalled', handleInstalled);
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleInstalled);
     };
   }, []);
 
-  // ── Détecter les mises à jour du Service Worker ───────────────────────────
+  // ── Détecter les mises à jour du Service Worker (production uniquement) ───
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) return;
+    if (!import.meta.env.PROD || !('serviceWorker' in navigator)) return undefined;
+
+    // Recharger une seule fois quand la nouvelle version prend le contrôle —
+    // mais pas lors de la toute première installation.
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    let reloading = false;
+    const handleControllerChange = () => {
+      if (!hadController || reloading) return;
+      reloading = true;
+      window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
 
     navigator.serviceWorker.ready.then((registration) => {
+      const offerUpdate = (worker) => {
+        setNewWorker(worker);
+        setShowUpdateBanner(true);
+      };
+      if (registration.waiting && navigator.serviceWorker.controller) offerUpdate(registration.waiting);
       registration.addEventListener('updatefound', () => {
         const installingWorker = registration.installing;
         if (!installingWorker) return;
-
         installingWorker.addEventListener('statechange', () => {
-          if (
-            installingWorker.state === 'installed' &&
-            navigator.serviceWorker.controller
-          ) {
-            // Un nouveau Service Worker est installé et prêt
-            setNewWorker(installingWorker);
-            setShowUpdateBanner(true);
+          if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            offerUpdate(installingWorker);
           }
         });
       });
     });
+
+    return () => navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
   }, []);
 
   // ── Gestionnaire d'installation ───────────────────────────────────────────
@@ -86,16 +108,14 @@ export default function PwaInstallPrompt({ isDark }) {
   // ── Refuser l'installation définitivement ─────────────────────────────────
   const handleDismiss = () => {
     setShowInstallBanner(false);
-    localStorage.setItem('gcea-pwa-dismissed', 'true');
+    writeDismissed();
   };
 
-  // ── Appliquer la mise à jour et recharger ─────────────────────────────────
+  // ── Appliquer la mise à jour : la page se recharge sur `controllerchange` ──
   const handleUpdate = () => {
-    if (newWorker) {
-      newWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
     setShowUpdateBanner(false);
-    window.location.reload();
+    if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
+    else window.location.reload();
   };
 
   // Ne rien afficher si déjà installé

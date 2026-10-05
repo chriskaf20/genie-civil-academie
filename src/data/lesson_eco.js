@@ -1,13 +1,13 @@
-// ── Lesson: Éco-construction, ACV & Décarbonation — Module 28 ─────────────────
+// ── Lesson: Éco-construction, ACV & Décarbonation — Module 27 ─────────────────
 export const lesson_eco = {
-  moduleId: 28,
-  slug: 'normes',
+  moduleId: 27,
+  slug: 'eco',
   lessonIndex: 1,
   title: "Éco-construction, Matériaux Biosourcés, ACV & Décarbonation du BTP",
-  subtitle: "Module 28 — Génie de l'Environnement & Bas Carbone",
+  subtitle: "Module 27 — Génie de l'Environnement & Éco-construction",
   level: 'Intermédiaire',
   duration: '30h',
-  diagramType: 'soil_profile',
+  diagramType: 'process_flow',
   tags: ['Éco-construction', 'RE2020', 'ACV', 'FDES', 'Biosourcés', 'Bilan Carbone', 'HQE', 'Décarbonation'],
 
   steps: [
@@ -82,7 +82,7 @@ export const lesson_eco = {
       title: "Théorie — Bilan Carbone (ACV) & Stockage Biogénique",
       icon: '📐',
       type: 'theory',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       content: `### 1. Les Phases de l'Analyse du Cycle de Vie (NF EN 15804)
 
 L'impact carbone global d'un produit de construction se décompose en 4 grands modules :
@@ -116,27 +116,49 @@ $$m_{CO_2} = m_{bois,sec} \\cdot 0{,}50 \\cdot \\frac{44}{12} \\approx 1{,}833 \
       title: "Formules essentielles — Carbone, ACV & Performance Thermique",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "L'Indicateur Carbone Construction RE2020 (Ic_construction)",
           latex: "Ic_{\\text{construction}} = \\sum_{i=1}^{N} \\frac{m_i \\cdot EPD_i}{A_{\\text{shab}}} \\quad [\\text{kg CO}_2\\text{eq/m}^2]",
-          description: "Doit être inférieur au seuil réglementaire RE2020 fixé selon la typologie et l'année (ex: 640 kg CO2eq/m² en 2025).",
+          description: "Somme des impacts carbone des produits et équipements (ACV dynamique sur 50 ans) rapportée à la surface de référence. Doit rester sous le seuil RE2020 de l'année du permis : maisons individuelles 640 kg CO2eq/m² (2022-2024) puis 530 (2025-2027) ; logements collectifs 740 puis 650.",
+          variables: [
+            { symbol: "Ic_{\\text{construction}}", name: "Indicateur carbone construction", unit: "kg CO₂eq/m²", role: "À comparer au seuil RE2020." },
+            { symbol: "m_i", name: "Quantité du produit i", unit: "UF", role: "En unités fonctionnelles de la FDES." },
+            { symbol: "EPD_i", name: "Impact du produit i", unit: "kg CO₂eq/UF", role: "Déclaration environnementale (FDES ou PEP)." },
+            { symbol: "A_{\\text{shab}}", name: "Surface de référence", unit: "m²", role: "Surface habitable en logement." },
+            { symbol: "N", name: "Nombre de produits", unit: "-", role: "Tous les lots du bâtiment." },
+          ],
         },
         {
           name: "Masse de CO2 biogénique stockée dans le bois",
           latex: "m_{CO_2\\text{ stocké}} = m_{\\text{matière sèche}} \\times 1{,}833 \\quad [\\text{kg CO}_2]",
           description: "Chaque kg de bois sec stocke environ 1,833 kg de CO2 extrait de l'atmosphère !",
+          variables: [
+            { symbol: "m_{CO_2\\text{ stocké}}", name: "Masse de CO₂ stockée", unit: "kg", role: "Carbone biogénique séquestré." },
+            { symbol: "m_{\\text{matière sèche}}", name: "Masse de bois sec", unit: "kg", role: "≈ 50 % de carbone : 1,833 = 0,5 × 44/12." },
+          ],
         },
         {
           name: "Temps de déphasage thermique d'une paroi (t_d)",
-          latex: "t_d = 1{,}38 \\cdot e \\cdot \\sqrt{\\frac{\\rho \\cdot c}{\\lambda}} \\quad [\\text{heures}]",
-          description: "e = épaisseur [m], ρ = masse volumique [kg/m³], c = chaleur massique [J/kg·K], λ = conductivité [W/m·K]. Matériaux biosourcés (paille/bois) : td ≥ 10 à 12 h !",
+          latex: "t_d = 1{,}38 \\cdot e \\cdot \\sqrt{\\frac{\\rho \\cdot c}{\\lambda}} \\quad [\\text{min}]",
+          description: "e = épaisseur [m], ρ = masse volumique [kg/m³], c = chaleur massique [J/kg·K], λ = conductivité [W/m·K] ; le résultat est en minutes (÷ 60 pour des heures). Matériaux biosourcés (paille/bois) : td ≥ 10 à 12 h !",
+          variables: [
+            { symbol: "t_d", name: "Déphasage thermique", unit: "min", role: "÷ 60 pour des heures." },
+            { symbol: "e", name: "Épaisseur de la paroi", unit: "m", role: "Couche étudiée." },
+            { symbol: "\\rho", name: "Masse volumique", unit: "kg/m³", role: "Du matériau." },
+            { symbol: "c", name: "Chaleur massique", unit: "J/(kg·K)", role: "Du matériau." },
+            { symbol: "\\lambda", name: "Conductivité thermique", unit: "W/(m·K)", role: "Du matériau." },
+          ],
         },
         {
           name: "Énergie Grise Totale d'un matériau",
-          latex: "E_{\\text{grise}} = \\sum_{phase A1}^{C4} E_{\\text{primaire, non renouvelable}} \\quad [\\text{MJ/m}^3 \\text{ ou } \\text{kWh/m}^3]",
-          description: "Quantité totale d'énergie consommée tout au long du cycle de vie de fabrication du matériau.",
+          latex: "E_{\\text{grise}} = \\sum_{\\text{modules A1 à C4}} E_{\\text{primaire non renouvelable}} \\quad [\\text{MJ/m}^3 \\text{ ou } \\text{kWh/m}^3]",
+          description: "Énergie primaire non renouvelable consommée sur tout le cycle de vie du matériau : production (A1-A3), transport et mise en œuvre (A4-A5), vie en œuvre (B) et fin de vie (C1-C4).",
+          variables: [
+            { symbol: "E_{\\text{grise}}", name: "Énergie grise", unit: "MJ/m³", role: "Par unité de matériau." },
+            { symbol: "E_{\\text{primaire non renouvelable}}", name: "Énergie primaire non renouvelable", unit: "MJ/m³", role: "Par module du cycle de vie (A1 à C4)." },
+          ],
         },
       ],
     },
@@ -225,7 +247,7 @@ $$m_{CO_2} = m_{bois,sec} \\cdot 0{,}50 \\cdot \\frac{44}{12} \\approx 1{,}833 \
       title: "Exemple réel — Le Siège Social de L'Oréal (Structure Bois & Terre Crue)",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Bâtiment tertiaire de 15 000 m² à bilan carbone neutre conforme RE2020 seuil 2031",
@@ -242,7 +264,7 @@ $$m_{CO_2} = m_{bois,sec} \\cdot 0{,}50 \\cdot \\frac{44}{12} \\approx 1{,}833 \
       title: "Schéma des étapes de l'ACV (A1 à D) & Puits de Carbone",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'soil_profile',
+      diagramType: 'process_flow',
       description: "Visualisez les étapes du cycle de vie du bâtiment (Modules A, B, C, D), la pyramide de l'énergie grise et le cycle du carbone biogénique.",
       diagram_description: [
         "Modules ACV : Production (A1-A3), Chantier (A4-A5), Exploitation 50 ans (B1-B7), Fin de vie (C1-C4), Recyclage (D)",

@@ -1,13 +1,13 @@
-// ── Lesson: Droit de la Construction, Marchés & Assurances — Module 30 ──────
+// ── Lesson: Droit de la Construction, Marchés & Assurances — Module 28 ──────
 export const lesson_droit = {
-  moduleId: 30,
+  moduleId: 28,
   slug: 'droit',
   lessonIndex: 1,
   title: "Droit de la Construction, Marchés Publics & Assurances",
-  subtitle: "Module 30 — Droit de la Construction, Marchés Publics & Responsabilités",
+  subtitle: "Module 28 — Normes & Codes Réglementaires",
   level: 'Intermédiaire',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Droit', 'Marchés Publics', 'Décennale', 'Loi MOP', 'Réception', 'Garantie', 'Dommages-Ouvrage', 'Pénalités'],
 
   steps: [
@@ -85,7 +85,7 @@ export const lesson_droit = {
       title: "Théorie — Les Garanties Légales & Le Régime de Responsabilité",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. La Ligne du Temps des Garanties Légales (Art. 1792 et suivants)
 
 $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarrow \\mathbf{\\text{RÉCEPTION (T=0)}} \\longrightarrow \\underbrace{\\text{GPA (1 an)}}_{\\text{Tous désordres}} \\longrightarrow \\underbrace{\\text{Biennale (2 ans)}}_{\\text{Équipements}} \\longrightarrow \\underbrace{\\text{Décennale (10 ans)}}_{\\text{Solidité / Impropriété}}$$
@@ -101,7 +101,7 @@ $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarro
 ### 3. Les Sanctions Financières Contractuelles
 
 - **Retenue de garantie (5% du TTC)** : Prélevée sur chaque acompte pour garantir la levée des réserves à la réception (libérée à la fin de la GPA).
-- **Pénalités de retard** : $P_{retard} = n_{jours} \\times P_{journalier}$ (généralement $P_{journalier} = \\frac{\\text{Montant Marché}}{1000}$).`,
+- **Pénalités de retard** : $P_{retard} = n_{jours} \\times P_{journalier}$ (souvent $P_{journalier} = \\frac{\\text{Montant Marché}}{1000}$ ; à défaut de clause, le CCAG Travaux prévoit 1/3000 du montant HT).`,
     },
 
     {
@@ -110,25 +110,42 @@ $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarro
       title: "Formules essentielles — Pénalités, Retenues & Décomptes",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
-          name: "Pénalités de retard journalières usuelles (CCAG Travaux)",
-          latex: "P_r = \\frac{M_{\\text{TTC}}}{1000} \\cdot n_{\\text{jours de retard}} \\quad [\\text{\\euro}]",
-          description: "M_TTC = montant du marché de l'entreprise, n = nombre de jours calendaires de retard injustifié.",
+          name: "Pénalités de retard journalières (taux contractuel de 1/1000)",
+          latex: "P_r = \\frac{M_{\\text{TTC}}}{1000} \\cdot n_{\\text{jours de retard}} \\quad [\\text{€}]",
+          description: "M_TTC = montant du marché de l'entreprise, n = nombre de jours calendaires de retard injustifié. Le taux de 1/1000 par jour est fréquent dans les contrats ; à défaut de clause particulière, le CCAG Travaux prévoit 1/3000 du montant hors taxes du marché par jour de retard.",
+          variables: [
+            { symbol: "P_r", name: "Pénalités de retard", unit: "€", role: "Montant retenu sur les paiements." },
+            { symbol: "M_{\\text{TTC}}", name: "Montant du marché", unit: "€", role: "Montant de référence fixé par le contrat." },
+            { symbol: "n_{\\text{jours de retard}}", name: "Jours de retard", unit: "jours", role: "Jours calendaires de retard injustifié." },
+          ],
         },
         {
           name: "Montant de la Retenue de Garantie (5%)",
-          latex: "RG = 0{,}05 \\cdot M_{\\text{TTC, acompte}} \\quad [\\text{\\euro}]",
+          latex: "RG = 0{,}05 \\cdot M_{\\text{TTC, acompte}} \\quad [\\text{€}]",
           description: "Peut être remplacée par une caution personnelle et solidaire de premier appel d'un organisme bancaire.",
+          variables: [
+            { symbol: "RG", name: "Retenue de garantie", unit: "€", role: "Au plus 5 % du montant du marché." },
+            { symbol: "M_{\\text{TTC, acompte}}", name: "Montant de l'acompte", unit: "€", role: "Chaque acompte supporte la retenue." },
+          ],
         },
         {
           name: "Décompte Général et Définitif (DGD Net)",
           latex: "DGD = M_{\\text{Marché initial}} + \\sum M_{\\text{Avenants}} + R_{\\text{prix}} - P_{\\text{pénalités}} - \\sum A_{\\text{acomptes}}",
           description: "Montant final du solde dû à l'entreprise après clôture des comptes du chantier.",
+          variables: [
+            { symbol: "DGD", name: "Solde du décompte général", unit: "€", role: "Montant restant dû à l'entreprise." },
+            { symbol: "M_{\\text{Marché initial}}", name: "Montant initial du marché", unit: "€", role: "Prix contractuel." },
+            { symbol: "M_{\\text{Avenants}}", name: "Avenants", unit: "€", role: "Modifications signées." },
+            { symbol: "R_{\\text{prix}}", name: "Révision des prix", unit: "€", role: "Par application des index." },
+            { symbol: "P_{\\text{pénalités}}", name: "Pénalités", unit: "€", role: "Retards et autres manquements." },
+            { symbol: "A_{\\text{acomptes}}", name: "Acomptes versés", unit: "€", role: "Paiements mensuels déjà reçus." },
+          ],
         },
         {
-          name: "Delai maximal de paiement dans les Marchés Publics",
+          name: "Délai maximal de paiement dans les marchés publics",
           latex: "t_{\\text{paiement}} \\le 30 \\text{ jours (État/Collectivités)} \\quad (\\text{Intérêts moratoires dus si retard})",
           description: "Le non-respect du délai de 30 jours donne droit automatiquement à des intérêts moratoires + indemnité forfaitaire de 40 €.",
         },
@@ -221,7 +238,7 @@ $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarro
       title: "Exemple réel — Sinistre Décennal d'un Complexe Immobilier",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Effondrement partiel d'un plancher de parking souterrain 3 ans après livraison d'une résidence de 80 logements",
@@ -238,7 +255,7 @@ $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarro
       title: "Schéma du déroulement des Garanties Légales & Processus DO/RCD",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez la chronologie des garanties légales (GPA, Biennale, Décennale) et l'organigramme des flux financiers entre l'Assurance Dommages-Ouvrage et la RCD.",
       diagram_description: [
         "Chronologie des garanties : Réception (T=0), GPA (0-1 an), Biennale (0-2 ans), Décennale (0-10 ans)",
@@ -456,7 +473,7 @@ $$\\text{Signature du Marché} \\longrightarrow \\text{Chantier} \\longrightarro
         "GPA = 1 an | Biennale = 2 ans | Décennale = 10 ans",
         "Assurance DO obligatoire pour le maître d'ouvrage",
         "Attestation décennale valide à la DROC obligatoire pour l'entreprise",
-        "Pénalités de retard usuelles = 1/1000è du marché par jour",
+        "Pénalités de retard : souvent 1/1000 du marché par jour (CCAG Travaux à défaut : 1/3000 du montant HT)",
       ],
     },
 

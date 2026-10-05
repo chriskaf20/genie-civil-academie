@@ -1,13 +1,13 @@
-// ── Lesson: Métré, Subventions & Estimation des Coûts — Module 25 ───────────
+// ── Lesson: Métré, Subventions & Estimation des Coûts — Module 24 ───────────
 export const lesson_metre = {
-  moduleId: 25,
+  moduleId: 24,
   slug: 'metre',
   lessonIndex: 1,
   title: "Métré, Étude de Prix, Devis Quantitatif Estimatif & Subventions",
-  subtitle: "Module 25 — Métré, Subventions & Estimation des Coûts",
+  subtitle: "Module 24 — Gestion de Chantier & Direction de Travaux",
   level: 'Intermédiaire',
   duration: '35h',
-  diagramType: 'bridge_structure',
+  diagramType: 'plan_coffrage',
   tags: ['Métré', 'BPU', 'DQE', 'DPGF', 'BT01', 'TP01', 'Sous-détail de prix', 'DETR', 'Subventions'],
 
   steps: [
@@ -89,12 +89,12 @@ Les marchés publics et privés prévoient des clauses d'indexation pour protég
       title: "Théorie — Sous-détail de Prix, Index BT/TP & Subventions Publics",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       content: `### 1. La Structure d'un Sous-Détail de Prix Unitaire (PV_HT)
 
 Le Prix Unitaire Hors Taxes ($PV_{HT}$) d'un ouvrage élémentaire se calcule à partir de son **Déboursé Sec (DS)** :
 
-$$DS = \\text{Frais de Matériaux (Matière + Transport)} + \\text{Main-d'Œuvre Directe (H_{MO} \\times DHO)} + \\text{Matériel affecté}$$
+$$DS = \\text{Frais de Matériaux (Matière + Transport)} + \\text{Main-d'Œuvre Directe } (H_{MO} \\times DHO) + \\text{Matériel affecté}$$
 
 $$PV_{HT} = DS \\times K_v \\qquad \\text{avec } K_v = \\frac{1 + \\frac{FC}{DS}}{1 - (FG + B)}$$
 
@@ -126,17 +126,30 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
       title: "Formules essentielles — Métré, Index & Coefficients de Prix",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       formulas: [
         {
           name: "Calcul du Coefficient de Vente Kv",
           latex: "K_v = \\frac{1 + \\frac{FC}{DS}}{1 - (FG + B)}",
           description: "DS = Déboursé Sec, FC = Frais de chantier, FG = Frais généraux, B = Bénéfice et aléas.",
+          variables: [
+            { symbol: "K_v", name: "Coefficient de vente", unit: "-", role: "Prix de vente HT = Kv × DS." },
+            { symbol: "FC", name: "Frais de chantier", unit: "€", role: "Montant des frais propres au chantier." },
+            { symbol: "DS", name: "Déboursé sec", unit: "€", role: "Coûts directs." },
+            { symbol: "FG", name: "Frais généraux", unit: "-", role: "Part du prix de vente HT (≈ 0,10 à 0,15)." },
+            { symbol: "B", name: "Bénéfice et aléas", unit: "-", role: "Part du prix de vente HT (≈ 0,03 à 0,08)." },
+          ],
         },
         {
           name: "Formule de révision des prix avec partie fixe",
           latex: "P = P_0 \\cdot \\left( 0{,}125 + 0{,}875 \\cdot \\frac{I_t}{I_0} \\right)",
           description: "P0 = Prix initial du marché, I0 = Index au mois de remise de l'offre (t0), It = Index au mois d'exécution (t).",
+          variables: [
+            { symbol: "P", name: "Prix révisé", unit: "€", role: "Prix payé pour le mois d'exécution." },
+            { symbol: "P_0", name: "Prix initial", unit: "€", role: "Prix du marché à la date de l'offre." },
+            { symbol: "I_t", name: "Index du mois d'exécution", unit: "-", role: "Par exemple BT01." },
+            { symbol: "I_0", name: "Index du mois de l'offre", unit: "-", role: "Mois zéro (m0)." },
+          ],
         },
         {
           name: "Calcul de la FCTVA (Fonds de Compensation pour la TVA)",
@@ -145,17 +158,32 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
         },
         {
           name: "Calcul du Sous-Détail d'un béton armé complet par m³",
-          latex: "DS_{m^3} = C_{b\\acute{e}ton} + (Ratio_{acier} \\times C_{acier}) + (Ratio_{coff} \\times C_{coff}) + (TU_{pose} \\times DHO)",
+          latex: "DS_{m^3} = C_{\\text{béton}} + (Ratio_{acier} \\times C_{acier}) + (Ratio_{coff} \\times C_{coff}) + (TU_{pose} \\times DHO)",
           description: "Intègre le coût du béton frais BPE, des armatures façonnées, du coffrage amorti et de la main-d'œuvre de coulage.",
+          variables: [
+            { symbol: "DS_{m^3}", name: "Déboursé sec par m³", unit: "€/m³", role: "Coût direct du béton armé en place." },
+            { symbol: "C_{\\text{béton}}", name: "Prix du béton prêt à l'emploi", unit: "€/m³", role: "Livré sur chantier." },
+            { symbol: "Ratio_{acier}", name: "Ratio d'armatures", unit: "kg/m³", role: "≈ 80 à 120 kg/m³ selon l'ouvrage." },
+            { symbol: "C_{acier}", name: "Prix des armatures façonnées", unit: "€/kg", role: "Fourniture et pose." },
+            { symbol: "Ratio_{coff}", name: "Ratio de coffrage", unit: "m²/m³", role: "Surface coffrée par m³ de béton." },
+            { symbol: "C_{coff}", name: "Coût du coffrage", unit: "€/m²", role: "Coffrage amorti." },
+            { symbol: "TU_{pose}", name: "Temps unitaire de coulage", unit: "h/m³", role: "Mise en place et vibration." },
+            { symbol: "DHO", name: "Déboursé horaire ouvrier", unit: "€/h", role: "Salaire chargé." },
+          ],
         },
         {
           name: "Coefficient de foisonnement des terres (f)",
-          latex: "V_{foisonn\\acute{e}} = V_{en\\,place} \\times (1 + f) \\qquad (f \\approx 20\\% \\text{ à } 30\\% \\text{ pour terres végétales et argiles})",
+          latex: "V_{foisonné} = V_{en\\,place} \\times (1 + f) \\qquad (f \\approx 20\\% \\text{ à } 30\\% \\text{ pour terres végétales et argiles})",
           description: "Le foisonnement augmente le volume de terre à transporter par camion après excavation.",
+          variables: [
+            { symbol: "V_{foisonné}", name: "Volume foisonné", unit: "m³", role: "Volume à transporter après excavation." },
+            { symbol: "V_{en\\,place}", name: "Volume en place", unit: "m³", role: "Volume du terrain avant terrassement." },
+            { symbol: "f", name: "Coefficient de foisonnement", unit: "-", role: "0,20 à 0,30 pour terres végétales et argiles." },
+          ],
         },
         {
           name: "Reste à charge net pour une collectivité locale",
-          latex: "\\text{Reste à Charge} = \\text{Co\\hat{u}t TTC} - \\text{FCTVA} - \\sum \\text{Subventions (DETR + DSIL + Région)}",
+          latex: "\\text{Reste à Charge} = \\text{Coût TTC} - \\text{FCTVA} - \\sum \\text{Subventions (DETR + DSIL + Région)}",
           description: "Montant net financé par l'autofinancement ou l'emprunt de la commune.",
         },
       ],
@@ -187,8 +215,8 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
       icon: '📏',
       type: 'units',
       table: [
-        { grandeur: "BPU (Bordereau des Prix Unitaires)", si: "€/unités (€/m³, €/m², €/ml, €/u, €/t)", imperial: "$/units", conversion: "Liste exhaustive des prix unitaires applicables au marché" },
-        { grandeur: "DQE / DPGF", si: "Montant total en € HT et € TTC", imperial: "$ Total", conversion: "Devis Quantitatif Estimatif / Décomposition du Prix Global et Forfaitaire" },
+        { grandeur: "BPU (Bordereau des Prix Unitaires)", si: "€/unités (€/m³, €/m², €/ml, €/u, €/t)", imperial: "USD/unité", conversion: "Liste exhaustive des prix unitaires applicables au marché" },
+        { grandeur: "DQE / DPGF", si: "Montant total en € HT et € TTC", imperial: "Total en USD", conversion: "Devis Quantitatif Estimatif / Décomposition du Prix Global et Forfaitaire" },
         { grandeur: "Index BT01 (Bâtiment Tous Corps d'État)", si: "Base 100 en janvier 2010", imperial: "CCI Index", conversion: "Index national de référence pour la révision des prix du bâtiment" },
         { grandeur: "Index TP01 (Travaux Publics)", si: "Base 100 en janvier 2010", imperial: "CCI Index", conversion: "Index national de référence pour la révision des prix de génie civil/VRD" },
         { grandeur: "DETR / DSIL", si: "Subventions publiques (20% à 80% du HT)", imperial: "Grants", conversion: "Dotation d'Équipement des Territoires Ruraux / Dotation de Soutien à l'Investissement Local" },
@@ -250,7 +278,7 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
       title: "Exemple réel — Dossier de subventions pour un centre aquatique municipal",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       examples: [
         {
           context: "Construction d'un centre aquatique intercommunal de 6,5 M€ HT",
@@ -267,7 +295,7 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
       title: "Schéma d'une Minute de Métré & Cascade d'Étude de Prix",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       description: "Visualisez la structure d'une minute de métré normalisée, la cascade de calcul du Prix de Vente HT (DS $\\to$ FC $\\to$ FG $\\to$ B $\\to$ PV) et la courbe d'évolution des index BTP BT01/TP01.",
       diagram_description: [
         "Minute de Métré : Colonnes Repère, Désignation, Unité, Nombre, Longueur, Largeur, Hauteur, Quantité partielle et Totale",
@@ -370,7 +398,7 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
           text: "Une commune réalise un projet de voirie de 500 000 € HT. Le marché est subventionné par la DETR à 40% du HT et par le Département à 20% du HT. La commune récupère la FCTVA à 16,404% du montant TTC (TVA 20%). Calculer le Reste à Charge Net de la commune en euros.",
           hint: "TTC = HT × 1,20. FCTVA = TTC × 16,404%. Subventions = 60% du HT.",
           answer_latex: "M_{TTC} = 500\\,000 \\times 1{,}20 = 600\\,000 \\text{ \\euro} \\qquad \\text{FCTVA} = 600\\,000 \\times 0{,}16404 = 98\\,424 \\text{ \\euro}",
-          answer_latex: "\\text{Subventions} = 500\\,000 \\times (0{,}40 + 0{,}20) = 300\\,000 \\text{ \\euro} \\qquad \\text{Reste à Charge} = 600\\,000 - 98\\,424 - 300\\,000 = 201\\,576 \\text{ \\euro}",
+          answer_latex_2: "\\text{Subventions} = 500\\,000 \\times (0{,}40 + 0{,}20) = 300\\,000 \\text{ \\euro} \\qquad \\text{Reste à Charge} = 600\\,000 - 98\\,424 - 300\\,000 = 201\\,576 \\text{ \\euro}",
           answer_text: "Montant TTC = 600 000 € | FCTVA = 98 424 € | Subventions = 300 000 € | Reste à Charge Net = 201 576 €.",
         },
       ],
@@ -493,7 +521,7 @@ $$\\text{Subvention Éligible} = \\text{Montant HT} \\times \\%_{\\text{Taux de 
 2. **Minute de Métré** : Décomposition normalisée par ouvrage élémentaire (Désignation, N, L, l, h, Quantité).
 3. **Sous-Détail de Prix** : $PV_{HT} = DS \\times K_v$ avec $DS = \\text{Matériaux} + \\text{MO} + \\text{Matériel}$.
 4. **Révision des Prix** : $P = P_0 (a + b \\cdot I_t/I_0)$ par les index nationaux BT01 (bâtiment) et TP01 (travaux publics).
-5. **Subventions Publics** : DETR, DSIL, FEDER calculées en $\%$ du montant **HORS TAXES (HT)** des dépenses éligibles.
+5. **Subventions Publics** : DETR, DSIL, FEDER calculées en % du montant **HORS TAXES (HT)** des dépenses éligibles.
 6. **FCTVA** : Remboursement automatique de $16{,}404\\%$ du montant **TTC** engagé par les collectivités.`,
     },
 

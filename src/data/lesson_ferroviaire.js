@@ -126,29 +126,61 @@ $$I = d_{th} - d = 11{,}8 \\cdot \\frac{V^2}{R} - d \\quad [\\text{mm}]$$
       diagramType: 'road_profile',
       formulas: [
         {
-          name: "Devers théorique d'équilibre (d_th)",
+          name: "Dévers théorique d'équilibre (d_th)",
           latex: "d_{th} = 11{,}8 \\cdot \\frac{V^2}{R} \\quad [\\text{mm}]",
           description: "V = vitesse du train en km/h, R = rayon en mètres. Équilibre parfait de la force centrifuge.",
+          variables: [
+            { symbol: "d_{th}", name: "Dévers théorique d'équilibre", unit: "mm", role: "Dévers qui annule l'accélération non compensée." },
+            { symbol: "V", name: "Vitesse", unit: "km/h", role: "Vitesse de circulation." },
+            { symbol: "R", name: "Rayon de la courbe", unit: "m", role: "Rayon en plan." },
+          ],
         },
         {
-          name: "Insuffisance de devers (I)",
+          name: "Insuffisance de dévers (I)",
           latex: "I = 11{,}8 \\cdot \\frac{V^2}{R} - d \\le I_{adm} \\quad (100 \\text{ à } 150 \\text{ mm})",
-          description: "d = devers réel posé [mm]. Iadm = limite d'inconfort passager et de sécurité anti-déraillement.",
+          description: "d = dévers réel posé [mm]. Iadm = limite d'inconfort passager et de sécurité anti-déraillement.",
+          variables: [
+            { symbol: "I", name: "Insuffisance de dévers", unit: "mm", role: "Dévers manquant pour l'équilibre." },
+            { symbol: "V", name: "Vitesse", unit: "km/h", role: "Vitesse du train le plus rapide." },
+            { symbol: "R", name: "Rayon", unit: "m", role: "Rayon en plan." },
+            { symbol: "d", name: "Dévers réel", unit: "mm", role: "Dévers posé." },
+            { symbol: "I_{adm}", name: "Insuffisance admissible", unit: "mm", role: "100 à 150 mm selon la ligne." },
+          ],
         },
         {
           name: "Rayon minimal en plan sur LGV (V = 320 km/h)",
           latex: "R_{min} = \\frac{11{,}8 \\cdot V^2}{d_{max} + I_{max}} = \\frac{11{,}8 \\cdot 320^2}{180 + 100} = \\frac{1\\,208\\,320}{280} \\approx 4\\,300 \\text{ m}",
           description: "Sur LGV française (V = 320 km/h), on retient en pratique R_min = 6 000 m pour garder une réserve de confort.",
+          variables: [
+            { symbol: "R_{min}", name: "Rayon minimal", unit: "m", role: "Pour la vitesse V." },
+            { symbol: "V", name: "Vitesse de la ligne", unit: "km/h", role: "320 km/h sur LGV." },
+            { symbol: "d_{max}", name: "Dévers maximal", unit: "mm", role: "180 mm." },
+            { symbol: "I_{max}", name: "Insuffisance maximale", unit: "mm", role: "100 mm en conception LGV." },
+          ],
         },
         {
           name: "Critère de déraillement par chevauchement de Nadal (L/V)",
           latex: "\\left(\\frac{L}{V}\\right)_{lim} = \\frac{\\tan\\gamma - f}{1 + f \\cdot \\tan\\gamma}",
-          description: "L = effort transversal roue/rail, V = charge verticale sur la roue, γ = angle de la table d'inclinant du boudin de roue (γ ≈ 60° à 70°), f = coefficient de frottement pneu/rail (f ≈ 0,30-0,36). Limite L/V ≈ 1,2.",
+          description: "L = effort transversal (de guidage) roue/rail, V = charge verticale sur la roue, γ = angle du flanc du boudin de roue (≈ 70°), f = coefficient de frottement roue/rail (≈ 0,30 à 0,36). Avec γ = 70° et f = 0,36 : limite L/V ≈ 1,2.",
+          variables: [
+            { symbol: "L", name: "Effort transversal", unit: "kN", role: "Effort de guidage roue/rail." },
+            { symbol: "V", name: "Charge verticale", unit: "kN", role: "Charge de la roue sur le rail." },
+            { symbol: "\\gamma", name: "Angle du flanc du boudin", unit: "°", role: "≈ 70°." },
+            { symbol: "f", name: "Coefficient de frottement roue/rail", unit: "-", role: "≈ 0,30 à 0,36." },
+          ],
         },
         {
           name: "Contrainte thermique dans le Rail Long Soudé (LRS)",
           latex: "\\sigma_{th} = E \\cdot \\alpha_{th} \\cdot \\Delta T \\qquad F_{th} = S_{rail} \\cdot \\sigma_{th}",
           description: "E = 210 000 MPa (acier), αth = 1,15×10⁻⁵ /°C. Pour ΔT = 45°C : σth = 108,7 MPa → Effort axial Fth ≈ 830 kN par file de rail UIC 60.",
+          variables: [
+            { symbol: "\\sigma_{th}", name: "Contrainte thermique", unit: "MPa", role: "Rail bloqué en dilatation." },
+            { symbol: "E", name: "Module d'Young de l'acier", unit: "MPa", role: "210 000 MPa." },
+            { symbol: "\\alpha_{th}", name: "Coefficient de dilatation", unit: "1/°C", role: "1,15 × 10⁻⁵." },
+            { symbol: "\\Delta T", name: "Écart de température", unit: "°C", role: "Par rapport à la température de neutralisation." },
+            { symbol: "F_{th}", name: "Effort axial", unit: "kN", role: "Par file de rail." },
+            { symbol: "S_{rail}", name: "Section du rail", unit: "mm²", role: "≈ 7 670 mm² pour un UIC 60." },
+          ],
         },
         {
           name: "Épaisseur de sous-couche de ballast (Ep)",

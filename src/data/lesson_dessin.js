@@ -1,13 +1,13 @@
-// ── Lesson: Dessin Technique & Lecture de Plans — Module 04 ───────────────────
+// ── Lesson: Dessin Technique & Lecture de Plans — Module 4 ───────────────────
 export const lesson_dessin = {
   moduleId: 4,
   slug: 'dessin',
   lessonIndex: 1,
   title: "Dessin Technique, Cotation & Lecture de Plans de BTP",
-  subtitle: "Module 04 — Dessin Technique & Lecture de Plans",
+  subtitle: "Module 04 — Dessin technique & Lecture de plans",
   level: 'Débutant',
   duration: '30h',
-  diagramType: 'bridge_structure',
+  diagramType: 'plan_coffrage',
   tags: ['Dessin', 'Plans', 'Cotation', 'Coffrage', 'Ferraillage', 'Coupes', 'ISO 128', 'Échelles'],
 
   steps: [
@@ -60,7 +60,7 @@ export const lesson_dessin = {
         },
         {
           context: "Plan de Ferraillage de Poutre (Échelle 1/20 ou 1/10)",
-          text: "Elévation de la poutre montrant les filants bas $3HA16$, les chapeaux sur appuis $2HA20$, les cadres et étriers $\\Phi 8$ avec pas d'espacement $e = 15\\text{ cm}$.",
+          text: "Elévation de la poutre montrant les filants bas $3HA16$, les chapeaux sur appuis $2HA20$, les cadres et étriers $\\phi 8$ avec pas d'espacement $e = 15\\text{ cm}$.",
         },
         {
           context: "Coupe Verticale sur Façade (Échelle 1/20)",
@@ -87,7 +87,7 @@ export const lesson_dessin = {
       title: "Théorie — Trait, Échelles, Hachures & Cotation (ISO 128)",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       content: `### 1. Types de traits conventionnels (NF EN ISO 128)
 
 | Type de trait | Aspect graphique | Utilisation en Dessin BTP |
@@ -118,37 +118,67 @@ export const lesson_dessin = {
       title: "Formules essentielles — Échelles, Pentes & Niveaux",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       formulas: [
         {
           name: "Calcul de la dimension réelle à partir de l'échelle",
-          latex: "\\text{Dimension R\\acute{e}elle} = \\text{Dimension Mesur\\acute{e}e sur plan} \\times \\text{D\\acute{e}nominateur de l'\\acute{E}chelle}",
-          description: "Ex: Sur un plan au 1/50, une mesure papier de 4,5 cm correspond à : 4,5 cm × 50 = 225 cm = 2,25 m réels.",
+          latex: "\\text{Dimension Réelle} = \\text{Dimension Mesurée sur plan} \\times N",
+          description: "Sur un plan au 1/N (ex: 1/50), une mesure papier de 4,5 cm correspond à : 4,5 cm × 50 = 225 cm = 2,25 m réels.",
+          variables: [
+            { symbol: 'N', name: "Dénominateur de l'échelle (1/N)", unit: '-', role: "Facteur multiplicateur de conversion papier vers chantier (ex: 50 pour 1/50).", category: 'Dessin' },
+            { symbol: 'D_r', name: "Dimension Réelle sur Ouvrage", unit: '\\text{m ou cm}', role: "Longueur réelle à implanter sur le chantier.", category: 'Métré' },
+            { symbol: 'D_p', name: "Dimension Mesurée sur Plan", unit: '\\text{cm ou mm}', role: "Longueur mesurée sur le support papier ou CAO.", category: 'Dessin' }
+          ]
         },
         {
           name: "Calcul de la pente d'un versant de toiture ou canalisation",
-          latex: "Pente (\\%) = \\frac{\\Delta Z}{D_h} \\times 100 = \\frac{Z_{haut} - Z_{bas}}{D_h} \\times 100",
+          latex: "p(\\%) = \\frac{\\Delta Z}{D_h} \\times 100 = \\frac{Z_{haut} - Z_{bas}}{D_h} \\times 100",
           description: "ΔZ = différence d'altitude entre les deux points [m], Dh = distance horizontale [m]. Ex: ΔZ = 0,15 m sur Dh = 5,0 m → Pente = 3,0%.",
+          variables: [
+            { symbol: 'p', name: "Pente en pourcentage", unit: '\\%', role: "Inclinaison de la surface par rapport à l'horizontale.", category: 'Topographie' },
+            { symbol: '\\Delta Z', name: "Dénivelée altimétrique", unit: '\\text{m}', role: "Différence de cote entre le point haut et le point bas.", category: 'Nivellement' },
+            { symbol: 'D_h', name: "Distance horizontale", unit: '\\text{m}', role: "Longueur de la projection horizontale entre les deux points.", category: 'Topographie' }
+          ]
         },
         {
           name: "Symboles d'altitude / Niveaux de référence (Cotation NGF)",
-          latex: "\\text{Niveau Brut (Béton)} = +12{,}450 \\text{ m} \\qquad \\text{Niveau Fini (Carrelage)} = +12{,}500 \\text{ m}",
-          description: "Symbolisé par un triangle noir sur le plan (niveau fini) ou contourné (brut). Altitude zéro = repère du niveau de référence du projet (ex: 0.00 = +45.20 NGF).",
+          latex: "Z_{fini} = Z_{brut} + e_{chape+rev}",
+          description: "Exemple : Niveau Brut Béton = +12,450 m NGF et Niveau Fini Carrelage = +12,500 m NGF (chape + carrelage = 5 cm).",
+          variables: [
+            { symbol: 'Z_{fini}', name: "Niveau du sol fini (Revêtement)", unit: '\\text{m NGF}', role: "Altitude finale avec carrelage, parquet ou résine.", category: 'Cotation' },
+            { symbol: 'Z_{brut}', name: "Niveau brut du béton coulé", unit: '\\text{m NGF}', role: "Altitude de coffrage de la dalle brute.", category: 'Cotation' },
+            { symbol: 'e_{chape+rev}', name: "Épaisseur chape et carrelage", unit: '\\text{cm ou m}', role: "Complexe de finition de sol.", category: 'Second-œuvre' }
+          ]
         },
         {
           name: "Cotation des baies et ouvertures (L × H / S)",
-          latex: "\\text{Cotation baie } : \\frac{L_{largeur}}{H_{hauteur}} \\quad \\text{avec } S_{all\\grave{e}ge} \\quad \\text{Ex: } \\frac{120}{140} \\quad (S = 90)",
-          description: "120 cm de largeur brute, 140 cm de hauteur brute, allège (hauteur sous baie) de 90 cm par rapport au sol fini.",
+          latex: "\\text{Baie } : L \\times H \\quad \\text{avec } S_{allège}",
+          description: "Ex: Baie 120 × 140 (S = 90) : 120 cm de largeur brute, 140 cm de hauteur brute, allège (hauteur sous baie) de 90 cm.",
+          variables: [
+            { symbol: 'L', name: "Largeur brute de la baie", unit: '\\text{cm}', role: "Largeur du tableau de maçonnerie ou de coffrage.", category: 'Architecture' },
+            { symbol: 'H', name: "Hauteur brute de la baie", unit: '\\text{cm}', role: "Hauteur libre entre linteau et appui.", category: 'Architecture' },
+            { symbol: 'S_{allège}', name: "Hauteur d'allège", unit: '\\text{cm}', role: "Hauteur de maçonnerie sous la fenêtre par rapport au sol fini.", category: 'Architecture' }
+          ]
         },
         {
           name: "Masse surfacique du treillis soudé (TS)",
-          latex: "M_{TS} = m_{surfacique} \\times A_{surface} \\quad [\\text{kg}]",
-          description: "Ex: Treillis ST25C (m = 3,02 kg/m²). Pour une dalle de 150 m² avec recouvrement 10% (165 m²) : M = 3,02 × 165 = 498,3 kg.",
+          latex: "M_{TS} = m_{surfacique} \\times A_{surface} \\times 1{,}10",
+          description: "Masse totale d'acier de treillis avec majoration forfaitaire de 10% pour les recouvrements.",
+          variables: [
+            { symbol: 'M_{TS}', name: "Masse totale de treillis soudé", unit: '\\text{kg}', role: "Poids d'acier à commander chez le fournisseur.", category: 'Métré' },
+            { symbol: 'm_{surfacique}', name: "Masse surfacique du panneau", unit: '\\text{kg/m}^2', role: "Poids par m² selon le catalogue (ex: ST25C = 3,02 kg/m²).", category: 'Aciers' },
+            { symbol: 'A_{surface}', name: "Surface nette du plancher", unit: '\\text{m}^2', role: "Superficie de la dalle à ferrailler.", category: 'Métré' }
+          ]
         },
         {
           name: "Longueur développée d'une barre d'armature façonnée (L_dev)",
-          latex: "L_{dev} = A + B + C - (n_{coudes} \\cdot 2\\Phi)",
-          description: "Somme des longueurs droites des brins A, B, C sous déduction des racourcissements aux coudes de pliage.",
+          latex: "L_{dev} = A + B + C - (n_{coudes} \\cdot 2\\phi)",
+          description: "Somme des longueurs droites des brins A, B, C déduction faite des raccourcissements aux coudes de pliage.",
+          variables: [
+            { symbol: 'L_{dev}', name: "Longueur développée coupée", unit: '\\text{m ou mm}', role: "Longueur brute de débitage de la barre avant façonnage.", category: 'Ferraillage' },
+            { symbol: 'A, B, C', name: "Longueurs des brins droits", unit: '\\text{mm}', role: "Cotes extérieures des segments façonnés.", category: 'Ferraillage' },
+            { symbol: '\\phi', name: "Diamètre nominal de la barre HA", unit: '\\text{mm}', role: "Diamètre du fil d'acier.", category: 'Aciers' }
+          ]
         },
       ],
     },
@@ -242,7 +272,7 @@ export const lesson_dessin = {
       title: "Exemple réel — Lecture d'un plan de coffrage de plancher",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       examples: [
         {
           context: "Chantier Résidence Senior (Bâtiment R+3, Lyon)",
@@ -259,7 +289,7 @@ export const lesson_dessin = {
       title: "Schéma d'un plan de coffrage & détails de ferraillage",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'plan_coffrage',
       description: "Visualisez la convention graphique d'un plan de coffrage de plancher béton armé (voiles coupés pochés, poutres en pointillés, cotes d'axes, repères de coupes A-A) et la vue en élévation du ferraillage d'une poutre.",
       diagram_description: [
         "Plan de coffrage : Voiles vus et coupés, poteaux, poutres principales et dalles avec épaisseurs",

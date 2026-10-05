@@ -4,10 +4,10 @@ export const lesson_hydraulique = {
   slug: 'hydraulique',
   lessonIndex: 1,
   title: "Écoulements, Réseaux & Ouvrages Hydrauliques",
-  subtitle: "Module 14 — Hydraulique Urbaine & Ouvrages Hydrauliques",
+  subtitle: "Module 14 — Hydraulique urbaine & ouvrages hydrauliques",
   level: 'Intermédiaire',
   duration: '40h',
-  diagramType: 'bridge_structure',
+  diagramType: 'process_flow',
   tags: ['Hydraulique', 'Bernoulli', 'Manning-Strickler', 'AEP', 'Assainissement', 'Déversoir', 'Pertes de charge'],
 
   steps: [
@@ -91,7 +91,7 @@ export const lesson_hydraulique = {
       title: "Théorie — Principes fondamentaux de l'hydraulique",
       icon: '📐',
       type: 'theory',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       content: `### 1. Équation de continuité (conservation de la masse)
 
 $$Q = A \\cdot v = \\text{constante le long d'un filet de courant}$$
@@ -125,37 +125,75 @@ $$Re = \\frac{v \\cdot D}{\\nu}$$
       title: "Formules essentielles — Hydraulique appliquée",
       icon: '🔢',
       type: 'formulas',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       formulas: [
         {
           name: "Pertes de charge linéaires — Darcy-Weisbach",
           latex: "\\Delta h_L = f \\cdot \\frac{L}{D} \\cdot \\frac{v^2}{2g}",
           description: "f = coefficient de frottement (Moody/Colebrook), L = longueur [m], D = diamètre [m], v = vitesse [m/s]. f ≈ 0,02 pour conduites courantes.",
+          variables: [
+            { symbol: "\\Delta h_L", name: "Perte de charge linéaire", unit: "m", role: "Énergie perdue par frottement." },
+            { symbol: "f", name: "Coefficient de frottement", unit: "-", role: "≈ 0,02 (diagramme de Moody)." },
+            { symbol: "L, D", name: "Longueur et diamètre de la conduite", unit: "m", role: "Géométrie de la canalisation." },
+            { symbol: "v", name: "Vitesse moyenne", unit: "m/s", role: "Q / A." },
+            { symbol: "g", name: "Pesanteur", unit: "m/s²", role: "9,81 m/s²." },
+          ],
         },
         {
           name: "Manning-Strickler — Écoulement à surface libre",
           latex: "v = K_s \\cdot R_h^{2/3} \\cdot I^{1/2} \\quad \\Rightarrow \\quad Q = K_s \\cdot A \\cdot R_h^{2/3} \\cdot I^{1/2}",
           description: "Ks = coefficient de Strickler [m^(1/3)/s] : 70 (béton lisse), 50 (béton rugueux), 30 (terre). Rh = A/P = rayon hydraulique. I = pente du radier.",
+          variables: [
+            { symbol: "v", name: "Vitesse moyenne", unit: "m/s", role: "Vitesse de l'écoulement uniforme." },
+            { symbol: "K_s", name: "Coefficient de Strickler", unit: "\\text{m}^{1/3}\\text{/s}", role: "70 béton lisse, 30 terre." },
+            { symbol: "R_h", name: "Rayon hydraulique", unit: "m", role: "Section mouillée / périmètre mouillé." },
+            { symbol: "I", name: "Pente", unit: "m/m", role: "Pente du radier." },
+            { symbol: "Q, A", name: "Débit et section mouillée", unit: "m³/s, m²", role: "Q = v·A." },
+          ],
         },
         {
           name: "Méthode rationnelle — Débit de pointe pluvial",
           latex: "Q_p = C \\cdot i \\cdot A \\quad [\\text{m}^3/\\text{s}]",
           description: "C = coefficient de ruissellement (0,9 zone urbaine dense, 0,3 zone naturelle), i = intensité de pluie [m/s], A = surface du bassin versant [m²]. Formule empirique limitée à A < 200 ha.",
+          variables: [
+            { symbol: "Q_p", name: "Débit de pointe", unit: "m³/s", role: "Débit maximal de ruissellement." },
+            { symbol: "C", name: "Coefficient de ruissellement", unit: "-", role: "0,9 zone urbaine dense ; 0,3 zone naturelle." },
+            { symbol: "i", name: "Intensité de pluie", unit: "m/s", role: "Pour la durée de concentration et la période de retour choisies." },
+            { symbol: "A", name: "Surface du bassin versant", unit: "m²", role: "Surface drainée." },
+          ],
         },
         {
           name: "Déversoir rectangulaire — Formule de Poleni",
           latex: "Q = \\mu \\cdot b \\cdot \\sqrt{2g} \\cdot H^{3/2}",
           description: "μ = coefficient de débit (0,35–0,42 sans contraction, 0,60–0,65 crête mince standard), b = largeur du déversoir [m], H = hauteur de lame déversante [m].",
+          variables: [
+            { symbol: "Q", name: "Débit déversé", unit: "m³/s", role: "Débit passant sur le seuil." },
+            { symbol: "\\mu", name: "Coefficient de débit", unit: "-", role: "0,35 à 0,42 sans contraction." },
+            { symbol: "b", name: "Largeur du déversoir", unit: "m", role: "Longueur de la crête." },
+            { symbol: "H", name: "Charge sur la crête", unit: "m", role: "Hauteur d'eau au-dessus du seuil." },
+          ],
         },
         {
           name: "Pertes de charge singulières (coudes, vannes, tés)",
           latex: "\\Delta h_s = K \\cdot \\frac{v^2}{2g}",
           description: "K = coefficient de perte singulière : coude 90° (K≈0,3–1,0), vanne ouverte (K≈0,1), entrée (K≈0,5), sortie (K=1,0), clapet anti-retour (K≈2,5).",
+          variables: [
+            { symbol: "\\Delta h_s", name: "Perte de charge singulière", unit: "m", role: "Perte localisée." },
+            { symbol: "K", name: "Coefficient de perte", unit: "-", role: "Coude 90° : 0,3 à 1,0 ; sortie : 1,0." },
+            { symbol: "v", name: "Vitesse", unit: "m/s", role: "Vitesse dans la conduite." },
+          ],
         },
         {
           name: "Hauteur Manométrique Totale (HMT) d'une pompe",
           latex: "HMT = (z_2 - z_1) + \\frac{p_2 - p_1}{\\rho g} + \\frac{v_2^2 - v_1^2}{2g} + \\sum \\Delta h",
           description: "Énergie totale que la pompe doit fournir au fluide. Puissance : P = ρ·g·Q·HMT / η (η = rendement pompe 60-85%).",
+          variables: [
+            { symbol: "HMT", name: "Hauteur manométrique totale", unit: "m", role: "Énergie à fournir par la pompe." },
+            { symbol: "z_1, z_2", name: "Cotes amont et aval", unit: "m", role: "Niveaux d'aspiration et de refoulement." },
+            { symbol: "p_1, p_2", name: "Pressions amont et aval", unit: "Pa", role: "Pressions aux deux extrémités." },
+            { symbol: "v_1, v_2", name: "Vitesses amont et aval", unit: "m/s", role: "Vitesses dans les sections extrêmes." },
+            { symbol: "\\sum \\Delta h", name: "Pertes de charge totales", unit: "m", role: "Linéaires et singulières." },
+          ],
         },
       ],
     },
@@ -249,7 +287,7 @@ $$Re = \\frac{v \\cdot D}{\\nu}$$
       title: "Exemple réel — Réseau d'assainissement urbain",
       icon: '🏢',
       type: 'examples_real',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       examples: [
         {
           context: "Bureau d'études VRD — ZAC périurbaine, Bordeaux",
@@ -266,7 +304,7 @@ $$Re = \\frac{v \\cdot D}{\\nu}$$
       title: "Schéma hydraulique — Ligne piézométrique & ligne d'énergie",
       icon: '📊',
       type: 'interactive_diagram',
-      diagramType: 'bridge_structure',
+      diagramType: 'process_flow',
       description: "Visualisez la ligne piézométrique et la ligne d'énergie le long d'une conduite en charge avec pertes de charge linéaires et singulières. Observez la conversion entre énergie de pression, cinétique et potentielle.",
       diagram_description: [
         "Ligne d'énergie (charge totale H = z + p/ρg + v²/2g) — décroissante dans le sens de l'écoulement",
