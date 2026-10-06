@@ -242,9 +242,13 @@ export const MODULE_LESSONS = {
   ],
   45: [
     lesson('urbanisme_plu', "Urbanisme & Aménagement : PLU, Autorisations et Conception de Lotissements", 'urbanisme', () => import('./lesson_urbanisme_plu.js').then(m => m.lesson_urbanisme_plu)),
+    lesson('urbanisme_lotissement', "Conception d'un Lotissement : Plan de Composition, Voirie Interne, Densité et Bilan d'Aménageur", 'urbanisme', () => import('./lesson_urbanisme_lotissement.js').then(m => m.lesson_urbanisme_lotissement)),
+    lesson('urbanisme_vrd', "Voirie et Réseaux Divers (VRD) : Profil en Travers, Structure de Voirie, Réseaux Enterrés, Pentes et Profondeurs", 'urbanisme', () => import('./lesson_urbanisme_vrd.js').then(m => m.lesson_urbanisme_vrd)),
+    lesson('urbanisme_mobilites', "Espaces Publics et Mobilités Douces : Partage de la Rue, Accessibilité, Aménagements Cyclables et Zones Apaisées", 'urbanisme', () => import('./lesson_urbanisme_mobilites.js').then(m => m.lesson_urbanisme_mobilites)),
   ],
   46: [
     lesson('trafic', "Théorie du Trafic : Débit, Densité, Vitesse & Capacité des Routes", 'transports', () => import('./lesson_trafic.js').then(m => m.lesson_trafic)),
+    lesson('transports_feux', "Carrefours à Feux : Phasage, Débit de Saturation, Cycle de Webster, Répartition des Verts et Capacité", 'transports', () => import('./lesson_transports_feux.js').then(m => m.lesson_transports_feux)),
   ],
   47: [
     lesson('irrigation_besoins', "Besoins en Eau des Cultures & Dimensionnement d'un Réseau d'Irrigation", 'irrigation', () => import('./lesson_irrigation_besoins.js').then(m => m.lesson_irrigation_besoins)),
