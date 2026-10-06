@@ -19,8 +19,8 @@ export const MODULE_LESSONS = {
     lesson('physique_thermo', "Thermodynamique & Transferts de Chaleur : Dilatation, Chaleur, Conduction et Rayonnement", 'physique', () => import('./lesson_physique_thermo.js').then(m => m.lesson_physique_thermo)),
   ],
   3: [
-    lesson('chimie', 'Chimie des Matériaux : Hydratation du Ciment, Carbonatation & Corrosion des Armatures', 'chimie', () => import('./lesson_chimie.js').then(m => m.lesson_chimie)),
     lesson('chimie_liaisons', "Structure de la Matière & Liaisons Chimiques : du Réseau Cristallin aux Propriétés des Matériaux", 'chimie', () => import('./lesson_chimie_liaisons.js').then(m => m.lesson_chimie_liaisons)),
+    lesson('chimie', 'Chimie des Matériaux : Hydratation du Ciment, Carbonatation & Corrosion des Armatures', 'chimie', () => import('./lesson_chimie.js').then(m => m.lesson_chimie)),
     lesson('chimie_polymeres', "Polymères, Adjuvants, Résines & Composites dans la Construction", 'chimie', () => import('./lesson_chimie_polymeres.js').then(m => m.lesson_chimie_polymeres)),
   ],
   4: [
@@ -29,10 +29,10 @@ export const MODULE_LESSONS = {
     lesson('dessin_plans_execution', "Lecture des Plans d'Exécution : Coffrage, Ferraillage, Nomenclatures & Quantités", 'dessin', () => import('./lesson_dessin_plans_execution.js').then(m => m.lesson_dessin_plans_execution)),
   ],
   5: [
-    lesson('bim', 'BIM, CAO, Interopérabilité IFC & Modélisation 3D', 'bim', () => import('./lesson_bim.js').then(m => m.lesson_bim)),
-    lesson('bim_management', 'BIM Management, Collaboration IFC/BCF, CDE & Coordination 4D/5D', 'bim', () => import('./lesson_bim_management.js').then(m => m.lesson_bim_management)),
     lesson('bim_autocad', "DAO avec AutoCAD : Coordonnées, Calques, Blocs, Échelles d'Annotation & Mise en Page", 'bim', () => import('./lesson_bim_autocad.js').then(m => m.lesson_bim_autocad)),
+    lesson('bim', 'BIM, CAO, Interopérabilité IFC & Modélisation 3D', 'bim', () => import('./lesson_bim.js').then(m => m.lesson_bim)),
     lesson('bim_revit_tekla', "Modélisation BIM Structure : Revit Structure, Tekla, Modèle Analytique & Échanges IFC", 'bim', () => import('./lesson_bim_revit_tekla.js').then(m => m.lesson_bim_revit_tekla)),
+    lesson('bim_management', 'BIM Management, Collaboration IFC/BCF, CDE & Coordination 4D/5D', 'bim', () => import('./lesson_bim_management.js').then(m => m.lesson_bim_management)),
   ],
   6: [
     lesson('mecanique', 'Statique & Mécanique des Structures', 'mecanique', () => import('./lesson_mecanique.js').then(m => m.lesson_mecanique)),
@@ -46,10 +46,10 @@ export const MODULE_LESSONS = {
     lesson('rdm_flambement', "Flambement des Poteaux : Charge Critique d'Euler, Élancement & Courbes Européennes", 'rdm', () => import('./lesson_rdm_flambement.js').then(m => m.lesson_rdm_flambement)),
   ],
   8: [
-    lesson('analyse', 'Analyse Structurelle Avancée, Méthode des Éléments Finis (MEF) & Dynamique', 'structures', () => import('./lesson_analyse.js').then(m => m.lesson_analyse)),
-    lesson('seisme', 'Génie Parasismique, Eurocode 8 & Protection des Structures', 'structures', () => import('./lesson_seisme.js').then(m => m.lesson_seisme)),
     lesson('structures_matricielle', "Structures Hyperstatiques : Théorème des Trois Moments & Méthode Matricielle des Déplacements", 'structures', () => import('./lesson_structures_matricielle.js').then(m => m.lesson_structures_matricielle)),
+    lesson('analyse', 'Analyse Structurelle Avancée, Méthode des Éléments Finis (MEF) & Dynamique', 'structures', () => import('./lesson_analyse.js').then(m => m.lesson_analyse)),
     lesson('structures_non_lineaire', "Analyse Non Linéaire : Effets du Second Ordre, Rotules Plastiques & Analyse Push-over", 'structures', () => import('./lesson_structures_non_lineaire.js').then(m => m.lesson_structures_non_lineaire)),
+    lesson('seisme', 'Génie Parasismique, Eurocode 8 & Protection des Structures', 'structures', () => import('./lesson_seisme.js').then(m => m.lesson_seisme)),
   ],
   9: [
     lesson('beton_arme', 'Flexion Simple — Dimensionnement des Armatures', 'beton_arme', () => import('./lesson_beton_arme.js').then(m => m.lesson_beton_arme)),
@@ -64,8 +64,8 @@ export const MODULE_LESSONS = {
   ],
   11: [
     lesson('metal', 'Conception, Dimensionnement & Eurocode 3 des Structures Métalliques', 'metal', () => import('./lesson_metal.js').then(m => m.lesson_metal)),
-    lesson('metal_assemblages', "Assemblages Métalliques : Boulons Ordinaires, Boulons Précontraints & Soudures (EC3-1-8)", 'metal', () => import('./lesson_metal_assemblages.js').then(m => m.lesson_metal_assemblages)),
     lesson('metal_instabilites', "Instabilités des Éléments en Acier : Classes de Sections, Déversement & Voilement (EC3)", 'metal', () => import('./lesson_metal_instabilites.js').then(m => m.lesson_metal_instabilites)),
+    lesson('metal_assemblages', "Assemblages Métalliques : Boulons Ordinaires, Boulons Précontraints & Soudures (EC3-1-8)", 'metal', () => import('./lesson_metal_assemblages.js').then(m => m.lesson_metal_assemblages)),
   ],
   12: [
     lesson('bois', 'Conception, Dimensionnement & Eurocode 5 des Structures Bois', 'bois', () => import('./lesson_bois.js').then(m => m.lesson_bois)),
@@ -73,11 +73,11 @@ export const MODULE_LESSONS = {
     lesson('bois_clt', "Bois d'Ingénierie : Lamellé-Collé, CLT, LVL & Construction Bois de Grande Hauteur", 'bois', () => import('./lesson_bois_clt.js').then(m => m.lesson_bois_clt)),
   ],
   13: [
-    lesson('geotechnique', 'Capacité Portante & Mécanique des Sols', 'geotechnique', () => import('./lesson_geotechnique.js').then(m => m.lesson_geotechnique)),
-    lesson('fondations', 'Fondations Profondes, Pieux, Parois Moulées & Ouvrages de Soutènement', 'fondations', () => import('./lesson_fondations.js').then(m => m.lesson_fondations)),
     lesson('sols_classification', "Identification & Classification des Sols : Paramètres d'État, Atterberg, GTR et Reconnaissance", 'geotechnique', () => import('./lesson_sols_classification.js').then(m => m.lesson_sols_classification)),
+    lesson('geotechnique', 'Capacité Portante & Mécanique des Sols', 'geotechnique', () => import('./lesson_geotechnique.js').then(m => m.lesson_geotechnique)),
     lesson('consolidation_tassements', "Consolidation & Tassements : Diffusion des Contraintes, Œdomètre et Évolution dans le Temps", 'geotechnique', () => import('./lesson_consolidation_tassements.js').then(m => m.lesson_consolidation_tassements)),
     lesson('stabilite_pentes', "Stabilité des Pentes & Talus : Pente Infinie, Méthode des Tranches et Confortements", 'geotechnique', () => import('./lesson_stabilite_pentes.js').then(m => m.lesson_stabilite_pentes)),
+    lesson('fondations', 'Fondations Profondes, Pieux, Parois Moulées & Ouvrages de Soutènement', 'fondations', () => import('./lesson_fondations.js').then(m => m.lesson_fondations)),
   ],
   14: [
     lesson('hydraulique', 'Écoulements, Réseaux & Ouvrages Hydrauliques', 'hydraulique', () => import('./lesson_hydraulique.js').then(m => m.lesson_hydraulique)),
@@ -86,12 +86,12 @@ export const MODULE_LESSONS = {
   ],
   15: [
     lesson('routes', 'Conception, Tracé & Dimensionnement des Chaussées', 'routes', () => import('./lesson_routes.js').then(m => m.lesson_routes)),
-    lesson('routes_signalisation', "Signalisation, Équipements & Sécurité Routière : Visibilité, Marquages et Analyse des Accidents", 'routes', () => import('./lesson_routes_signalisation.js').then(m => m.lesson_routes_signalisation)),
     lesson('routes_terrassements', "Terrassements Routiers : Profils en Travers, Cubatures, Mouvements des Terres & Compactage", 'routes', () => import('./lesson_routes_terrassements.js').then(m => m.lesson_routes_terrassements)),
+    lesson('routes_signalisation', "Signalisation, Équipements & Sécurité Routière : Visibilité, Marquages et Analyse des Accidents", 'routes', () => import('./lesson_routes_signalisation.js').then(m => m.lesson_routes_signalisation)),
   ],
   16: [
-    lesson('ponts', 'Conception, Calcul & Inspection des Ponts', 'ponts', () => import('./lesson_ponts.js').then(m => m.lesson_ponts)),
     lesson('ponts_typologie', "Typologie & Conception des Ponts : Choisir la Structure selon la Portée, le Site et les Matériaux", 'ponts', () => import('./lesson_ponts_typologie.js').then(m => m.lesson_ponts_typologie)),
+    lesson('ponts', 'Conception, Calcul & Inspection des Ponts', 'ponts', () => import('./lesson_ponts.js').then(m => m.lesson_ponts)),
     lesson('ponts_inspection', "Inspection, Surveillance & Maintenance des Ponts : Classification IQOA, Épreuves et Gestion du Patrimoine", 'ponts', () => import('./lesson_ponts_inspection.js').then(m => m.lesson_ponts_inspection)),
   ],
   17: [
@@ -105,19 +105,19 @@ export const MODULE_LESSONS = {
     lesson('barrages_auscultation', "Auscultation & Surveillance des Barrages : Instruments, Modèle HST, Seuils d'Alerte et Réglementation", 'barrages', () => import('./lesson_barrages_auscultation.js').then(m => m.lesson_barrages_auscultation)),
   ],
   19: [
-    lesson('aeroports', 'Conception, Orientation & Dimensionnement des Chaussées Aéroportuaires', 'aeroports', () => import('./lesson_aeroports.js').then(m => m.lesson_aeroports)),
     lesson('aeroports_aires', "Aires de Mouvement : Orientation des Pistes, Voies de Circulation, Aires de Trafic & Servitudes", 'aeroports', () => import('./lesson_aeroports_aires.js').then(m => m.lesson_aeroports_aires)),
+    lesson('aeroports', 'Conception, Orientation & Dimensionnement des Chaussées Aéroportuaires', 'aeroports', () => import('./lesson_aeroports.js').then(m => m.lesson_aeroports)),
     lesson('aeroports_balisage', "Balisage Lumineux & Aides Visuelles : Marquages, Feux de Piste, Rampes d'Approche et Catégories d'Exploitation", 'aeroports', () => import('./lesson_aeroports_balisage.js').then(m => m.lesson_aeroports_balisage)),
   ],
   20: [
     lesson('ports', 'Conception, Ouvrages Maritimes & Dynamique Côtière', 'ports', () => import('./lesson_ports.js').then(m => m.lesson_ports)),
-    lesson('ports_quais', "Quais & Appontements : Quais-Poids, Rideaux de Palplanches, Ouvrages sur Pieux et Ducs d'Albe", 'ports', () => import('./lesson_ports_quais.js').then(m => m.lesson_ports_quais)),
     lesson('ports_houle', "Houle, Marées & Protection du Littoral : Propagation, Déferlement et Ouvrages Côtiers", 'ports', () => import('./lesson_ports_houle.js').then(m => m.lesson_ports_houle)),
+    lesson('ports_quais', "Quais & Appontements : Quais-Poids, Rideaux de Palplanches, Ouvrages sur Pieux et Ducs d'Albe", 'ports', () => import('./lesson_ports_quais.js').then(m => m.lesson_ports_quais)),
   ],
   21: [
     lesson('ferroviaire', 'Conception, Géométrie & Superstructure des Voies Ferrées', 'ferroviaire', () => import('./lesson_ferroviaire.js').then(m => m.lesson_ferroviaire)),
-    lesson('ferroviaire_signalisation', "Signalisation Ferroviaire & Capacité des Lignes : Cantonnement, Distances de Freinage et ERTMS", 'ferroviaire', () => import('./lesson_ferroviaire_signalisation.js').then(m => m.lesson_ferroviaire_signalisation)),
     lesson('ferroviaire_plateforme', "Plateforme, Ballast & Maintenance de la Voie : Transmission des Charges, Géométrie et Entretien", 'ferroviaire', () => import('./lesson_ferroviaire_plateforme.js').then(m => m.lesson_ferroviaire_plateforme)),
+    lesson('ferroviaire_signalisation', "Signalisation Ferroviaire & Capacité des Lignes : Cantonnement, Distances de Freinage et ERTMS", 'ferroviaire', () => import('./lesson_ferroviaire_signalisation.js').then(m => m.lesson_ferroviaire_signalisation)),
   ],
   22: [
     lesson('topographie', 'Topographie, Géodésie, Positionnement GNSS & SIG', 'topographie', () => import('./lesson_topographie.js').then(m => m.lesson_topographie)),
@@ -145,15 +145,15 @@ export const MODULE_LESSONS = {
   ],
   27: [
     lesson('eco', 'Éco-construction, Matériaux Biosourcés, ACV & Décarbonation du BTP', 'eco', () => import('./lesson_eco.js').then(m => m.lesson_eco)),
-    lesson('climat', 'Adaptation des Infrastructures au Changement Climatique & Résilience', 'climat', () => import('./lesson_climat.js').then(m => m.lesson_climat)),
-    lesson('energie', 'Énergies Renouvelables, Efficacité Énergétique du Bâtiment & Smart Grids', 'energie', () => import('./lesson_energie.js').then(m => m.lesson_energie)),
     lesson('environnement_certifications', "Certifications Environnementales : HQE, BREEAM, LEED — Critères, Calcul des Scores et Stratégie", 'eco', () => import('./lesson_environnement_certifications.js').then(m => m.lesson_environnement_certifications)),
+    lesson('energie', 'Énergies Renouvelables, Efficacité Énergétique du Bâtiment & Smart Grids', 'energie', () => import('./lesson_energie.js').then(m => m.lesson_energie)),
+    lesson('climat', 'Adaptation des Infrastructures au Changement Climatique & Résilience', 'climat', () => import('./lesson_climat.js').then(m => m.lesson_climat)),
   ],
   28: [
     lesson('normes', "Eurocodes, Normes NF EN & DTU : Architecture Normative et Combinaisons d'Actions", 'normes', () => import('./lesson_normes.js').then(m => m.lesson_normes)),
-    lesson('droit', 'Droit de la Construction, Marchés Publics & Assurances', 'droit', () => import('./lesson_droit.js').then(m => m.lesson_droit)),
     lesson('normes_eurocodes_materiaux', "Eurocodes 2 à 9 : Valeurs de Calcul des Matériaux, Coefficients Partiels et Annexes Nationales", 'normes', () => import('./lesson_normes_eurocodes_materiaux.js').then(m => m.lesson_normes_eurocodes_materiaux)),
     lesson('normes_aci_aashto', "Codes Américains : ACI 318, ASCE 7 et AASHTO LRFD — Combinaisons, Facteurs φ et Comparaison avec les Eurocodes", 'normes', () => import('./lesson_normes_aci_aashto.js').then(m => m.lesson_normes_aci_aashto)),
+    lesson('droit', 'Droit de la Construction, Marchés Publics & Assurances', 'droit', () => import('./lesson_droit.js').then(m => m.lesson_droit)),
   ],
   29: [
     lesson('logiciels', 'Logiciels de Calcul de Structures, Méthode des Éléments Finis & Automatisation en Python', 'logiciels', () => import('./lesson_logiciels.js').then(m => m.lesson_logiciels)),

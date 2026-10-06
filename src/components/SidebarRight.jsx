@@ -115,8 +115,8 @@ export default function SidebarRight({ module, lessonIndex = 0, inLesson = false
         <div className="grid grid-cols-3 gap-3 text-center">
           {[
             { label: 'Modules', value: modules.length, color: 'text-blue-600 dark:text-sky-400' },
-            { label: 'Leçons', value: countLessons(), color: 'text-orange-600 dark:text-orange-400' },
-            { label: 'Heures', value: `${TOTAL_HOURS}h`, color: 'text-emerald-600 dark:text-emerald-400' },
+            { label: 'Leçons', value: countLessons(), color: 'text-slate-900 dark:text-white' },
+            { label: 'Heures', value: `${TOTAL_HOURS}h`, color: 'text-slate-900 dark:text-white' },
           ].map(stat => (
             <div key={stat.label} className="bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-transparent rounded-xl p-2">
               <p className={`text-lg font-bold font-mono ${stat.color}`}>{stat.value}</p>
@@ -128,7 +128,7 @@ export default function SidebarRight({ module, lessonIndex = 0, inLesson = false
           <li className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 pulse-dot" aria-hidden="true" />
             {inLesson && entry
-              ? <span>Module {module.id} en cours — leçon {Math.min(lessonIndex, entries.length - 1) + 1}/{entries.length}</span>
+              ? <span>Module {module.n} en cours — leçon {Math.min(lessonIndex, entries.length - 1) + 1}/{entries.length}</span>
               : <span>Aucune leçon ouverte</span>}
           </li>
           <li>Modules explorés : <strong>{exploredCount}/{modules.length}</strong></li>

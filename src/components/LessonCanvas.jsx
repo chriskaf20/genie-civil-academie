@@ -1077,14 +1077,14 @@ export default function LessonCanvas({ module, lessonIndex = 0, onSelectLesson, 
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 sm:gap-3 mb-3 flex-wrap">
                   {module?.icon && <span className="text-2xl sm:text-3xl shrink-0" aria-hidden="true">{module.icon}</span>}
-                  <span className="tag-blue text-xs font-bold">Module {module?.id}</span>
+                  <span className="tag-blue text-xs font-bold">Module {module?.n}</span>
                   {entries.length > 1 && <span className="tag-blue text-xs font-bold">Leçon {index + 1}/{entries.length}</span>}
                   {lesson?.level && <span className={`${String(lesson.level).includes('Débutant') ? 'tag-green' : 'tag-orange'} text-xs font-bold`}>{lesson.level}</span>}
                   {lesson?.duration && <span className="tag-blue text-xs font-bold">{lesson.duration}</span>}
                   {validated && <span className="tag-green text-xs font-bold">✓ Leçon validée</span>}
                 </div>
                 <p className="text-xs sm:text-sm uppercase tracking-widest text-teal-700 dark:text-cyan-400 font-bold mb-1.5">
-                  Module {module?.id} — {module?.title}
+                  Module {module?.n} — {module?.title}
                 </p>
                 <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight break-words">{lesson?.title || entry?.title || module?.title}</h2>
                 {lesson?.tags?.length > 0 && (

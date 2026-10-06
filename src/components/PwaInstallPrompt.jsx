@@ -154,7 +154,7 @@ export default function PwaInstallPrompt({ isDark }) {
               Installer GCEA
             </p>
             <p className={`text-xs mt-0.5 leading-tight ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-              Accès hors-ligne · 35 modules · Rapide
+              Accès hors-ligne · 47 modules · Rapide
             </p>
           </div>
 

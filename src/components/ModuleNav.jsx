@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { modules, categories } from '../data/modules.js';
+import { modules } from '../data/modules.js';
 import { getLessonEntries } from '../data/lesson_registry.js';
 import { Search, LockKeyholeOpen, CheckCircle2 } from 'lucide-react';
 
@@ -11,26 +11,14 @@ const LEVEL_FILTERS = [
   { value: 'Tous niveaux', label: 'Tous niveaux' },
 ];
 
-const CATEGORY_COLORS = {
-  blue: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  orange: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
-  violet: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
-  amber: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-  teal: 'text-teal-400 bg-teal-500/10 border-teal-500/20',
-  rose: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
-  indigo: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
-  green: 'text-green-400 bg-green-500/10 border-green-500/20',
-  emerald: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-  slate: 'text-slate-400 bg-slate-500/10 border-slate-500/20',
-  cyan: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-  pink: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
-};
+// Every category uses the same navy style: the learning order, not colour, structures the list.
+const CATEGORY_STYLE = 'text-navy-700 dark:text-navy-200 bg-navy-50 dark:bg-navy-500/10 border-navy-200 dark:border-navy-500/30';
 
 const LEVEL_COLORS = {
-  'Débutant': 'text-green-400',
-  'Intermédiaire': 'text-yellow-400',
-  'Avancé': 'text-orange-400',
-  'Tous niveaux': 'text-sky-400',
+  'Débutant': 'text-slate-500 dark:text-slate-400',
+  'Intermédiaire': 'text-navy-500 dark:text-navy-300',
+  'Avancé': 'text-navy-700 dark:text-navy-100 font-semibold',
+  'Tous niveaux': 'text-slate-500 dark:text-slate-400',
 };
 
 const QUICK_SEARCH_CHIPS = ['Béton', 'RDM', 'BIM', 'Routes', 'Ponts', 'Sols', 'Eurocode', 'IA'];
@@ -70,15 +58,15 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
   return (
     <div className="flex flex-col h-full space-y-3">
       {/* Free Access Header Banner */}
-      <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-2 flex items-center justify-between">
+      <div className="rounded-xl border border-navy-200 dark:border-navy-500/30 bg-navy-50 dark:bg-navy-500/10 p-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <LockKeyholeOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <LockKeyholeOpen className="w-4 h-4 text-navy-600 dark:text-navy-300" />
           <div>
-            <p className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Accès Libre 100%</p>
-            <p className="text-[10px] text-slate-600 dark:text-slate-400">Tous les 35 modules sont déverrouillés</p>
+            <p className="text-xs font-bold text-navy-700 dark:text-navy-200">Accès Libre 100%</p>
+            <p className="text-[10px] text-slate-600 dark:text-slate-400">Tous les {modules.length} modules sont déverrouillés</p>
           </div>
         </div>
-        <span className="tag-green text-[9px]">35 Cours</span>
+        <span className="tag-blue text-[9px]">{modules.length} cours</span>
       </div>
 
       {/* Global Search Input */}
@@ -142,8 +130,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Module groups */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {Object.entries(grouped).map(([cat, mods]) => {
-          const catData = categories.find(c => c.name === cat);
-          const color = catData ? CATEGORY_COLORS[catData.color] : CATEGORY_COLORS.blue;
+          const color = CATEGORY_STYLE;
           const isCollapsed = collapsed[cat];
 
           return (
@@ -179,7 +166,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
                         <span className="text-sm shrink-0 mt-0.5">{m.icon}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">{String(m.id).padStart(2, '0')}</span>
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">{String(m.n).padStart(2, '0')}</span>
                             <div className="flex items-center gap-1">
                               {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-500 dark:text-emerald-400 shrink-0" />}
                               <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">🔓</span>

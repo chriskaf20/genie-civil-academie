@@ -15,12 +15,12 @@ export default function GceaLogoSvg({ size = 48, isDark = true, className = '', 
   const h = showText ? size * 1.35 : size;
 
   // Palette
-  const cableColor = isDark ? '#60a5fa' : '#2563eb';     // Bleu haubans
-  const deckColor = isDark ? '#e2e8f0' : '#1e293b';      // Tablier
-  const pylonColor = isDark ? '#f8fafc' : '#0f172a';      // Pylônes
-  const pylonAccent = isDark ? '#38bdf8' : '#0284c7';     // Accent pylône
-  const waterColor = isDark ? '#1e40af' : '#93c5fd';      // Eau
-  const textColor = isDark ? '#f1f5f9' : '#0f172a';       // Texte GCEA
+  const cableColor = isDark ? '#93acdc' : '#1f3d7a';     // Bleu haubans
+  const deckColor = isDark ? '#e4e4e7' : '#18181b';      // Tablier
+  const pylonColor = isDark ? '#fafafa' : '#0a0a0a';      // Pylônes
+  const pylonAccent = isDark ? '#6a89c9' : '#3d5fa6';     // Accent pylône
+  const waterColor = isDark ? '#172f61' : '#bccdeb';      // Eau
+  const textColor = isDark ? '#fafafa' : '#0a0a0a';       // Texte GCEA
   const glowColor = isDark ? 'rgba(96,165,250,0.35)' : 'rgba(37,99,235,0.2)';
 
   return (
@@ -36,8 +36,8 @@ export default function GceaLogoSvg({ size = 48, isDark = true, className = '', 
       <defs>
         {/* Dégradé ciel */}
         <linearGradient id="gcea-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={isDark ? '#0f172a' : '#e0f2fe'} />
-          <stop offset="100%" stopColor={isDark ? '#1e293b' : '#f0f9ff'} />
+          <stop offset="0%" stopColor={isDark ? '#0a0a0a' : '#f0f4fb'} />
+          <stop offset="100%" stopColor={isDark ? '#18181b' : '#fafafa'} />
         </linearGradient>
 
         {/* Dégradé eau */}

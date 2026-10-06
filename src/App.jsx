@@ -254,7 +254,7 @@ export default function App() {
             >
               <span className="text-lg" aria-hidden="true">{selectedModule.icon}</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-xs text-teal-600 dark:text-cyan-400 font-mono font-bold">Module {selectedModule.id}/{totalCount} :</span>
+                <span className="text-xs text-teal-600 dark:text-cyan-400 font-mono font-bold">Module {selectedModule.n}/{totalCount} :</span>
                 <span className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{selectedModule.title}</span>
               </span>
               <span className="text-[10px] text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>

@@ -2,26 +2,16 @@ import { useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
 import { getLessonEntries, countLessons } from '../data/lesson_registry.js';
 
-const CATEGORY_COLORS = {
-  blue: { bg: 'bg-blue-50 dark:bg-blue-500/10', border: 'border-blue-200 dark:border-blue-500/30', text: 'text-blue-600 dark:text-blue-400', glow: 'shadow-blue-500/5 dark:shadow-blue-500/10' },
-  orange: { bg: 'bg-orange-50 dark:bg-orange-500/10', border: 'border-orange-200 dark:border-orange-500/30', text: 'text-orange-600 dark:text-orange-400', glow: 'shadow-orange-500/5 dark:shadow-orange-500/10' },
-  violet: { bg: 'bg-violet-50 dark:bg-violet-500/10', border: 'border-violet-200 dark:border-violet-500/30', text: 'text-violet-600 dark:text-violet-400', glow: 'shadow-violet-500/5 dark:shadow-violet-500/10' },
-  amber: { bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/30', text: 'text-amber-600 dark:text-amber-400', glow: 'shadow-amber-500/5 dark:shadow-amber-500/10' },
-  teal: { bg: 'bg-teal-50 dark:bg-teal-500/10', border: 'border-teal-200 dark:border-teal-500/30', text: 'text-teal-600 dark:text-teal-400', glow: 'shadow-teal-500/5 dark:shadow-teal-500/10' },
-  rose: { bg: 'bg-rose-50 dark:bg-rose-500/10', border: 'border-rose-200 dark:border-rose-500/30', text: 'text-rose-600 dark:text-rose-400', glow: 'shadow-rose-500/5 dark:shadow-rose-500/10' },
-  indigo: { bg: 'bg-indigo-50 dark:bg-indigo-500/10', border: 'border-indigo-200 dark:border-indigo-500/30', text: 'text-indigo-600 dark:text-indigo-400', glow: 'shadow-indigo-500/5 dark:shadow-indigo-500/10' },
-  green: { bg: 'bg-green-50 dark:bg-green-500/10', border: 'border-green-200 dark:border-green-500/30', text: 'text-green-600 dark:text-green-400', glow: 'shadow-green-500/5 dark:shadow-green-500/10' },
-  emerald: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/30', text: 'text-emerald-600 dark:text-emerald-400', glow: 'shadow-emerald-500/5 dark:shadow-emerald-500/10' },
-  slate: { bg: 'bg-slate-50 dark:bg-slate-700/30', border: 'border-slate-200 dark:border-slate-600/30', text: 'text-slate-600 dark:text-slate-400', glow: 'shadow-slate-500/5 dark:shadow-slate-500/10' },
-  cyan: { bg: 'bg-cyan-50 dark:bg-cyan-500/10', border: 'border-cyan-200 dark:border-cyan-500/30', text: 'text-cyan-600 dark:text-cyan-400', glow: 'shadow-cyan-500/5 dark:shadow-cyan-500/10' },
-  pink: { bg: 'bg-pink-50 dark:bg-pink-500/10', border: 'border-pink-200 dark:border-pink-500/30', text: 'text-pink-600 dark:text-pink-400', glow: 'shadow-pink-500/5 dark:shadow-pink-500/10' },
-};
+const NAVY = { bg: 'bg-navy-50 dark:bg-navy-500/10', border: 'border-navy-200 dark:border-navy-500/30', text: 'text-navy-700 dark:text-navy-200', glow: 'shadow-navy-500/5 dark:shadow-navy-500/10' };
+const INK = { bg: 'bg-slate-100 dark:bg-slate-800', border: 'border-slate-200 dark:border-slate-700', text: 'text-slate-900 dark:text-white', glow: 'shadow-slate-500/5' };
+// One navy style for every category; ink (black / white) for the neutral statistics.
+const CATEGORY_COLORS = new Proxy({ ink: INK }, { get: (t, k) => t[k] || NAVY });
 
 const LEVEL_CONFIG = {
-  'Débutant': { color: 'text-green-700 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-500/10 border border-green-300 dark:border-green-500/30', dot: 'bg-green-500' },
-  'Intermédiaire': { color: 'text-amber-700 dark:text-yellow-400', bg: 'bg-amber-100 dark:bg-yellow-500/10 border border-amber-300 dark:border-yellow-500/30', dot: 'bg-amber-500' },
-  'Avancé': { color: 'text-orange-700 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-500/10 border border-orange-300 dark:border-orange-500/30', dot: 'bg-orange-500' },
-  'Tous niveaux': { color: 'text-sky-700 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-500/10 border border-sky-300 dark:border-sky-500/30', dot: 'bg-sky-500' },
+  'Débutant': { color: 'text-slate-700 dark:text-slate-200', bg: 'bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
+  'Intermédiaire': { color: 'text-navy-700 dark:text-navy-200', bg: 'bg-navy-50 dark:bg-navy-500/15 border border-navy-200 dark:border-navy-500/40', dot: 'bg-navy-400' },
+  'Avancé': { color: 'text-white', bg: 'bg-navy-700 border border-navy-700', dot: 'bg-navy-700' },
+  'Tous niveaux': { color: 'text-slate-700 dark:text-slate-200', bg: 'bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
 };
 
 const FEATURED_MODULES = [9, 7, 16, 13, 29, 30]; // Béton Armé, RDM, Ponts, Géotechnique, Logiciels, IA
@@ -58,7 +48,7 @@ function ModuleCard({ module, onSelect, isDone }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">#{String(module.id).padStart(2, '0')}</span>
+            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">#{String(module.n).padStart(2, '0')}</span>
             <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${level.bg} ${level.color}`}>
               {module.level}
             </span>
@@ -176,8 +166,8 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard value={modules.length} label="Modules" icon="📚" color={CATEGORY_COLORS.blue} />
         <StatCard value={totalLessons} label="Leçons de 23 étapes" icon="📖" color={CATEGORY_COLORS.violet} />
-        <StatCard value={`${totalHours}h`} label="Volume de formation indicatif" icon="⏱" color={CATEGORY_COLORS.orange} />
-        <StatCard value="∞" label="Accès illimité" icon="🔓" color={CATEGORY_COLORS.emerald} />
+        <StatCard value={`${totalHours}h`} label="Volume de formation indicatif" icon="⏱" color={CATEGORY_COLORS.ink} />
+        <StatCard value="∞" label="Accès illimité" icon="🔓" color={CATEGORY_COLORS.ink} />
       </div>
 
       {/* Featured Modules */}
@@ -198,42 +188,38 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
       <div className="border-t border-slate-200 dark:border-slate-800/60" />
 
       {/* Learning Path Banner */}
-      <div className="rounded-2xl border border-amber-300/80 dark:border-amber-500/20 bg-amber-50/70 dark:bg-amber-500/5 p-5 shadow-sm">
+      <div className="rounded-2xl border border-navy-200 dark:border-navy-500/30 bg-white dark:bg-slate-900/60 p-5 shadow-sm">
         <div className="flex items-start gap-4">
-          <span className="text-3xl shrink-0">🗺️</span>
-          <div>
-            <h3 className="text-sm font-bold text-amber-800 dark:text-amber-300 mb-1">Parcours d'apprentissage recommandé</h3>
+          <span className="text-3xl shrink-0" aria-hidden="true">🗺️</span>
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-bold text-navy-700 dark:text-navy-200 mb-1">Parcours d'apprentissage</h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-3">
-              Pour une progression optimale de débutant à expert, suivez cet ordre thématique :
+              Les modules sont numérotés dans l'ordre où il faut les suivre : chaque étape s'appuie sur les précédentes.
             </p>
-            <div className="flex flex-wrap gap-2 items-center text-xs">
-              {[
-                { icon: '∑', label: 'Maths', id: 1 },
-                { icon: '→', label: null },
-                { icon: '⚛', label: 'Physique', id: 2 },
-                { icon: '→', label: null },
-                { icon: '🔩', label: 'RDM', id: 7 },
-                { icon: '→', label: null },
-                { icon: '🏛', label: 'Béton Armé', id: 9 },
-                { icon: '→', label: null },
-                { icon: '⛏', label: 'Géotech', id: 13 },
-                { icon: '→', label: null },
-                { icon: '🌉', label: 'Ponts', id: 16 },
-                { icon: '→', label: null },
-                { icon: '🤖', label: 'IA', id: 30 },
-              ].map((step, i) => step.label ? (
-                <button
-                  key={i}
-                  onClick={() => onSelectModule(modules.find(m => m.id === step.id))}
-                  className="flex items-center gap-1 bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 px-2 py-1 rounded-lg hover:border-amber-500/40 hover:bg-amber-100/50 dark:hover:bg-amber-500/10 transition-all shadow-sm"
-                >
-                  <span>{step.icon}</span>
-                  <span className="text-slate-700 dark:text-slate-300 font-medium">{step.label}</span>
-                </button>
-              ) : (
-                <span key={i} className="text-slate-400 dark:text-slate-600">→</span>
-              ))}
-            </div>
+            <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
+              {categories.map((cat, i) => {
+                const mods = cat.ids.map(id => modules.find(m => m.id === id)).filter(Boolean);
+                const first = mods[0];
+                const last = mods[mods.length - 1];
+                return (
+                  <li key={cat.name}>
+                    <button
+                      type="button"
+                      onClick={() => onSelectModule(first)}
+                      className="w-full h-full flex items-center gap-2.5 text-left bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 px-3 py-2 rounded-xl hover:border-navy-400 hover:bg-navy-50 dark:hover:bg-navy-500/10 transition-all"
+                    >
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-navy-700 text-white text-[11px] font-bold flex items-center justify-center">{i + 1}</span>
+                      <span className="min-w-0">
+                        <span className="block font-semibold text-slate-900 dark:text-slate-100 truncate">{cat.name}</span>
+                        <span className="block text-[10px] text-slate-500 dark:text-slate-400">
+                          {first === last ? `Module ${first.n}` : `Modules ${first.n} à ${last.n}`}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         </div>
       </div>

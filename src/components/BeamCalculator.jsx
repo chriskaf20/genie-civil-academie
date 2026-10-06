@@ -135,16 +135,16 @@ export default function BeamCalculator() {
               {/* Moment fill */}
               <path d={fillM} fill="rgba(139,92,246,0.15)" />
               {/* Moment curve */}
-              <path d={pathM} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinejoin="round" />
+              <path d={pathM} fill="none" stroke="#3d5fa6" strokeWidth="2.5" strokeLinejoin="round" />
               {/* Supports */}
               <polygon points={`${padX},${padY + plotH / 2} ${padX - 8},${padY + plotH / 2 + 14} ${padX + 8},${padY + plotH / 2 + 14}`}
-                fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
+                fill="rgba(147,172,220,0.4)" stroke="#6a89c9" strokeWidth="1" />
               <polygon points={`${padX + plotW},${padY + plotH / 2} ${padX + plotW - 8},${padY + plotH / 2 + 14} ${padX + plotW + 8},${padY + plotH / 2 + 14}`}
-                fill="rgba(56,189,248,0.4)" stroke="#38bdf8" strokeWidth="1" />
+                fill="rgba(147,172,220,0.4)" stroke="#6a89c9" strokeWidth="1" />
               {/* Labels */}
-              <text x={padX} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">A</text>
-              <text x={padX + plotW} y={padY + plotH / 2 + 28} fill="#94a3b8" fontSize="10" textAnchor="middle" fontFamily="Inter">B</text>
-              <text x={padX + plotW / 2} y={padY + 12} fill="#a78bfa" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono" fontWeight="bold">
+              <text x={padX} y={padY + plotH / 2 + 28} fill="#a1a1aa" fontSize="10" textAnchor="middle" fontFamily="Inter">A</text>
+              <text x={padX + plotW} y={padY + plotH / 2 + 28} fill="#a1a1aa" fontSize="10" textAnchor="middle" fontFamily="Inter">B</text>
+              <text x={padX + plotW / 2} y={padY + 12} fill="#93acdc" fontSize="11" textAnchor="middle" fontFamily="JetBrains Mono" fontWeight="bold">
                 {M_max.toFixed(1)} kN·m
               </text>
             </svg>

@@ -1,15 +1,55 @@
+// Theme: white and black, with navy blue as the single brand colour.
+// Every cool hue used in the components (teal, cyan, sky, blue, indigo, violet) maps to navy,
+// and slate maps to neutral greys, so the whole app follows the palette without per-class edits.
+const navy = {
+  50: '#f0f4fb',
+  100: '#dde6f6',
+  200: '#bccdeb',
+  300: '#93acdc',
+  400: '#6a89c9',
+  500: '#3d5fa6',
+  600: '#1f3d7a',
+  700: '#172f61',
+  800: '#11244b',
+  900: '#0c1a37',
+  950: '#070f22',
+};
+const neutral = {
+  50: '#fafafa',
+  100: '#f4f4f5',
+  200: '#e4e4e7',
+  300: '#d4d4d8',
+  400: '#a1a1aa',
+  500: '#71717a',
+  600: '#52525b',
+  700: '#3f3f46',
+  750: '#333338',
+  800: '#27272a',
+  900: '#18181b',
+  950: '#0a0a0a',
+};
+
 export default {
   darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        primary: '#0F52BA',
-        chantier: '#FF6B00',
-        beton: '#4A5568',
-        surface: '#f8fafc',
-        surface2: '#0f172a',
-        slate: { 750: '#283548' },
+        primary: navy[600],
+        navy,
+        chantier: '#b45309',
+        beton: neutral[600],
+        surface: neutral[50],
+        surface2: neutral[950],
+        slate: neutral,
+        gray: neutral,
+        teal: navy,
+        cyan: navy,
+        sky: navy,
+        blue: navy,
+        indigo: navy,
+        violet: navy,
+        purple: navy,
       },
       // Sizes used by the components that Tailwind 3 does not define by default.
       boxShadow: {
