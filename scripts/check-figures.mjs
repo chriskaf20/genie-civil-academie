@@ -37,6 +37,8 @@ try {
     const source = readFileSync(path.join(root, 'src/figures/lessons', file), 'utf8');
     source.split('\n').forEach((line, i) => {
       if (/^\s*(\/\/|import |steps:|id:)/.test(line)) return;
+      // `>a_{b}</Text>` is JSX text: React would evaluate {b}. Such labels must be JS strings.
+      if (/>[^<>{}'"`]*[_^]\{[^}]*\}[^<>]*<\/Text>/.test(line)) fail(`${file}:${i + 1}`, 'label with _{…} written as JSX text: wrap it in {\'…\'}');
       // Ignores SCREAMING_CASE constants such as R_TOT.
       for (const m of line.replace(/\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/g, '').matchAll(/[A-Za-zÀ-ÿα-ωΑ-Ω'´]_([A-Za-z0-9]{2,})/g)) {
         fail(`${file}:${i + 1}`, `multi-character subscript without braces: "${m[0]}" (write _{${m[1]}})`);

@@ -218,15 +218,27 @@ export const MODULE_LESSONS = {
   ],
   41: [
     lesson('batiment_gros_oeuvre', "Technologie du Bâtiment : Gros Œuvre, Fondations, Murs, Planchers & Escaliers", 'batiment', () => import('./lesson_batiment_gros_oeuvre.js').then(m => m.lesson_batiment_gros_oeuvre)),
+    lesson('batiment_planchers', "Planchers du Bâtiment : Poutrelles-Hourdis, Prédalles, Dalles Alvéolaires — Choix, Charges et Mise en Œuvre", 'batiment', () => import('./lesson_batiment_planchers.js').then(m => m.lesson_batiment_planchers)),
+    lesson('batiment_toitures', "Toitures et Étanchéité : Pentes, Charpente, Couverture, Toitures-Terrasses, Neige et Évacuation des Eaux Pluviales", 'batiment', () => import('./lesson_batiment_toitures.js').then(m => m.lesson_batiment_toitures)),
+    lesson('batiment_second_oeuvre', "Second Œuvre et Finitions : Cloisons, Menuiseries, Chapes, Revêtements, Peintures et Ordre d'Intervention", 'batiment', () => import('./lesson_batiment_second_oeuvre.js').then(m => m.lesson_batiment_second_oeuvre)),
   ],
   42: [
     lesson('thermique_batiment', "Thermique du Bâtiment : Déperditions, Isolation & Ponts Thermiques", 'thermique', () => import('./lesson_thermique_batiment.js').then(m => m.lesson_thermique_batiment)),
+    lesson('physique_hygrometrie', "Hygrométrie et Condensation : Point de Rosée, Pare-Vapeur, Méthode de Glaser et Moisissures", 'thermique', () => import('./lesson_physique_hygrometrie.js').then(m => m.lesson_physique_hygrometrie)),
+    lesson('physique_acoustique', "Acoustique du Bâtiment : Décibels, Loi de Masse, Bruits d'Impact, Temps de Réverbération (Sabine)", 'thermique', () => import('./lesson_physique_acoustique.js').then(m => m.lesson_physique_acoustique)),
+    lesson('physique_re2020', "Réglementation Environnementale RE2020 : Bbio, Cep, Confort d'Été (DH) et Carbone (Ic construction)", 'thermique', () => import('./lesson_physique_re2020.js').then(m => m.lesson_physique_re2020)),
   ],
   43: [
     lesson('incendie_reglementation', "Sécurité Incendie : Réglementation, Évacuation & Feu Normalisé", 'incendie', () => import('./lesson_incendie_reglementation.js').then(m => m.lesson_incendie_reglementation)),
+    lesson('incendie_desenfumage', "Désenfumage : Panache de Fumée, Cantons, Désenfumage Naturel et Mécanique, Amenées d'Air", 'incendie', () => import('./lesson_incendie_desenfumage.js').then(m => m.lesson_incendie_desenfumage)),
+    lesson('incendie_structures', "Résistance au Feu des Structures : Critères R-E-I, Béton (Enrobage), Acier (Température Critique), Bois (Carbonisation)", 'incendie', () => import('./lesson_incendie_structures.js').then(m => m.lesson_incendie_structures)),
+    lesson('incendie_protection', "Protection Passive et Active : Compartimentage, Portes Coupe-Feu, Sprinklers, Extincteurs, Détection et SSI", 'incendie', () => import('./lesson_incendie_protection.js').then(m => m.lesson_incendie_protection)),
   ],
   44: [
     lesson('plomberie', "Plomberie Sanitaire : Dimensionnement des Réseaux d'Eau, d'Eau Chaude & d'Évacuation", 'equipements', () => import('./lesson_plomberie.js').then(m => m.lesson_plomberie)),
+    lesson('equipements_chauffage', "Chauffage et Ventilation : Puissance de Chauffage, Émetteurs, Pompe à Chaleur, Débits de VMC et Double Flux", 'equipements', () => import('./lesson_equipements_chauffage.js').then(m => m.lesson_equipements_chauffage)),
+    lesson('equipements_climatisation', "Climatisation et CVC : Bilan des Apports, Débit d'Air Soufflé, Systèmes (Split, VRV, CTA) et EER", 'equipements', () => import('./lesson_equipements_climatisation.js').then(m => m.lesson_equipements_climatisation)),
+    lesson('equipements_electricite', "Électricité du Bâtiment et Courants Faibles : Puissance, Sections de Câbles, Chute de Tension, Protections", 'equipements', () => import('./lesson_equipements_electricite.js').then(m => m.lesson_equipements_electricite)),
   ],
   45: [
     lesson('urbanisme_plu', "Urbanisme & Aménagement : PLU, Autorisations et Conception de Lotissements", 'urbanisme', () => import('./lesson_urbanisme_plu.js').then(m => m.lesson_urbanisme_plu)),
