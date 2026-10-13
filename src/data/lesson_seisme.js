@@ -461,7 +461,7 @@ $$S_d(T) = a_g \\cdot S \\cdot \\frac{2{,}5}{q}$$
       scenario: "Bâtiment R+8 à Fort-de-France (Zone 5, agr = 3,0 m/s², Catégorie II γI = 1,0, Sol C S = 1,15, m = 4 500 t, q = 3,6).",
       description: "Calcul de la force sismique de base et ferraillage de confinement des voiles de rive.",
       resolution_latex_1: "S_d = 3{,}0 \\times 1{,}0 \\times 1{,}15 \\times \\frac{2{,}5}{3{,}6} = 2{,}396 \\text{ m/s}^2 \\quad (0{,}244 \\text{ g})",
-      resolution_latex_2: "F_b = 2{,}396 \\times 4\\,500\\,000 \\text{ kg} \\times 0{,}85 = 9\,164\\,700 \\text{ N} = 9\\,164{,}7 \\text{ kN} \\quad (916 \\text{ tonnes})",
+      resolution_latex_2: "F_b = 2{,}396 \\times 4\\,500\\,000 \\text{ kg} \\times 0{,}85 = 9\\,164\\,700 \\text{ N} = 9\\,164{,}7 \\text{ kN} \\quad (916 \\text{ tonnes})",
       conclusion: "Dimensionnement des voiles de contreventement béton 25 cm avec armatures transversales d'about Φ10 tous les 6 cm.",
     },
 
