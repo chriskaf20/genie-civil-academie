@@ -193,9 +193,9 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
         { n: 4, text: "Calcul du rapport E/C inverse : E/C = 1 / 1,939 = 0,515 ≈ 0,51" },
         { n: 5, text: "Ajustement de sécurité pour respecter le critère NF EN 206 (E/C ≤ 0,50 en classe XC4) : Retenir E/C = 0,48" },
         { n: 6, text: "Calcul du dosage en ciment C avec E = 175 L/m³ : C = E / (E/C) = 175 / 0,48 = 364,6 kg/m³ → Retenir C = 365 kg/m³" },
-        { n: 7, text: "Vérification NF EN 206 : C = 365 kg/m³ ≥ 300 kg/m³ ✓ | E/C = 0,48 ≤ 0,50 ✓ | fcm28 calculé = 0,55 × 48 × (1,939 - 0,50) = 40,6 MPa ≥ 38 MPa ✓" },
+        { n: 7, text: "Vérification NF EN 206 : C = 365 kg/m³ ≥ 300 kg/m³ ✓ | E/C = 0,48 ≤ 0,50 ✓ | avec E/C = 0,48 (C/E = 2,083) : fcm28 = 0,55 × 48 × (2,083 - 0,50) = 41,8 MPa ≥ 38 MPa ✓" },
       ],
-      result_latex: "C/E = 1{,}94 \\quad \\Rightarrow \\quad E/C_{retenu} = \\textbf{0{,}48} \\qquad C = \\textbf{365 kg/m}^3 \\quad (f_{cm28} = 40{,}6 \\text{ MPa}) \\quad \\checkmark",
+      result_latex: "C/E = 1{,}94 \\quad \\Rightarrow \\quad E/C_{retenu} = \\textbf{0{,}48} \\qquad C = \\textbf{365 kg/m}^3 \\quad (f_{cm28} = 41{,}8 \\text{ MPa}) \\quad \\checkmark",
     },
 
     {
@@ -258,7 +258,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
           given: "Poutre en bois lamellé-collé GL24h de largeur initiale b0 = 200 mm. Vitesse de carbonisation β0 = 0,65 mm/min. Exposition sur 3 faces.",
           find: "Profondeur carbonisée d_char et largeur utile résiduelle b_ef après 45 min de feu",
           solution_latex: "d_{char} = 0{,}65 \\times 45 = 29{,}25 \\text{ mm} \\qquad b_{ef} = 200 - (2 \\times 29{,}25) = 200 - 58{,}5 = 141{,}5 \\text{ mm}",
-          result: "La section efficace bois conservant 100% de sa résistance mécanique fait 141,5 mm × (h - 29,25 mm).",
+          result: "Section résiduelle : 141,5 mm × (h - 29,25 mm). L’EC5 retire encore une couche de 7 mm sans résistance (k₀·d₀) pour obtenir la section efficace : 127,5 mm × (h - 36,25 mm).",
         },
       ],
     },
