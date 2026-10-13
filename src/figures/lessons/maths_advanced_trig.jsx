@@ -155,4 +155,51 @@ export default [
     notes: ['Un cosinus négatif signale un angle obtus (> 90°).'],
     caption: 'Les trois longueurs d’une ferme suffisent pour obtenir ses angles de coupe.',
   },
+  {
+    id: 'ferme-shed',
+    title: 'Ferme de shed non symétrique',
+    steps: ['practical_case'],
+    formula: ['a^2 = b^2 + c^2 - 2bc\\cos A', '\\sin B = \\frac{b\\,\\sin A}{a}'],
+    h: 300,
+    draw: () => {
+      // 65 px/m: entrait a = 5,53 m, versants c = 3,00 m (67,7°) et b = 5,20 m (32,3°)
+      const B = [70, 250];
+      const C = [429.7, 250];
+      const A = [143.9, 69.5];
+      return (
+        <g>
+          <Poly pts={[[330, 50], [340, 25], [380, 50], [390, 25], [430, 50], [440, 25], [480, 50]]} c="grey" w={1.6} />
+          <Text x={405} y={16} a="middle" s={12} c="mute">toiture en sheds</Text>
+          <Line x1={B[0] - 6.5} y1={B[1] - 2.7} x2={A[0] - 6.5} y2={A[1] - 2.7} c="water" w={6} o={0.6} />
+          <Line x1={A[0] + 3.2} y1={A[1] - 5.1} x2={C[0] + 3.2} y2={C[1] - 5.1} c="soil" w={4} />
+          <Poly pts={[A, B, C]} c="ink" w={3} fill="~ink" />
+          <Line x1={A[0]} y1={A[1]} x2={A[0]} y2={B[1]} c="grey" w={1.4} dash="5 4" />
+          <Text x={A[0] + 6} y={170} s={15} c="ink">h</Text>
+          <Poly pts={[B, [B[0] - 10, 266], [B[0] + 10, 266]]} c="ink" w={2} />
+          <Line x1={B[0] - 16} y1={267} x2={B[0] + 16} y2={267} c="ink" w={1.6} />
+          <Poly pts={[C, [C[0] - 10, 262], [C[0] + 10, 262]]} c="ink" w={2} />
+          <Circle cx={C[0] - 5} cy={265} r={3} c="ink" sw={1.4} />
+          <Circle cx={C[0] + 5} cy={265} r={3} c="ink" sw={1.4} />
+          <Line x1={C[0] - 16} y1={269} x2={C[0] + 16} y2={269} c="ink" w={1.6} />
+          <Corner P={A} Q={B} R={C} label="80°" c="ink" r={26} s={14} />
+          <Corner P={B} Q={C} R={A} label="B = ?" r={30} s={14} />
+          <Corner P={C} Q={A} R={B} label="" r={34} s={14} />
+          <Text x={350} y={240} s={14} c="red">C = ?</Text>
+          <Text x={B[0] + 20} y={150} a="end" s={15} c="water" b>c = 3,00 m</Text>
+          <Text x={B[0] + 20} y={168} a="end" s={12} c="mute">vitrage</Text>
+          <Text x={300} y={135} s={15} c="soil" b>b = 5,20 m (couverture)</Text>
+          <Text x={240} y={240} a="middle" s={15} c="red" b>a = ? (entrait)</Text>
+          <Text x={A[0]} y={A[1] - 12} a="middle" s={15} b>A</Text>
+          <Text x={B[0] - 16} y={B[1] - 4} a="end" s={15} b>B</Text>
+          <Text x={C[0] + 16} y={C[1] - 4} s={15} b>C</Text>
+        </g>
+      );
+    },
+    notes: [
+      'Cas « deux côtés et l’angle compris » : Al-Kashi donne $a = 5{,}53$ m.',
+      'Loi des sinus : $B = 67{,}7°$, puis $C = 180° - 80° - 67{,}7° = 32{,}3°$.',
+      'Contrôle : $h = c \\sin B = b \\sin C = 2{,}78$ m.',
+    ],
+    caption: 'Le versant vitré, raide, regarde le nord ; le versant couvert, long et peu incliné, reçoit la couverture.',
+  },
 ];
