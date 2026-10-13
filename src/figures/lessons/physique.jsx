@@ -1,5 +1,6 @@
 // Plates — Module 2 · Physique fondamentale, dilatation & transferts thermiques
 import { Arrow, Dim, Fixed, Line, Plot, Poly, Rect, Text } from '../../components/figures/ink.jsx';
+import { Path } from '../../components/figures/kit.jsx';
 
 // Wall of the example: 20 cm concrete (inside) + 12 cm glass wool (outside), 20 °C inside, 0 °C outside.
 const LAYERS = [
@@ -132,5 +133,58 @@ export default [
     },
     notes: ['Les dents s’emboîtent : la chaussée reste continue pour les roues quel que soit l’écartement.'],
     caption: 'Vue en plan d’un joint à peigne : passerelle de 60 m, ΔT = 70 °C, ΔL = 50,4 mm.',
+  },
+  {
+    id: 'exemples-physique',
+    title: 'Dilatation d’un pont, poids d’une dalle',
+    steps: ['simple_examples'],
+    formula: ['\\Delta L = \\alpha\\,L\\,\\Delta T = 10 \\times 10^{-6} \\times 80 \\times 50 = 40\\ \\text{mm}', 'P = V\\,\\gamma = 15 \\times 25 = 375\\ \\text{kN}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Text x={130} y={28} a="middle" s={12} b>pont béton de 80 m</Text>
+        <Rect x={30} y={70} w={200} h={14} c="ink" sw={2} fill="~ink" />
+        <Rect x={30} y={100} w={210} h={14} c="red" sw={2} fill="~red" />
+        <Line x1={30} y1={60} x2={30} y2={124} c="ink" w={2.4} />
+        <Text x={236} y={82} s={11}>hiver (−15 °C)</Text>
+        <Text x={246} y={112} s={11} c="red">été (+35 °C)</Text>
+        <Arrow x1={231} y1={136} x2={239} y2={136} c="red" w={1.2} hs={4} both />
+        <Text x={130} y={160} a="middle" s={13} c="red" b>ΔL = 40 mm au joint</Text>
+        <Text x={130} y={186} a="middle" s={11} c="mute">(allongement exagéré)</Text>
+        <Text x={380} y={28} a="middle" s={12} b>dalle de 15 m³</Text>
+        <Poly pts={[[300, 120], [420, 120], [460, 90], [340, 90]]} c="ink" w={2} fill="~grey" close />
+        <Poly pts={[[300, 120], [420, 120], [420, 136], [300, 136]]} c="ink" w={2} fill="pat:concrete" close />
+        <Poly pts={[[420, 120], [460, 90], [460, 106], [420, 136]]} c="ink" w={2} fill="~grey" close />
+        <Arrow x1={380} y1={140} x2={380} y2={196} c="red" w={3} hs={10} />
+        <Text x={390} y={186} s={13} c="red" b>P = 375 kN</Text>
+        <Text x={380} y={222} a="middle" s={12}>{'m = 375 000 / 9,81 = 38,2 t'}</Text>
+      </g>
+    ),
+    notes: ['Mur isolé (exemple 2) : $R = 0{,}17 + 0{,}125 + 3{,}75 = 4{,}05$ m²K/W, soit $U = 0{,}25$ W/m²K — voir le profil de température du mur.'],
+    caption: 'Le joint de chaussée doit absorber l’allongement saisonnier ; le poids se déduit du volume et du poids volumique.',
+  },
+  {
+    id: 'viaduc-dilatation',
+    title: 'Viaduc de 2 460 m : où va la dilatation ?',
+    steps: ['real_examples'],
+    formula: ['\\Delta L = 12 \\times 10^{-6} \\times 2\\,460 \\times 60 = 1{,}77\\ \\text{m}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={30} y={80} w={440} h={14} c="ink" sw={2} fill="~ink" />
+        {[90, 160, 230, 270, 340, 410].map(x => <Rect key={x} x={x - 4} y={94} w={8} h={70} c="ink" sw={1.4} fill="~grey" />)}
+        <Rect x={244} y={94} w={12} h={70} c="red" sw={1.8} fill="~red" />
+        <Text x={250} y={182} a="middle" s={12} c="red" b>point fixe</Text>
+        <Arrow x1={240} y1={60} x2={40} y2={60} c="red" w={2} hs={8} />
+        <Arrow x1={260} y1={60} x2={460} y2={60} c="red" w={2} hs={8} />
+        <Text x={140} y={52} a="middle" s={12} c="red" b>≈ 0,9 m</Text>
+        <Text x={360} y={52} a="middle" s={12} c="red" b>≈ 0,9 m</Text>
+        <Path d="M 470 80 l 8 0 l 0 4 l -8 0 m 0 3 l 8 0 l 0 4 l -8 0" c="ink" w={1.6} />
+        <Text x={476} y={124} a="end" s={11}>{'joint à\npeigne'}</Text>
+        <Text x={250} y={214} a="middle" s={12}>{'tablier acier, ΔT = 60 °C : la moitié de l’allongement de chaque côté'}</Text>
+      </g>
+    ),
+    notes: ['Le tablier est bloqué vers son milieu : chaque culée reçoit un joint capable d’environ 0,9 m de déplacement, plus les marges de pose.'],
+    caption: 'Sans joints dimensionnés pour ces mouvements, le tablier pousserait sur les culées.',
   },
 ];

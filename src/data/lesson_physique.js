@@ -258,7 +258,7 @@ $$Q = \\frac{\\lambda \\cdot A \\cdot (T_{int} - T_{ext})}{e} = \\frac{A \\cdot 
       examples: [
         {
           context: "Tablier métallique de 2 460 m de longueur soumis à des deltas de température de 60°C",
-          scenario: "Le tablier s'allonge de 1,20 m du côté sud et 1,00 m du côté nord entre l'hiver et l'été. Installation des plus grands joints de dilatation à peigne du monde.",
+          scenario: "Entre l'hiver et l'été, le tablier, bloqué vers son milieu, s'allonge au total d'environ 1,8 m, soit près de 0,9 m à chaque extrémité. Des joints de dilatation à peigne de grande capacité équipent les culées.",
           decomposition_latex: "\\Delta L_{max} = 12 \\times 10^{-6} \\times 2460 \\text{ m} \\times 60^\\circ\\text{C} = 1{,}771 \\text{ m}",
           lesson: "Sans la prise en compte précise de la dilatation thermique physique, le viaduc se serait déformé de manière incontrôlable ou aurait détruit ses culées de rive.",
         },

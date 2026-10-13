@@ -200,7 +200,6 @@ export default [
         <Text x={246} y={232} s={12}>b</Text>
         <Arrow x1={300} y1={61} x2={300} y2={259} c="txt" w={1.2} hs={5} both />
         <Text x={306} y={164} s={13} b>H = 6,00 m</Text>
-        <Angle cx={190} cy={260} r={60} a1={-90} a2={-86} c="red" />
         <Text x={340} y={110} s={13} c="red" b>{'Δx = b − a = 20,9 mm'}</Text>
         <Text x={340} y={132} s={12}>{'tolérance : 15 mm\n→ régler les vérins'}</Text>
         <Text x={340} y={210} s={11} c="mute">inclinaison exagérée sur le dessin</Text>

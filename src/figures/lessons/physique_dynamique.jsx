@@ -17,7 +17,7 @@ export default [
   {
     id: 'oscillateur-resonance',
     title: 'Oscillateur et résonance',
-    steps: ['theory'],
+    steps: ['theory', 'formulas'],
     formula: ['f_0 = \\frac{1}{2\\pi}\\sqrt{\\frac{k}{m}}'],
     h: 310,
     draw: () => (
@@ -31,7 +31,7 @@ export default [
         <Text x={138} y={180} s={14} c="red">x(t)</Text>
         <Path d="M40,250 q12,-26 24,0 t24,0 t24,0 t24,0" c="red" w={2} />
         <Text x={40} y={285} s={13} c="mute">oscillation libre de période T₀</Text>
-        <Plot x={210} y={40} w={250} h={200} xr={[0, 2.2]} yr={[0, 6]} xl="f / f₀" yl="amplification"
+        <Plot x={210} y={40} w={236} h={200} xr={[0, 2.2]} yr={[0, 6]} xl="f/f₀" yl="amplification"
           xt={[[0.5, '0,5'], [1, '1'], [1.5, '1,5'], [2, '2']]} yt={[[1, '1'], [3, '3'], [5, '5']]} grid
         >
           {(sx, sy) => (
@@ -124,5 +124,40 @@ export default [
     ),
     notes: ['Même énergie, distance d’arrêt cinq fois plus longue : force moyenne cinq fois plus faible.'],
     caption: 'Poids lourd de 30 t à 50 km/h : effet d’un absorbeur sur la force moyenne d’impact.',
+  },
+  {
+    id: 'exemples-dynamique',
+    title: 'Levage, freinage, vibration d’un plancher',
+    steps: ['simple_examples'],
+    formula: ['T = m\\,(g + a)', 'd = \\frac{v^2}{2a}', 'f_0 \\approx \\frac{15{,}8}{\\sqrt{\\delta_{mm}}}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Text x={80} y={24} a="middle" s={12} b>a) levage</Text>
+        <Line x1={80} y1={34} x2={80} y2={120} c="ink" w={2} />
+        <Rect x={50} y={120} w={60} h={46} c="ink" sw={2} fill="~grey" />
+        <Text x={80} y={148} a="middle" s={12} b>2 t</Text>
+        <Arrow x1={120} y1={160} x2={120} y2={120} c="green" w={2.2} hs={8} />
+        <Text x={126} y={146} s={11} c="green">a = 0,5</Text>
+        <Text x={80} y={196} a="middle" s={12} c="red" b>T = 20,6 kN</Text>
+        <Text x={80} y={214} a="middle" s={11} c="mute">(+5 % du poids)</Text>
+        <Text x={260} y={24} a="middle" s={12} b>b) freinage à 90 km/h</Text>
+        <Truck x={170} y={110} w={70} />
+        <Line x1={170} y1={112} x2={360} y2={112} c="ink" w={2} />
+        <Arrow x1={242} y1={136} x2={350} y2={136} c="red" w={1.4} hs={6} both />
+        <Text x={296} y={156} a="middle" s={12} c="red" b>62,5 m</Text>
+        <Text x={260} y={190} a="middle" s={11} c="mute">{'v = 25 m/s, décélération 5 m/s²\n+ distance de réaction'}</Text>
+        <Text x={430} y={24} a="middle" s={12} b>c) plancher</Text>
+        <Line x1={380} y1={170} x2={480} y2={170} c="ink" w={1.4} />
+        <Rect x={386} y={150} w={20} h={20} c="orange" sw={1.4} fill="~orange" />
+        <Text x={396} y={186} a="middle" s={11}>marche</Text>
+        <Text x={396} y={200} a="middle" s={11}>≈ 2 Hz</Text>
+        <Rect x={448} y={80} w={22} h={90} c="green" sw={1.6} fill="~green" />
+        <Text x={459} y={186} a="middle" s={11} c="green" b>6,5 Hz</Text>
+        <Text x={430} y={226} a="middle" s={11} c="mute">{'flèche 6 mm\n→ hors résonance'}</Text>
+      </g>
+    ),
+    notes: ['La dynamique ajoute des efforts (accélération), des distances (freinage) et des risques de résonance (fréquences propres).'],
+    caption: 'Trois applications directes de la mécanique du mouvement sur un chantier ou un ouvrage.',
   },
 ];

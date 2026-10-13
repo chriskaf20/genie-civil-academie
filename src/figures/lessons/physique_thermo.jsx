@@ -42,7 +42,7 @@ export default [
     formula: ['Q = m\\,c\\,\\Delta T', 'Q_f = m\\,L_f = 334\\ \\text{kJ/kg}'],
     h: 300,
     draw: () => (
-      <Plot x={60} y={30} w={380} h={210} xr={[0, 460]} yr={[-12, 24]} xl="Q (kJ/kg)" yl="T (°C)"
+      <Plot x={60} y={30} w={360} h={210} xr={[0, 460]} yr={[-12, 24]} xl="kJ/kg" yl="T (°C)"
         xt={[[Q1, '21'], [Q2, '355'], [Q3, '439']]} yt={[[-10, '−10'], [0, '0'], [20, '20']]} grid
       >
         {(sx, sy) => (
@@ -112,5 +112,62 @@ export default [
     ),
     notes: ['Les joints traversent toute la structure, du dessus des fondations à la toiture.'],
     caption: 'Dilatation (35 °C d’écart) et retrait cumulés sur 90 m imposent deux joints de dilatation.',
+  },
+  {
+    id: 'exemples-thermo',
+    title: 'Rail bloqué, radier qui chauffe, glace qui fond',
+    steps: ['simple_examples'],
+    formula: ['\\sigma = E\\,\\alpha\\,\\Delta T = 100{,}8\\ \\text{MPa}', '\\Delta T = \\frac{Q}{\\rho\\,c} = 28{,}4\\ °C', 'Q = m\\,L_f = 85\\ \\text{kWh}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Text x={85} y={24} a="middle" s={12} b>a) rail bloqué +40 °C</Text>
+        <Rect x={20} y={60} w={14} h={50} c="ink" sw={1.6} fill="pat:hatch" />
+        <Rect x={136} y={60} w={14} h={50} c="ink" sw={1.6} fill="pat:hatch" />
+        <Rect x={34} y={78} w={102} h={14} c="ink" sw={2} fill="~grey" />
+        <Arrow x1={60} y1={70} x2={40} y2={70} c="red" w={2} hs={7} />
+        <Arrow x1={110} y1={70} x2={130} y2={70} c="red" w={2} hs={7} />
+        <Text x={85} y={140} a="middle" s={12} c="red" b>σ ≈ 100 MPa</Text>
+        <Text x={85} y={160} a="middle" s={11} c="mute">quelle que soit la longueur</Text>
+        <Text x={250} y={24} a="middle" s={12} b>b) radier massif</Text>
+        <Rect x={180} y={60} w={140} h={70} c="ink" sw={2} fill="pat:concrete" />
+        <Rect x={225} y={80} w={50} h={30} c="red" sw={1.4} fill="~red" />
+        <Text x={250} y={100} a="middle" s={11} c="red" b>cœur +28 °C</Text>
+        <Arrow x1={250} y1={60} x2={250} y2={40} c="water" w={1.8} hs={6} />
+        <Text x={256} y={46} s={11} c="water">surface refroidie</Text>
+        <Text x={250} y={156} a="middle" s={11}>{'écart cœur-surface\n⇒ fissuration'}</Text>
+        <Text x={420} y={24} a="middle" s={12} b>c) 1 m³ de glace</Text>
+        <Poly pts={[[380, 80], [450, 80], [470, 64], [400, 64]]} c="water" w={1.8} fill="~water" close />
+        <Rect x={380} y={80} w={70} h={60} c="water" sw={1.8} fill="~water" />
+        <Poly pts={[[450, 80], [470, 64], [470, 124], [450, 140]]} c="water" w={1.8} fill="~water" close />
+        <Text x={420} y={166} a="middle" s={12} c="water" b>917 kg</Text>
+        <Text x={420} y={188} a="middle" s={12}>{'fusion : 306 MJ\n= 85 kWh'}</Text>
+      </g>
+    ),
+    notes: ['Ce sont les déformations empêchées qui créent des contraintes ; la chaleur d’hydratation et la chaleur latente imposent des délais.'],
+    caption: 'Trois ordres de grandeur thermiques utiles sur un chantier.',
+  },
+  {
+    id: 'flambement-voie',
+    title: 'Canicule : le flambement d’une voie ferrée',
+    steps: ['real_examples'],
+    formula: ['\\sigma = 210\\,000 \\times 12 \\times 10^{-6} \\times 35 = 88\\ \\text{MPa} \\Rightarrow N \\approx 680\\ \\text{kN par rail}'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Text x={20} y={30} s={12} b>vue en plan</Text>
+        {[0, 1].map(k => (
+          <Path key={k} d={`M 20 ${90 + k * 30} L 170 ${90 + k * 30} C 210 ${90 + k * 30}, 220 ${60 + k * 30}, 250 ${60 + k * 30} C 280 ${60 + k * 30}, 290 ${90 + k * 30}, 330 ${90 + k * 30} L 480 ${90 + k * 30}`} c="ink" w={2.6} />
+        ))}
+        {Array.from({ length: 23 }, (_, i) => 30 + i * 20).map(x => <Line key={x} x1={x} y1={82} x2={x} y2={128} c="soil" w={3} o={0.5} />)}
+        <Arrow x1={70} y1={150} x2={150} y2={150} c="red" w={2.4} hs={9} />
+        <Arrow x1={430} y1={150} x2={350} y2={150} c="red" w={2.4} hs={9} />
+        <Text x={250} y={170} a="middle" s={13} c="red" b>compression thermique dans les rails</Text>
+        <Text x={250} y={196} a="middle" s={12}>{'rail à 60 °C, posé à 25 °C : ΔT = 35 °C'}</Text>
+        <Text x={250} y={44} a="middle" s={12} c="red" b>déport latéral</Text>
+      </g>
+    ),
+    notes: ['Sur une voie récemment travaillée, le ballast tient mal les traverses : on limite la vitesse par fortes chaleurs et on contrôle la température de libération des rails.'],
+    caption: 'Les longs rails soudés ne peuvent pas s’allonger : la compression peut faire flamber la voie.',
   },
 ];
