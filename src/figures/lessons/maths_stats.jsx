@@ -1,6 +1,7 @@
 // Plates — Module 1 · Statistiques & probabilités pour l'ingénieur
 import { Dot, Line, Plot, Poly, Text, fnPts } from '../../components/figures/ink.jsx';
 import { Flow, flowHeight } from '../../components/figures/kit.jsx';
+import { Circle, Path, Rect } from '../../components/figures/kit.jsx';
 
 const phi = z => Math.exp(-(z * z) / 2) / Math.sqrt(2 * Math.PI);
 const pdf = (m, s) => x => phi((x - m) / s) / s;
@@ -83,7 +84,7 @@ export default [
       // 15 results with mean 35,2 MPa and standard deviation 3,1 MPa.
       const vals = [30.0, 31.0, 32.1, 32.9, 33.5, 34.0, 34.8, 35.2, 35.7, 35.9, 36.8, 37.6, 38.3, 39.1, 41.2];
       return (
-        <Plot x={40} y={30} w={420} h={200} xr={[22, 46]} yr={[0, 0.15]} xl="MPa"
+        <Plot x={40} y={30} w={408} h={200} xr={[22, 46]} yr={[0, 0.15]} xl="MPa"
           xt={[25, 30, 35, 40, 45].map(v => [v, String(v)])}
         >
           {(sx, sy) => (
@@ -122,7 +123,7 @@ export default [
       // 8 cores with mean 32 MPa and standard deviation 4,5 MPa.
       const vals = [25.0, 27.8, 30.1, 31.5, 32.6, 34.0, 36.2, 39.0];
       return (
-        <Plot x={40} y={30} w={420} h={150} xr={[20, 42]} yr={[0, 1]} xl="MPa"
+        <Plot x={40} y={30} w={408} h={150} xr={[20, 42]} yr={[0, 1]} xl="MPa"
           xt={[20, 25, 30, 35, 40].map(v => [v, String(v)])}
         >
           {(sx, sy) => (
@@ -141,5 +142,73 @@ export default [
     },
     notes: ['Avec peu d’essais, le coefficient k est plus grand : l’incertitude se paie en résistance exploitable.'],
     caption: 'Résistance caractéristique en place estimée à partir de 8 carottes (CV = 14 %).',
+  },
+  {
+    id: 'exemples-stats',
+    title: 'Moyenne, valeur centennale, indice de fiabilité',
+    steps: ['simple_examples'],
+    formula: ['\\beta = \\frac{\\mu_R - \\mu_S}{\\sqrt{\\sigma_R^2 + \\sigma_S^2}} = \\frac{150}{42{,}4} = 3{,}54', 'x_T = \\bar{x} + K_T\\,s \\quad (K_{100} = 3{,}14)'],
+    h: 250,
+    draw: () => {
+      const xa = v => 30 + (v - 26) * 15;
+      const xg = T => 190 + (Math.log10(T) - Math.log10(2)) * (130 / (2 - Math.log10(2)));
+      const yg = p => 200 - (p - 50) * 2;
+      const xr = v => 345 + (v - 50) * (145 / 350);
+      const gauss = (m, s, k) => Array.from({ length: 41 }, (_, i) => { const v = m - 3 * s + (6 * s * i) / 40; return [xr(v), 200 - k * Math.exp(-((v - m) ** 2) / (2 * s * s))]; });
+      return (
+        <g>
+          <Text x={95} y={30} a="middle" s={12} b>a) 5 résistances</Text>
+          <Rect x={xa(27.9)} y={90} w={xa(32.1) - xa(27.9)} h={70} c="red" sw={0} fill="~red" />
+          <Line x1={xa(26)} y1={160} x2={xa(35)} y2={160} c="ink" w={1.6} />
+          {[[28, 0], [28, 1], [31, 0], [30, 0], [33, 0]].map(([v, k], i) => <Dot key={i} x={xa(v)} y={150 - k * 14} r={5} />)}
+          <Line x1={xa(30)} y1={84} x2={xa(30)} y2={160} c="red" w={2} />
+          {[26, 30, 35].map(v => <Text key={v} x={xa(v)} y={178} a="middle" s={11}>{String(v)}</Text>)}
+          <Text x={95} y={206} a="middle" s={12} c="red" b>{'moyenne 30,0 ; s = 2,1 MPa'}</Text>
+          <Text x={255} y={30} a="middle" s={12} b>b) pluie centennale</Text>
+          <Line x1={190} y1={200} x2={320} y2={200} c="ink" w={1.4} />
+          <Line x1={190} y1={200} x2={190} y2={70} c="ink" w={1.4} />
+          <Poly pts={[[xg(2), yg(57)], [xg(10), yg(83.5)], [xg(100), yg(116.5)]]} c="water" w={2.4} />
+          <Dot x={xg(100)} y={yg(116.5)} r={5} c="water" />
+          {[[2, '2'], [10, '10'], [100, '100 ans']].map(([T, l]) => <Text key={T} x={xg(T)} y={216} a="middle" s={11}>{l}</Text>)}
+          <Text x={314} y={yg(116.5) + 18} a="end" s={12} c="water" b>116 mm</Text>
+          <Text x={196} y={yg(60) - 6} s={11} c="mute">moyenne 60 mm</Text>
+          <Text x={418} y={30} a="middle" s={12} b>c) fiabilité R – S</Text>
+          <Poly pts={gauss(150, 30, 90)} c="red" w={2} fill="~red" close />
+          <Poly pts={gauss(300, 30, 90)} c="green" w={2} fill="~green" close />
+          <Line x1={345} y1={200} x2={490} y2={200} c="ink" w={1.4} />
+          <Text x={xr(150)} y={100} a="middle" s={12} c="red" b>S</Text>
+          <Text x={xr(300)} y={100} a="middle" s={12} c="green" b>R</Text>
+          <Text x={418} y={226} a="middle" s={12} b>β = 3,54 &lt; 3,8</Text>
+        </g>
+      );
+    },
+    notes: ['La pluie centennale se lit sur l’ajustement de Gumbel : $60 + 3{,}14 \\times 18 \\approx 116$ mm en 24 h.'],
+    caption: 'Trois outils statistiques de l’ingénieur : dispersion, extrêmes, probabilité de ruine.',
+  },
+  {
+    id: 'calibrage-en1990',
+    title: 'Coefficients partiels et indice de fiabilité',
+    steps: ['real_examples'],
+    formula: ['\\frac{R_k}{\\gamma_M} \\ge \\gamma_G G_k + \\gamma_Q Q_k \\iff \\beta \\approx 3{,}8'],
+    h: 210,
+    draw: () => {
+      const X = b => 40 + (b - 2.5) * 210;
+      return (
+        <g>
+          <Rect x={X(2.5)} y={80} w={X(4.5) - X(2.5)} h={30} c="ink" sw={1.4} fill="~grey" />
+          {[[3.3, 'RC1', '4,8 × 10⁻⁴', 'orange'], [3.8, 'RC2', '7,2 × 10⁻⁵', 'green'], [4.3, 'RC3', '8,5 × 10⁻⁶', 'red']].map(([b, rc, pf, c]) => (
+            <g key={rc}>
+              <Line x1={X(b)} y1={70} x2={X(b)} y2={120} c={c} w={3} />
+              <Text x={X(b)} y={60} a="middle" s={13} c={c} b>{`${rc} : β = ${String(b).replace('.', ',')}`}</Text>
+              <Text x={X(b)} y={140} a="middle" s={12} c={c}>{`P_f ≈ ${pf}`}</Text>
+            </g>
+          ))}
+          {[2.5, 3, 3.5, 4, 4.5].map(b => <Text key={b} x={X(b)} y={100} a="middle" s={11} c="mute">{String(b).replace('.', ',')}</Text>)}
+          <Text x={250} y={176} a="middle" s={12}>{'γ_G = 1,35 ; γ_Q = 1,5 ; γ_c = 1,5 ; γ_{M0} = 1,0 : calibrés pour β ≈ 3,8 sur 50 ans'}</Text>
+        </g>
+      );
+    },
+    notes: ['Plus les conséquences d’une ruine sont graves (classe RC3), plus l’indice de fiabilité visé est élevé.'],
+    caption: 'Derrière chaque coefficient de sécurité : une probabilité de défaillance acceptée.',
   },
 ];

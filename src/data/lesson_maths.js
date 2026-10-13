@@ -148,7 +148,7 @@ Théorème de Pythagore : $H^2 = \\text{adj}^2 + \\text{opp}^2$`,
       examples: [
         {
           context: 'Chantier Bâtiment',
-          scenario: 'Contrôle d\'aplomb d\'un voilier de coffrage de 6,00 m de hauteur par mesure de décalage au laser.',
+          scenario: 'Contrôle d\'aplomb d\'un voile coffré de 6,00 m de hauteur par mesure de décalage au laser.',
           decomposition_latex: '\\Delta x = H \\cdot \\sin(\\Delta \\theta) = 6000 \\cdot \\sin(0{,}2°) = 20{,}9 \\text{ mm}',
           lesson: 'Le décalage de 20.9 mm dépasse la tolérance ISO (15 mm). Régler les vérins d\'étaiement.',
         },

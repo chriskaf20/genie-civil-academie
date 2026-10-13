@@ -8,7 +8,7 @@ export default [
   {
     id: 'projections',
     title: 'Projeter une force et calculer son moment',
-    steps: ['theory'],
+    steps: ['theory', 'formulas'],
     formula: ['F_x = F\\cos\\theta', 'F_y = F\\sin\\theta', 'M_{/O} = F \\cdot d'],
     h: 300,
     draw: () => {
@@ -89,7 +89,7 @@ export default [
           <Arrow x1={p2[0]} y1={p2[1]} x2={S[0]} y2={S[1]} c="green" w={2.6} />
           <Text x={S[0] - 8} y={(S[1] + p1[1]) / 2} a="end" s={14} c="red">50 kN</Text>
           <Text x={(p1[0] + p2[0]) / 2 + 6} y={(p1[1] + p2[1]) / 2 + 16} s={14} c="ink">T₂ = 44,82 kN</Text>
-          <Text x={(p2[0] + S[0]) / 2 + 8} y={(p2[1] + S[1]) / 2 - 6} s={14} c="green">T₁ = 36,60 kN</Text>
+          <Text x={(p2[0] + S[0]) / 2 - 2} y={(p2[1] + S[1]) / 2 - 6} s={14} c="green">T₁ = 36,60 kN</Text>
           <Text x={370} y={270} s={13} c="mute">{'le polygone se referme :\nΣF = 0'}</Text>
         </g>
       );
@@ -153,10 +153,40 @@ export default [
         <Dim x1={180 - 72} y1={70} x2={180} y2={70} label="10 m" s={14} />
         <Dot x={180} y={270} r={5} c="red" ring />
         <Text x={190} y={258} s={13} c="red">pivot de basculement</Text>
-        <Text x={260} y={232} s={14}>{'M renversant = 80 × 25 = 2 000 kN·m\nM stabilisant ≥ 1,5 × 2 000 = 3 000 kN·m\n⇒ P_c = 300 kN (30 t)'}</Text>
+        <Text x={232} y={196} s={13}>{'M renversant = 80 × 25 = 2 000 kN·m\nM stabilisant ≥ 1,5 × 2 000 = 3 000 kN·m\n⇒ P_c = 300 kN (30 t)'}</Text>
       </g>
     ),
     notes: ['On écrit l’équilibre des moments autour du point de basculement, avec un coefficient de sécurité de 1,5.'],
     caption: 'Le contrepoids équilibre le moment de la charge levée en bout de flèche.',
+  },
+  {
+    id: 'pylone-hauban',
+    title: 'Hauban d’un pylône sous le vent',
+    steps: ['real_examples'],
+    formula: ['T\\cos 40° = W \\Rightarrow T = \\frac{35}{0{,}766} = 45{,}7\\ \\text{kN}'],
+    h: 280,
+    draw: () => (
+      <g>
+        <Rect x={20} y={250} w={300} h={14} c="soil" sw={0} fill="pat:soil" />
+        <Line x1={20} y1={250} x2={320} y2={250} c="ink" w={2} />
+        <Line x1={260} y1={250} x2={260} y2={100} c="ink" w={5} />
+        <Line x1={260} y1={100} x2={81} y2={250} c="red" w={2.4} />
+        <Rect x={73} y={248} w={16} h={10} c="ink" sw={1.4} fill="txt" />
+        <Angle cx={81} cy={250} r={46} a1={-40} a2={0} label="40°" c="red" s={13} />
+        <Arrow x1={180} y1={100} x2={256} y2={100} c="water" w={3} hs={10} />
+        <Text x={176} y={92} a="end" s={13} c="water" b>W = 35 kN</Text>
+        <Text x={150} y={170} s={13} c="red" b>T</Text>
+        <Text x={266} y={180} s={12}>mât</Text>
+        <Text x={390} y={130} a="middle" s={12} b>équilibre de la tête</Text>
+        <Arrow x1={340} y1={150} x2={440} y2={150} c="water" w={2.6} hs={9} />
+        <Arrow x1={440} y1={150} x2={341} y2={233} c="red" w={2.6} hs={9} />
+        <Arrow x1={340} y1={233} x2={340} y2={151} c="ink" w={2.6} hs={9} />
+        <Text x={390} y={144} a="middle" s={12} c="water">W</Text>
+        <Text x={400} y={204} s={12} c="red" b>T = 45,7 kN</Text>
+        <Text x={334} y={196} a="end" s={12}>{'N = 29,4 kN'}</Text>
+      </g>
+    ),
+    notes: ['La composante horizontale du hauban équilibre le vent ; sa composante verticale $T \\sin 40° = 29{,}4$ kN comprime le mât et tire sur l’ancrage.'],
+    caption: 'Le triangle des forces se ferme : vent, tension du hauban et réaction du mât.',
   },
 ];

@@ -1,6 +1,7 @@
 // Plates — Module 1 · Calcul différentiel & intégral appliqué aux poutres
 import { Line, Plot, Poly, Rect, Text } from '../../components/figures/ink.jsx';
 import { BeamScheme, ForceDiagram, ISection } from '../../components/figures/kit.jsx';
+import { Path } from '../../components/figures/kit.jsx';
 
 const X1 = 120;
 const X2 = 440;
@@ -11,7 +12,7 @@ export default [
   {
     id: 'chaine-integration',
     title: 'De la charge à la déformée : quatre intégrations',
-    steps: ['theory'],
+    steps: ['theory', 'formulas'],
     formula: ['\\frac{dV}{dx} = -q', '\\frac{dM}{dx} = V', 'EI\\,\\frac{d^2 w}{dx^2} = -M'],
     h: 560,
     draw: () => (
@@ -25,7 +26,7 @@ export default [
         <Line x1={(X1 + X2) / 2} y1={110} x2={(X1 + X2) / 2} y2={490} c="grey" w={1.2} dash="5 5" />
         <Text x={(X1 + X2) / 2} y={535} a="middle" s={13} c="mute">{'x = L/2 : V = 0, M max, θ = 0, w max'}</Text>
         {[[125, '∫'], [192, '∫'], [290, '∫ ÷ EI'], [382, '∫']].map(([y, t]) => (
-          <Text key={y} x={470} y={y} s={18} c="mute">{t}</Text>
+          <Text key={y} x={494} y={y} a="end" s={18} c="mute">{t}</Text>
         ))}
       </g>
     ),
@@ -77,7 +78,7 @@ export default [
       <g>
         <BeamScheme x1={50} x2={340} y={100} loads={[{ type: 'udl', h: 34, label: 'q = 12 kN/m' }]} span="L = 6,00 m" />
         <Poly pts={Array.from({ length: 41 }, (_, i) => { const t = i / 40; return [50 + 290 * t, 104 + 46 * (t - 2 * t ** 3 + t ** 4) / 0.3125]; })} c="red" w={2.2} dash="7 5" />
-        <Text x={195} y={170} a="middle" s={14} c="red">déformée (amplifiée)</Text>
+        <Text x={195} y={194} a="middle" s={14} c="red">déformée (amplifiée)</Text>
         <ISection cx={420} cy={110} b={70} h={120} tf={9} tw={6} />
         <Text x={420} y={196} a="middle" s={14} b>IPE 300</Text>
         <Text x={420} y={216} a="middle" s={13} c="mute">I = 8 356 cm⁴</Text>
@@ -105,5 +106,27 @@ export default [
     ),
     notes: ['La fissuration et le fluage multiplient la flèche réelle par 2 à 4 : la marge reste confortable.'],
     caption: 'Vérification de flèche d’une poutre de bureau en béton armé.',
+  },
+  {
+    id: 'conditions-limites',
+    title: 'Démonstration de 5qL⁴/384EI : conditions aux limites',
+    steps: ['stepbystep'],
+    formula: ['EI\\,w\\!\\left(\\tfrac{L}{2}\\right) = -\\frac{qL^4}{96} + \\frac{qL^4}{384} + \\frac{qL^4}{48} = \\frac{5\\,qL^4}{384}'],
+    h: 290,
+    draw: () => (
+      <g>
+        <BeamScheme x1={80} x2={420} y={70} loads={[{ type: 'udl', h: 30, label: 'q' }]} span="L" spanY={150} />
+        <Path d="M 80 74 Q 250 172 420 74" c="red" w={2} dash="6 4" />
+        <Line x1={225} y1={123} x2={275} y2={123} c="green" w={2.4} />
+        <Text x={250} y={142} a="middle" s={12} c="green" b>{"w′(L/2) = 0"}</Text>
+        <Text x={74} y={108} a="end" s={12} c="red" b>w(0) = 0</Text>
+        <Text x={426} y={108} s={12} c="red" b>w(L) = 0</Text>
+        <Text x={40} y={190} s={13}>{"EI w″ = −M(x) = −qLx/2 + qx²/2\nEI w′ = −qLx²/4 + qx³/6 + C₁\nEI w = −qLx³/12 + qx⁴/24 + C₁x + C₂"}</Text>
+        <Text x={300} y={208} s={13} c="red" b>{'C₂ = 0 ; C₁ = qL³/24'}</Text>
+        <Text x={300} y={232} s={12} c="mute">w compté vers le bas</Text>
+      </g>
+    ),
+    notes: ['Deux intégrations donnent deux constantes ; les deux appuis (flèche nulle) les fixent. La flèche est maximale au milieu, là où la pente s’annule.'],
+    caption: 'Intégrer EI·w″ = −M(x) deux fois, puis écrire les conditions aux appuis.',
   },
 ];

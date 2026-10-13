@@ -27,9 +27,9 @@ export default [
   {
     id: 'triangle-quelconque',
     title: 'Triangle quelconque : notations',
-    steps: ['theory'],
+    steps: ['theory', 'formulas'],
     formula: ['a^2 = b^2 + c^2 - 2bc\\cos A', '\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C} = 2R'],
-    h: 330,
+    h: 392,
     draw: () => {
       const A = [95, 255];
       const B = [395, 255];

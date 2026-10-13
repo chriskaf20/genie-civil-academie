@@ -173,4 +173,40 @@ export default [
     notes: ['Avec une pente faible, la rampe et sa projection ont presque la même longueur (12,015 m contre 12,00 m).'],
     caption: 'Rampe d’accès : la pente maximale fixe la longueur au sol à réserver.',
   },
+  {
+    id: 'aplomb-voile',
+    title: 'Contrôle d’aplomb d’un voile coffré',
+    steps: ['real_examples'],
+    formula: ['\\Delta x = H \\sin\\Delta\\theta = 6\\,000 \\times \\sin 0{,}2° = 20{,}9\\ \\text{mm}'],
+    h: 290,
+    draw: () => (
+      <g>
+        <Rect x={20} y={260} w={460} h={16} c="soil" sw={0} fill="pat:soil" />
+        <Line x1={20} y1={260} x2={480} y2={260} c="ink" w={2} />
+        <Poly pts={[[180, 260], [200, 260], [214, 60], [194, 60]]} c="ink" w={2.4} fill="pat:concrete" close />
+        {[[90, 150], [120, 205]].map(([x, y]) => (
+          <g key={x}>
+            <Line x1={x} y1={260} x2={184 + (260 - y) * 0.07} y2={y} c="ink" w={2.2} />
+            <Rect x={(x + 184) / 2 - 6} y={(260 + y) / 2 - 5} w={12} h={10} c="orange" sw={1.4} fill="~orange" />
+          </g>
+        ))}
+        <Text x={40} y={200} s={12} c="orange" b>{'étais à\nvérins'}</Text>
+        <Rect x={232} y={248} w={16} h={12} c="red" sw={1.6} fill="~red" />
+        <Line x1={240} y1={248} x2={240} y2={50} c="red" w={1.8} dash="6 4" />
+        <Text x={252} y={258} s={12} c="red">laser</Text>
+        <Arrow x1={215} y1={70} x2={239} y2={70} c="txt" w={1.2} hs={5} both />
+        <Arrow x1={201} y1={240} x2={239} y2={240} c="txt" w={1.2} hs={5} both />
+        <Text x={248} y={74} s={12}>a</Text>
+        <Text x={246} y={232} s={12}>b</Text>
+        <Arrow x1={300} y1={61} x2={300} y2={259} c="txt" w={1.2} hs={5} both />
+        <Text x={306} y={164} s={13} b>H = 6,00 m</Text>
+        <Angle cx={190} cy={260} r={60} a1={-90} a2={-86} c="red" />
+        <Text x={340} y={110} s={13} c="red" b>{'Δx = b − a = 20,9 mm'}</Text>
+        <Text x={340} y={132} s={12}>{'tolérance : 15 mm\n→ régler les vérins'}</Text>
+        <Text x={340} y={210} s={11} c="mute">inclinaison exagérée sur le dessin</Text>
+      </g>
+    ),
+    notes: ['Un écart d’angle de 0,2° paraît négligeable mais donne 21 mm en tête de voile : on règle les étais avant de bétonner.'],
+    caption: 'La mesure de deux distances au faisceau laser vertical donne le faux aplomb du voile.',
+  },
 ];
