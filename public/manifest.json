@@ -1,14 +1,14 @@
 {
   "name": "Global Civil Engineering Academy",
   "short_name": "GCEA",
-  "description": "Plateforme interactive d'apprentissage du Génie Civil — 35 modules, leçons en 23 étapes, formules KaTeX, schémas et exercices corrigés, utilisable hors ligne.",
+  "description": "Plateforme interactive d'apprentissage du Génie Civil — 47 modules, leçons en 23 étapes illustrées, formules KaTeX, schémas et exercices corrigés, utilisable hors ligne.",
   "id": "/",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0a0a0a",
-  "theme_color": "#172f61",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "lang": "fr-FR",
   "dir": "ltr",
   "categories": ["education", "productivity"],
@@ -30,7 +30,7 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Tableau de bord — catalogue des 35 modules de génie civil"
+      "label": "Tableau de bord — catalogue des 47 modules de génie civil"
     },
     {
       "src": "/screenshots/lesson-wide.png",
@@ -51,7 +51,7 @@
     {
       "name": "Tableau de bord",
       "short_name": "Accueil",
-      "description": "Catalogue des 35 modules",
+      "description": "Catalogue des 47 modules",
       "url": "/",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png" }]
     },

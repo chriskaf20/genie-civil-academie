@@ -1,6 +1,6 @@
 # Global Civil Engineering Academy (GCEA)
 
-A French-language learning app for civil engineering. It has 35 modules and 45 interactive lessons, each taught in 23 steps (theory, formulas with explained variables, worked examples, exercises, quiz, exam and interview questions, a practical case and self-assessment). It installs as a Progressive Web App (PWA) and works offline.
+A French-language learning app for civil engineering. It has 47 modules and more than 150 illustrated lessons, each taught in 23 steps (theory, formulas with explained variables, worked examples, exercises, quiz, exam and interview questions, a practical case and self-assessment). It installs as a Progressive Web App (PWA) and works offline.
 
 It is a static single-page app built with React 18, Vite 6, Tailwind CSS 3 and KaTeX. There is no backend: progress is kept in the browser's `localStorage`.
 
@@ -50,7 +50,7 @@ src/
   components/              UI: dashboard, module list, lesson canvas, formula explainer,
                            diagrams, calculators, glossary, PWA prompt, error boundary
   data/
-    modules.js             The 35-module catalog
+    modules.js             The 47-module catalog, in learning order
     lesson_registry.js     Lessons of each module, loaded on demand
     lesson_*.js            Lesson content (one chunk per file)
     formula_dictionary.js  Variable dictionary and domain overrides

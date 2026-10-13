@@ -12,12 +12,15 @@ import { modules } from './data/modules.js';
 import { getLessonEntries } from './data/lesson_registry.js';
 
 const STORAGE_KEY = 'gcea-v2-progress';
-const DEFAULT_PROGRESS = { currentModuleId: 1, completedIds: [], theme: 'dark', lessons: {} };
+// themeV 2: white pages by default (2026-10); preferences saved before are reset to light once.
+const DEFAULT_PROGRESS = { currentModuleId: 1, completedIds: [], theme: 'light', themeV: 2, lessons: {} };
 
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-    return saved ? { ...DEFAULT_PROGRESS, ...saved, lessons: saved.lessons || {} } : DEFAULT_PROGRESS;
+    if (!saved) return DEFAULT_PROGRESS;
+    const theme = saved.themeV === 2 ? saved.theme : 'light';
+    return { ...DEFAULT_PROGRESS, ...saved, theme, themeV: 2, lessons: saved.lessons || {} };
   } catch {
     return DEFAULT_PROGRESS;
   }
@@ -157,7 +160,7 @@ export default function App() {
   const totalCount = modules.length;
   const progressPct = Math.round((completedCount / totalCount) * 100);
 
-  const bgClass = isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900 eng-grid-bg-light';
+  const bgClass = isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-950';
   const sidebarBg = isDark ? 'bg-slate-900 border-slate-800/60' : 'bg-white border-slate-200';
   const headerBg = isDark ? 'bg-slate-900/95 border-slate-800/60' : 'bg-white/95 border-slate-200';
   const navButton = active => `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${active ? 'text-sky-400 font-bold bg-sky-500/10' : 'text-slate-400 hover:text-slate-200'}`;
@@ -254,10 +257,10 @@ export default function App() {
             >
               <span className="text-lg" aria-hidden="true">{selectedModule.icon}</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-xs text-teal-600 dark:text-cyan-400 font-mono font-bold">Module {selectedModule.n}/{totalCount} :</span>
+                <span className="text-xs text-teal-600 dark:text-cyan-400 font-mono font-bold whitespace-nowrap">Module {selectedModule.n}/{totalCount} :</span>
                 <span className="font-semibold text-slate-900 dark:text-white text-xs truncate max-w-xs">{selectedModule.title}</span>
               </span>
-              <span className="text-[10px] text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">· Accueil ⌂</span>
+              <span className="text-[10px] text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors whitespace-nowrap">· Accueil ⌂</span>
             </button>
           ) : (
             <div className="flex items-center gap-2 text-sm bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-500/10 dark:text-cyan-400 dark:border-teal-500/20 px-3.5 py-1 rounded-full font-medium shadow-sm">
@@ -333,7 +336,7 @@ export default function App() {
           </div>
         </aside>
 
-        <main className={`flex-1 min-w-0 pb-16 md:pb-8 w-full max-w-full ${isDark ? '' : 'bg-slate-50'}`}>
+        <main className={`flex-1 min-w-0 pb-16 md:pb-8 w-full max-w-full ${isDark ? '' : 'bg-white'}`}>
           <div className={`w-full max-w-full ${isDark ? 'eng-grid-bg' : ''}`}>
             <div className="px-3 py-4 sm:px-6 md:px-8 w-full max-w-full">
               <ErrorBoundary

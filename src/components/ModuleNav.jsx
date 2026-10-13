@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { modules } from '../data/modules.js';
+import { categories, modules } from '../data/modules.js';
+import { LEVEL_STYLES, accentOf } from '../data/accents.js';
 import { getLessonEntries } from '../data/lesson_registry.js';
 import { Search, LockKeyholeOpen, CheckCircle2 } from 'lucide-react';
 
@@ -11,15 +12,12 @@ const LEVEL_FILTERS = [
   { value: 'Tous niveaux', label: 'Tous niveaux' },
 ];
 
-// Every category uses the same navy style: the learning order, not colour, structures the list.
-const CATEGORY_STYLE = 'text-navy-700 dark:text-navy-200 bg-navy-50 dark:bg-navy-500/10 border-navy-200 dark:border-navy-500/30';
-
-const LEVEL_COLORS = {
-  'Débutant': 'text-slate-500 dark:text-slate-400',
-  'Intermédiaire': 'text-navy-500 dark:text-navy-300',
-  'Avancé': 'text-navy-700 dark:text-navy-100 font-semibold',
-  'Tous niveaux': 'text-slate-500 dark:text-slate-400',
+const categoryStyle = name => {
+  const a = accentOf(categories.find(c => c.name === name)?.color);
+  return `${a.text} ${a.bg} ${a.border}`;
 };
+
+const LEVEL_COLORS = Object.fromEntries(Object.entries(LEVEL_STYLES).map(([k, v]) => [k, v.text]));
 
 const QUICK_SEARCH_CHIPS = ['Béton', 'RDM', 'BIM', 'Routes', 'Ponts', 'Sols', 'Eurocode', 'IA'];
 
@@ -130,7 +128,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Module groups */}
       <div className="flex-1 overflow-y-auto space-y-2 pr-1">
         {Object.entries(grouped).map(([cat, mods]) => {
-          const color = CATEGORY_STYLE;
+          const color = categoryStyle(cat);
           const isCollapsed = collapsed[cat];
 
           return (

@@ -521,19 +521,19 @@ export const modules = [
 // Learning path: categories and modules are listed in the order a student should follow them.
 export const categories = [
   { name: "Fondamentaux scientifiques", color: 'navy', ids: [1, 2, 3] },
-  { name: "Outils de l’ingénieur", color: 'navy', ids: [4, 22, 5] },
-  { name: "Matériaux de construction", color: 'navy', ids: [23] },
-  { name: "Mécanique & calcul des structures", color: 'navy', ids: [6, 7, 8] },
+  { name: "Outils de l’ingénieur", color: 'emerald', ids: [4, 22, 5] },
+  { name: "Matériaux de construction", color: 'amber', ids: [23] },
+  { name: "Mécanique & calcul des structures", color: 'rose', ids: [6, 7, 8] },
   { name: "Sol & sous-sol", color: 'navy', ids: [36, 13] },
-  { name: "Normes & conception des structures", color: 'navy', ids: [28, 9, 11, 12, 39, 40, 10] },
-  { name: "Bâtiment", color: 'navy', ids: [41, 42, 43, 44] },
-  { name: "Eau & hydraulique", color: 'navy', ids: [37, 14, 38, 47] },
+  { name: "Normes & conception des structures", color: 'emerald', ids: [28, 9, 11, 12, 39, 40, 10] },
+  { name: "Bâtiment", color: 'amber', ids: [41, 42, 43, 44] },
+  { name: "Eau & hydraulique", color: 'rose', ids: [37, 14, 38, 47] },
   { name: "Aménagement & transports", color: 'navy', ids: [45, 15, 46, 21, 19] },
-  { name: "Ouvrages d’art & grands ouvrages", color: 'navy', ids: [16, 17, 18, 20] },
-  { name: "Chantier, qualité & management", color: 'navy', ids: [31, 24, 33, 25, 26] },
-  { name: "Durabilité & numérique", color: 'navy', ids: [27, 29, 30] },
+  { name: "Ouvrages d’art & grands ouvrages", color: 'emerald', ids: [16, 17, 18, 20] },
+  { name: "Chantier, qualité & management", color: 'amber', ids: [31, 24, 33, 25, 26] },
+  { name: "Durabilité & numérique", color: 'rose', ids: [27, 29, 30] },
   { name: "Maintenance & retours d’expérience", color: 'navy', ids: [32, 34] },
-  { name: "Carrière", color: 'navy', ids: [35] },
+  { name: "Carrière", color: 'emerald', ids: [35] },
 ];
 
 // Position of each module in the learning path (1 → 47), shown to students instead of the internal id.

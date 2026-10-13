@@ -1,18 +1,13 @@
 import { useMemo } from 'react';
 import { modules, categories } from '../data/modules.js';
 import { getLessonEntries, countLessons } from '../data/lesson_registry.js';
+import { LEVEL_STYLES, accentOf } from '../data/accents.js';
 
-const NAVY = { bg: 'bg-navy-50 dark:bg-navy-500/10', border: 'border-navy-200 dark:border-navy-500/30', text: 'text-navy-700 dark:text-navy-200', glow: 'shadow-navy-500/5 dark:shadow-navy-500/10' };
-const INK = { bg: 'bg-slate-100 dark:bg-slate-800', border: 'border-slate-200 dark:border-slate-700', text: 'text-slate-900 dark:text-white', glow: 'shadow-slate-500/5' };
-// One navy style for every category; ink (black / white) for the neutral statistics.
-const CATEGORY_COLORS = new Proxy({ ink: INK }, { get: (t, k) => t[k] || NAVY });
+const INK = { bg: 'bg-slate-100 dark:bg-slate-800', border: 'border-slate-200 dark:border-slate-700', text: 'text-slate-950 dark:text-white', glow: 'shadow-slate-500/5' };
+// Stage colours come from the learning path; ink (black / white) for the neutral statistics.
+const CATEGORY_COLORS = new Proxy({ ink: INK }, { get: (t, k) => t[k] || accentOf(k) });
 
-const LEVEL_CONFIG = {
-  'Débutant': { color: 'text-slate-700 dark:text-slate-200', bg: 'bg-white dark:bg-transparent border border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
-  'Intermédiaire': { color: 'text-navy-700 dark:text-navy-200', bg: 'bg-navy-50 dark:bg-navy-500/15 border border-navy-200 dark:border-navy-500/40', dot: 'bg-navy-400' },
-  'Avancé': { color: 'text-white', bg: 'bg-navy-700 border border-navy-700', dot: 'bg-navy-700' },
-  'Tous niveaux': { color: 'text-slate-700 dark:text-slate-200', bg: 'bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600', dot: 'bg-slate-400' },
-};
+const LEVEL_CONFIG = Object.fromEntries(Object.entries(LEVEL_STYLES).map(([k, v]) => [k, { color: '', bg: v.badge, dot: v.dot }]));
 
 const FEATURED_MODULES = [9, 7, 16, 13, 29, 30]; // Béton Armé, RDM, Ponts, Géotechnique, Logiciels, IA
 
@@ -81,7 +76,7 @@ function CategorySection({ cat, onSelect, completedIds }) {
     <div>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${color.text.replace('text-', 'bg-')}`} />
+          <div className={`w-2 h-2 rounded-full ${color.dot}`} />
           <h3 className={`text-sm font-bold ${color.text}`}>{cat.name}</h3>
           <span className="text-xs text-slate-500 dark:text-slate-400">({catModules.length} modules)</span>
         </div>
@@ -208,7 +203,7 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
                       onClick={() => onSelectModule(first)}
                       className="w-full h-full flex items-center gap-2.5 text-left bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 px-3 py-2 rounded-xl hover:border-navy-400 hover:bg-navy-50 dark:hover:bg-navy-500/10 transition-all"
                     >
-                      <span className="w-6 h-6 shrink-0 rounded-full bg-navy-700 text-white text-[11px] font-bold flex items-center justify-center">{i + 1}</span>
+                      <span className={`w-6 h-6 shrink-0 rounded-full ${accentOf(cat.color).badge} text-[11px] font-bold flex items-center justify-center`}>{i + 1}</span>
                       <span className="min-w-0">
                         <span className="block font-semibold text-slate-900 dark:text-slate-100 truncate">{cat.name}</span>
                         <span className="block text-[10px] text-slate-500 dark:text-slate-400">
