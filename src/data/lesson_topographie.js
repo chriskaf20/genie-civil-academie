@@ -192,12 +192,12 @@ Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compe
       title: "Calcul complet — Cheminement de nivellement encadré & Compensation",
       icon: '🔬',
       type: 'stepbystep',
-      problem: "Un cheminement de nivellement encadré relie le repère A (H_A = 124,500 m) au repère B (H_B = 127,150 m) en 4 portées. Longueur totale L = 800 m (0,8 km). Les dénivelées mesurées sont : ΔH1 = +1,240 m, ΔH2 = +0,850 m, ΔH3 = -0,320 m, ΔH4 = +0,890 m. 1) Calculer la somme des dénivelées mesurées. 2) Calculer l'erreur de fermeture f_H. 3) Vérifier la tolérance T_H = 2,5 · √L_km (en mm). 4) Calculer les dénivelées compensées et les altitudes finales.",
+      problem: "Un cheminement de nivellement encadré relie le repère A (H_A = 124,500 m) au repère B (H_B = 127,150 m) en 4 portées. Longueur totale L = 800 m (0,8 km). Les dénivelées mesurées sont : ΔH1 = +1,240 m, ΔH2 = +0,850 m, ΔH3 = -0,320 m, ΔH4 = +0,890 m. 1) Calculer la somme des dénivelées mesurées. 2) Calculer l'erreur de fermeture f_H. 3) Vérifier la tolérance T_H = 2,5 · σ · √L_km avec σ = 10 mm/km (nivellement ordinaire). 4) Calculer les dénivelées compensées et les altitudes finales.",
       steps_demo: [
         { n: 1, text: "Somme des dénivelées mesurées : ΣΔH_mes = +1,240 + 0,850 - 0,320 + 0,890 = +2,660 m" },
         { n: 2, text: "Dénivelée théorique exacte : ΔH_théo = H_B - H_A = 127,150 - 124,500 = +2,650 m" },
         { n: 3, text: "Erreur de fermeture f_H : f_H = ΣΔH_mes - ΔH_théo = 2,660 - 2,650 = +0,010 m = +10,0 mm" },
-        { n: 4, text: "Calcul de la tolérance réglementaire : T_H = 2,5 × √0,8 = 2,5 × 0,8944 = 2,236 cm = 22,4 mm" },
+        { n: 4, text: "Calcul de la tolérance réglementaire : T_H = 2,5 × 10 × √0,8 = 25 × 0,8944 = 22,4 mm" },
         { n: 5, text: "Vérification : |f_H| = 10,0 mm ≤ T_H = 22,4 mm → Cheminement VALIDE et à compenser ✓" },
         { n: 6, text: "Compensation par portée (4 portées de longueur égale) : c = -f_H / 4 = -10,0 / 4 = -2,5 mm par portée" },
         { n: 7, text: "Dénivelées compensées : ΔH1'=+1,2375m | ΔH2'=+0,8475m | ΔH3'=-0,3225m | ΔH4'=+0,8875m → ΣΔH' = +2,6500 m ✓ (Altitude B = 127,150 m)" },
@@ -250,7 +250,7 @@ Si la fermeture $f_H$ est inférieure à la tolérance $T_H$, l'erreur est compe
           given: "Point A (X_A = 600 000,00 m, Y_A = 6 800 000,00 m) et Point B (X_B = 600 300,00 m, Y_B = 6 800 400,00 m)",
           find: "Distance horizontale D_AB et Gisement G_AB",
           solution_latex: "\\Delta X = 300{,}00 \\text{ m} \\quad \\Delta Y = 400{,}00 \\text{ m} \\quad D_{AB} = \\sqrt{300^2 + 400^2} = 500{,}00 \\text{ m}",
-          result: "G_AB = atan(300 / 400) = atan(0,75) = 41,02 gon (1er quadrant : ΔX > 0, ΔY > 0) | Distance D_AB = 500,00 m.",
+          result: "G_AB = atan(300 / 400) = atan(0,75) = 36,87° = 40,97 gon (1er quadrant : ΔX > 0, ΔY > 0) | Distance D_AB = 500,00 m.",
         },
         {
           title: "Exemple 2 : Nivellement trigonométrique à la Station Totale",

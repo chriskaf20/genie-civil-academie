@@ -70,9 +70,9 @@ export default [
           <Text x={(cx + px) / 2 - 18} y={(cy + py) / 2 - 6} a="middle" s={15} c="ink">1</Text>
           <Text x={cx + r + 8} y={cy - 8} s={13} c="mute">x</Text>
           <Text x={cx + 8} y={cy - r - 10} s={13} c="mute">y</Text>
-          <Text x={330} y={70} s={16} b c="ink">Rayon = 1</Text>
-          <Text x={330} y={100} s={15}>{'Pythagore dans le triangle\nOMH : cos²θ + sin²θ = 1'}</Text>
-          <Text x={330} y={170} s={15}>{'θ = 30° : sin = 0,50\nθ = 45° : sin = cos = 0,707\nθ = 60° : cos = 0,50'}</Text>
+          <Text x={318} y={62} s={16} b c="ink">Rayon = 1</Text>
+          <Text x={318} y={130} s={14}>{'Pythagore (triangle OMH) :\ncos²θ + sin²θ = 1'}</Text>
+          <Text x={318} y={196} s={14}>{'30° : sin = 0,50\n45° : sin = cos = 0,707\n60° : cos = 0,50'}</Text>
         </g>
       );
     },
