@@ -507,7 +507,7 @@ $$I_C = \\frac{W_L - W}{I_P} \\quad \\begin{cases} I_C > 1 & \\text{Sol solide/r
       type: 'practical',
       scenario: "Étude géotechnique G2 PRO — Pont routier à 3 travées, Seine-et-Marne",
       description: `**Mise en situation** : Bureau d'études géotechnique, mission G2 PRO. Un pont routier à 3 travées (L = 3 × 25 m) doit être fondé sur des piles intermédiaires. La reconnaissance révèle : 0-5 m limon mou (Su = 20 kPa), 5-12 m argile raide (Su = 80 kPa), 12-∞ m craie altérée (qu = 8 MPa). Charge verticale par pile : N = 8 500 kN. Nappe à z = 1 m.`,
-      resolution_latex_1: "q_{u,argile} = 5{,}14 \\times 80 \\times 1{,}2 = 493 \\text{ kPa} \\quad A_{requise} = \\frac{8500}{493/3} = 51{,}7 \\text{ m}^2 \\Rightarrow \\text{Semelle impossible (too large)}",
+      resolution_latex_1: "q_{u,argile} = 5{,}14 \\times 80 \\times 1{,}2 = 493 \\text{ kPa} \\quad A_{requise} = \\frac{8500}{493/3} = 51{,}7 \\text{ m}^2 \\Rightarrow \\text{Semelle impossible (trop grande)}",
       resolution_latex_2: "\\text{Solution : Pieux forés Ø 80 cm, L=14 m ancrés dans craie} \\quad Q_{p} = q_c \\times A_p = 1000 \\times 0{,}503 = 503 \\text{ kN/pieu}",
       resolution_latex_3: "Q_s = \\sum \\alpha_i \\times c_{ui} \\times \\pi D \\times l_i = 0{,}5 \\times 80 \\times \\pi \\times 0{,}8 \\times 7 = 703 \\text{ kN} \\quad Q_{total} = (503 + 703)/1{,}4 = 861 \\text{ kN/pieu}",
       conclusion: "10 pieux Ø 80 cm L=14 m retenus par pile (10 × 861 = 8 610 kN > 8 500 kN). Tête de pieu à -3 m (hors limon mou). Semelle de liaison en béton armé C30/37.",
