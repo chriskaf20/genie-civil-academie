@@ -1,6 +1,7 @@
 // Plates — Module 3 · Polymères, adjuvants, résines & composites
 import { Circle, Line, Path, Plot, Poly, Rect, Text } from '../../components/figures/ink.jsx';
 import { Bars, BeamScheme } from '../../components/figures/kit.jsx';
+import { Arrow, Building, Dot, fnPts } from '../../components/figures/kit.jsx';
 
 const FLOC = [[60, 80], [82, 92], [72, 112], [96, 110], [52, 104], [110, 86], [140, 150], [160, 140], [150, 168], [175, 162], [60, 170], [84, 178]];
 const DISP = [[255, 70], [320, 74], [390, 68], [450, 82], [270, 130], [340, 128], [410, 136], [460, 140], [250, 186], [320, 190], [390, 180], [455, 194]];
@@ -39,7 +40,7 @@ export default [
   {
     id: 'loi-des-melanges',
     title: 'Composite : fibres dans une matrice',
-    steps: ['formulas'],
+    steps: ['formulas', 'theory', 'simple_examples'],
     formula: ['E_c = V_f E_f + (1 - V_f) E_m'],
     h: 290,
     draw: () => (
@@ -124,5 +125,157 @@ export default [
     ),
     notes: ['Gain : 70 kg de ciment par m³, soit environ 60 kg de CO₂ — à condition de respecter le liant minimal de l’EN 206.'],
     caption: 'Béton C30/37 : même rapport E/C, donc même résistance, avec moins de ciment.',
+  },
+  {
+    id: 'polymere-tg-fluage',
+    title: 'Polymères : transition vitreuse et fluage',
+    steps: ['theory'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Text x={120} y={22} a="middle" s={12} b>rigidité selon la température</Text>
+        <Line x1={30} y1={200} x2={220} y2={200} c="ink" w={1.4} />
+        <Line x1={30} y1={200} x2={30} y2={40} c="ink" w={1.4} />
+        <Path d="M 30 60 L 110 66 Q 130 70 140 130 Q 150 180 170 184 L 220 188" c="red" w={2.8} />
+        <Line x1={140} y1={40} x2={140} y2={200} c="grey" w={1.2} dash="4 4" />
+        <Text x={144} y={56} s={12} c="red" b>{'T_g'}</Text>
+        <Text x={60} y={84} s={11}>vitreux, rigide</Text>
+        <Text x={150} y={176} s={11}>caoutchouteux</Text>
+        <Text x={124} y={222} a="middle" s={11} c="mute">température →</Text>
+        <Text x={370} y={22} a="middle" s={12} b>fluage sous charge constante</Text>
+        <Line x1={270} y1={200} x2={470} y2={200} c="ink" w={1.4} />
+        <Line x1={270} y1={200} x2={270} y2={40} c="ink" w={1.4} />
+        <Line x1={270} y1={150} x2={270} y2={120} c="water" w={2.8} />
+        <Path d="M 270 120 Q 320 84 380 76 Q 430 70 470 66" c="water" w={2.8} />
+        <Text x={280} y={142} s={11} c="water">instantané</Text>
+        <Text x={420} y={60} a="middle" s={11} c="water">différé (fluage)</Text>
+        <Text x={370} y={222} a="middle" s={11} c="mute">temps →</Text>
+      </g>
+    ),
+    notes: ['Au-dessus de T_g, une résine perd l’essentiel de sa rigidité : d’où la protection au feu des renforts collés. Sous charge durable, la déformation continue de croître.'],
+    caption: 'Deux traits du comportement viscoélastique des polymères.',
+  },
+  {
+    id: 'adjuvants-prise',
+    title: 'Retardateur et accélérateur de prise',
+    steps: ['theory'],
+    h: 260,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={180} xr={[0, 12]} yr={[0, 1]} yl="raidissement"
+        xt={[0, 2, 4, 6, 8, 10, 12].map(v => [v, `${v} h`])} yt={[]}
+      >
+        {(sx, sy) => {
+          const s = (t, t0) => 1 / (1 + Math.exp(-(t - t0) * 1.6));
+          return (
+            <g>
+              <Poly pts={fnPts(t => s(t, 2.5), 0, 12, sx, sy, 60)} c="red" w={2.6} />
+              <Poly pts={fnPts(t => s(t, 5), 0, 12, sx, sy, 60)} c="ink" w={2.6} />
+              <Poly pts={fnPts(t => s(t, 8), 0, 12, sx, sy, 60)} c="water" w={2.6} />
+              <Text x={sx(2.7)} y={sy(0.86)} a="end" s={12} c="red" b>accéléré</Text>
+              <Text x={sx(5.4)} y={sy(0.5)} s={12} b>normal</Text>
+              <Text x={sx(8.4)} y={sy(0.3)} s={12} c="water" b>retardé</Text>
+              <Text x={sx(11.8)} y={sy(0.06)} a="end" s={11} c="mute">{'décoffrage rapide (accélérateur) ·\nbétonnage par temps chaud (retardateur)'}</Text>
+            </g>
+          );
+        }}
+      </Plot>
+    ),
+    notes: ['Les adjuvants de prise décalent le moment où le béton durcit sans changer sa résistance finale.'],
+    caption: 'Évolution schématique du raidissement d’un béton selon l’adjuvant de prise.',
+  },
+  {
+    id: 'geosynthetiques',
+    title: 'Géosynthétiques : séparer, renforcer, étancher',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[[20, 'géotextile : séparation'], [180, 'géogrille : renforcement'], [340, 'géomembrane : étanchéité']].map(([x, t]) => <Text key={t} x={x + 70} y={24} a="middle" s={12} b>{t}</Text>)}
+        <Rect x={20} y={60} w={140} h={50} c="grey" sw={1.4} fill="pat:gravel" />
+        <Rect x={20} y={110} w={140} h={80} c="soil" sw={1.4} fill="pat:clay" />
+        <Line x1={20} y1={110} x2={160} y2={110} c="red" w={3} dash="8 3" />
+        <Text x={90} y={210} a="middle" s={11} c="mute">{'empêche la grave de\ns’enfoncer dans l’argile'}</Text>
+        <Rect x={200} y={60} w={110} h={130} c="soil" sw={1.4} fill="pat:soil" />
+        <Line x1={200} y1={60} x2={200} y2={190} c="ink" w={3} />
+        {[80, 105, 130, 155, 180].map(y => <Line key={y} x1={200} y1={y} x2={292} y2={y} c="red" w={2.4} />)}
+        {[70, 95, 120, 145, 170].map(y => <Rect key={y} x={192} y={y} w={8} h={20} c="ink" sw={1.2} fill="~grey" />)}
+        <Text x={250} y={210} a="middle" s={11} c="mute">{'nappes ancrées dans le\nremblai : parement vertical'}</Text>
+        <Path d="M 350 70 L 380 170 L 450 170 L 480 70" c="red" w={3} />
+        <Rect x={372} y={110} w={86} h={58} c="water" sw={0} fill="~water" />
+        <Text x={415} y={210} a="middle" s={11} c="mute">{'bassin ou décharge :\nliner PEHD'}</Text>
+      </g>
+    ),
+    notes: ['Les géosynthétiques (PP, PET, PEHD) remplacent ou allègent des solutions minérales coûteuses en matériaux.'],
+    caption: 'Trois familles de géosynthétiques et leurs fonctions.',
+  },
+  {
+    id: 'dosage-adjuvant',
+    title: 'Dosage d’un adjuvant',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['m_{adj} = \\frac{p}{100}\\,C = 0{,}0005 \\times 380 = 0{,}19\\ \\text{kg/m}^3'],
+    h: 210,
+    draw: () => (
+      <g>
+        <Rect x={60} y={60} w={120} h={110} rx={8} c="ink" sw={2} fill="~grey" />
+        <Text x={120} y={110} a="middle" s={14} b>ciment</Text>
+        <Text x={120} y={132} a="middle" s={13}>380 kg</Text>
+        <Text x={230} y={124} a="middle" s={20} b>×</Text>
+        <Text x={290} y={124} a="middle" s={16} c="red" b>0,05 %</Text>
+        <Text x={340} y={124} a="middle" s={20} b>=</Text>
+        <Rect x={380} y={110} w={40} h={44} rx={4} c="water" sw={2} fill="~water" />
+        <Text x={400} y={180} a="middle" s={13} c="water" b>190 g</Text>
+        <Text x={250} y={36} a="middle" s={12} c="mute">entraîneur d’air, par mètre cube de béton</Text>
+      </g>
+    ),
+    notes: ['Le dosage s’exprime en % de la masse de ciment ; pour de si petites quantités, seul un doseur automatique est fiable.'],
+    caption: 'Un pourcentage minuscule du ciment suffit à modifier le béton.',
+  },
+  {
+    id: 'dilatation-pvc',
+    title: 'Dilatation d’une descente en PVC',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['\\Delta L = \\alpha_p\\,L\\,\\Delta T = 80 \\times 10^{-6} \\times 12 \\times 40 = 0{,}038\\ \\text{m}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Building x={140} y={250} w={160} floors={4} fh={50} />
+        <Rect x={316} y={50} w={12} h={200} c="grey" sw={1.6} fill="~grey" />
+        {[100, 150, 200].map(y => <Rect key={y} x={312} y={y - 8} w={20} h={16} c="red" sw={1.8} fill="~red" />)}
+        <Text x={340} y={100} s={12} c="red" b>manchon de dilatation</Text>
+        <Text x={340} y={150} s={12} c="red">à chaque étage</Text>
+        <Arrow x1={300} y1={51} x2={300} y2={249} c="txt" w={1.2} hs={5} both />
+        <Text x={296} y={74} a="end" s={12}>12 m</Text>
+        <Text x={340} y={220} s={12}>{'α = 80 × 10⁻⁶ /°C\nΔT = 40 °C → 38 mm'}</Text>
+      </g>
+    ),
+    notes: ['Le PVC se dilate environ 7 fois plus que l’acier : sans manchons, la descente se cintre ou arrache ses colliers.'],
+    caption: 'Descente d’eaux pluviales de 12 m en façade exposée au soleil.',
+  },
+  {
+    id: 'polymeres-chantier',
+    title: 'Les polymères sur un chantier',
+    steps: ['diagrams'],
+    h: 280,
+    draw: () => (
+      <g>
+        <Rect x={20} y={230} w={460} h={30} c="soil" sw={0} fill="pat:soil" />
+        <Rect x={150} y={80} w={200} h={150} c="ink" sw={2} fill="~grey" />
+        <Rect x={146} y={72} w={208} h={8} c="ink" sw={1.4} fill="txt" />
+        <Line x1={150} y1={232} x2={350} y2={232} c="red" w={3} dash="8 3" />
+        <Rect x={354} y={90} w={8} h={140} c="grey" sw={1.4} fill="~grey" />
+        <Rect x={80} y={180} w={50} h={30} rx={6} c="ink" sw={1.6} fill="~orange" />
+        <Text x={60} y={60} s={11} b>membrane d’étanchéité SBS</Text>
+        <Line x1={150} y1={64} x2={190} y2={74} c="ink" w={1} />
+        <Text x={20} y={174} s={11} b>{'béton adjuvanté\n(toupie)'}</Text>
+        <Text x={372} y={140} s={11} b>{'descente PVC,\nréseaux PEHD'}</Text>
+        <Text x={250} y={250} a="middle" s={11} c="red" b>géotextile sous dallage</Text>
+        <Text x={250} y={160} a="middle" s={11}>{'réparations : résines époxy,\ncomposites de carbone'}</Text>
+        <Text x={430} y={40} a="middle" s={11}>{'appareils d’appui\nen élastomère (ponts)'}</Text>
+        <Rect x={410} y={66} w={40} h={16} c="ink" sw={1.6} fill="~grey" />
+        {[70, 74, 78].map(y => <Line key={y} x1={410} y1={y} x2={450} y2={y} c="ink" w={1} />)}
+      </g>
+    ),
+    notes: ['Des adjuvants du béton frais aux membranes et renforts, les polymères sont présents à chaque étape d’un ouvrage.'],
+    caption: 'Où trouve-t-on des polymères dans un bâtiment et ses ouvrages annexes ?',
   },
 ];

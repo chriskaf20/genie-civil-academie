@@ -1,5 +1,6 @@
 // Plates — Module 3 · Chimie des matériaux : hydratation, carbonatation, corrosion
 import { Arrow, Circle, Dim, Dot, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/ink.jsx';
+import { Bars } from '../../components/figures/kit.jsx';
 
 // Pseudo-random but fixed positions for cement grains.
 const GRAINS = [[30, 40, 13], [75, 30, 10], [110, 58, 14], [40, 92, 11], [86, 98, 12], [128, 112, 9], [58, 132, 10], [20, 140, 8]];
@@ -35,7 +36,7 @@ export default [
   {
     id: 'hydratation',
     title: 'Hydratation du ciment',
-    steps: ['theory'],
+    steps: ['theory', 'formulas'],
     formula: ['2\\,\\mathrm{C_3S} + 6\\,\\mathrm{H} \\rightarrow \\mathrm{C_3S_2H_3} + 3\\,\\mathrm{CH}'],
     h: 270,
     draw: () => (
@@ -87,8 +88,8 @@ export default [
     formula: ['K = \\frac{16}{\\sqrt{16}} = 4\\ \\text{mm}/\\sqrt{\\text{an}}', 't = \\left(\\frac{30}{4}\\right)^2 = 56\\ \\text{ans}'],
     h: 300,
     draw: () => (
-      <Plot x={60} y={30} w={380} h={210} xr={[0, 80]} yr={[0, 40]} xl="t (ans)" yl="x_c (mm)"
-        xt={[0, 16, 30, 50, 56, 70].map(v => [v, String(v)])} yt={[10, 16, 20, 28, 30].map(v => [v, String(v)])} grid
+      <Plot x={60} y={30} w={370} h={210} xr={[0, 80]} yr={[0, 40]} xl="ans" yl="x_c (mm)"
+        xt={[0, 16, 30, 50, 56, 70].map(v => [v, String(v)])} yt={[10, 16, 20, 30].map(v => [v, String(v)])} grid
       >
         {(sx, sy) => (
           <g>
@@ -160,5 +161,187 @@ export default [
     ),
     notes: ['Cause principale : enrobage insuffisant ; la corrosion a commencé vers 16 ans.'],
     caption: 'Balcon de 35 ans : les armatures inférieures sont dans la zone carbonatée (orange).',
+  },
+  {
+    id: 'clinker-phases',
+    title: 'Du cru au clinker : quatre phases',
+    steps: ['theory'],
+    formula: ['\\text{calcaire (80 \\%)} + \\text{argile (20 \\%)} \\xrightarrow{1\\,450\\ °C} \\text{clinker}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Poly pts={[[30, 120], [230, 60], [240, 90], [40, 150]]} c="ink" w={2.2} fill="~orange" close />
+        {[[70, 140], [190, 92]].map(([x, y]) => <Circle key={x} cx={x} cy={y} r={14} c="ink" sw={1.6} fill="~grey" />)}
+        <Text x={135} y={60} a="middle" s={12} b>four rotatif</Text>
+        <Text x={135} y={186} a="middle" s={12} c="red" b>≈ 1 450 °C</Text>
+        <Arrow x1={244} y1={80} x2={280} y2={80} c="ink" w={2} hs={8} />
+        <Bars x={290} y={30} w={190} h={170} max={70} ticks={[20, 40, 60]} unit="%" s={11} bars={[
+          { label: 'C₃S', v: 60, c: 'red' },
+          { label: 'C₂S', v: 20, c: 'orange' },
+          { label: 'C₃A', v: 8, c: 'water' },
+          { label: 'C₄AF', v: 12, c: 'grey' },
+        ]} />
+        <Text x={135} y={222} a="middle" s={12}>{'C₃S : jeune âge · C₂S : long terme\nC₃A : prise, sulfates · C₄AF : couleur'}</Text>
+      </g>
+    ),
+    notes: ['Le gypse ajouté au broyage régule la prise de l’aluminate C₃A, très réactif.'],
+    caption: 'Composition typique d’un clinker Portland et rôle de chaque phase.',
+  },
+  {
+    id: 'ph-passivation',
+    title: 'pH du béton et passivation de l’acier',
+    steps: ['theory', 'formulas', 'simple_examples'],
+    formula: ['\\mathrm{pH} = -\\log_{10}[\\mathrm{H_{3}O^+}] \\qquad \\frac{[\\mathrm{H_{3}O^+}]_9}{[\\mathrm{H_{3}O^+}]_{13}} = 10^4'],
+    h: 230,
+    draw: () => {
+      const X = p => 30 + p * 31;
+      return (
+        <g>
+          {Array.from({ length: 14 }, (_, p) => (
+            <Rect key={p} x={X(p)} y={70} w={31} h={30} c="ink" sw={0.8} fill={p < 7 ? '~red' : p < 10 ? '~orange' : '~green'} />
+          ))}
+          {[0, 7, 9, 13, 14].map(p => <Text key={p} x={X(p)} y={118} a="middle" s={11}>{String(p)}</Text>)}
+          <Text x={X(3.5)} y={62} a="middle" s={12} c="red">acide</Text>
+          <Text x={X(9)} y={62} a="middle" s={12} c="orange" b>béton carbonaté ≈ 9</Text>
+          <Text x={X(12.6)} y={62} a="middle" s={12} c="green" b>{'béton sain\n12,5 – 13,5'}</Text>
+          <Rect x={X(12.5)} y={140} w={X(13.5) - X(12.5)} h={14} c="green" sw={1.4} fill="~green" />
+          <Text x={X(13)} y={174} a="middle" s={12} c="green">film passif sur l’acier</Text>
+          <Rect x={X(8.5)} y={140} w={X(9.5) - X(8.5)} h={14} c="orange" sw={1.4} fill="~orange" />
+          <Text x={X(9)} y={174} a="middle" s={12} c="orange">acier dépassivé</Text>
+          <Text x={250} y={210} a="middle" s={12}>{'4 unités de pH = 10 000 fois plus d’ions H₃O⁺'}</Text>
+        </g>
+      );
+    },
+    notes: ['La portlandite maintient un pH très basique qui protège l’acier ; quand le pH chute vers 9, la protection disparaît.'],
+    caption: 'Échelle de pH : du béton sain au béton carbonaté.',
+  },
+  {
+    id: 'carbonatation-vs-chlorures',
+    title: 'Deux façons de perdre la protection',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[[20, 'carbonatation'], [260, 'chlorures']].map(([x, t], k) => (
+          <g key={t}>
+            <Text x={x + 110} y={24} a="middle" s={13} b>{t}</Text>
+            <Rect x={x} y={40} w={220} h={160} c="ink" sw={2} fill="pat:concrete" />
+            <Rect x={x} y={150} w={220} h={18} c="ink" sw={1.6} fill="~grey" />
+            {k === 0 ? (
+              <g>
+                <Rect x={x} y={40} w={220} h={118} c="orange" sw={0} fill="~orange" />
+                <Line x1={x} y1={158} x2={x + 220} y2={158} c="orange" w={2.4} dash="6 4" />
+                <Text x={x + 110} y={100} a="middle" s={12} c="orange" b>{'front uniforme\npH ≈ 9'}</Text>
+                <Text x={x + 110} y={222} a="middle" s={12}>corrosion généralisée</Text>
+              </g>
+            ) : (
+              <g>
+                {[60, 110, 170].map(cx => <Dot key={cx} x={x + cx} y={150} r={6} c="red" />)}
+                {[[40, 60], [90, 90], [150, 70], [190, 110]].map(([a, b], i) => <Text key={i} x={x + a} y={b} s={12} c="red" b>Cl⁻</Text>)}
+                <Text x={x + 110} y={222} a="middle" s={12} c="red">{'piqûres localisées\n(> 0,4 % du ciment)'}</Text>
+              </g>
+            )}
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['La carbonatation attaque toute la surface de l’acier ; les chlorures percent la couche passive par points, avec une perte de section rapide et dangereuse.'],
+    caption: 'Dépassivation par le CO₂ de l’air ou par les sels (marins, de déneigement).',
+  },
+  {
+    id: 'loi-faraday',
+    title: 'Loi de Faraday : vitesse de corrosion',
+    steps: ['formulas'],
+    formula: ['m = \\frac{M\\,I\\,t}{n\\,F} \\qquad 1\\ \\mu\\text{A/cm}^2 \\approx 11{,}6\\ \\mu\\text{m d’acier perdu par an}'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[[110, 46, 'neuf'], [250, 40, '10 ans à 1 µA/cm²'], [390, 30, 'corrosion active forte']].map(([x, r, t], k) => (
+          <g key={x}>
+            <Circle cx={x} cy={110} r={50} c="soil" sw={2} fill={k ? '~soil' : 'paper'} />
+            <Circle cx={x} cy={110} r={r} c="ink" sw={2} fill="~grey" />
+            <Text x={x} y={190} a="middle" s={12} b>{t}</Text>
+          </g>
+        ))}
+        <Text x={250} y={214} a="middle" s={12} c="mute">{'section résiduelle d’acier (gris) et rouille (brun), échelle exagérée'}</Text>
+        <Text x={250} y={36} a="middle" s={12}>{'M = 55,85 g/mol, n = 2, F = 96 485 C/mol'}</Text>
+      </g>
+    ),
+    notes: ['La masse d’acier dissoute est proportionnelle au courant de corrosion et au temps : on mesure ce courant sur ouvrage pour estimer la perte de section.'],
+    caption: 'Un courant de corrosion, même minuscule, ronge l’armature année après année.',
+  },
+  {
+    id: 'decarbonatation-co2',
+    title: 'Décarbonatation : le CO₂ du ciment',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['\\mathrm{CaCO_{3}} \\xrightarrow{\\approx 900\\ °C} \\mathrm{CaO} + \\mathrm{CO_{2}} \\qquad m_{CO_2} = 1\\,000 \\times \\frac{44}{100} = 440\\ \\text{kg}'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Rect x={30} y={90} w={120} h={60} c="ink" sw={2} fill="~grey" />
+        <Text x={90} y={118} a="middle" s={13} b>CaCO₃</Text>
+        <Text x={90} y={138} a="middle" s={12}>1 000 kg</Text>
+        <Arrow x1={156} y1={120} x2={236} y2={120} c="red" w={2.6} hs={10} />
+        <Text x={196} y={110} a="middle" s={12} c="red">900 °C</Text>
+        <Rect x={244} y={90} w={110} h={60} c="ink" sw={2} fill="~orange" />
+        <Text x={299} y={118} a="middle" s={13} b>CaO</Text>
+        <Text x={299} y={138} a="middle" s={12}>560 kg</Text>
+        <Path d="M 380 140 q 20 -30 0 -50 q -20 -20 10 -50" c="grey" w={3} />
+        <Text x={410} y={70} s={13} c="grey" b>{'CO₂\n440 kg'}</Text>
+        <Text x={250} y={196} a="middle" s={12} c="mute">avant même de brûler le moindre combustible</Text>
+      </g>
+    ),
+    notes: ['C’est la principale source de CO₂ du ciment : remplacer une partie du clinker (laitier, cendres, argiles calcinées) réduit l’empreinte.'],
+    caption: 'Bilan de masse de la cuisson du calcaire.',
+  },
+  {
+    id: 'rapport-ec',
+    title: 'Contrôler le rapport eau/ciment (XC4)',
+    steps: ['simple_examples'],
+    formula: ['\\frac{E}{C} = \\frac{180}{350} = 0{,}51 > 0{,}50'],
+    h: 220,
+    draw: () => {
+      const X = v => 60 + (v - 0.4) * 2000;
+      return (
+        <g>
+          <Line x1={X(0.4)} y1={100} x2={X(0.6)} y2={100} c="ink" w={2} />
+          {[0.4, 0.45, 0.5, 0.55, 0.6].map(v => <Text key={v} x={X(v)} y={120} a="middle" s={11}>{v.toFixed(2).replace('.', ',')}</Text>)}
+          <Rect x={X(0.4)} y={88} w={X(0.5) - X(0.4)} h={12} c="green" sw={0} fill="~green" />
+          <Rect x={X(0.5)} y={88} w={X(0.6) - X(0.5)} h={12} c="red" sw={0} fill="~red" />
+          <Dot x={X(0.514)} y={94} r={7} c="red" />
+          <Text x={X(0.514)} y={76} a="middle" s={12} c="red" b>350 kg + 180 L : 0,51</Text>
+          <Dot x={X(0.5)} y={94} r={6} c="green" />
+          <Text x={X(0.5)} y={150} a="middle" s={12} c="green" b>{'360 kg : 0,50 ✓'}</Text>
+          <Text x={X(0.45)} y={180} a="middle" s={12} c="green">{'ou superplastifiant :\nmoins d’eau'}</Text>
+          <Text x={X(0.57)} y={170} a="middle" s={12} c="red">{'trop d’eau : pores,\ncarbonatation plus rapide'}</Text>
+        </g>
+      );
+    },
+    notes: ['L’eau en excès laisse des pores qui facilitent l’entrée du CO₂ et des chlorures : la limite E/C est une exigence de durabilité.'],
+    caption: 'Le béton commandé doit respecter le E/C maximal de sa classe d’exposition.',
+  },
+  {
+    id: 'parking-1975',
+    title: 'Parking de 1975 : carbonatation et sels de déneigement',
+    steps: ['real_examples'],
+    formula: ['K = \\frac{25}{\\sqrt{45}} \\approx 3{,}7\\ \\text{mm}/\\sqrt{\\text{an}}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={30} y={70} w={420} h={110} c="ink" sw={2} fill="pat:concrete" />
+        <Rect x={30} y={70} w={420} h={50} c="orange" sw={0} fill="~orange" />
+        <Line x1={30} y1={120} x2={450} y2={120} c="orange" w={2.4} dash="6 4" />
+        {[90, 170, 250, 330, 410].map(x => <Circle key={x} cx={x} cy={104} r={7} c="ink" sw={1.6} fill="txt" />)}
+        <Path d="M 160 70 l 8 -20 l 14 6 l 10 -16" c="red" w={2.2} />
+        <Text x={200} y={40} s={12} c="red" b>épaufrure, armature apparente</Text>
+        {[60, 120, 300, 380].map(x => <Text key={x} x={x} y={62} a="middle" s={12} c="water" b>Cl⁻</Text>)}
+        <Text x={444} y={114} a="end" s={11} c="orange" b>front carbonaté : 25 mm</Text>
+        <Text x={444} y={170} a="end" s={11}>enrobage réel : 15 à 20 mm</Text>
+        <Text x={240} y={204} a="middle" s={12}>{'chlorures jusqu’à 0,8 % du ciment (seuil ≈ 0,4 %)'}</Text>
+        <Text x={240} y={228} a="middle" s={12} c="green">{'réparation : purge, passivation, mortier NF EN 1504, imperméabilisation'}</Text>
+      </g>
+    ),
+    notes: ['Les deux mécanismes se cumulent : enrobage trop faible dès la construction et aucune protection contre les sels.'],
+    caption: 'Rive de dalle diagnostiquée : front de carbonatation au-delà des armatures et chlorures en excès.',
   },
 ];
