@@ -1,5 +1,6 @@
 // Plates — Module 10 · Analyse non linéaire : second ordre, rotules plastiques, push-over
 import { Arrow, BeamScheme, Circle, Dot, ForceDiagram, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Bars, Building } from '../../components/figures/kit.jsx';
 
 // Fixed-fixed beam, t ∈ [0, 1]: elastic M = q L² (6t − 6t² − 1) / 12 ; at collapse, hinges at ends and mid-span.
 const Mel = t => (6 * t - 6 * t * t - 1) / 12;
@@ -131,5 +132,82 @@ export default [
       'Immeuble à rez-de-chaussée ouvert : les rotules se concentrent dans les poteaux du RDC (étage souple), μ ≈ 1,5 seulement.',
     ],
     caption: 'On pousse la structure jusqu’à la ruine : la courbe donne résistance et ductilité réelles.',
+  },
+  {
+    id: 'facteur-forme',
+    title: 'Facteur de forme : rectangle et profilé en I',
+    steps: ['theory'],
+    formula: ['f = \\frac{W_{pl}}{W_{el}} \\qquad \\text{rectangle : } 1{,}5 \\qquad \\text{profilé en I : } 1{,}12 \\text{ à } 1{,}15'],
+    h: 240,
+    draw: () => (
+      <g>
+        {[[60, 'rectangle', 1.5], [260, 'profilé en I', 1.13]].map(([x, t, f], k) => (
+          <g key={t}>
+            {k === 0 ? <Rect x={x} y={40} w={60} h={140} c="ink" sw={2} fill="~grey" /> : (
+              <g>
+                <Rect x={x - 10} y={40} w={80} h={14} c="ink" sw={2} fill="~grey" />
+                <Rect x={x + 24} y={54} w={12} h={112} c="ink" sw={2} fill="~grey" />
+                <Rect x={x - 10} y={166} w={80} h={14} c="ink" sw={2} fill="~grey" />
+              </g>
+            )}
+            <Line x1={x + 140} y1={40} x2={x + 140} y2={180} c="txt" w={1.2} />
+            <Poly pts={[[x + 140, 40], [x + 170, 40], [x + 110, 180], [x + 140, 180]]} c="grey" w={1.4} fill="~grey" close />
+            <Poly pts={[[x + 140, 40], [x + 180, 40], [x + 180, 110], [x + 100, 110], [x + 100, 180], [x + 140, 180]]} c="red" w={1.8} />
+            <Text x={x + 30} y={206} a="middle" s={13} b>{t}</Text>
+            <Text x={x + 140} y={226} a="middle" s={13} c="red" b>{`f ≈ ${String(f).replace('.', ',')}`}</Text>
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['Dans un I, la matière est déjà loin de l’axe : la plastification complète ajoute peu ; dans un rectangle, le cœur sous-utilisé ajoute 50 %.'],
+    caption: 'Contraintes élastiques (gris) et totalement plastiques (rouge).',
+  },
+  {
+    id: 'appuis-reserve',
+    title: 'Charge de ruine : appuis simples ou encastrements',
+    steps: ['simple_examples'],
+    formula: ['q_u = \\frac{8 M_p}{L^2} = 18{,}5\\ \\text{kN/m} \\quad \\text{contre} \\quad \\frac{16 M_p}{L^2} = 36{,}9\\ \\text{kN/m}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <BeamScheme x1={40} x2={220} y={80} names={['', '']} />
+        <Circle cx={130} cy={80} r={6} c="red" sw={2} fill="paper" />
+        <Text x={130} y={130} a="middle" s={12}>1 rotule : mécanisme</Text>
+        <BeamScheme x1={280} x2={460} y={80} left="fixed" right="fixed" names={['', '']} />
+        {[280, 370, 460].map(x => <Circle key={x} cx={x} cy={80} r={6} c="red" sw={2} fill="paper" />)}
+        <Text x={370} y={130} a="middle" s={12}>3 rotules nécessaires</Text>
+        <Bars x={130} y={150} w={240} h={80} max={40} ticks={[20, 40]} unit="" s={11} bars={[
+          { label: 'appuis simples', v: 18.45, c: 'grey' },
+          { label: 'bi-encastrée', v: 36.9, c: 'green' },
+        ]} />
+      </g>
+    ),
+    notes: ['M_p = 147,6 kN·m, L = 8 m : l’hyperstaticité double la charge de ruine.'],
+    caption: 'IPE 300 S235 de 8 m : réserve apportée par la redistribution.',
+  },
+  {
+    id: 'etage-souple',
+    title: 'Mécanisme d’étage souple',
+    steps: ['real_examples'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Rect x={20} y={250} w={460} h={10} c="ink" sw={0} fill="pat:soil" />
+        <Rect x={150} y={40} w={200} h={150} c="ink" sw={2} fill="pat:brick" />
+        {[0, 1, 2, 3, 4].map(i => <Line key={i} x1={150} y1={40 + i * 30} x2={350} y2={40 + i * 30} c="ink" w={1.4} />)}
+        {[150, 250, 350].map(x => <Path key={x} d={`M ${x - 30} 250 C ${x - 30} 220, ${x} 220, ${x} 190`} c="ink" w={4} />)}
+        {[150, 250, 350].map(x => (
+          <g key={x}>
+            <Circle cx={x} cy={192} r={6} c="red" sw={2} fill="paper" />
+            <Circle cx={x - 30} cy={248} r={6} c="red" sw={2} fill="paper" />
+          </g>
+        ))}
+        <Text x={250} y={30} a="middle" s={12}>étages courants rigides (remplissages)</Text>
+        <Text x={410} y={226} s={12} c="red" b>{'RDC ouvert :\nrotules en tête\net en pied'}</Text>
+        <Text x={60} y={150} a="middle" s={13} c="red" b>μ ≈ 1,5</Text>
+      </g>
+    ),
+    notes: ['Toute la déformation se concentre dans le rez-de-chaussée : la ductilité globale est bien plus faible que la demande sismique.'],
+    caption: 'Immeuble R+6 à rez-de-chaussée commercial ouvert.',
   },
 ];

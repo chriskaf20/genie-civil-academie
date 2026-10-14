@@ -1,5 +1,6 @@
 // Plates — Module 10 · Structures hyperstatiques : trois moments & rigidité
 import { Arrow, BeamScheme, Circle, Dot, ForceDiagram, Line, Moment, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Flow, Path, flowHeight } from '../../components/figures/kit.jsx';
 
 // Two spans of 6 m, q = 20 kN/m: M(x) with M_B = −90 kN·m (x in m, 0..12).
 const M2 = x => {
@@ -114,5 +115,95 @@ export default [
     ),
     notes: ['Travée de rive : $R_A = 62{,}5 - 12{,}5 = 50$ kN, moment maximal 50 kN·m à 2 m de A ; travée centrale : $78{,}1 - 62{,}5 = 15{,}6$ kN·m.'],
     caption: 'On retrouve la valeur classique −qL²/10 sur les appuis intermédiaires.',
+  },
+  {
+    id: 'travees-inegales',
+    title: 'Deux travées inégales (5 m et 7 m)',
+    steps: ['simple_examples'],
+    formula: ['2M_B(5 + 7) = -\\frac{20 \\times 5^3 + 20 \\times 7^3}{4} \\Rightarrow M_B = -97{,}5\\ \\text{kN·m}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <BeamScheme x1={50} x2={450} y={70} mid={[5 / 12]} loads={[{ type: 'udl', h: 24, label: '' }]} names={['A', 'C']} />
+        <Text x={50} y={34} s={13} b>q = 20 kN/m</Text>
+        <Text x={133} y={120} a="middle" s={12} c="mute">5 m</Text>
+        <Text x={333} y={120} a="middle" s={12} c="mute">7 m</Text>
+        <Text x={225} y={102} s={13} b>B</Text>
+        <ForceDiagram x1={50} x2={450} y0={190} f={t => {
+          const x = 12 * t;
+          const MB = -97.5;
+          if (x <= 5) { const RA = 50 + MB / 5; return RA * x - 10 * x * x; }
+          const u = 12 - x; const RC = 70 + MB / 7; return RC * u - 10 * u * u;
+        }} scale={0.45} c="red" fill="~red" name="M" n={150} marks={[{ t: 5 / 12, label: '−97,5' }]} />
+      </g>
+    ),
+    notes: ['La grande travée « charge » davantage l’appui commun : le moment sur B dépasse celui de deux travées égales de 6 m (−90 kN·m).'],
+    caption: 'Théorème des trois moments avec des portées différentes.',
+  },
+  {
+    id: 'encastre-appuye',
+    title: 'Poutre encastrée-appuyée : une fois hyperstatique',
+    steps: ['simple_examples', 'formulas'],
+    formula: ['h = r - 3 = 4 - 3 = 1'],
+    h: 200,
+    draw: () => (
+      <g>
+        <BeamScheme x1={80} x2={420} y={90} left="fixed" right="roller" names={['', '']} />
+        {[[80, '3 inconnues : H, V, M'], [420, '1 inconnue : V']].map(([x, t]) => <Text key={x} x={x} y={150} a="middle" s={12} c="red" b>{t}</Text>)}
+        <Text x={250} y={40} a="middle" s={13} b>4 réactions, 3 équations d’équilibre</Text>
+        <Text x={250} y={182} a="middle" s={12} c="mute">il faut une équation de déformation (rotation ou flèche) pour la 4ᵉ inconnue</Text>
+      </g>
+    ),
+    notes: ['Chaque liaison surabondante ajoute une inconnue ; le degré d’hyperstaticité compte celles que la statique ne peut pas trouver.'],
+    caption: 'Encastrement d’un côté, appui simple de l’autre.',
+  },
+  {
+    id: 'rigidite-poutre',
+    title: 'Matrice de rigidité d’un élément de poutre',
+    steps: ['formulas'],
+    formula: ['[k] = \\frac{EI}{L^3}\\begin{bmatrix} 12 & 6L & -12 & 6L \\\\ 6L & 4L^2 & -6L & 2L^2 \\\\ -12 & -6L & 12 & -6L \\\\ 6L & 2L^2 & -6L & 4L^2 \\end{bmatrix}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Text x={120} y={24} a="middle" s={12} b>{'w_1 = 1 (autres bloqués)'}</Text>
+        <Path d="M 40 60 C 90 60, 150 120, 200 120" c="red" w={3} />
+        <Line x1={40} y1={120} x2={200} y2={120} c="grey" w={1} dash="4 4" />
+        <Text x={40} y={150} s={11}>{'12EI/L³ ; 6EI/L²'}</Text>
+        <Text x={370} y={24} a="middle" s={12} b>{'θ_1 = 1 (autres bloqués)'}</Text>
+        <Path d="M 290 120 C 320 80, 400 130, 450 120" c="red" w={3} />
+        <Line x1={290} y1={120} x2={450} y2={120} c="grey" w={1} dash="4 4" />
+        <Text x={290} y={150} s={11}>{'6EI/L² ; 4EI/L ; 2EI/L'}</Text>
+        <Text x={250} y={210} a="middle" s={12}>chaque colonne de [k] = efforts aux nœuds pour un déplacement unité</Text>
+      </g>
+    ),
+    notes: ['Les termes de la matrice sont les efforts qu’il faut appliquer aux deux nœuds pour imposer un seul déplacement unitaire.'],
+    caption: 'Sens physique des coefficients de rigidité.',
+  },
+  {
+    id: 'tassement-pile',
+    title: 'Pile qui tasse sous un pont continu',
+    steps: ['real_examples'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Path d="M 30 80 L 160 80 Q 250 100 340 80 L 470 80" c="ink" w={5} />
+        {[30, 160, 340, 470].map((x, i) => <Rect key={x} x={x - 8} y={86 + (i === 2 ? 14 : 0)} w={16} h={90 - (i === 2 ? 14 : 0)} c="ink" sw={1.6} fill="~grey" />)}
+        <Arrow x1={340} y1={190} x2={340} y2={206} c="red" w={2} hs={6} />
+        <Text x={470} y={220} a="end" s={12} c="red" b>tassement 30 mm (affouillement)</Text>
+        <Path d="M 120 80 l 4 8 M 380 80 l -4 8" c="red" w={2} />
+        <Text x={250} y={50} a="middle" s={12} c="red">moments parasites et fissures dans le tablier</Text>
+      </g>
+    ),
+    notes: ['Une structure isostatique suit un tassement sans contrainte ; une structure hyperstatique le subit : la continuité a un prix.'],
+    caption: 'Pont en béton précontraint à trois travées continues.',
+  },
+  {
+    id: 'methode-deplacements',
+    title: 'Méthode des déplacements : la démarche',
+    steps: ['diagrams'],
+    h: flowHeight(['Discrétiser : nœuds, éléments, degrés de liberté', 'Matrices élémentaires [k]', 'Passage repère local → global', 'Assembler [K] et le vecteur {F}', 'Appuis puis résolution [K]{U} = {F}', 'Efforts dans les éléments et réactions'], { cols: 3 }),
+    draw: () => <Flow items={['Discrétiser : nœuds, éléments, degrés de liberté', 'Matrices élémentaires [k]', 'Passage repère local → global', 'Assembler [K] et le vecteur {F}', 'Appuis puis résolution [K]{U} = {F}', 'Efforts dans les éléments et réactions']} cols={3} />,
+    notes: ['C’est l’algorithme de tous les logiciels de calcul de structures : la partie coûteuse est la résolution du grand système linéaire.'],
+    caption: 'Les six étapes d’un calcul matriciel.',
   },
 ];

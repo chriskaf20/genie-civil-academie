@@ -1,5 +1,6 @@
 // Plates — Module 10 · Génie parasismique (Eurocode 8)
 import { Arrow, Circle, Dot, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Building } from '../../components/figures/kit.jsx';
 
 const AG_S = 1.6 * 1.15; // a_g · S (zone 4, sol C)
 const TB = 0.2;
@@ -145,5 +146,125 @@ export default [
       'Les extrémités des voiles (potelets) sont confinées par des cadres serrés à crochets à 135° : le béton y reste ductile sous les cycles.',
     ],
     caption: 'L’effort sismique est repris par les voiles ; leurs rives confinées assurent la ductilité.',
+  },
+  {
+    id: 'zonage-ag',
+    title: 'Accélération de calcul : zone et importance',
+    steps: ['theory'],
+    formula: ['a_g = \\gamma_I\\,a_{gr}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Text x={130} y={24} a="middle" s={13} b>zones de sismicité</Text>
+        {[['1 très faible', 0.4], ['2 faible', 0.7], ['3 modérée', 1.1], ['4 moyenne', 1.6], ['5 forte', 3.0]].map(([t, a], i) => (
+          <g key={t}>
+            <Rect x={30} y={40 + i * 38} w={a * 60} h={28} c="red" sw={1.4} fill="~red" o={0.3 + i * 0.15} />
+            <Text x={36 + a * 60} y={59 + i * 38} s={12} b>{`${t} : ${String(a).replace('.', ',')} m/s²`}</Text>
+          </g>
+        ))}
+        <Text x={390} y={24} a="middle" s={13} b>catégorie d’importance</Text>
+        {[['I : hangars', '0,8'], ['II : logements', '1,0'], ['III : écoles', '1,2'], ['IV : hôpitaux, secours', '1,4']].map(([t, g], i) => (
+          <g key={t}>
+            <Rect x={300} y={40 + i * 44} w={180} h={34} rx={6} c="ink" sw={1.4} fill={i === 3 ? '~red' : '~grey'} />
+            <Text x={310} y={62 + i * 44} s={12}>{t}</Text>
+            <Text x={470} y={62 + i * 44} a="end" s={13} b>{`γI = ${g}`}</Text>
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['L’action sismique dépend du lieu (zone) et des conséquences d’un effondrement (importance) : un hôpital est calculé pour 40 % de plus qu’un logement.'],
+    caption: 'Accélération de référence par zone et coefficient d’importance.',
+  },
+  {
+    id: 'critere-etage-souple',
+    title: 'Critère d’étage souple',
+    steps: ['formulas'],
+    formula: ['K_{étage,i} \\ge 0{,}70\\,K_{étage,i+1}'],
+    h: 240,
+    draw: () => (
+      <g>
+        {[[60, 1.0, 'R+2'], [120, 1.0, 'R+1'], [180, 0.5, 'RDC']].map(([y, k, t]) => (
+          <g key={t}>
+            <Rect x={60} y={y} w={k * 200} h={36} c={k < 0.7 ? 'red' : 'ink'} sw={1.6} fill={k < 0.7 ? '~red' : '~grey'} />
+            <Text x={50} y={y + 24} a="end" s={12} b>{t}</Text>
+            <Text x={68 + k * 200} y={y + 24} s={12} c={k < 0.7 ? 'red' : 'ink'}>{`K = ${k.toFixed(1).replace('.', ',')} K₀`}</Text>
+          </g>
+        ))}
+        <Line x1={200} y1={170} x2={200} y2={226} c="green" w={2} dash="6 4" />
+        <Text x={206} y={232} s={12} c="green" b>{'seuil 0,70 K₀'}</Text>
+        <Text x={420} y={130} a="middle" s={12} c="red" b>{'RDC trop souple :\nconcentration des\ndéformations'}</Text>
+      </g>
+    ),
+    notes: ['Un niveau beaucoup moins rigide que celui du dessus concentre les déplacements : on le raidit (voiles, contreventements).'],
+    caption: 'Rigidités relatives des niveaux d’un bâtiment.',
+  },
+  {
+    id: 'spectre-zone3',
+    title: 'Accélération spectrale en zone 3, sol B',
+    steps: ['simple_examples'],
+    formula: ['S_d = a_{gr}\\,\\gamma_I\\,S\\,\\frac{2{,}5}{q} = 1{,}1 \\times 1{,}0 \\times 1{,}35 \\times \\frac{2{,}5}{3{,}0} = 1{,}24\\ \\text{m/s}^2'],
+    h: 180,
+    draw: () => (
+      <g>
+        {[['a_{gr} = 1,1', 'zone 3'], ['γI = 1,0', 'logements'], ['S = 1,35', 'sol B'], ['2,5 / q = 0,83', 'ductilité q = 3']].map(([a, b], i) => (
+          <g key={a}>
+            <Rect x={20 + i * 120} y={40} w={100} h={60} rx={8} c="ink" sw={1.6} fill="~grey" />
+            <Text x={70 + i * 120} y={66} a="middle" s={13} b>{a}</Text>
+            <Text x={70 + i * 120} y={88} a="middle" s={11}>{b}</Text>
+            {i < 3 && <Text x={130 + i * 120} y={76} a="middle" s={18} b>×</Text>}
+          </g>
+        ))}
+        <Text x={250} y={150} a="middle" s={14} c="red" b>{'S_d = 1,24 m/s² (≈ 0,13 g)'}</Text>
+      </g>
+    ),
+    notes: ['Chaque facteur se lit dans un tableau : zone, importance, nature du sol et coefficient de comportement.'],
+    caption: 'Composition de l’accélération de calcul sur le plateau du spectre.',
+  },
+  {
+    id: 'chu-isolateurs',
+    title: 'Hôpital sur isolateurs sismiques',
+    steps: ['real_examples'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={20} y={220} w={460} h={20} c="ink" sw={0} fill="pat:soil" />
+        <Rect x={60} y={196} w={380} h={24} c="ink" sw={1.6} fill="pat:concrete" />
+        {Array.from({ length: 8 }, (_, i) => 80 + i * 48).map(x => (
+          <g key={x}>
+            <Rect x={x} y={172} w={28} h={24} c="ink" sw={1.4} fill="~grey" />
+            <Rect x={x + 10} y={172} w={8} h={24} c="orange" sw={0} fill="~orange" />
+          </g>
+        ))}
+        <Building x={70} y={172} w={360} floors={4} fh={30} />
+        <Text x={250} y={30} a="middle" s={12} b>{'zone 5 : a_{gr} = 3,0 m/s²'}</Text>
+        <Text x={460} y={150} a="end" s={12} c="orange" b>{'220 appuis élastomère\nà noyau de plomb'}</Text>
+        <Text x={250} y={58} a="middle" s={12} c="green" b>{'T₁ porté à 2,8 s'}</Text>
+      </g>
+    ),
+    notes: ['Avec une période longue, le bâtiment sort du plateau du spectre : il « flotte » sur ses isolateurs pendant que le sol bouge.'],
+    caption: 'CHU de Guadeloupe : isolation à la base de tout le bâtiment.',
+  },
+  {
+    id: 'confinement-poteau',
+    title: 'Zone critique d’un poteau : confinement',
+    steps: ['diagrams'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Rect x={150} y={20} w={80} h={230} c="ink" sw={2} fill="pat:concrete" />
+        {[160, 220].map(x => <Line key={x} x1={x} y1={20} x2={x} y2={250} c="ink" w={2.6} />)}
+        {Array.from({ length: 10 }, (_, i) => 250 - i * 6).map(y => <Line key={y} x1={154} y1={y} x2={226} y2={y} c="red" w={1.6} />)}
+        {Array.from({ length: 8 }, (_, i) => 170 - i * 18).map(y => <Line key={y} x1={154} y1={y} x2={226} y2={y} c="ink" w={1.4} />)}
+        <Line x1={130} y1={196} x2={130} y2={250} c="red" w={1.4} />
+        <Text x={124} y={226} a="end" s={12} c="red" b>{'zone\ncritique'}</Text>
+        <Text x={240} y={226} s={12} c="red">cadres e = 5 cm</Text>
+        <Text x={240} y={120} s={12}>cadres courants</Text>
+        <Path d="M 360 140 L 360 100 L 420 100 L 420 140 L 366 140 L 380 126" c="red" w={2.6} />
+        <Path d="M 360 100 L 374 114" c="red" w={2.6} />
+        <Text x={390} y={170} a="middle" s={12} c="red" b>crochets à 135°</Text>
+      </g>
+    ),
+    notes: ['En pied de poteau, les cadres serrés et bien ancrés confinent le béton et empêchent le flambement des barres : la rotule plastique reste ductile.'],
+    caption: 'Détail de ferraillage parasismique.',
   },
 ];

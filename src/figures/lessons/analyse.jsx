@@ -1,5 +1,6 @@
 // Plates — Module 10 · Analyse avancée : éléments finis & dynamique
 import { Arrow, Circle, Dot, Line, Moment, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Bars } from '../../components/figures/kit.jsx';
 
 const D = (r, xi) => 1 / Math.sqrt((1 - r * r) ** 2 + (2 * xi * r) ** 2);
 
@@ -161,5 +162,138 @@ export default [
     ),
     notes: ['Le maillage est raffiné là où les efforts varient vite : autour de la trémie et des poteaux. Les moments de torsion $M_{xy}$ sont repris par la méthode de Wood-Armer.'],
     caption: 'Dalle 8 × 8 m, e = 22 cm, sur 4 poteaux : cartographie des moments et renforts autour de la trémie.',
+  },
+  {
+    id: 'rigidite-laterale',
+    title: 'Rigidité latérale d’un poteau selon ses liaisons',
+    steps: ['formulas'],
+    formula: ['k_{encastré-libre} = \\frac{3EI}{L^3} \\qquad k_{encastré-encastré} = \\frac{12EI}{L^3}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={80} y={210} w={60} h={10} c="ink" sw={1.4} fill="pat:hatch" />
+        <Path d="M 110 210 Q 110 110 150 40" c="ink" w={4} />
+        <Line x1={110} y1={210} x2={110} y2={40} c="grey" w={1} dash="4 4" />
+        <Arrow x1={176} y1={40} x2={154} y2={40} c="red" w={2.4} hs={8} />
+        <Text x={110} y={240} a="middle" s={12} b>3EI/L³ (mât)</Text>
+        <Rect x={330} y={210} w={60} h={10} c="ink" sw={1.4} fill="pat:hatch" />
+        <Rect x={340} y={30} w={60} h={10} c="ink" sw={1.4} fill="pat:hatch" />
+        <Path d="M 360 210 C 360 140, 390 110, 390 40" c="ink" w={4} />
+        <Line x1={360} y1={210} x2={360} y2={40} c="grey" w={1} dash="4 4" />
+        <Text x={360} y={240} a="middle" s={12} b>12EI/L³</Text>
+        <Text x={250} y={120} a="middle" s={13} c="red" b>× 4</Text>
+      </g>
+    ),
+    notes: ['Bloquer la rotation en tête multiplie la rigidité latérale par 4 : d’où l’intérêt d’une dalle rigide liant les têtes de poteaux.'],
+    caption: 'Déformée en console et déformée en S.',
+  },
+  {
+    id: 'von-mises',
+    title: 'Contrainte équivalente de Von Mises',
+    steps: ['formulas'],
+    formula: ['\\sigma_{VM} = \\sqrt{\\sigma_x^2 - \\sigma_x\\sigma_y + \\sigma_y^2 + 3\\tau_{xy}^2} = \\sqrt{120^2 - 120 \\times 40 + 40^2 + 3 \\times 30^2} = 118\\ \\text{MPa}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={150} y={70} w={100} h={100} c="ink" sw={2} fill="~grey" />
+        <Arrow x1={250} y1={120} x2={300} y2={120} c="red" w={2.6} hs={9} />
+        <Arrow x1={150} y1={120} x2={100} y2={120} c="red" w={2.6} hs={9} />
+        <Arrow x1={200} y1={70} x2={200} y2={36} c="water" w={2.2} hs={8} />
+        <Arrow x1={200} y1={170} x2={200} y2={204} c="water" w={2.2} hs={8} />
+        <Arrow x1={160} y1={64} x2={240} y2={64} c="green" w={1.8} hs={6} />
+        <Arrow x1={256} y1={160} x2={256} y2={80} c="green" w={1.8} hs={6} />
+        <Text x={306} y={124} s={12} c="red" b>{'σ_x = 120'}</Text>
+        <Text x={206} y={34} s={12} c="water" b>{'σ_y = 40'}</Text>
+        <Text x={262} y={70} s={12} c="green" b>{'τ = 30'}</Text>
+        <Text x={250} y={230} a="middle" s={11} c="mute">{'valeurs d’exemple (MPa) ; on compare σ_{VM} à f_y'}</Text>
+      </g>
+    ),
+    notes: ['Un logiciel EF affiche des cartes de $\\sigma_{VM}$ : une seule valeur qui résume l’état de contrainte, à comparer à la limite d’élasticité.'],
+    caption: 'État plan de contraintes d’un élément de tôle.',
+  },
+  {
+    id: 'periode-empirique',
+    title: 'Période fondamentale estimée (EC8)',
+    steps: ['formulas'],
+    formula: ['T_1 = C_t\\,H^{3/4} \\qquad C_t = 0{,}085\\ (\\text{acier}),\\ 0{,}075\\ (\\text{béton}),\\ 0{,}050\\ (\\text{voiles})'],
+    h: 280,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={190} xr={[0, 60]} yr={[0, 2]} yl="T₁ (s)"
+        xt={[0, 10, 20, 30, 40, 50, 60].map(v => [v, `${v} m`])} yt={[[0.5, '0,5'], [1, '1'], [1.5, '1,5'], [2, '2']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            {[[0.085, 'ink', 'acier'], [0.075, 'red', 'béton'], [0.05, 'green', 'voiles']].map(([c, col, t], i) => (
+              <g key={t}>
+                <Poly pts={fnPts(H => c * H ** 0.75, 0, 60, sx, sy, 50)} c={col} w={2.4} />
+                <Text x={sx(56)} y={sy(c * 56 ** 0.75) - 6} a="end" s={12} c={col} b>{t}</Text>
+              </g>
+            ))}
+            <Text x={sx(2)} y={sy(1.85)} s={11} c="mute">hauteur du bâtiment H →</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Ordre de grandeur pour vérifier un calcul modal : un portique en béton de 3,5 m a T₁ ≈ 0,19 s.'],
+    caption: 'Plus un bâtiment est haut et souple, plus sa période est longue.',
+  },
+  {
+    id: 'masse-modale',
+    title: 'Masse modale effective : atteindre 90 %',
+    steps: ['formulas'],
+    formula: ['\\sum_{j=1}^{K} m_j^* \\ge 0{,}90\\,M_{total}'],
+    h: 230,
+    draw: () => (
+      <Bars x={80} y={30} w={330} h={160} max={100} ticks={[25, 50, 75, 90]} unit="% cumulé" bars={[
+        { label: 'mode 1', v: 68, c: 'ink' },
+        { label: '+ mode 2', v: 86, c: 'water' },
+        { label: '+ mode 3', v: 93, c: 'green' },
+      ]} />
+    ),
+    notes: ['Exemple : on retient assez de modes pour mobiliser au moins 90 % de la masse dans chaque direction.'],
+    caption: 'Cumul des masses modales d’un calcul spectral.',
+  },
+  {
+    id: 'p-delta-poteau',
+    title: 'Moment de second ordre P-Δ',
+    steps: ['simple_examples'],
+    formula: ['\\Delta M = P\\,\\Delta_1 = 2\\,000 \\times 0{,}040 = 80\\ \\text{kN·m}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={170} y={210} w={80} h={12} c="ink" sw={1.4} fill="pat:hatch" />
+        <Path d="M 210 210 Q 212 110 250 40" c="ink" w={5} />
+        <Line x1={210} y1={210} x2={210} y2={40} c="grey" w={1} dash="4 4" />
+        <Arrow x1={250} y1={4} x2={250} y2={36} c="red" w={2.6} hs={9} />
+        <Text x={258} y={22} s={13} c="red" b>P = 2 000 kN</Text>
+        <Arrow x1={211} y1={52} x2={249} y2={52} c="txt" w={1.2} hs={5} both />
+        <Text x={230} y={68} a="middle" s={12} b>40 mm</Text>
+        <Text x={260} y={190} s={12} c="red" b>+80 kN·m en pied</Text>
+      </g>
+    ),
+    notes: ['L’effort axial agit avec un bras de levier égal au déplacement de tête : 15 à 20 % de moment en plus sur ce poteau de tour.'],
+    caption: 'Effet du déplacement latéral sur un poteau fortement comprimé.',
+  },
+  {
+    id: 'viaduc-mef',
+    title: 'Modèle éléments finis d’un grand viaduc',
+    steps: ['real_examples'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Line x1={20} y1={80} x2={480} y2={80} c="ink" w={4} />
+        {[80, 180, 280, 380].map(x => (
+          <g key={x}>
+            <Line x1={x} y1={80} x2={x} y2={200} c="ink" w={4} />
+            <Line x1={x} y1={80} x2={x} y2={30} c="ink" w={2} />
+            {[-40, -20, 20, 40].map(d => <Line key={d} x1={x} y1={34} x2={x + d} y2={80} c="grey" w={1} />)}
+          </g>
+        ))}
+        {Array.from({ length: 23 }, (_, i) => 20 + i * 20).map(x => <Line key={x} x1={x} y1={76} x2={x} y2={84} c="red" w={1} />)}
+        <Text x={250} y={214} a="middle" s={12}>85 000 éléments finis · analyse modale spectrale</Text>
+      </g>
+    ),
+    notes: ['Le modèle complet sert à dimensionner les appareils d’appui glissants et les dispositifs aux culées.'],
+    caption: 'Viaduc à haubans de 2 460 m, piles jusqu’à 245 m : maillage schématique.',
   },
 ];
