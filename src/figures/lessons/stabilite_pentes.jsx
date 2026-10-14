@@ -1,5 +1,6 @@
 // Plates — Module 12 · Stabilité des pentes
 import { Angle, Arrow, Circle, Dot, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Flow, flowHeight } from '../../components/figures/kit.jsx';
 
 const tan = d => Math.tan((d * Math.PI) / 180);
 // Slip circle through the toe (150, 190) and the crest (340, 90), centre above the slope.
@@ -152,5 +153,179 @@ export default [
     ),
     notes: ['Adoucir la pente réduit les efforts moteurs ; drainer réduit les pressions interstitielles ; le masque en enrochements alourdit et draine le pied.'],
     caption: 'Limon argileux c′ = 8 kPa, φ′ = 26° : comparaison de trois solutions de conception.',
+  },
+  {
+    id: 'mohr-coulomb',
+    title: 'Critère de Mohr-Coulomb',
+    steps: ['theory', 'formulas'],
+    formula: ['\\tau_f = c\' + \\sigma\' \\tan\\varphi\''],
+    h: 270,
+    draw: () => (
+      <Plot x={70} y={40} w={360} h={180} xr={[0, 200]} yr={[0, 100]} yl="τ"
+        xt={[[50, '50'], [100, '100'], [150, '150']]} yt={[[50, '50'], [100, '100']]}
+      >
+        {(sx, sy) => (
+          <g>
+            <Line x1={sx(0)} y1={sy(10)} x2={sx(195)} y2={sy(10 + 0.466 * 195)} c="red" w={2.6} />
+            <Path d={`M ${sx(48.7)} ${sy(0)} A 92.3 92.3 0 0 1 ${sx(151.3)} ${sy(0)}`} c="ink" w={2} />
+            <Dot x={sx(78.3)} y={sy(46.5)} r={5} c="red" />
+            <Text x={sx(78.3) - 8} y={sy(46.5) - 8} a="end" s={12} c="red" b>rupture</Text>
+            <Line x1={sx(0)} y1={sy(10)} x2={sx(60)} y2={sy(10)} c="grey" w={1.2} dash="4 3" />
+            <Angle cx={sx(0)} cy={sy(10)} r={52} a1={-25} a2={0} label="φ'" s={13} />
+            <Text x={sx(0) + 6} y={sy(10) + 18} s={12} c="red" b>c'</Text>
+            <Text x={sx(200)} y={sy(0) + 18} a="end" s={12}>σ' (kPa)</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Un état de contrainte dont le cercle de Mohr touche la droite intrinsèque est un état de rupture ; c\' = 10 kPa et φ\' = 25° ici.'],
+    caption: 'Droite intrinsèque et cercle tangent.',
+  },
+  {
+    id: 'tranche-forces',
+    title: 'Efforts sur une tranche (Fellenius)',
+    steps: ['formulas'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Poly pts={[[200, 60], [300, 40], [300, 130], [200, 170]]} c="ink" w={2} fill="~soil" close />
+        <Arrow x1={250} y1={66} x2={250} y2={128} c="ink" w={2.4} hs={8} />
+        <Text x={258} y={100} s={13} b>W</Text>
+        <Arrow x1={267} y1={208} x2={246} y2={155} c="green" w={2.4} hs={8} />
+        <Text x={274} y={214} s={13} c="green" b>N</Text>
+        <Arrow x1={268} y1={143} x2={298} y2={131} c="red" w={2.4} hs={8} />
+        <Text x={296} y={154} s={13} c="red" b>T</Text>
+        <Line x1={200} y1={170} x2={260} y2={170} c="grey" w={1.2} dash="4 3" />
+        <Angle cx={200} cy={170} r={24} a1={-21.8} a2={0} label="α" s={13} lr={10} />
+        <Text x={330} y={80} s={12}>moteur : W sin α</Text>
+        <Text x={330} y={104} s={12}>{"résistant : c'l + N' tan φ'"}</Text>
+        <Text x={330} y={128} s={12} c="water">{"N' = W cos α − u l"}</Text>
+      </g>
+    ),
+    notes: ['Fellenius néglige les efforts entre tranches ; Bishop les prend en compte et donne un F un peu plus élevé.'],
+    caption: 'Tranche de largeur b, base de longueur l inclinée de α.',
+  },
+  {
+    id: 'talus-sec',
+    title: 'Talus sableux sec : β = 30°, φ\' = 35°',
+    steps: ['simple_examples'],
+    formula: ['F = \\frac{\\tan 35°}{\\tan 30°} = \\frac{0{,}700}{0{,}577} = 1{,}21'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Poly pts={[[60, 200], [320, 50], [460, 50], [460, 200]]} c="ink" w={2} fill="pat:sand" close />
+        <Line x1={20} y1={200} x2={60} y2={200} c="ink" w={2} />
+        <Line x1={60} y1={200} x2={180} y2={200} c="grey" w={1.2} dash="4 3" />
+        <Line x1={60} y1={200} x2={250} y2={67} c="red" w={1.6} dash="6 4" />
+        <Angle cx={60} cy={200} r={70} a1={-30} a2={0} label="β" s={13} c="ink" />
+        <Angle cx={60} cy={200} r={110} a1={-35} a2={-30} label="φ'" s={13} />
+        <Text x={190} y={70} a="end" s={12} c="red">pente limite</Text>
+        <Text x={300} y={160} a="middle" s={13} c="red" b>F = 1,21 &lt; 1,5</Text>
+      </g>
+    ),
+    notes: ['Sans cohésion, la sécurité ne dépend que du rapport des tangentes, pas de la hauteur du talus.'],
+    caption: 'Sol sec et sans cohésion : pente infinie.',
+  },
+  {
+    id: 'ecoulement-pente',
+    title: 'Même talus avec écoulement parallèle',
+    steps: ['simple_examples', 'formulas'],
+    formula: ['F = \\frac{\\gamma\'}{\\gamma_{sat}} \\cdot \\frac{\\tan\\varphi\'}{\\tan\\beta} = \\frac{10{,}2}{20} \\times 1{,}21 = 0{,}62'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Poly pts={[[60, 200], [320, 50], [460, 50], [460, 200]]} c="ink" w={2} fill="pat:sand" close />
+        <Line x1={20} y1={200} x2={60} y2={200} c="ink" w={2} />
+        <Line x1={64} y1={196} x2={320} y2={48} c="water" w={2.4} dash="6 3" />
+        {[[300, 90], [240, 125], [180, 160], [360, 100], [300, 135]].map(([x, y]) => <Arrow key={x + y} x1={x} y1={y} x2={x - 52} y2={y + 30} c="water" w={2} hs={7} />)}
+        <Text x={20} y={220} s={12} c="water">suintement</Text>
+        <Text x={330} y={176} a="middle" s={13} c="red" b>F = 0,62 : glissement</Text>
+      </g>
+    ),
+    notes: ['L’écoulement réduit la contrainte effective et pousse les grains vers l’aval : la sécurité est environ divisée par deux.'],
+    caption: 'Nappe affleurante, écoulement parallèle à la surface.',
+  },
+  {
+    id: 'pente-admissible',
+    title: 'Pente admissible pour F = 1,5',
+    steps: ['simple_examples'],
+    formula: ['\\tan\\beta \\le \\frac{\\tan 30°}{1{,}5} = 0{,}385 \\Rightarrow \\beta \\le 21°'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Poly pts={[[100, 190], [282, 120], [460, 120], [460, 190]]} c="ink" w={2} fill="pat:sand" close />
+        <Line x1={100} y1={190} x2={205} y2={120} c="red" w={1.6} dash="6 4" />
+        <Text x={150} y={110} a="end" s={12} c="red">3H/2V : trop raide</Text>
+        <Line x1={100} y1={190} x2={200} y2={190} c="grey" w={1.2} dash="4 3" />
+        <Angle cx={100} cy={190} r={80} a1={-21} a2={0} label="21°" s={12} c="ink" />
+        <Arrow x1={101} y1={206} x2={281} y2={206} c="txt" w={1.2} hs={6} both />
+        <Text x={190} y={222} a="middle" s={12}>2,6</Text>
+        <Arrow x1={300} y1={121} x2={300} y2={189} c="txt" w={1.2} hs={6} both />
+        <Text x={308} y={160} s={12}>1</Text>
+        <Text x={380} y={100} a="middle" s={13} c="green" b>2,6H/1V</Text>
+      </g>
+    ),
+    notes: ['La règle pratique 2,5 à 3 pour 1 des talus en sable vient directement de ce calcul.'],
+    caption: 'Sol sec, φ\' = 30°, sans cohésion.',
+  },
+  {
+    id: 'court-long-terme',
+    title: 'Court terme ou long terme : lequel est critique ?',
+    steps: ['theory'],
+    h: 275,
+    draw: () => (
+      <g>
+        <Plot x={70} y={30} w={380} h={170} xr={[0, 10]} yr={[1, 1.8]} yl="F" yt={[[1.2, '1,2'], [1.5, '1,5'], [1.8, '1,8']]}>
+          {(sx, sy) => (
+            <g>
+              <Poly pts={fnPts(t => 1.2 + 0.4 * Math.exp(-t / 2.5), 0, 10, sx, sy, 40)} c="red" w={2.6} />
+              <Poly pts={fnPts(t => 1.6 - 0.4 * Math.exp(-t / 2.5), 0, 10, sx, sy, 40)} c="green" w={2.6} />
+              <Text x={sx(9.6)} y={sy(1.26)} a="end" s={12} c="red" b>déblai</Text>
+              <Text x={sx(9.6)} y={sy(1.66)} a="end" s={12} c="green" b>remblai</Text>
+              <Text x={sx(10)} y={sy(1) + 16} a="end" s={12}>temps →</Text>
+            </g>
+          )}
+        </Plot>
+        <Text x={250} y={240} a="middle" s={11}>{"déblai : long terme critique (c', φ', u)"}</Text>
+        <Text x={250} y={258} a="middle" s={11}>{'remblai sur argile molle : court terme critique (c_{u})'}</Text>
+      </g>
+    ),
+    notes: ['Un déblai dans l’argile se dégrade lentement quand les pressions d’eau se rétablissent ; un remblai, au contraire, gagne en sécurité en se consolidant.'],
+    caption: 'Évolution du coefficient de sécurité après les travaux.',
+  },
+  {
+    id: 'confortements',
+    title: 'Conforter un talus',
+    steps: ['theory'],
+    h: 200,
+    draw: () => (
+      <g>
+        {['drainage', 'reprofilage', 'butée de pied', 'clouage', 'végétalisation'].map((t, i) => {
+          const x = 10 + i * 97;
+          return (
+            <g key={t}>
+              <Poly pts={[[x, 150], [x + 25, 150], [x + 65, 80], [x + 90, 80], [x + 90, 160], [x, 160]]} c="ink" w={1.6} fill="pat:soil" close />
+              {i === 0 && [100, 125].map(y => <Line key={y} x1={x + 45 + (y - 100) * -0.3} y1={y + 15} x2={x + 88} y2={y + 4} c="water" w={2.4} />)}
+              {i === 1 && <Line x1={x + 10} y1={150} x2={x + 75} y2={80} c="green" w={2} dash="5 3" />}
+              {i === 2 && <Poly pts={[[x + 8, 150], [x + 34, 150], [x + 42, 128], [x + 8, 128]]} c="ink" w={1.4} fill="pat:gravel" close />}
+              {i === 3 && [100, 120, 140].map(y => <Line key={y} x1={x + 25 + (150 - y) * 0.57} y1={y} x2={x + 80} y2={y + 12} c="red" w={2} />)}
+              {i === 4 && [0.2, 0.45, 0.7].map(f => <Path key={f} d={`M ${x + 25 + f * 40} ${150 - f * 70} l -4 -8 M ${x + 25 + f * 40} ${150 - f * 70} l 4 -9`} c="green" w={1.8} />)}
+              <Text x={x + 45} y={184} a="middle" s={11} b>{t}</Text>
+            </g>
+          );
+        })}
+      </g>
+    ),
+    notes: ['Le drainage est souvent le plus efficace et le moins cher : abaisser la nappe augmente directement la contrainte effective.'],
+    caption: 'Cinq familles de solutions, souvent combinées.',
+  },
+  {
+    id: 'demarche-talus',
+    title: 'Étude de stabilité d’un talus',
+    steps: ['diagrams'],
+    h: flowHeight(['Géométrie : hauteur, pente, couches', "Paramètres : γ, c', φ' ou c_{u}", 'Hydraulique : nappe, écoulement, u', 'Mécanisme : plan, cercle, surface quelconque', 'Calcul : Fellenius, Bishop, logiciel', 'Confortement si F < 1,5'], { cols: 3 }),
+    draw: () => <Flow items={['Géométrie : hauteur, pente, couches', "Paramètres : γ, c', φ' ou c_{u}", 'Hydraulique : nappe, écoulement, u', 'Mécanisme : plan, cercle, surface quelconque', 'Calcul : Fellenius, Bishop, logiciel', 'Confortement si F < 1,5']} cols={3} />,
+    notes: ['On cherche le cercle le plus défavorable : un seul calcul ne suffit jamais.'],
+    caption: 'De la géométrie au confortement.',
   },
 ];

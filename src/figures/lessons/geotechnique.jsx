@@ -1,5 +1,6 @@
 // Plates — Module 12 · Capacité portante & mécanique des sols
 import { Arrow, Bars, Line, Path, Plot, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Angle, Dot, fnPts } from '../../components/figures/kit.jsx';
 
 export default [
   {
@@ -144,5 +145,158 @@ export default [
     ),
     notes: ['Il faut 152 m² d’appui : des semelles isolées se toucheraient presque ; un radier général de 13 × 12 m répartit la charge et limite les tassements différentiels.'],
     caption: 'Mission G2 AVP à Lyon : la surface nécessaire conduit au radier ; le tassement calculé reste acceptable.',
+  },
+  {
+    id: 'classes-granulo',
+    title: 'Classes de sols selon la taille des grains',
+    steps: ['theory'],
+    h: 220,
+    draw: () => (
+      <g>
+        {[[30, 89, '~violet', 'argile', 'cohésive,\ncompressible'], [89, 199, '~orange', 'limon', 'sensible\nà l’eau'], [199, 309, 'pat:sand', 'sable', 'frottant,\nperméable'], [309, 419, 'pat:gravel', 'gravier', 'très\nperméable'], [419, 470, '~grey', 'cailloux', 'très\nrigide']].map(([a, b, f, t, d]) => (
+          <g key={t}>
+            <Rect x={a} y={90} w={b - a} h={44} c="ink" sw={1.6} fill={f} />
+            <Text x={(a + b) / 2} y={78} a="middle" s={12} b>{t}</Text>
+            <Text x={(a + b) / 2} y={154} a="middle" s={10}>{d}</Text>
+          </g>
+        ))}
+        {[[89, '0,002'], [199, '0,063'], [309, '2'], [419, '63 mm']].map(([x, t]) => <Text key={t} x={x} y={204} a="middle" s={11} c="red">{t}</Text>)}
+      </g>
+    ),
+    notes: ['Échelle logarithmique : chaque classe couvre un rapport d’environ 30 sur les diamètres.'],
+    caption: 'Limites de classes de la NF EN ISO 14688.',
+  },
+  {
+    id: 'rupture-semelle',
+    title: 'Mécanisme de rupture sous une semelle',
+    steps: ['theory'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={20} y={50} w={460} h={30} c="soil" sw={0} fill="~soil" />
+        <Rect x={20} y={80} w={460} h={130} c="soil" sw={0} fill="pat:sand" o={0.45} />
+        <Rect x={200} y={50} w={100} h={30} c="ink" sw={2} fill="pat:concrete" />
+        <Arrow x1={250} y1={14} x2={250} y2={48} c="red" w={2.6} hs={9} />
+        <Poly pts={[[200, 80], [300, 80], [250, 130]]} c="ink" w={2} fill="~red" close />
+        <Path d="M 250 130 Q 340 168 380 110 L 440 80" c="ink" w={2} />
+        <Path d="M 250 130 Q 160 168 120 110 L 60 80" c="ink" w={2} />
+        <Line x1={300} y1={80} x2={380} y2={110} c="ink" w={1.4} dash="4 3" />
+        <Line x1={200} y1={80} x2={120} y2={110} c="ink" w={1.4} dash="4 3" />
+        <Text x={250} y={104} a="middle" s={13} b>I</Text>
+        <Text x={318} y={124} a="middle" s={13} b>II</Text>
+        <Text x={392} y={96} a="middle" s={13} b>III</Text>
+        <Text x={182} y={124} a="middle" s={13} b>II</Text>
+        <Text x={108} y={96} a="middle" s={13} b>III</Text>
+        <Text x={100} y={70} a="middle" s={11}>{'q = γ D_{f}'}</Text>
+        <Text x={250} y={196} a="middle" s={11}>I coin sous la semelle · II zone radiale · III zone de butée</Text>
+      </g>
+    ),
+    notes: ['Le coin I s’enfonce et repousse latéralement le sol : c’est pourquoi la cohésion, la surcharge q et le poids du sol interviennent dans les trois termes de $q_u$.'],
+    caption: 'Rupture générale d’un sol frottant (Prandtl, Terzaghi).',
+  },
+  {
+    id: 'facteurs-portance',
+    title: 'Facteurs de portance en fonction de φ',
+    steps: ['formulas'],
+    formula: ['N_q = e^{\\pi \\tan\\varphi} \\tan^2\\!\\left(45° + \\frac{\\varphi}{2}\\right) \\quad N_c = \\frac{N_q - 1}{\\tan\\varphi} \\quad N_\\gamma = 2\\,(N_q - 1)\\tan\\varphi'],
+    h: 260,
+    draw: () => {
+      const r = d => (d * Math.PI) / 180;
+      const Nq = f => Math.exp(Math.PI * Math.tan(r(f))) * Math.tan(r(45 + f / 2)) ** 2;
+      return (
+        <Plot x={70} y={40} w={360} h={180} xr={[20, 40]} yr={[0, 110]} yl="N"
+          xt={[20, 25, 30, 35, 40].map(v => [v, `${v}°`])} yt={[[25, '25'], [50, '50'], [75, '75'], [100, '100']]} grid
+        >
+          {(sx, sy) => (
+            <g>
+              <Poly pts={fnPts(f => (Nq(f) - 1) / Math.tan(r(f)), 20, 40, sx, sy, 40)} c="red" w={2.4} />
+              <Poly pts={fnPts(Nq, 20, 40, sx, sy, 40)} c="water" w={2.4} />
+              <Poly pts={fnPts(f => 2 * (Nq(f) - 1) * Math.tan(r(f)), 20, 40, sx, sy, 40)} c="green" w={2.4} />
+              <Text x={sx(40) + 4} y={sy(75)} s={12} c="red" b>N_c</Text>
+              <Text x={sx(40) + 4} y={sy(62)} s={12} c="water" b>N_q</Text>
+              <Text x={sx(40) + 4} y={sy(104)} s={12} c="green" b>N_γ</Text>
+              <Line x1={sx(30)} y1={sy(0)} x2={sx(30)} y2={sy(110)} c="grey" w={1.2} dash="5 4" />
+              {[30.14, 18.4, 20.09].map(v => <Dot key={v} x={sx(30)} y={sy(v)} r={4} />)}
+              <Text x={sx(21)} y={sy(96)} s={12}>φ = 30° : 30,1 · 18,4 · 20,1</Text>
+            </g>
+          )}
+        </Plot>
+      );
+    },
+    notes: ['Les facteurs croissent très vite avec φ : 2° d’erreur sur l’angle de frottement changent la portance de 25 à 30 %.'],
+    caption: 'Valeurs de l’annexe D de l’Eurocode 7.',
+  },
+  {
+    id: 'contrainte-5m',
+    title: 'Contrainte effective à 5 m de profondeur',
+    steps: ['simple_examples'],
+    formula: ['\\sigma\'_v = \\sigma_v - u = (18 \\times 3 + 20 \\times 2) - 10 \\times 2 = 94 - 20 = 74\\ \\text{kPa}'],
+    h: 225,
+    draw: () => (
+      <g>
+        <Rect x={40} y={40} w={160} h={90} c="ink" sw={1.4} fill="pat:clay" />
+        <Rect x={40} y={130} w={160} h={60} c="ink" sw={1.4} fill="pat:sand" />
+        <Text x={120} y={90} a="middle" s={12} b>argile γ = 18</Text>
+        <Text x={120} y={165} a="middle" s={12} b>{'sable γ_{sat} = 20'}</Text>
+        <Line x1={40} y1={130} x2={200} y2={130} c="water" w={2.4} dash="6 3" />
+        <Text x={196} y={124} a="end" s={12} c="water" b>▽ nappe</Text>
+        <Text x={34} y={134} a="end" s={12}>3 m</Text>
+        <Text x={34} y={194} a="end" s={12}>5 m</Text>
+        <Line x1={260} y1={40} x2={260} y2={190} c="txt" w={1.6} />
+        <Line x1={260} y1={40} x2={440} y2={40} c="txt" w={1.6} />
+        <Text x={440} y={32} a="end" s={11} c="mute">σ (kPa)</Text>
+        <Poly pts={[[260, 40], [346, 130], [410, 190]]} c="ink" w={2.4} />
+        <Poly pts={[[260, 130], [292, 190]]} c="water" w={2.4} />
+        <Poly pts={[[260, 40], [346, 130], [378, 190]]} c="red" w={2.4} dash="6 3" />
+        <Text x={414} y={192} s={12} b>σ_v = 94</Text>
+        <Text x={378} y={208} a="middle" s={12} c="red" b>σ' = 74</Text>
+        <Text x={292} y={208} a="middle" s={12} c="water" b>u = 20</Text>
+      </g>
+    ),
+    notes: ['Sous la nappe, l’eau reprend une partie du poids : seule la contrainte effective mobilise la résistance du sol.'],
+    caption: 'Diagrammes de contraintes totale, interstitielle et effective.',
+  },
+  {
+    id: 'poussee-mur-5m',
+    title: 'Poussée active sur un mur de 5 m',
+    steps: ['simple_examples'],
+    formula: ['K_a = \\tan^2(45° - 15°) = 0{,}333 \\qquad E_a = \\tfrac{1}{2} K_a \\gamma H^2 = 0{,}5 \\times 0{,}333 \\times 18 \\times 25 = 75\\ \\text{kN/m}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={160} y={40} w={180} h={150} c="soil" sw={0} fill="pat:sand" o={0.6} />
+        <Rect x={145} y={30} w={15} h={165} c="ink" sw={2} fill="pat:concrete" />
+        <Line x1={40} y1={195} x2={160} y2={195} c="ink" w={2} />
+        <Poly pts={[[145, 40], [145, 190], [55, 190]]} c="red" w={2} fill="~red" close />
+        <Text x={92} y={212} a="middle" s={12} c="red" b>K_a γ H = 30 kPa</Text>
+        <Arrow x1={260} y1={140} x2={164} y2={140} c="red" w={2.6} hs={9} />
+        <Text x={270} y={136} s={12} c="red" b>E_a = 75 kN/m</Text>
+        <Text x={270} y={156} s={11} c="mute">à H/3 du pied</Text>
+        <Arrow x1={370} y1={41} x2={370} y2={189} c="txt" w={1.2} hs={6} both />
+        <Text x={378} y={118} s={12}>H = 5 m</Text>
+      </g>
+    ),
+    notes: ['La pression croît linéairement avec la profondeur ; la résultante, aire du triangle, s’applique au tiers inférieur.'],
+    caption: 'Sol frottant sec : c = 0, φ = 30°, γ = 18 kN/m³.',
+  },
+  {
+    id: 'tassement-remblai-4m',
+    title: 'Tassement d’une couche d’argile sous un remblai',
+    steps: ['simple_examples'],
+    formula: ['s_c = \\frac{0{,}35}{1{,}85} \\times 4 \\times \\log\\frac{60 + 40}{60} = 0{,}168\\ \\text{m}'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Poly pts={[[120, 50], [380, 50], [430, 90], [70, 90]]} c="ink" w={1.8} fill="pat:gravel" close />
+        <Text x={250} y={76} a="middle" s={12} b>{'remblai : Δσ\'_{v} = 40 kPa'}</Text>
+        <Rect x={20} y={90} w={460} h={80} c="soil" sw={0} fill="pat:clay" />
+        <Rect x={20} y={170} w={460} h={30} c="soil" sw={0} fill="pat:sand" />
+        <Text x={250} y={140} a="middle" s={12} b>{'argile H = 4 m · C_c = 0,35 · e_0 = 0,85 · σ\'_{v0} = 60 kPa'}</Text>
+        <Arrow x1={420} y1={96} x2={420} y2={122} c="red" w={2.2} hs={7} />
+        <Text x={410} y={116} a="end" s={12} c="red" b>s = 17 cm</Text>
+      </g>
+    ),
+    notes: ['Ce tassement se développe en 2 à 5 ans : on le surveille avant de réaliser les ouvrages sensibles.'],
+    caption: 'Consolidation primaire d’une argile normalement consolidée.',
   },
 ];
