@@ -186,7 +186,7 @@ export const lesson_dessin = {
     {
       id: 6,
       key: 'stepbystep',
-      title: "Calcul complet — Métré de coffrage & Ferraillage d'un voilier béton armé",
+      title: "Calcul complet — Métré de coffrage & Ferraillage d'un voile en béton armé",
       icon: '🔬',
       type: 'stepbystep',
       problem: "Lecture d'un plan de coffrage et ferraillage d'un voile en béton armé (longueur L = 6,00 m, hauteur H = 2,80 m, épaisseur e = 0,20 m). Le plan indique des armatures verticales 2 lits HA12 espacées de e_v = 15 cm et des armatures horizontales HA10 espacées de e_h = 20 cm. Calculer : 1) La surface de coffrage S_coff. 2) Le volume de béton V_beton. 3) Le nombre et le métré linéaire total des barres verticales.",
