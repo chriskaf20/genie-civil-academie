@@ -1,5 +1,6 @@
 // Plates — Module 9 · Flèches & ligne élastique
 import { Arrow, BeamScheme, Line, Path, Rect, Text } from '../../components/figures/kit.jsx';
+import { Bars } from '../../components/figures/kit.jsx';
 
 const CASES = [
   { x0: 20, y0: 30, left: 'pin', right: 'roller', load: { type: 'udl', h: 26, label: 'q' }, f: 'w = 5qL⁴ / 384EI', cant: false },
@@ -12,7 +13,7 @@ export default [
   {
     id: 'formulaire-fleches',
     title: 'Formulaire des flèches usuelles',
-    steps: ['theory', 'formulas'],
+    steps: ['theory', 'formulas', 'diagrams'],
     formula: ['E I\\,\\frac{d^2 w}{dx^2} = -M(x)'],
     h: 300,
     draw: () => (
@@ -106,5 +107,81 @@ export default [
     ),
     notes: ['Reste à vérifier la flèche finale avec le fluage ($k_{def}$) et la résistance en flexion.'],
     caption: 'Chaque solive reprend une bande de plancher égale à son entraxe.',
+  },
+  {
+    id: 'superposition-fleches',
+    title: 'Superposition : les flèches s’additionnent',
+    steps: ['theory'],
+    formula: ['w = w_q + w_P = \\frac{5qL^4}{384EI} + \\frac{PL^3}{48EI}'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[[20, [{ type: 'udl', h: 22, label: 'q' }], 'w_q'], [180, [{ type: 'point', at: 0.5, len: 34, label: 'P' }], 'w_P'], [340, [{ type: 'udl', h: 22, label: '' }, { type: 'point', at: 0.5, len: 34, label: 'P' }], 'w_q + w_P']].map(([x, loads, t], i) => (
+          <g key={x}>
+            <BeamScheme x1={x + 10} x2={x + 140} y={90} loads={loads} names={['', '']} />
+            <Path d={`M ${x + 10} 94 Q ${x + 75} ${130 + i * 12} ${x + 140} 94`} c="red" w={2} dash="5 3" />
+            <Text x={x + 75} y={180} a="middle" s={13} c="red" b>{t}</Text>
+            {i < 2 && <Text x={x + 160} y={100} a="middle" s={20} b>{i === 0 ? '+' : '='}</Text>}
+          </g>
+        ))}
+        <Text x={250} y={222} a="middle" s={12} c="mute">valable tant que le matériau reste élastique et les déplacements petits</Text>
+      </g>
+    ),
+    notes: ['On décompose un cas complexe en cas simples du formulaire, puis on additionne les flèches au même point.'],
+    caption: 'Charge répartie plus charge concentrée.',
+  },
+  {
+    id: 'limites-fleche',
+    title: 'Limites de flèche pour une portée de 6 m',
+    steps: ['formulas'],
+    formula: ['w \\le \\frac{L}{n}'],
+    h: 230,
+    draw: () => (
+      <Bars x={80} y={30} w={330} h={160} max={32} ticks={[10, 20, 30]} unit="mm" bars={[
+        { label: 'L/200', v: 30, c: 'grey' },
+        { label: 'L/250', v: 24, c: 'ink' },
+        { label: 'L/300', v: 20, c: 'orange' },
+        { label: 'L/500', v: 12, c: 'red' },
+      ]} />
+    ),
+    notes: ['Toitures courantes L/200, planchers L/250 à L/300, plancher portant des cloisons fragiles bien plus sévère.'],
+    caption: 'Plus l’ouvrage est sensible, plus n est grand.',
+  },
+  {
+    id: 'fleche-ponctuelle',
+    title: 'Flèche sous une charge concentrée',
+    steps: ['simple_examples'],
+    formula: ['w = \\frac{P L^3}{48 EI} = \\frac{20 \\times 4^3}{48 \\times 4\\,000} = 0{,}0067\\ \\text{m} = 6{,}7\\ \\text{mm}'],
+    h: 200,
+    draw: () => (
+      <g>
+        <BeamScheme x1={80} x2={420} y={80} loads={[{ type: 'point', at: 0.5, len: 44, label: 'P = 20 kN' }]} names={['', '']} span="L = 4 m" spanY={150} />
+        <Path d="M 80 84 Q 250 136 420 84" c="red" w={2.2} dash="6 4" />
+        <Text x={250} y={124} a="middle" s={13} c="red" b>6,7 mm (L/600)</Text>
+      </g>
+    ),
+    notes: ['EI = 4 000 kN·m² : en gardant les kN et les mètres, la flèche sort en mètres.'],
+    caption: 'Poutre sur deux appuis chargée en son milieu.',
+  },
+  {
+    id: 'toiture-cuvette',
+    title: 'Toiture-terrasse souple : l’accumulation d’eau',
+    steps: ['real_examples'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Path d="M 40 70 Q 250 150 460 70" c="ink" w={4} />
+        <Path d="M 120 96 Q 250 150 380 96 Z" c="water" w={0} fill="~water" />
+        <Line x1={40} y1={70} x2={40} y2={200} c="ink" w={4} />
+        <Line x1={460} y1={70} x2={460} y2={200} c="ink" w={4} />
+        {[['flèche', 100, 40], ['l’eau s’accumule', 300, 40], ['charge ↑', 300, 200], ['flèche ↑', 100, 200]].map(([t, x, y]) => <Text key={t} x={x} y={y} a="middle" s={13} b c="red">{t}</Text>)}
+        <Arrow x1={150} y1={36} x2={240} y2={36} c="red" w={1.6} hs={7} />
+        <Arrow x1={330} y1={50} x2={330} y2={186} c="red" w={1.6} hs={7} />
+        <Arrow x1={250} y1={196} x2={160} y2={196} c="red" w={1.6} hs={7} />
+        <Arrow x1={80} y1={186} x2={80} y2={50} c="red" w={1.6} hs={7} />
+      </g>
+    ),
+    notes: ['Avec des évacuations bouchées, la boucle s’emballe jusqu’à l’effondrement : on limite la flèche et on prévoit des trop-pleins.'],
+    caption: 'Bac acier à faible pente sur pannes trop souples.',
   },
 ];

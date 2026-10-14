@@ -1,5 +1,6 @@
 // Plates — Module 9 · Contraintes normales & moments fléchissants
 import { Arrow, BeamScheme, ForceDiagram, ISection, Line, Path, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Plot } from '../../components/figures/kit.jsx';
 
 // Bent segment (sagging): centre of curvature above the beam.
 const C = [130, -250];
@@ -52,7 +53,7 @@ export default [
   {
     id: 'poutre-6m',
     title: 'Poutre de 6 m : efforts et contrainte',
-    steps: ['formulas', 'stepbystep'],
+    steps: ['formulas', 'stepbystep', 'diagrams'],
     formula: ['M_{max} = \\frac{qL^2}{8} = 112{,}5\\ \\text{kN·m}', 'W_{el} = \\frac{bh^2}{6} = 12\\,500\\ \\text{cm}^3 \\Rightarrow \\sigma = 9{,}0\\ \\text{MPa}'],
     h: 330,
     draw: () => (
@@ -140,5 +141,72 @@ export default [
     ),
     notes: ['Un IPE 360 suffirait en résistance ($W_{pl} = 1\\,019$ cm³) mais fléchirait d’environ 41 mm, au-delà de 26,7 mm.'],
     caption: 'Largeur de plancher reprise, combinaison ELU, moment, puis vérification de la flèche.',
+  },
+  {
+    id: 'hooke-traction',
+    title: 'Loi de Hooke : contrainte proportionnelle à la déformation',
+    steps: ['theory'],
+    formula: ['\\sigma = E\\,\\varepsilon \\qquad \\varepsilon = \\frac{\\Delta L}{L}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Rect x={30} y={30} w={60} h={14} c="ink" sw={1.6} fill="pat:hatch" />
+        <Rect x={50} y={44} w={20} h={150} c="ink" sw={2} fill="~grey" />
+        <Rect x={50} y={194} w={20} h={14} c="red" sw={0} fill="~red" />
+        <Arrow x1={60} y1={210} x2={60} y2={248} c="red" w={2.6} hs={9} />
+        <Text x={70} y={244} s={13} c="red" b>N</Text>
+        <Text x={78} y={204} s={12} c="red">ΔL</Text>
+        <Text x={78} y={120} s={12}>L, A</Text>
+        <Plot x={190} y={30} w={270} h={180} xr={[0, 1]} yr={[0, 1]} yl="σ" xt={[]} yt={[]}>
+          {(sx, sy) => (
+            <g>
+              <Line x1={sx(0)} y1={sy(0)} x2={sx(0.75)} y2={sy(0.8)} c="ink" w={3} />
+              <Poly pts={[[sx(0.3), sy(0.32)], [sx(0.5), sy(0.32)], [sx(0.5), sy(0.533)]]} c="red" w={1.6} />
+              <Text x={sx(0.53)} y={sy(0.42)} s={13} c="red" b>E</Text>
+              <Text x={sx(0.95)} y={sy(0.06)} a="end" s={12} c="mute">ε →</Text>
+              <Text x={sx(0.45)} y={sy(0.9)} s={12}>{'domaine élastique :\nretour à zéro au déchargement'}</Text>
+            </g>
+          )}
+        </Plot>
+      </g>
+    ),
+    notes: ['E vaut environ 210 000 MPa pour l’acier et 30 000 à 35 000 MPa pour le béton : à contrainte égale, le béton se déforme 7 fois plus.'],
+    caption: 'Barre tendue et droite contrainte-déformation de pente E.',
+  },
+  {
+    id: 'charge-ponctuelle-pl4',
+    title: 'Charge ponctuelle au centre : moment maximal PL/4',
+    steps: ['formulas'],
+    formula: ['M_{max} = \\frac{P\\,L}{4} \\qquad V = \\pm\\frac{P}{2}'],
+    h: 318,
+    draw: () => (
+      <g>
+        <BeamScheme x1={90} x2={410} y={80} loads={[{ type: 'point', at: 0.5, len: 50, label: 'P' }]} names={['A', 'B']} span="L" spanY={118} />
+        <ForceDiagram x1={90} x2={410} y0={180} f={t => (t < 0.5 ? 0.5 : -0.5)} scale={60} down={false} name="V" n={200} marks={[{ t: 0.25, label: '+P/2' }, { t: 0.75, label: '−P/2' }]} />
+        <ForceDiagram x1={90} x2={410} y0={232} f={t => (t < 0.5 ? t : 1 - t)} scale={110} c="red" fill="~red" name="M" n={100} marks={[{ t: 0.5, label: 'PL/4' }]} />
+      </g>
+    ),
+    notes: ['V change brusquement de signe sous la charge : c’est là que M est maximal (pointe du triangle).'],
+    caption: 'Diagrammes linéaires pour une charge concentrée.',
+  },
+  {
+    id: 'poutre-mixte-hea300',
+    title: 'Poutre mixte HEA 300 de 8 m',
+    steps: ['real_examples'],
+    formula: ['q_{ELU} = 1{,}35 \\times 15 + 1{,}5 \\times 10 = 35{,}25\\ \\text{kN/m} \\qquad M_{Ed} = \\frac{35{,}25 \\times 8^2}{8} = 282\\ \\text{kN·m}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={60} y={40} w={200} h={30} c="ink" sw={2} fill="pat:concrete" />
+        <ISection cx={160} cy={130} b={70} h={110} tf={8} tw={5} />
+        {[90, 120, 150, 180, 210].map(x => <Line key={x} x1={x} y1={70} x2={x} y2={56} c="red" w={3} />)}
+        <Text x={160} y={210} a="middle" s={12} b>HEA 300 + dalle collaborante</Text>
+        <Text x={240} y={60} s={11} c="red">connecteurs</Text>
+        <Text x={300} y={110} s={13}>{'G = 15 kN/m\nQ = 10 kN/m\nportée 8 m'}</Text>
+        <Text x={300} y={190} s={13} c="red" b>{'M_{Ed} ≈ 282 kN·m'}</Text>
+      </g>
+    ),
+    notes: ['Les connecteurs font travailler la dalle comprimée avec le profilé tendu : la section mixte est bien plus résistante et rigide que l’acier seul.'],
+    caption: 'Bureau d’études, immeuble R+4 : combinaison ELU et moment de calcul.',
   },
 ];

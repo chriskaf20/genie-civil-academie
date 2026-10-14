@@ -1,5 +1,6 @@
 // Plates — Module 7 · Flambement des poteaux
 import { Arrow, Axis, Box, Dim, Force, Ground, Line, Pin, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/ink.jsx';
+import { Dot, Path } from '../../components/figures/kit.jsx';
 
 const BOT = 274;
 const TOP = 104;
@@ -93,7 +94,7 @@ export default [
             <Text x={cx} y={318} a="middle" s={18} b c="red">{k}</Text>
           </g>
         ))}
-        <Dim x1={10} y1={BOT} x2={10} y2={TOP} label="L" s={14} side={1} />
+        <Dim x1={24} y1={BOT} x2={24} y2={TOP} label="L" s={14} side={1} />
       </g>
     ),
     notes: [
@@ -210,7 +211,7 @@ export default [
     draw: () => (
       <g>
         <Rect x={60} y={28} w={380} h={26} c="grey" sw={1.6} fill="pat:concrete" bg="~grey" />
-        <Text x={448} y={46} s={13} c="mute">dalle fraîche</Text>
+        <Text x={490} y={46} a="end" s={12} c="mute">dalle fraîche</Text>
         <Rect x={150} y={54} w={200} h={10} c="soil" sw={1.6} fill="~soil" />
         <Text x={358} y={66} s={12} c="soil">coffrage</Text>
         <Rect x={238} y={64} w={24} h={6} c="ink" sw={1.6} fill="ink" />
@@ -227,5 +228,125 @@ export default [
     ),
     notes: ['Étai articulé à ses deux extrémités : $L_{cr} = L = 3{,}20$ m.'],
     caption: 'Un étai est un poteau élancé : la charge admissible est limitée par le flambement, pas par la résistance de l’acier.',
+  },
+  {
+    id: 'euler-instabilite',
+    title: 'Flambement : une instabilité brutale',
+    steps: ['theory'],
+    formula: ['N_{cr} = \\frac{\\pi^2 E I}{L_{cr}^2}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Line x1={60} y1={50} x2={60} y2={230} c="ink" w={4} />
+        <Arrow x1={60} y1={14} x2={60} y2={46} c="red" w={2.4} hs={9} />
+        <Text x={68} y={30} s={12} c="red">{'N < N_{cr}'}</Text>
+        <Path d="M 170 50 Q 210 140 170 230" c="ink" w={4} />
+        <Line x1={170} y1={50} x2={170} y2={230} c="grey" w={1} dash="4 4" />
+        <Arrow x1={170} y1={14} x2={170} y2={46} c="red" w={3.4} hs={11} />
+        <Text x={178} y={30} s={12} c="red" b>{'N = N_{cr}'}</Text>
+        <Plot x={260} y={40} w={210} h={180} xr={[0, 1]} yr={[0, 1.2]} yl="N" xt={[]} yt={[[1, 'N_{cr}']]}>
+          {(sx, sy) => (
+            <g>
+              <Line x1={sx(0)} y1={sy(0)} x2={sx(0)} y2={sy(1)} c="ink" w={2.6} />
+              <Line x1={sx(0)} y1={sy(1)} x2={sx(0.9)} y2={sy(1)} c="red" w={2.6} />
+              <Poly pts={fnPts(d => 1 - Math.exp(-d * 4) * 0.95 - 0.05, 0.02, 0.95, sx, sy, 40)} c="orange" w={2} dash="6 4" />
+              <Text x={sx(0.5)} y={sy(1.07)} a="middle" s={11} c="red">poteau parfait</Text>
+              <Text x={sx(0.6)} y={sy(0.62)} s={11} c="orange">poteau réel</Text>
+              <Text x={sx(0.95)} y={sy(0.06)} a="end" s={11} c="mute">déplacement latéral →</Text>
+            </g>
+          )}
+        </Plot>
+      </g>
+    ),
+    notes: ['Le poteau parfait reste droit jusqu’à $N_{cr}$ puis fléchit d’un coup ; le poteau réel, imparfait, se courbe progressivement et cède avant.'],
+    caption: 'Charge critique d’Euler et comportement réel.',
+  },
+  {
+    id: 'hyperbole-euler',
+    title: 'Hyperbole d’Euler et limite élastique',
+    steps: ['theory', 'simple_examples'],
+    formula: ['\\sigma_{cr} = \\frac{\\pi^2 E}{\\lambda^2} \\qquad N_{cr,HEA200} = 1\\,731\\ \\text{kN}'],
+    h: 290,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={200} xr={[0, 200]} yr={[0, 400]} yl="MPa"
+        xt={[50, 80.3, 100, 150, 200].map(v => [v, String(v).replace('.', ',')])} yt={[[235, '235'], [321, '321']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={fnPts(l => Math.min(400, (Math.PI ** 2 * 210000) / (l * l)), 72, 200, sx, sy, 60)} c="ink" w={2.6} />
+            <Line x1={sx(0)} y1={sy(235)} x2={sx(200)} y2={sy(235)} c="red" w={2} dash="6 4" />
+            <Text x={sx(196)} y={sy(235) - 6} a="end" s={11} c="red">{'f_y = 235 MPa'}</Text>
+            <Dot x={sx(80.3)} y={sy(321)} r={6} c="orange" />
+            <Text x={sx(84)} y={sy(335)} s={11} c="orange" b>{'HEA 200, λ = 80,3'}</Text>
+            <Text x={sx(120)} y={sy(150)} s={12} b>Euler</Text>
+            <Text x={sx(196)} y={sy(30)} a="end" s={11} c="mute">élancement λ →</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['À λ = 80, Euler donne 321 MPa, au-dessus de f_y : les défauts réels ramènent pourtant la résistance à 63 % (χ = 0,628) : d’où les courbes européennes.'],
+    caption: 'Contrainte critique en fonction de l’élancement.',
+  },
+  {
+    id: 'giration-sections',
+    title: 'Rayon de giration : I-section ou tube',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['i = \\sqrt{\\frac{I}{A}} \\qquad \\text{tube : } i = \\sqrt{\\frac{8{,}56 \\times 10^6}{2\\,565}} = 57{,}8\\ \\text{mm}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={60} y={50} w={110} h={12} c="ink" sw={1.6} fill="~ink" />
+        <Rect x={109} y={62} w={12} h={96} c="ink" sw={1.6} fill="~ink" />
+        <Rect x={60} y={158} w={110} h={12} c="ink" sw={1.6} fill="~ink" />
+        <Line x1={115} y1={30} x2={115} y2={190} c="red" w={1.2} dash="10 3 2 3" />
+        <Text x={115} y={206} a="middle" s={12} c="red" b>{'axe faible z : i_z = 49,8 mm'}</Text>
+        <Path d="M 340 110 m -60 0 a 60 60 0 1 0 120 0 a 60 60 0 1 0 -120 0" c="ink" w={6} />
+        <Text x={340} y={114} a="middle" s={12} b>Ø 168,3 × 5</Text>
+        <Text x={340} y={206} a="middle" s={12} c="green" b>i = 57,8 mm dans toutes les directions</Text>
+      </g>
+    ),
+    notes: ['Le flambement se produit autour de l’axe de plus petit rayon de giration : le tube n’a pas d’axe faible.'],
+    caption: 'Répartir la matière loin du centre augmente i.',
+  },
+  {
+    id: 'effet-appuis-k',
+    title: 'Même poteau, autres appuis : charge critique ÷ 4',
+    steps: ['simple_examples'],
+    formula: ['L_{cr} = 2L \\Rightarrow N_{cr} = \\frac{1\\,731}{2^2} = 433\\ \\text{kN}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Path d="M 120 40 Q 150 130 120 220" c="ink" w={4} />
+        <Line x1={120} y1={40} x2={120} y2={220} c="grey" w={1} dash="4 4" />
+        <Text x={120} y={244} a="middle" s={12} b>bi-articulé : K = 1</Text>
+        <Rect x={300} y={220} w={60} h={10} c="ink" sw={1.4} fill="pat:hatch" />
+        <Path d="M 330 220 Q 330 120 372 40" c="ink" w={4} />
+        <Line x1={330} y1={220} x2={330} y2={40} c="grey" w={1} dash="4 4" />
+        <Text x={330} y={248} a="middle" s={12} b>encastré-libre : K = 2</Text>
+        <Text x={150} y={130} s={12} c="green" b>1 731 kN</Text>
+        <Text x={380} y={130} s={12} c="red" b>433 kN</Text>
+      </g>
+    ),
+    notes: ['Le mât encastré en pied et libre en tête flambe comme la moitié d’un poteau bi-articulé deux fois plus long.'],
+    caption: 'La longueur de flambement dépend des conditions d’appui.',
+  },
+  {
+    id: 'pont-quebec',
+    title: 'Flambement d’une membrure comprimée de pont',
+    steps: ['real_examples'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={10} y={200} w={480} h={30} c="water" sw={0} fill="~water" />
+        <Path d="M 40 190 L 120 70 L 200 190 Z M 300 190 L 380 70 L 460 190 Z" c="ink" w={2.6} />
+        <Line x1={40} y1={190} x2={460} y2={190} c="ink" w={2} dash="6 4" />
+        <Path d="M 120 70 L 160 110 L 200 190" c="ink" w={1.6} />
+        <Path d="M 70 190 Q 90 170 110 190" c="red" w={4} />
+        <Text x={90} y={160} a="middle" s={12} c="red" b>membrure flambée</Text>
+        <Text x={250} y={40} a="middle" s={12}>{'plats assemblés par des treillis de liaison trop faibles,\npoids propre sous-estimé'}</Text>
+      </g>
+    ),
+    notes: ['Les déformations observées n’ont pas fait arrêter le chantier : 75 morts. L’accident est à l’origine de l’anneau de fer des ingénieurs canadiens.'],
+    caption: 'Pont cantilever sur le Saint-Laurent, 1907 : effondrement en construction.',
   },
 ];

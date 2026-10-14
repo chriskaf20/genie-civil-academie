@@ -14,7 +14,7 @@ export default [
   {
     id: 'tau-sections',
     title: 'Contraintes de cisaillement dans les sections',
-    steps: ['theory'],
+    steps: ['theory', 'diagrams'],
     formula: ['\\tau(y) = \\frac{V\\,S(y)}{I\\,b(y)}'],
     h: 270,
     draw: () => (
@@ -137,5 +137,84 @@ export default [
     ),
     notes: ['Charge près d’un appui : la réaction de cet appui vaut $300 \\times 1{,}6 / 2{,}0 = 240$ kN, c’est l’effort tranchant maximal.'],
     caption: 'L’âme (aire de cisaillement A_v) reprend l’effort tranchant ; la proximité de l’appui le rend prépondérant.',
+  },
+  {
+    id: 'glissement-planches',
+    title: 'Pourquoi il y a du cisaillement dans une poutre',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Text x={120} y={24} a="middle" s={12} b>planches simplement posées</Text>
+        <Path d="M 20 70 Q 120 100 220 70 L 220 86 Q 120 116 20 86 Z" c="soil" w={1.8} fill="~soil" />
+        <Path d="M 26 92 Q 126 122 226 92 L 226 108 Q 126 138 26 108 Z" c="soil" w={1.8} fill="~soil" />
+        <Path d="M 32 114 Q 132 144 232 114 L 232 130 Q 132 160 32 130 Z" c="soil" w={1.8} fill="~soil" />
+        <Text x={120} y={180} a="middle" s={12} c="red">{'les planches glissent\nles unes sur les autres'}</Text>
+        <Text x={370} y={24} a="middle" s={12} b>planches collées</Text>
+        <Path d="M 270 70 Q 370 100 470 70 L 470 118 Q 370 148 270 118 Z" c="soil" w={2} fill="~soil" />
+        {[86, 102].map(y => <Path key={y} d={`M 270 ${y} Q 370 ${y + 30} 470 ${y}`} c="red" w={1.4} dash="5 3" />)}
+        <Text x={370} y={180} a="middle" s={12} c="green">{'la colle reprend le glissement :\nc’est la contrainte de cisaillement τ'}</Text>
+      </g>
+    ),
+    notes: ['Une poutre monobloc empêche ce glissement : les contraintes tangentielles qui s’y développent sont maximales à l’axe neutre.'],
+    caption: 'L’expérience des planches empilées.',
+  },
+  {
+    id: 'ame-ipe300',
+    title: 'Cisaillement dans l’âme d’un IPE 300',
+    steps: ['simple_examples'],
+    formula: ['\\tau \\approx \\frac{V}{h_w\\,t_w} = \\frac{120\\,000}{278{,}6 \\times 7{,}1} = 61\\ \\text{MPa} < \\frac{f_y}{\\sqrt 3} = 136\\ \\text{MPa}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <ISection cx={150} cy={115} b={80} h={170} tf={10} tw={6} />
+        <Rect x={147} y={40} w={6} h={150} c="red" sw={1.6} fill="~red" />
+        {[60, 90, 120, 150, 175].map(y => <Arrow key={y} x1={150} y1={y + 10} x2={150} y2={y} c="red" w={1.6} hs={5} />)}
+        <Text x={260} y={90} s={13} b>{'h_w = 278,6 mm\nt_w = 7,1 mm\nV = 120 kN'}</Text>
+        <Text x={260} y={180} s={13} c="red" b>τ ≈ 61 MPa</Text>
+      </g>
+    ),
+    notes: ['L’âme mince reprend presque tout l’effort tranchant, avec une contrainte quasi uniforme.'],
+    caption: 'Vérification rapide de l’âme d’un profilé S235.',
+  },
+  {
+    id: 'solive-cisaillement',
+    title: 'Solive en bois : cisaillement maximal',
+    steps: ['simple_examples'],
+    formula: ['\\tau_{max} = \\frac{3}{2}\\,\\frac{V}{b\\,h} = 1{,}5 \\times \\frac{9\\,000}{75 \\times 225} = 0{,}80\\ \\text{MPa}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={120} y={30} w={60} h={180} c="soil" sw={2} fill="pat:wood" />
+        <Line x1={110} y1={120} x2={190} y2={120} c="grey" w={1} dash="4 3" />
+        <Line x1={210} y1={30} x2={210} y2={210} c="txt" w={1.2} />
+        <Path d="M 210 30 Q 290 120 210 210" c="green" w={2.4} fill="~green" />
+        <Text x={256} y={124} s={12} c="green" b>0,80 MPa</Text>
+        <Text x={150} y={226} a="middle" s={12}>75 × 225 mm</Text>
+        <Text x={320} y={90} s={12}>{'V = 9 kN\nC24 : résistance de\ncalcul ≈ 1,9 à 2,5 MPa'}</Text>
+      </g>
+    ),
+    notes: ['Le bois résiste mal au cisaillement le long des fibres : on le vérifie près des appuis, où V est maximal.'],
+    caption: 'Répartition parabolique de τ dans une solive rectangulaire.',
+  },
+  {
+    id: 'poutres-sans-etriers',
+    title: 'Rupture par effort tranchant de poutres hautes',
+    steps: ['real_examples'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={40} y={50} w={420} h={110} c="ink" sw={2} fill="pat:concrete" />
+        <Line x1={50} y1={150} x2={450} y2={150} c="ink" w={3} />
+        <Rect x={40} y={160} w={30} h={30} c="ink" sw={1.6} fill="~grey" />
+        <Rect x={430} y={160} w={30} h={30} c="ink" sw={1.6} fill="~grey" />
+        <Path d="M 80 150 L 110 120 L 130 110 L 160 70 L 180 58" c="red" w={3} />
+        <Text x={200} y={100} s={12} c="red" b>fissure diagonale près de l’appui</Text>
+        <Text x={250} y={40} a="middle" s={12}>poutre de 0,9 m de hauteur, peu d’étriers</Text>
+        <Text x={250} y={212} a="middle" s={12} c="mute">retrait et dilatation thermique ajoutaient des tractions</Text>
+      </g>
+    ),
+    notes: ['Ces ruptures sous des charges inférieures aux prévisions ont conduit à revoir les règles de cisaillement et l’effet d’échelle des poutres hautes.'],
+    caption: 'Entrepôt : rupture fragile par effort tranchant, sans signe avant-coureur.',
   },
 ];
