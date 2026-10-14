@@ -1,5 +1,6 @@
 // Plates — Module 11 · Mécanique des roches
 import { Circle, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Bars } from '../../components/figures/kit.jsx';
 
 const X = rmr => 40 + 4.2 * rmr;
 const CLASSES = [[0, 20, 'V', 'très médiocre', '~red'], [20, 40, 'IV', 'médiocre', '~orange'], [40, 60, 'III', 'moyenne', '~soil'], [60, 80, 'II', 'bonne', '~green'], [80, 100, 'I', 'très bonne', '~water']];
@@ -140,5 +141,88 @@ export default [
     ),
     notes: ['Granite sain, granite fracturé, zone de faille : la charge triple et le soutènement s’alourdit ; le profil définitif se choisit au front de taille.'],
     caption: 'Charge d’Unal (γ = 27 kN/m³, B = 11 m) et soutènement associé à chaque zone.',
+  },
+  {
+    id: 'q-rocher-altere',
+    title: 'Indice Q d’un rocher altéré et humide',
+    steps: ['simple_examples'],
+    formula: ['Q = \\frac{40}{12} \\times \\frac{1}{4} \\times \\frac{0{,}66}{2{,}5} = 0{,}22'],
+    h: 190,
+    draw: () => (
+      <g>
+        {[['RQD / J_n', '40 / 12', 'taille des blocs'], ['J_r / J_a', '1 / 4', 'frottement des joints'], ['J_w / SRF', '0,66 / 2,5', 'eau et contraintes']].map(([a, b, c], i) => (
+          <g key={a}>
+            <Rect x={20 + i * 160} y={40} w={140} h={70} rx={8} c="ink" sw={1.6} fill="~grey" />
+            <Text x={90 + i * 160} y={64} a="middle" s={13} b>{a}</Text>
+            <Text x={90 + i * 160} y={86} a="middle" s={13}>{b}</Text>
+            <Text x={90 + i * 160} y={130} a="middle" s={11} c="mute">{c}</Text>
+          </g>
+        ))}
+        <Text x={250} y={170} a="middle" s={14} c="red" b>Q = 0,22 : très médiocre, soutènement lourd</Text>
+      </g>
+    ),
+    notes: ['Les trois rapports se multiplient : un seul mauvais facteur (joints argileux, eau) suffit à dégrader fortement Q.'],
+    caption: 'Trois rapports du système Q de Barton.',
+  },
+  {
+    id: 'charge-unal',
+    title: 'Charge de terrain sur un soutènement (Unal)',
+    steps: ['simple_examples', 'formulas'],
+    formula: ['p = \\gamma\\,\\frac{100 - RMR}{100}\\,B = 26 \\times 0{,}65 \\times 12 = 203\\ \\text{kPa}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={20} y={20} w={460} h={210} c="grey" sw={0} fill="pat:rock" o={0.5} />
+        <Path d="M 160 210 L 160 130 A 90 90 0 0 1 340 130 L 340 210 Z" c="ink" w={3} fill="paper" />
+        <Path d="M 160 130 L 160 60 L 340 60 L 340 130" c="red" w={2} dash="6 4" fill="~red" />
+        <Text x={250} y={84} a="middle" s={12} c="red" b>{'hauteur de roche décomprimée\n0,65 × B'}</Text>
+        <Text x={250} y={180} a="middle" s={12}>B = 12 m, RMR = 35</Text>
+      </g>
+    ),
+    notes: ['Plus le RMR est faible, plus la hauteur de roche à soutenir est grande : cintres et béton projeté épais ici.'],
+    caption: 'Poids de la zone décomprimée au-dessus de la voûte.',
+  },
+  {
+    id: 'gothard-tavetsch',
+    title: 'Grandes convergences : soutènement déformable',
+    steps: ['real_examples'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={20} y={20} w={460} h={200} c="grey" sw={0} fill="pat:rock" o={0.6} />
+        <Circle cx={250} cy={120} r={80} c="red" sw={2} dash="6 4" />
+        <Circle cx={250} cy={120} r={64} c="ink" sw={3} fill="paper" />
+        {[0, 60, 120, 180, 240, 300].map(a => {
+          const t = (a * Math.PI) / 180;
+          return <Rect key={a} x={250 + 64 * Math.cos(t) - 5} y={120 + 64 * Math.sin(t) - 5} w={10} h={10} c="orange" sw={1.6} fill="~orange" />;
+        })}
+        <Text x={250} y={124} a="middle" s={12} b>{'cintres\ncoulissants'}</Text>
+        <Text x={350} y={40} s={12} c="red" b>surcreusement</Text>
+        <Text x={250} y={232} a="middle" s={12}>convergences de plusieurs dizaines de cm avant le revêtement</Text>
+      </g>
+    ),
+    notes: ['Quand la résistance du massif est faible devant les contraintes, on laisse le terrain se déformer de façon contrôlée plutôt que de le bloquer.'],
+    caption: 'Tunnel de base du Saint-Gothard, zone de Tavetsch.',
+  },
+  {
+    id: 'caracterisation-massif',
+    title: 'Caractériser un massif rocheux',
+    steps: ['diagrams'],
+    h: 220,
+    draw: () => (
+      <g>
+        {['relevés', 'carottes', 'RMR · Q · GSI', 'Hoek-Brown', 'soutènement', 'auscultation'].map((t, i) => (
+          <g key={t}>
+            <Rect x={10 + i * 81} y={80} w={72} h={50} rx={8} c={i === 4 ? 'red' : 'ink'} sw={1.6} fill={i === 4 ? '~red' : '~grey'} />
+            <Text x={46 + i * 81} y={110} a="middle" s={11} b>{t}</Text>
+            {i < 5 && <Path d={`M ${82 + i * 81} 105 l 8 0`} c="ink" w={2} />}
+          </g>
+        ))}
+        <Path d="M 455 132 Q 455 180 250 180 Q 46 180 46 134" c="green" w={1.6} dash="5 4" />
+        <Text x={250} y={200} a="middle" s={12} c="green">validation au front de taille</Text>
+      </g>
+    ),
+    notes: ['Les classifications se font par zone homogène ; le front de taille confirme ou corrige le profil retenu.'],
+    caption: 'De l’observation au choix du soutènement.',
   },
 ];

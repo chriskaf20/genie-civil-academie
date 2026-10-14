@@ -1,5 +1,6 @@
 // Plates — Module 11 · Risques géologiques
 import { Arrow, Circle, House, Line, Path, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Bars, Plot, fnPts } from '../../components/figures/kit.jsx';
 
 /** Rockfall barrier: posts and net between x1 and x2 standing on y. */
 function Ecran({ x1, x2, y, h = 40 }) {
@@ -131,5 +132,91 @@ export default [
     ),
     notes: ['Le calcul seul ne suffit pas (piliers dégradés, effondrements en chaîne) : géophysique et sondages localisent les vides avant de décider des comblements.'],
     caption: 'Le même vide est sans danger sous 20 m de recouvrement, menaçant sous 13 m.',
+  },
+  {
+    id: 'probabilite-475',
+    title: 'Période de retour et probabilité sur la durée de vie',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['P = 1 - \\left(1 - \\frac{1}{T}\\right)^n = 1 - \\left(1 - \\frac{1}{475}\\right)^{50} = 10\\ \\%'],
+    h: 270,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={180} xr={[0, 100]} yr={[0, 0.25]} yl="P"
+        xt={[0, 25, 50, 75, 100].map(v => [v, `${v} ans`])} yt={[[0.1, '10 %'], [0.2, '20 %']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={fnPts(n => 1 - (1 - 1 / 475) ** n, 0, 100, sx, sy, 40)} c="red" w={2.6} />
+            <Line x1={sx(50)} y1={sy(0)} x2={sx(50)} y2={sy(0.1)} c="grey" w={1.2} dash="5 4" />
+            <Line x1={sx(0)} y1={sy(0.1)} x2={sx(50)} y2={sy(0.1)} c="grey" w={1.2} dash="5 4" />
+            <Text x={sx(52)} y={sy(0.11)} s={12} c="red" b>T = 475 ans, n = 50 ans</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Un séisme « de 475 ans » a 10 % de chances de se produire pendant 50 ans de vie de l’ouvrage : c’est l’action de référence des Eurocodes.'],
+    caption: 'La probabilité d’occurrence croît avec la durée considérée.',
+  },
+  {
+    id: 'retrait-argile',
+    title: 'Retrait d’une argile sous une maison',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['\\Delta H = \\varepsilon_v\\,H_a = 0{,}02 \\times 1{,}5 = 0{,}03\\ \\text{m}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={20} y={140} w={460} h={80} c="soil" sw={0} fill="pat:clay" />
+        <Line x1={20} y1={140} x2={480} y2={140} c="ink" w={2} />
+        <House x={170} y={140} w={160} h={50} />
+        <Path d="M 260 96 l 6 12 l -6 10 l 8 12" c="red" w={2.4} />
+        <Arrow x1={340} y1={150} x2={340} y2={176} c="red" w={2} hs={7} />
+        <Text x={350} y={172} s={12} c="red" b>3 cm de retrait</Text>
+        <Arrow x1={40} y1={141} x2={40} y2={209} c="txt" w={1.2} hs={5} both />
+        <Text x={46} y={180} s={12}>1,5 m d’argile active</Text>
+      </g>
+    ),
+    notes: ['Le retrait est plus fort sous les angles et près des arbres : le tassement différentiel fissure les murs en escalier.'],
+    caption: 'Fondations superficielles sur argile qui se dessèche.',
+  },
+  {
+    id: 'secheresse-2022',
+    title: 'Sécheresse de 2022 : fissuration de maisons',
+    steps: ['real_examples'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={20} y={140} w={460} h={70} c="soil" sw={0} fill="pat:clay" />
+        {[40, 200, 360].map(x => (
+          <g key={x}>
+            <House x={x} y={140} w={100} h={50} />
+            <Path d={`M ${x + 70} 100 l 5 10 l -5 8 l 6 10`} c="red" w={2} />
+          </g>
+        ))}
+        {[90, 250, 410].map(x => <Path key={x} d={`M ${x - 20} 150 l 10 40 M ${x + 20} 150 l -8 40`} c="soil" w={1.6} />)}
+        <Text x={250} y={40} a="middle" s={13} c="red" b>des dizaines de milliers de sinistres</Text>
+        <Text x={250} y={226} a="middle" s={11} c="mute">fentes de retrait dans les argiles desséchées</Text>
+      </g>
+    ),
+    notes: ['Les constructions récentes respectant les dispositions de la loi ELAN (étude de sol et fondations adaptées en zone d’aléa) ont beaucoup mieux résisté.'],
+    caption: 'Retrait-gonflement : un risque diffus mais coûteux.',
+  },
+  {
+    id: 'demarche-risque',
+    title: 'Démarche face à un risque géologique',
+    steps: ['diagrams'],
+    h: 220,
+    draw: () => (
+      <g>
+        {[['documents', 'PPR, Géorisques'], ['reconnaissance', 'sondages, géophysique'], ['aléa', 'probabilité, intensité'], ['vulnérabilité', 'enjeux exposés'], ['mesures', 'éviter, protéger…'], ['entretien', 'alerte, suivi']].map(([t, d], i) => (
+          <g key={t}>
+            <Rect x={10 + i * 81} y={70} w={74} h={60} rx={8} c={i === 4 ? 'green' : 'ink'} sw={1.6} fill={i === 4 ? '~green' : '~grey'} />
+            <Text x={47 + i * 81} y={96} a="middle" s={11} b>{t}</Text>
+            <Text x={47 + i * 81} y={114} a="middle" s={9}>{d}</Text>
+          </g>
+        ))}
+        <Text x={250} y={170} a="middle" s={12}>risque = aléa × vulnérabilité des enjeux</Text>
+      </g>
+    ),
+    notes: ['On agit sur l’aléa (purge, comblement) ou sur la vulnérabilité (protéger, renforcer, éloigner).'],
+    caption: 'Du recensement à l’entretien des protections.',
   },
 ];

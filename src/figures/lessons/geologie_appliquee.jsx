@@ -1,5 +1,6 @@
 // Plates — Module 11 · Géologie de l'ingénieur
 import { Angle, Arrow, Line, Path, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Circle, Flow, flowHeight } from '../../components/figures/kit.jsx';
 
 const sine = (y0, amp) => Array.from({ length: 41 }, (_, k) => [320 + 4 * k, y0 + amp * Math.sin((k / 40) * 2 * Math.PI)]);
 
@@ -144,5 +145,101 @@ export default [
     ),
     notes: ['Le joint plonge plus que son angle de frottement et « débouche » dans le talus : le bloc peut glisser sans aucune autre rupture.'],
     caption: 'Déblai de 12 m dans des bancs calcaires plongeant vers la route.',
+  },
+  {
+    id: 'familles-roches',
+    title: 'Les trois familles de roches',
+    steps: ['theory'],
+    h: 240,
+    draw: () => (
+      <g>
+        {[[20, 'magmatiques', 'granite, basalte', 'dures, peu poreuses'], [180, 'sédimentaires', 'calcaire, grès, argile', 'en couches, sensibles à l’eau'], [340, 'métamorphiques', 'schiste, gneiss, marbre', 'feuilletées, anisotropes']].map(([x, t, e, p], k) => (
+          <g key={t}>
+            <Rect x={x} y={40} w={140} h={110} c="ink" sw={1.8} fill={k === 1 ? 'pat:hatch' : 'paper'} />
+            {k === 0 && [[40, 70], [80, 90], [110, 60], [60, 120], [100, 125]].map(([a, b], i) => <Circle key={i} cx={x + a} cy={b} r={9} c="ink" sw={1.2} fill={i % 2 ? '~red' : '~grey'} />)}
+            {k === 2 && [0, 1, 2, 3, 4, 5].map(i => <Path key={i} d={`M ${x + 6} ${56 + i * 16} q 30 -10 64 0 t 64 0`} c="ink" w={1.6} />)}
+            <Text x={x + 70} y={30} a="middle" s={13} b>{t}</Text>
+            <Text x={x + 70} y={174} a="middle" s={12}>{e}</Text>
+            <Text x={x + 70} y={194} a="middle" s={11} c="mute">{p}</Text>
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['Refroidissement d’un magma, dépôt en couches, transformation par pression et température : l’origine explique le comportement.'],
+    caption: 'Textures schématiques : cristaux, strates, feuillets.',
+  },
+  {
+    id: 'rqd-passe',
+    title: 'RQD d’une passe de 150 cm',
+    steps: ['simple_examples'],
+    formula: ['RQD = \\frac{25 + 18 + 32 + 12 + 20}{150} \\times 100 = 71\\ \\%'],
+    h: 180,
+    draw: () => {
+      let x = 40;
+      return (
+        <g>
+          {[25, 7, 18, 9, 32, 6, 12, 15, 20, 6].map((L, i) => {
+            const x0 = x;
+            x += L * 2.8;
+            const ok = L >= 10 && i !== 7;
+            return <Rect key={i} x={x0 + 1} y={60} w={L * 2.8 - 2} h={28} rx={3} c={ok ? 'green' : 'red'} sw={1.4} fill={ok ? '~green' : '~red'} />;
+          })}
+          <Text x={250} y={120} a="middle" s={13} c="green" b>107 cm de morceaux ≥ 10 cm sur 150 cm</Text>
+          <Text x={250} y={144} a="middle" s={12}>qualité moyenne (50 à 75 %)</Text>
+        </g>
+      );
+    },
+    notes: ['Le RQD mesure la fracturation : peu de longs morceaux signifie beaucoup de joints.'],
+    caption: 'Carotte rangée dans sa caisse, morceaux comptés et non comptés.',
+  },
+  {
+    id: 'porosite-indice-vides',
+    title: 'Porosité et indice des vides d’une craie',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['n = \\frac{V_v}{V} = 0{,}40 \\qquad e = \\frac{n}{1 - n} = \\frac{0{,}40}{0{,}60} = 0{,}67'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Rect x={100} y={30} w={100} h={60} c="ink" sw={2} fill="~water" />
+        <Rect x={100} y={90} w={100} h={90} c="ink" sw={2} fill="pat:sand" />
+        <Text x={150} y={66} a="middle" s={13} b>vides 40 %</Text>
+        <Text x={150} y={140} a="middle" s={13} b>solide 60 %</Text>
+        <Text x={320} y={80} s={13}>{'n = vides / volume total'}</Text>
+        <Text x={320} y={130} s={13}>{'e = vides / solide'}</Text>
+        <Text x={250} y={210} a="middle" s={12} c="red">craie très poreuse : sensible au gel et à la dissolution</Text>
+      </g>
+    ),
+    notes: ['Porosité et indice des vides décrivent la même chose rapportée à deux volumes différents.'],
+    caption: 'Diagramme des phases d’une roche poreuse.',
+  },
+  {
+    id: 'contrainte-30m',
+    title: 'Contrainte verticale sous 30 m de calcaire',
+    steps: ['simple_examples', 'formulas'],
+    formula: ['\\gamma = \\rho\\,g \\qquad \\sigma_v = \\gamma\\,z = 25 \\times 30 = 750\\ \\text{kPa}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={60} y={30} w={260} h={170} c="ink" sw={0} fill="pat:hatch" />
+        <Line x1={60} y1={30} x2={320} y2={30} c="ink" w={2} />
+        <Circle cx={190} cy={190} r={22} c="ink" sw={2.4} fill="paper" />
+        <Text x={190} y={228} a="middle" s={12}>futur tunnel</Text>
+        <Line x1={360} y1={30} x2={360} y2={190} c="txt" w={1.4} />
+        <Poly pts={[[360, 30], [360, 190], [460, 190]]} c="red" w={1.8} fill="~red" close />
+        <Text x={466} y={186} a="end" s={12} c="red" b>750 kPa</Text>
+        <Text x={44} y={114} a="end" s={12}>30 m</Text>
+      </g>
+    ),
+    notes: ['Le poids des terrains crée une contrainte qui croît linéairement avec la profondeur : 0,75 MPa au niveau du tunnel.'],
+    caption: 'Calcaire γ = 25 kN/m³ au-dessus d’un tunnel projeté.',
+  },
+  {
+    id: 'demarche-geologique',
+    title: 'Démarche géologique d’un projet',
+    steps: ['diagrams'],
+    h: flowHeight(['Étude documentaire : cartes BRGM, Banque du sous-sol', 'Visite de terrain : affleurements, sources, glissements', 'Géophysique : sismique, électrique, radar', 'Sondages destructifs et carottés, essais', 'Modèle géologique : coupes interprétées', 'Synthèse des aléas et recommandations'], { cols: 3 }),
+    draw: () => <Flow items={['Étude documentaire : cartes BRGM, Banque du sous-sol', 'Visite de terrain : affleurements, sources, glissements', 'Géophysique : sismique, électrique, radar', 'Sondages destructifs et carottés, essais', 'Modèle géologique : coupes interprétées', 'Synthèse des aléas et recommandations']} cols={3} />,
+    notes: ['Chaque étape réduit l’incertitude : on ne fore qu’après avoir lu les cartes et parcouru le terrain.'],
+    caption: 'Du bureau au modèle géologique du site.',
   },
 ];

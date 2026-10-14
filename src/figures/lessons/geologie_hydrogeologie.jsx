@@ -1,5 +1,6 @@
 // Plates — Module 36 · Hydrogéologie de l'ingénieur
 import { Arrow, Box, Circle, Dim, Line, Path, Poly, Rect, Text, WaterLevel } from '../../components/figures/ink.jsx';
+import { Dot } from '../../components/figures/kit.jsx';
 
 /** Ground surface with a few grass tufts. */
 function Surface({ x1, x2, y }) {
@@ -93,7 +94,7 @@ export default [
           <Dim x1={58} y1={yBase} x2={58} y2={yBase - H} label="H" s={15} />
           <Dim x1={xw - 26} y1={yBase} x2={xw - 26} y2={yBase - hw} label="h" s={15} />
           <Dim x1={xw + 28} y1={yBase - H} x2={xw + 28} y2={yBase - hw} label="s" s={15} side={-1} />
-          <Dim x1={xw} y1={316} x2={450} y2={316} label="R (rayon d’influence)" s={13} side={-1} />
+          <Dim x1={xw} y1={306} x2={450} y2={306} label="R (rayon d’influence)" s={13} side={-1} />
           <Text x={40} y={292} s={12} c="soil">substratum imperméable</Text>
         </g>
       );
@@ -177,5 +178,156 @@ export default [
     },
     notes: ['Débit total ≈ 67 m³/h, soit environ 1 600 m³/jour à rejeter après décantation.'],
     caption: 'Vue en plan : puits répartis autour de la fouille et collecteur vers le bac de décantation.',
+  },
+  {
+    id: 'darcy-loi',
+    title: 'Loi de Darcy : le perméamètre',
+    steps: ['theory'],
+    formula: ['Q = K\\,i\\,A \\qquad i = \\frac{\\Delta h}{L}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={160} y={90} w={160} h={70} c="ink" sw={2} fill="pat:sand" />
+        <Rect x={80} y={40} w={40} h={120} c="ink" sw={1.6} fill="~water" />
+        <Rect x={360} y={100} w={40} h={60} c="ink" sw={1.6} fill="~water" />
+        <Line x1={120} y1={125} x2={160} y2={125} c="water" w={6} />
+        <Line x1={320} y1={125} x2={360} y2={125} c="water" w={6} />
+        <Line x1={60} y1={40} x2={420} y2={40} c="water" w={1} dash="4 4" />
+        <Line x1={60} y1={100} x2={420} y2={100} c="water" w={1} dash="4 4" />
+        <Arrow x1={440} y1={41} x2={440} y2={99} c="red" w={1.4} hs={6} both />
+        <Text x={446} y={74} s={13} c="red" b>Δh</Text>
+        <Arrow x1={161} y1={180} x2={319} y2={180} c="txt" w={1.2} hs={6} both />
+        <Text x={240} y={198} a="middle" s={13}>L</Text>
+        <Text x={240} y={130} a="middle" s={13} b>sol, section A</Text>
+        <Arrow x1={330} y1={220} x2={400} y2={220} c="water" w={2.2} hs={8} />
+        <Text x={410} y={224} s={12} c="water" b>Q</Text>
+      </g>
+    ),
+    notes: ['Le débit est proportionnel à la perte de charge par unité de longueur (gradient i) et à la perméabilité K du sol.'],
+    caption: 'Écoulement à travers un échantillon de sol.',
+  },
+  {
+    id: 'debit-darcy',
+    title: 'Débit à travers une couche',
+    steps: ['simple_examples'],
+    formula: ['Q = 10^{-5} \\times 0{,}02 \\times 500 = 10^{-4}\\ \\text{m}^3/\\text{s} = 0{,}36\\ \\text{m}^3/\\text{h}'],
+    h: 190,
+    draw: () => (
+      <g>
+        <Rect x={40} y={60} w={420} h={60} c="soil" sw={1.4} fill="pat:sand" />
+        {[80, 180, 280, 380].map(x => <Arrow key={x} x1={x} y1={90} x2={x + 60} y2={94} c="water" w={2} hs={7} />)}
+        <Text x={250} y={48} a="middle" s={12}>section A = 500 m², gradient i = 0,02</Text>
+        <Text x={250} y={150} a="middle" s={13} c="water" b>K = 10⁻⁵ m/s → 0,36 m³/h</Text>
+      </g>
+    ),
+    notes: ['Un sable fin peu perméable laisse passer peu d’eau, même sur une grande section.'],
+    caption: 'Application directe de Darcy à une nappe.',
+  },
+  {
+    id: 'vitesse-reelle',
+    title: 'Vitesse de Darcy et vitesse réelle',
+    steps: ['simple_examples'],
+    formula: ['v_r = \\frac{K\\,i}{n_e} = \\frac{10^{-4} \\times 0{,}01}{0{,}20} = 5 \\times 10^{-6}\\ \\text{m/s} \\approx 158\\ \\text{m/an}'],
+    h: 210,
+    draw: () => (
+      <g>
+        <Rect x={60} y={40} w={380} h={110} c="ink" sw={1.6} fill="paper" />
+        {Array.from({ length: 24 }, (_, i) => <Circle key={i} cx={80 + (i % 8) * 48} cy={60 + Math.floor(i / 8) * 36} r={16} c="soil" sw={1.4} fill="~soil" />)}
+        <Path d="M 60 78 Q 105 96 128 78 T 224 78 T 320 78 T 440 78" c="water" w={2.4} />
+        <Text x={250} y={176} a="middle" s={12}>{'l’eau ne passe que dans les pores (n_e = 20 %) : elle va 5 fois plus vite'}</Text>
+      </g>
+    ),
+    notes: ['C’est la vitesse réelle qui compte pour le transport d’une pollution : 158 m par an ici.'],
+    caption: 'Cheminement de l’eau entre les grains.',
+  },
+  {
+    id: 'puits-captive',
+    title: 'Puits en nappe captive (Thiem)',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['Q = \\frac{2\\pi K b\\,(H - h)}{\\ln(R/r)} = \\frac{2\\pi \\times 10^{-4} \\times 10 \\times 3}{\\ln 600} = 10{,}6\\ \\text{m}^3/\\text{h}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={20} y={70} w={460} h={30} c="soil" sw={0} fill="pat:clay" />
+        <Rect x={20} y={100} w={460} h={80} c="soil" sw={0} fill="pat:sand" />
+        <Rect x={20} y={180} w={460} h={30} c="soil" sw={0} fill="pat:clay" />
+        <Rect x={240} y={30} w={20} h={150} c="ink" sw={1.6} fill="paper" />
+        <Path d="M 20 50 Q 200 54 240 80" c="water" w={2.2} />
+        <Path d="M 480 50 Q 300 54 260 80" c="water" w={2.2} />
+        <Text x={60} y={44} s={12} c="water">niveau piézométrique</Text>
+        <Arrow x1={300} y1={101} x2={300} y2={179} c="txt" w={1.2} hs={5} both />
+        <Text x={306} y={144} s={12}>b = 10 m</Text>
+        <Text x={250} y={232} a="middle" s={12}>couche perméable confinée entre deux argiles</Text>
+      </g>
+    ),
+    notes: ['En nappe captive, l’aquifère reste saturé : seule la pression baisse autour du puits.'],
+    caption: 'Rabattement de 3 m avec un rayon d’influence de 90 m.',
+  },
+  {
+    id: 'sichardt-rayon',
+    title: 'Rayon d’influence d’un pompage',
+    steps: ['formulas'],
+    formula: ['R = 3\\,000\\,s\\,\\sqrt{K} = 3\\,000 \\times 4 \\times \\sqrt{5 \\times 10^{-4}} = 268\\ \\text{m}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={20} y={190} w={460} h={20} c="soil" sw={0} fill="pat:clay" />
+        <Rect x={20} y={60} w={460} h={130} c="soil" sw={0} fill="pat:sand" o={0.5} />
+        <Rect x={240} y={40} w={20} h={150} c="ink" sw={1.6} fill="paper" />
+        <Path d="M 20 70 Q 180 74 240 120" c="water" w={2.4} />
+        <Path d="M 480 70 Q 320 74 260 120" c="water" w={2.4} />
+        <Line x1={20} y1={70} x2={480} y2={70} c="water" w={1} dash="4 4" />
+        <Arrow x1={30} y1={50} x2={238} y2={50} c="red" w={1.4} hs={6} both />
+        <Text x={134} y={44} a="middle" s={12} c="red" b>R ≈ 268 m</Text>
+        <Arrow x1={270} y1={71} x2={270} y2={119} c="txt" w={1.2} hs={5} both />
+        <Text x={276} y={100} s={12}>s = 4 m</Text>
+      </g>
+    ),
+    notes: ['Le cône de rabattement s’étend d’autant plus loin que le sol est perméable et le rabattement grand : attention aux ouvrages voisins.'],
+    caption: 'Cône de rabattement autour d’un puits en nappe libre.',
+  },
+  {
+    id: 'essais-permeabilite',
+    title: 'Mesurer la perméabilité',
+    steps: ['theory'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[[20, 'perméamètre', 'laboratoire'], [140, 'Lefranc', 'sols, en forage'], [260, 'Lugeon', 'roches, en forage'], [380, 'pompage d’essai', 'échelle de l’ouvrage']].map(([x, t, d], k) => (
+          <g key={t}>
+            <Rect x={x} y={40} w={100} h={110} rx={6} c={k === 3 ? 'green' : 'ink'} sw={1.6} fill={k === 3 ? '~green' : '~grey'} />
+            <Rect x={x + 44} y={56} w={12} h={70} c="ink" sw={1.2} fill="paper" />
+            {k > 0 && <Rect x={x + 44} y={110} w={12} h={16} c="water" sw={0} fill="water" />}
+            <Text x={x + 50} y={170} a="middle" s={12} b>{t}</Text>
+            <Text x={x + 50} y={188} a="middle" s={11} c="mute">{d}</Text>
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['L’essai de pompage, plus coûteux, intègre l’hétérogénéité du terrain : c’est lui qui fiabilise le dimensionnement d’un rabattement.'],
+    caption: 'Du petit échantillon à l’essai en grand.',
+  },
+  {
+    id: 'parking-tourbe',
+    title: 'Rabattement de 8 m et tassements chez les voisins',
+    steps: ['real_examples'],
+    formula: ['\\Delta\\sigma\'_v = \\gamma_w\\,\\Delta h = 10 \\times 8 = 80\\ \\text{kPa}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={20} y={60} w={460} h={160} c="soil" sw={0} fill="pat:sand" o={0.5} />
+        <Rect x={60} y={130} w={120} h={20} c="soil" sw={0} fill="pat:clay" />
+        <Text x={120} y={145} a="middle" s={11} b>tourbe</Text>
+        <Rect x={60} y={30} w={100} h={30} c="ink" sw={1.6} fill="~grey" />
+        <Path d="M 100 30 l 6 10 l -4 8 l 6 10" c="red" w={2} />
+        <Rect x={300} y={60} w={160} h={110} c="ink" sw={2} fill="paper" />
+        <Text x={380} y={110} a="middle" s={12} b>parking 4 niveaux</Text>
+        <Line x1={20} y1={80} x2={300} y2={80} c="water" w={1.4} dash="4 4" />
+        <Path d="M 20 84 Q 220 90 300 168" c="water" w={2.4} />
+        <Text x={180} y={196} a="middle" s={12} c="red" b>tassements différentiels de plusieurs cm</Text>
+      </g>
+    ),
+    notes: ['La suite des travaux s’est faite avec des parois étanches ancrées dans le substratum et une réinjection d’eau à l’extérieur.'],
+    caption: 'Abaisser la nappe charge les sols compressibles : ils se consolident.',
   },
 ];
