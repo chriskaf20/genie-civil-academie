@@ -1,5 +1,6 @@
 // Plates — Module 2 · Thermodynamique & transferts de chaleur
 import { Arrow, Circle, Dim, Ground, Line, Path, Pin, Plot, Poly, Rect, Roller, Text } from '../../components/figures/ink.jsx';
+import { Bars, fnPts } from '../../components/figures/kit.jsx';
 
 // Heating 1 kg of ice from −10 °C to water at +20 °C (kJ cumulated).
 const Q1 = 2.1 * 10;
@@ -38,7 +39,7 @@ export default [
   {
     id: 'chaleur-latente',
     title: 'Chauffer de la glace : chaleur sensible et latente',
-    steps: ['formulas'],
+    steps: ['formulas', 'theory'],
     formula: ['Q = m\\,c\\,\\Delta T', 'Q_f = m\\,L_f = 334\\ \\text{kJ/kg}'],
     h: 300,
     draw: () => (
@@ -169,5 +170,132 @@ export default [
     ),
     notes: ['Sur une voie récemment travaillée, le ballast tient mal les traverses : on limite la vitesse par fortes chaleurs et on contrôle la température de libération des rails.'],
     caption: 'Les longs rails soudés ne peuvent pas s’allonger : la compression peut faire flamber la voie.',
+  },
+  {
+    id: 'coefficients-dilatation',
+    title: 'Coefficients de dilatation : pourquoi le béton armé fonctionne',
+    steps: ['theory'],
+    formula: ['\\Delta L = \\alpha\\,L\\,\\Delta T'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Bars x={50} y={30} w={230} h={170} max={25} ticks={[10, 20]} unit="α (×10⁻⁶ /°C)" bars={[
+          { label: 'béton', v: 10, c: 'grey' },
+          { label: 'acier', v: 12, c: 'ink' },
+          { label: 'aluminium', v: 23, c: 'orange' },
+        ]} />
+        <Rect x={320} y={70} w={150} h={90} c="ink" sw={2} fill="pat:concrete" />
+        {[340, 380, 420, 450].map(x => <Circle key={x} cx={x} cy={140} r={6} c="ink" sw={1.4} fill="txt" />)}
+        <Text x={395} y={60} a="middle" s={12} b>béton armé</Text>
+        <Text x={395} y={186} a="middle" s={12}>{'acier et béton s’allongent\npresque autant :\npas de contraintes internes'}</Text>
+      </g>
+    ),
+    notes: ['L’aluminium se dilate deux fois plus que le béton : les façades et menuiseries aluminium doivent pouvoir glisser sur leurs fixations.'],
+    caption: 'Ordres de grandeur des coefficients de dilatation des matériaux courants.',
+  },
+  {
+    id: 'convection-rayonnement',
+    title: 'Convection et rayonnement',
+    steps: ['theory', 'formulas'],
+    formula: ['\\Phi = h\\,A\\,(T_s - T_f)', '\\Phi = \\varepsilon\\,\\sigma\\,A\\,T^4 \\quad (T\\ \\text{en kelvins})'],
+    h: 290,
+    draw: () => (
+      <g>
+        <Text x={110} y={26} a="middle" s={13} b>convection</Text>
+        <Rect x={150} y={40} w={24} h={200} c="ink" sw={2} fill="pat:concrete" />
+        {[200, 150, 100].map(y => <Path key={y} d={`M 130 ${y + 30} Q 112 ${y + 10} 130 ${y - 10}`} c="red" w={2} />)}
+        {[60, 110, 160, 210].map(y => <Arrow key={y} x1={136} y1={y + 18} x2={136} y2={y} c="red" w={1.8} hs={6} />)}
+        <Text x={110} y={262} a="middle" s={12}>{'h ≈ 8 W/m²K à l’intérieur,\n≈ 25 à l’extérieur venté'}</Text>
+        <Text x={60} y={150} a="middle" s={12} c="red">{'air chaud\nqui monte'}</Text>
+        <Plot x={270} y={40} w={200} h={180} xr={[0, 800]} yr={[0, 70]} yl="kW/m²"
+          xt={[[20, '20'], [400, '400'], [800, '800 °C']]} yt={[[10, '10'], [40, '40'], [67.6, '68']]} grid
+        >
+          {(sx, sy) => (
+            <g>
+              <Poly pts={fnPts(t => (0.9 * 5.67e-8 * (t + 273) ** 4) / 1000, 0, 800, sx, sy, 60)} c="orange" w={2.8} />
+              <Text x={sx(80)} y={sy(58)} s={12} c="orange" b>{'rayonnement ∝ T⁴'}</Text>
+              <Text x={sx(560)} y={sy(15)} a="middle" s={11} c="mute">{'20 °C : 0,38\n800 °C : 68 kW/m²'}</Text>
+            </g>
+          )}
+        </Plot>
+      </g>
+    ),
+    notes: ['Le rayonnement croît comme la puissance 4 de la température absolue : négligeable à 20 °C, il domine les échanges dans un incendie.'],
+    caption: 'La convection emporte la chaleur par l’air en mouvement ; le rayonnement la transmet sans contact.',
+  },
+  {
+    id: 'gradient-courbure',
+    title: 'Gradient de température : la dalle se courbe',
+    steps: ['diagrams'],
+    formula: ['\\kappa = \\frac{\\alpha\\,\\Delta T_{gradient}}{h}'],
+    h: 260,
+    draw: () => (
+      <g>
+        {[40, 80, 120, 160, 200].map(x => <Arrow key={x} x1={x + 20} y1={20} x2={x} y2={60} c="orange" w={1.8} hs={6} />)}
+        <Text x={250} y={34} s={12} c="orange" b>soleil sur le dessus</Text>
+        <Rect x={30} y={90} w={300} h={30} c="grey" sw={1.4} fill="none" dash="5 4" />
+        <Path d="M 30 112 Q 180 50 330 112 L 330 142 Q 180 80 30 142 Z" c="ink" w={2.2} fill="pat:concrete" />
+        <Text x={180} y={170} a="middle" s={12}>la face chaude s’allonge : la dalle bombe vers le haut</Text>
+        <Line x1={400} y1={80} x2={400} y2={140} c="txt" w={1.4} />
+        <Poly pts={[[400, 80], [460, 80], [410, 140], [400, 140]]} c="red" w={1.8} fill="~red" close />
+        <Text x={466} y={86} s={12} c="red" b>+15 °C</Text>
+        <Text x={414} y={156} s={12}>+5 °C</Text>
+        <Text x={430} y={190} a="middle" s={12} c="mute">{'profil dans\nl’épaisseur'}</Text>
+        <Text x={180} y={226} a="middle" s={12} c="red">{'si la courbure est empêchée (poutre continue) :\napparition de moments de flexion'}</Text>
+      </g>
+    ),
+    notes: ['Une différence de température entre les faces crée une courbure ; libre, la dalle se déforme ; bridée, elle se met en flexion et peut fissurer.'],
+    caption: 'Le gradient thermique dans l’épaisseur est une action à part entière dans le calcul des ponts.',
+  },
+  {
+    id: 'gel-volume',
+    title: 'Le gel de l’eau dans les pores',
+    steps: ['diagrams'],
+    formula: ['V_{glace} \\approx 1{,}09\\,V_{eau}'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[[90, 'pore saturé', 'water', '~water'], [250, 'l’eau gèle : +9 %', 'water', 'paper'], [410, 'microfissures', 'red', 'paper']].map(([x, t, c, f], k) => (
+          <g key={x}>
+            <Rect x={x - 70} y={50} w={140} h={120} c="ink" sw={1.6} fill="pat:concrete" />
+            <Circle cx={x} cy={110} r={k === 0 ? 30 : 33} c={c} sw={2} fill={f} />
+            {k > 0 && <Poly pts={Array.from({ length: 6 }, (_, i) => [x + 22 * Math.cos((i * Math.PI) / 3), 110 + 22 * Math.sin((i * Math.PI) / 3)])} c="water" w={1.6} fill="~water" close />}
+            {k === 1 && [0, 1, 2, 3].map(i => <Arrow key={i} x1={x + 34 * Math.cos(i * Math.PI / 2)} y1={110 + 34 * Math.sin(i * Math.PI / 2)} x2={x + 50 * Math.cos(i * Math.PI / 2)} y2={110 + 50 * Math.sin(i * Math.PI / 2)} c="red" w={2} hs={6} />)}
+            {k === 2 && <Path d={`M ${x + 30} 98 l 14 -10 l 6 8 l 14 -12 M ${x - 30} 124 l -12 8 l -6 -6 l -14 10`} c="red" w={2} />}
+            <Text x={x} y={196} a="middle" s={12} c={k === 2 ? 'red' : 'txt'} b>{t}</Text>
+          </g>
+        ))}
+        <Arrow x1={164} y1={110} x2={176} y2={110} c="ink" w={1.6} hs={6} />
+        <Arrow x1={324} y1={110} x2={336} y2={110} c="ink" w={1.6} hs={6} />
+      </g>
+    ),
+    notes: ['Répétés à chaque hiver, les cycles de gel-dégel dégradent les matériaux poreux saturés : d’où les bétons à air entraîné en classe XF.'],
+    caption: 'La glace occupe plus de volume que l’eau : elle pousse sur les parois des pores.',
+  },
+  {
+    id: 'retrait-fluage',
+    title: 'Souffle du joint : température, retrait et fluage',
+    steps: ['stepbystep'],
+    formula: ['\\text{souffle} \\approx 66 + (24 \\text{ à } 48) \\Rightarrow 100 \\text{ à } 120\\ \\text{mm}'],
+    h: 210,
+    draw: () => {
+      const k = 3;
+      return (
+        <g>
+          <Rect x={40} y={70} w={36 * k} h={34} c="water" sw={1.6} fill="~water" />
+          <Rect x={40 + 36 * k} y={70} w={30 * k} h={34} c="red" sw={1.6} fill="~red" />
+          <Rect x={40 + 66 * k} y={70} w={24 * k} h={34} c="grey" sw={1.6} fill="~grey" />
+          <Rect x={40 + 90 * k} y={70} w={24 * k} h={34} c="grey" sw={1.6} fill="~grey" dash="5 4" />
+          <Text x={40 + 18 * k} y={92} a="middle" s={12} c="water" b>ouverture 36</Text>
+          <Text x={40 + 51 * k} y={92} a="middle" s={12} c="red" b>fermeture 30</Text>
+          <Text x={40 + 90 * k} y={92} a="middle" s={12} b>retrait + fluage 24 à 48</Text>
+          <Text x={40} y={56} s={12}>déplacements du tablier de 120 m (mm)</Text>
+          <Arrow x1={40} y1={130} x2={40 + 114 * k} y2={130} c="txt" w={1.2} hs={6} both />
+          <Text x={40 + 57 * k} y={150} a="middle" s={13} c="green" b>joint de 100 à 120 mm de souffle</Text>
+        </g>
+      );
+    },
+    notes: ['En béton, le retrait et le fluage raccourcissent définitivement le tablier : ils s’ajoutent à l’ouverture thermique du joint.'],
+    caption: 'Le souffle d’un joint de chaussée cumule les effets thermiques et différés.',
   },
 ];

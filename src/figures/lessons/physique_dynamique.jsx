@@ -1,6 +1,7 @@
 // Plates — Module 2 · Dynamique des corps, énergie, chocs et oscillations
 import { Arrow, Circle, Dim, Fixed, Ground, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/ink.jsx';
 import { Bars, Car, Person, Truck } from '../../components/figures/kit.jsx';
+import { Dot } from '../../components/figures/kit.jsx';
 
 const amp = z => r => 1 / Math.sqrt((1 - r * r) ** 2 + (2 * z * r) ** 2);
 
@@ -55,7 +56,7 @@ export default [
   {
     id: 'choc-voiture',
     title: 'Choc d’une voiture sur un poteau',
-    steps: ['stepbystep'],
+    steps: ['stepbystep', 'formulas'],
     formula: ['E_c = \\tfrac12 \\times 1\\,500 \\times 13{,}9^2 = 145\\ \\text{kJ}', 'F = \\frac{E_c}{d} = 290\\ \\text{kN}'],
     h: 280,
     draw: () => (
@@ -159,5 +160,133 @@ export default [
     ),
     notes: ['La dynamique ajoute des efforts (accélération), des distances (freinage) et des risques de résonance (fréquences propres).'],
     caption: 'Trois applications directes de la mécanique du mouvement sur un chantier ou un ouvrage.',
+  },
+  {
+    id: 'mua-graphes',
+    title: 'Mouvement uniformément accéléré : le freinage',
+    steps: ['theory'],
+    formula: ['v = v_0 + a\\,t \\qquad x = v_0 t + \\tfrac{1}{2} a t^2 \\qquad v^2 = v_0^2 + 2 a x'],
+    h: 290,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={200} xr={[0, 6]} yr={[0, 30]} yl="v (m/s)"
+        xt={[0, 1, 2, 3, 4, 5, 6].map(v => [v, `${v} s`])} yt={[[25, '25'], [12.5, '12,5']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={[[sx(0), sy(0)], [sx(0), sy(25)], [sx(5), sy(0)]]} c="water" w={0} fill="~water" close />
+            <Line x1={sx(0)} y1={sy(25)} x2={sx(5)} y2={sy(0)} c="red" w={3} />
+            <Text x={sx(1.6)} y={sy(7)} a="middle" s={14} c="water" b>{'aire = distance\n= 62,5 m'}</Text>
+            <Text x={sx(2.6)} y={sy(15)} s={13} c="red" b>{'pente = a = −5 m/s²'}</Text>
+            <Dot x={sx(5)} y={sy(0)} r={5} c="red" />
+            <Text x={sx(5)} y={sy(0) - 12} a="middle" s={12} c="red">arrêt à 5 s</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Sur le graphe de la vitesse, la pente est l’accélération et l’aire sous la courbe est la distance parcourue.'],
+    caption: 'Camion à 90 km/h (25 m/s) freinant à 5 m/s² : arrêt en 5 s sur 62,5 m.',
+  },
+  {
+    id: 'energie-chute',
+    title: 'Énergie potentielle devenue énergie cinétique',
+    steps: ['theory'],
+    formula: ['E_p = m\\,g\\,h = 3\\,000 \\times 9{,}81 \\times 1{,}5 = 44\\ \\text{kJ} \\qquad v = \\sqrt{2gh} = 5{,}4\\ \\text{m/s}'],
+    h: 290,
+    draw: () => (
+      <g>
+        <Rect x={20} y={230} w={300} h={50} c="soil" sw={0} fill="pat:soil" />
+        <Line x1={20} y1={230} x2={320} y2={230} c="ink" w={2} />
+        <Line x1={130} y1={20} x2={130} y2={230} c="ink" w={3} />
+        <Line x1={210} y1={20} x2={210} y2={230} c="ink" w={3} />
+        <Rect x={140} y={40} w={60} h={50} c="ink" sw={2.2} fill="~grey" />
+        <Text x={170} y={70} a="middle" s={13} b>3 t</Text>
+        <Rect x={150} y={160} w={40} h={120} c="ink" sw={2} fill="pat:concrete" />
+        <Arrow x1={170} y1={94} x2={170} y2={152} c="red" w={2.4} hs={9} dash="6 4" />
+        <Arrow x1={240} y1={91} x2={240} y2={159} c="txt" w={1.2} hs={5} both />
+        <Text x={246} y={130} s={13} b>h = 1,5 m</Text>
+        <Text x={110} y={190} a="end" s={12}>pieu</Text>
+        <Rect x={360} y={60} w={40} h={140} c="water" sw={1.6} fill="~water" />
+        <Rect x={420} y={60} w={40} h={140} c="red" sw={1.6} fill="~red" />
+        <Text x={380} y={218} a="middle" s={12} c="water" b>{'E_p\nen haut'}</Text>
+        <Text x={440} y={218} a="middle" s={12} c="red" b>{'E_c\nà l’impact'}</Text>
+        <Text x={410} y={46} a="middle" s={12}>44 kJ = 44 kJ</Text>
+      </g>
+    ),
+    notes: ['Sans pertes, toute l’énergie de position du mouton se retrouve en énergie de mouvement au moment du choc sur la tête du pieu.'],
+    caption: 'Battage d’un pieu : la masse lâchée de 1,5 m frappe à 5,4 m/s.',
+  },
+  {
+    id: 'impulsion-duree',
+    title: 'Même impulsion, durées différentes',
+    steps: ['theory', 'formulas'],
+    formula: ['F\\,\\Delta t = m\\,\\Delta v = 30\\,000 \\times 13{,}9 = 417\\ \\text{kN·s}'],
+    h: 290,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={200} xr={[0, 0.25]} yr={[0, 11]} yl="F (MN)"
+        xt={[[0.043, '0,043 s'], [0.1, '0,1'], [0.216, '0,216 s']]} yt={[[1.93, '1,9'], [9.7, '9,7']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Rect x={sx(0)} y={sy(9.7)} w={sx(0.043) - sx(0)} h={sy(0) - sy(9.7)} c="red" sw={2} fill="~red" />
+            <Rect x={sx(0)} y={sy(1.93)} w={sx(0.216) - sx(0)} h={sy(0) - sy(1.93)} c="green" sw={2} fill="~green" o={0.8} />
+            <Text x={sx(0.05)} y={sy(9.2)} s={13} c="red" b>choc direct : 9,7 MN</Text>
+            <Text x={sx(0.11)} y={sy(3.2)} s={13} c="green" b>avec absorbeur : 1,9 MN</Text>
+            <Text x={sx(0.24)} y={sy(6)} a="end" s={12} c="mute">{'aires égales :\nmême impulsion'}</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['L’impulsion à fournir est fixée par la masse et la vitesse ; l’allonger dans le temps réduit la force : c’est le rôle des absorbeurs et des glissières.'],
+    caption: 'Poids lourd de 30 t à 50 km/h contre une pile : force moyenne selon la durée du choc.',
+  },
+  {
+    id: 'fleche-frequence',
+    title: 'Fréquence propre d’après la flèche statique',
+    steps: ['formulas'],
+    formula: ['f_0 \\approx \\frac{15{,}8}{\\sqrt{\\delta_{st}\\,[\\text{mm}]}}'],
+    h: 290,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={200} xr={[0, 30]} yr={[0, 18]} yl="f₀ (Hz)"
+        xt={[0, 6, 10, 20, 30].map(v => [v, `${v}`])} yt={[[2, '2'], [5, '5'], [6.5, '6,5'], [15, '15']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Rect x={sx(0)} y={sy(2.4)} w={sx(30) - sx(0)} h={sy(1.6) - sy(2.4)} c="orange" sw={0} fill="~orange" />
+            <Rect x={sx(0)} y={sy(4.8)} w={sx(30) - sx(0)} h={sy(3.2) - sy(4.8)} c="orange" sw={0} fill="~orange" o={0.5} />
+            <Text x={sx(29.5)} y={sy(2.0) + 4} a="end" s={11} c="orange" b>marche</Text>
+            <Text x={sx(29.5)} y={sy(4.0) + 4} a="end" s={11} c="orange">2ᵉ harmonique</Text>
+            <Poly pts={fnPts(d => Math.min(18, 15.8 / Math.sqrt(d)), 0.8, 30, sx, sy, 80)} c="ink" w={2.8} />
+            <Dot x={sx(6)} y={sy(6.5)} r={6} c="green" />
+            <Text x={sx(6.8)} y={sy(7.6)} s={12} c="green" b>plancher : 6 mm → 6,5 Hz</Text>
+            <Text x={sx(29.5)} y={sy(12)} a="end" s={12} c="mute">flèche sous charges permanentes (mm) →</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Une structure souple (grande flèche) vibre lentement : au-delà de 10 mm de flèche, on approche de la zone des harmoniques de la marche.'],
+    caption: 'Une simple flèche statique donne un ordre de grandeur de la fréquence propre.',
+  },
+  {
+    id: 'charge-brutale',
+    title: 'Charge appliquée brutalement : coefficient 2',
+    steps: ['diagrams'],
+    formula: ['u_{max} = 2\\,u_{st} \\quad (\\text{charge appliquée d’un coup, sans amortissement})'],
+    h: 290,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={200} xr={[0, 2]} yr={[0, 2.2]} yl="u / u_{st}"
+        xt={[[0.5, 'T₀/2'], [1, 'T₀'], [2, '2T₀']]} yt={[[1, '1'], [2, '2']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={fnPts(t => 1 - Math.cos(2 * Math.PI * t), 0, 2, sx, sy, 120)} c="red" w={2.8} />
+            <Poly pts={fnPts(t => Math.min(1, t / 1.2) - (t < 1.2 ? 0 : 0), 0, 2, sx, sy, 40)} c="green" w={2.4} dash="7 4" />
+            <Text x={sx(0.52)} y={sy(2.08)} s={13} c="red" b>appliquée d’un coup</Text>
+            <Text x={sx(1.3)} y={sy(0.8)} s={13} c="green" b>appliquée lentement</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Une charge posée brusquement (sans choc) produit un déplacement maximal double du déplacement statique ; l’amortissement réduit ensuite les oscillations.'],
+    caption: 'Réponse d’une structure à une charge constante appliquée instantanément ou progressivement.',
   },
 ];

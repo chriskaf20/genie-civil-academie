@@ -1,6 +1,7 @@
 // Plates — Module 2 · Physique fondamentale, dilatation & transferts thermiques
 import { Arrow, Dim, Fixed, Line, Plot, Poly, Rect, Text } from '../../components/figures/ink.jsx';
 import { Path } from '../../components/figures/kit.jsx';
+import { Angle, Building, Car } from '../../components/figures/kit.jsx';
 
 // Wall of the example: 20 cm concrete (inside) + 12 cm glass wool (outside), 20 °C inside, 0 °C outside.
 const LAYERS = [
@@ -15,7 +16,7 @@ export default [
   {
     id: 'dilatation-libre-empechee',
     title: 'Dilatation libre ou empêchée',
-    steps: ['theory'],
+    steps: ['theory', 'formulas', 'diagrams'],
     formula: ['\\Delta L = \\alpha\\, L_0\\, \\Delta T', '\\sigma = E\\, \\alpha\\, \\Delta T'],
     h: 300,
     draw: () => (
@@ -44,7 +45,7 @@ export default [
   {
     id: 'profil-temperature-mur',
     title: 'Profil de température dans un mur isolé',
-    steps: ['formulas'],
+    steps: ['formulas', 'diagrams'],
     formula: ['R_{tot} = R_{si} + \\sum \\frac{e_i}{\\lambda_i} + R_{se} = 4{,}05', 'U = \\frac{1}{R_{tot}} = 0{,}25\\ \\text{W/m}^2\\text{K}'],
     h: 320,
     draw: () => {
@@ -186,5 +187,155 @@ export default [
     ),
     notes: ['Le tablier est bloqué vers son milieu : chaque culée reçoit un joint capable d’environ 0,9 m de déplacement, plus les marges de pose.'],
     caption: 'Sans joints dimensionnés pour ces mouvements, le tablier pousserait sur les culées.',
+  },
+  {
+    id: 'newton-inertie',
+    title: '1ʳᵉ loi de Newton : l’inertie',
+    steps: ['theory'],
+    formula: ['\\sum \\vec{F}_{ext} = \\vec{0} \\iff \\text{repos ou mouvement rectiligne uniforme}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Text x={120} y={26} a="middle" s={13} b>au repos</Text>
+        <Line x1={30} y1={160} x2={210} y2={160} c="ink" w={2} />
+        <Rect x={80} y={110} w={80} h={50} c="ink" sw={2} fill="~grey" />
+        <Arrow x1={120} y1={135} x2={120} y2={200} c="red" w={2.6} hs={9} />
+        <Arrow x1={120} y1={160} x2={120} y2={92} c="green" w={2.6} hs={9} />
+        <Text x={128} y={198} s={13} c="red" b>P</Text>
+        <Text x={128} y={98} s={13} c="green" b>R = P</Text>
+        <Text x={360} y={26} a="middle" s={13} b>à vitesse constante</Text>
+        <Line x1={250} y1={160} x2={480} y2={160} c="ink" w={2} />
+        <Car x={320} y={160} w={80} />
+        <Arrow x1={410} y1={140} x2={470} y2={140} c="green" w={2.6} hs={9} />
+        <Arrow x1={310} y1={140} x2={260} y2={140} c="red" w={2.6} hs={9} />
+        <Text x={472} y={128} a="end" s={12} c="green" b>traction</Text>
+        <Text x={258} y={128} s={12} c="red" b>frottements</Text>
+        <Text x={360} y={196} a="middle" s={12}>forces égales : ΣF = 0</Text>
+      </g>
+    ),
+    notes: ['Sans force résultante, rien ne change : l’objet reste immobile ou garde sa vitesse. C’est le cas de toutes les structures en équilibre statique.'],
+    caption: 'Repos et mouvement uniforme : deux états où la somme des forces est nulle.',
+  },
+  {
+    id: 'newton-pfd',
+    title: '2ᵉ loi : le principe fondamental de la dynamique',
+    steps: ['theory'],
+    formula: ['\\sum \\vec{F} = m\\,\\vec{a} \\Rightarrow T - m g = m a \\Rightarrow T = m\\,(g + a)'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Line x1={160} y1={20} x2={160} y2={110} c="ink" w={2.2} />
+        <Rect x={115} y={110} w={90} h={60} c="ink" sw={2.2} fill="~grey" />
+        <Text x={160} y={146} a="middle" s={14} b>m = 2 t</Text>
+        <Arrow x1={180} y1={110} x2={180} y2={40} c="green" w={3} hs={10} />
+        <Text x={188} y={56} s={13} c="green" b>T = 20,6 kN</Text>
+        <Arrow x1={160} y1={170} x2={160} y2={232} c="red" w={3} hs={10} />
+        <Text x={168} y={228} s={13} c="red" b>mg = 19,6 kN</Text>
+        <Arrow x1={250} y1={170} x2={250} y2={110} c="water" w={2.4} hs={9} />
+        <Text x={258} y={146} s={13} c="water" b>a = 0,5 m/s²</Text>
+        <Text x={340} y={90} s={13}>{'la charge accélère\nvers le haut :\nT doit dépasser\nle poids'}</Text>
+      </g>
+    ),
+    notes: ['La différence entre la tension et le poids est ce qui accélère la charge : à l’arrêt ou à vitesse constante, on aurait T = mg.'],
+    caption: 'Levage d’une charge : la force résultante est égale à la masse fois l’accélération.',
+  },
+  {
+    id: 'newton-action-reaction',
+    title: '3ᵉ loi : action et réaction',
+    steps: ['theory'],
+    formula: ['\\vec{F}_{B/A} = -\\vec{F}_{A/B}'],
+    h: 262,
+    draw: () => (
+      <g>
+        <Rect x={60} y={150} w={50} h={80} c="ink" sw={2} fill="pat:brick" />
+        <Rect x={390} y={150} w={50} h={80} c="ink" sw={2} fill="pat:brick" />
+        <Rect x={60} y={90} w={380} h={22} c="ink" sw={2.2} fill="~ink" />
+        <Text x={250} y={84} a="middle" s={13} b>poutre (A)</Text>
+        {[85, 415].map(x => (
+          <g key={x}>
+            <Arrow x1={x} y1={112} x2={x} y2={146} c="red" w={2.6} hs={9} />
+            <Arrow x1={x} y1={150} x2={x + 0.01} y2={116} c="green" w={2.6} hs={9} />
+          </g>
+        ))}
+        <Text x={120} y={140} s={12} c="red" b>la poutre appuie sur le mur</Text>
+        <Text x={120} y={128} s={12} c="green" b>le mur repousse la poutre</Text>
+        <Text x={85} y={252} a="middle" s={12}>mur (B)</Text>
+        <Text x={250} y={200} a="middle" s={12} c="mute">{'deux forces égales et opposées,\nappliquées à deux corps différents'}</Text>
+      </g>
+    ),
+    notes: ['C’est le principe des réactions d’appui : la charge descend dans la poutre, la poutre charge le mur, le mur charge la fondation, la fondation charge le sol.'],
+    caption: 'Chaque appui transmet une action ; il reçoit en retour une réaction égale et opposée.',
+  },
+  {
+    id: 'fourier-conduction',
+    title: 'Conduction : loi de Fourier',
+    steps: ['theory'],
+    formula: ['Q = \\frac{\\lambda\\,A\\,(T_{int} - T_{ext})}{e} = \\frac{1{,}6 \\times 10 \\times 20}{0{,}20} = 1\\,600\\ \\text{W}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={20} y={40} w={170} h={170} c="red" sw={0} fill="~red" />
+        <Rect x={310} y={40} w={170} h={170} c="water" sw={0} fill="~water" />
+        <Rect x={190} y={40} w={120} h={170} c="ink" sw={2.2} fill="pat:concrete" />
+        <Line x1={60} y1={70} x2={190} y2={70} c="red" w={3} />
+        <Line x1={190} y1={70} x2={310} y2={170} c="red" w={3} />
+        <Line x1={310} y1={170} x2={440} y2={170} c="water" w={3} />
+        <Text x={60} y={62} s={13} c="red" b>{'T_{int} = 20 °C'}</Text>
+        <Text x={440} y={190} a="end" s={13} c="water" b>{'T_{ext} = 0 °C'}</Text>
+        {[100, 130, 160].map(y => <Arrow key={y} x1={110} y1={y} x2={390} y2={y} c="orange" w={1.8} hs={8} dash="6 4" />)}
+        <Text x={250} y={232} a="middle" s={13} b>{'e = 0,20 m ; λ = 1,6 W/m·K ; A = 10 m²'}</Text>
+        <Text x={400} y={92} a="middle" s={12} c="orange" b>flux Q</Text>
+      </g>
+    ),
+    notes: ['La température chute linéairement dans un matériau homogène ; plus λ est faible (isolant), plus la chute est concentrée et le flux réduit.'],
+    caption: 'La chaleur traverse la paroi du chaud vers le froid, proportionnellement à λ et à l’écart de température.',
+  },
+  {
+    id: 'pression-vent',
+    title: 'Pression dynamique du vent',
+    steps: ['formulas'],
+    formula: ['q_p(z) = \\tfrac{1}{2}\\,\\rho\\,v_b^2\\,c_e(z) = \\tfrac{1}{2} \\times 1{,}225 \\times 26^2 \\times c_e(z) = 414\\,c_e(z)\\ \\text{Pa}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Building x={260} y={250} w={110} floors={8} fh={26} />
+        <Line x1={20} y1={250} x2={480} y2={250} c="ink" w={2} />
+        {[230, 190, 150, 110, 70].map((y, k) => {
+          const len = 60 + 22 * Math.log(1 + k * 1.4) * 2;
+          return <Arrow key={y} x1={250 - len} y1={y} x2={252} y2={y} c="water" w={2.4} hs={8} />;
+        })}
+        <Text x={60} y={50} s={13} c="water" b>vent</Text>
+        <Text x={390} y={84} s={12}>{'c_e(z) augmente\navec la hauteur'}</Text>
+        <Text x={390} y={170} s={12}>{'à 10 m, c_e ≈ 2 :\nq_p ≈ 830 Pa'}</Text>
+      </g>
+    ),
+    notes: ['La pression croît comme le carré de la vitesse ; près du sol, la rugosité du terrain freine le vent, d’où le coefficient d’exposition $c_e(z)$.'],
+    caption: 'Profil du vent sur une façade : plus haut, plus rapide, plus de pression.',
+  },
+  {
+    id: 'plan-incline',
+    title: 'Poids sur un plan incliné',
+    steps: ['diagrams'],
+    formula: ['P_{//} = P\\sin\\alpha \\qquad P_{\\perp} = P\\cos\\alpha'],
+    h: 250,
+    draw: () => {
+      const a = (30 * Math.PI) / 180;
+      const G = [235, 120];
+      return (
+        <g>
+          <Poly pts={[[40, 220], [420, 220], [420, 220 - 380 * Math.tan(a)]]} c="ink" w={2.2} fill="pat:soil" close />
+          <Poly pts={[[200, 220 - 160 * Math.tan(a)], [270, 220 - 230 * Math.tan(a)], [270 - 30 * Math.sin(a) * 2, 220 - 230 * Math.tan(a) - 60 * Math.cos(a)], [200 - 30 * Math.sin(a) * 2, 220 - 160 * Math.tan(a) - 60 * Math.cos(a)]]} c="ink" w={2} fill="~grey" close />
+          <Arrow x1={G[0]} y1={G[1]} x2={G[0]} y2={G[1] + 90} c="red" w={3} hs={10} />
+          <Text x={G[0] + 6} y={G[1] + 96} s={14} c="red" b>P</Text>
+          <Arrow x1={G[0]} y1={G[1]} x2={G[0] - 90 * Math.sin(a) * Math.cos(a)} y2={G[1] + 90 * Math.sin(a) * Math.sin(a)} c="orange" w={2.6} hs={9} />
+          <Text x={G[0] - 50} y={G[1] + 6} a="end" s={13} c="orange" b>P sin α</Text>
+          <Arrow x1={G[0]} y1={G[1]} x2={G[0] + 90 * Math.cos(a) * Math.sin(a)} y2={G[1] + 90 * Math.cos(a) * Math.cos(a)} c="water" w={2.6} hs={9} />
+          <Text x={G[0] + 44} y={G[1] + 70} s={13} c="water" b>P cos α</Text>
+          <Angle cx={40} cy={220} r={80} a1={-30} a2={0} label="α" c="ink" s={15} />
+        </g>
+      );
+    },
+    notes: ['La composante parallèle fait glisser, la composante normale plaque contre le plan et mobilise le frottement.'],
+    caption: 'Décomposition du poids selon la pente et sa normale.',
   },
 ];
