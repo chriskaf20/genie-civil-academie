@@ -1,5 +1,6 @@
 // Plates — Module 7 · Formulation des bétons
 import { Arrow, Circle, Dot, Line, Plot, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { fnPts } from '../../components/figures/kit.jsx';
 
 const lg = Math.log10;
 const lx = d => lg(d / 0.08); // abscissa: log of the sieve size, 0 at 0,08 mm
@@ -164,5 +165,109 @@ export default [
     ),
     notes: ['La spécification est dictée par la durabilité (gel et sels), bien plus que par la résistance mécanique.'],
     caption: 'Enrobage, espacement, granulat, air entraîné : chaque terme de la commande a une raison.',
+  },
+  {
+    id: 'resistance-visee',
+    title: 'Résistance visée : viser au-dessus de la résistance caractéristique',
+    steps: ['theory'],
+    formula: ['f_{c,visée} \\approx 1{,}15\\,f_{ck} = 1{,}15 \\times 30 = 34{,}5\\ \\text{MPa}'],
+    h: 270,
+    draw: () => {
+      const pdf = x => Math.exp(-((x - 34.5) ** 2) / (2 * 2.74 * 2.74));
+      return (
+        <Plot x={60} y={30} w={390} h={180} xr={[24, 44]} yr={[0, 1.1]} yl="fréquence"
+          xt={[[30, '30 (f_{ck})'], [34.5, '34,5']]} yt={[]}
+        >
+          {(sx, sy) => (
+            <g>
+              <Poly pts={[[sx(24), sy(0)], ...fnPts(pdf, 24, 30, sx, sy, 30).slice(1), [sx(30), sy(0)]]} c="red" w={0} fill="~red" close />
+              <Poly pts={fnPts(pdf, 24, 44, sx, sy, 80)} c="ink" w={2.6} />
+              <Line x1={sx(34.5)} y1={sy(0)} x2={sx(34.5)} y2={sy(1)} c="green" w={2} dash="6 4" />
+              <Text x={sx(35)} y={sy(1.04)} s={12} c="green" b>moyenne visée</Text>
+              <Text x={sx(27.5)} y={sy(0.18)} a="middle" s={11} c="red" b>5 %</Text>
+              <Text x={sx(43.5)} y={sy(0.6)} a="end" s={11} c="mute">{'dispersion de\nla production'}</Text>
+            </g>
+          )}
+        </Plot>
+      );
+    },
+    notes: ['La production étant dispersée, il faut viser une moyenne plus haute pour que 95 % des résultats dépassent $f_{ck}$.'],
+    caption: 'Majoration de Dreux : environ 15 % au-dessus de la résistance caractéristique.',
+  },
+  {
+    id: 'limites-en206',
+    title: 'Limites de composition par classe d’exposition',
+    steps: ['theory', 'simple_examples'],
+    h: 270,
+    draw: () => {
+      const rows = [['XC1', '0,65', '260'], ['XC2', '0,60', '280'], ['XC3', '0,55', '280'], ['XC4', '0,50', '300'], ['XF4', '0,45', '340'], ['XS3', '0,45', '340']];
+      return (
+        <g>
+          <Rect x={60} y={20} w={380} h={30} c="ink" sw={1.4} fill="~grey" />
+          {[['classe', 110], ['E/C max', 250], ['C min (kg/m³)', 380]].map(([t, x]) => <Text key={t} x={x} y={40} a="middle" s={12} b>{t}</Text>)}
+          {rows.map(([c, e, m], i) => (
+            <g key={c}>
+              <Rect x={60} y={50 + i * 30} w={380} h={30} c="grey" sw={0.8} fill={i === 2 ? '~green' : i === 3 ? '~red' : 'paper'} />
+              <Text x={110} y={70 + i * 30} a="middle" s={12} b>{c}</Text>
+              <Text x={250} y={70 + i * 30} a="middle" s={12}>{e}</Text>
+              <Text x={380} y={70 + i * 30} a="middle" s={12}>{m}</Text>
+            </g>
+          ))}
+          <Text x={250} y={250} a="middle" s={12}>{'C = 320 kg, E = 176 L : E/C = 0,55 → admis en XC3, refusé en XC4'}</Text>
+        </g>
+      );
+    },
+    notes: ['Valeurs recommandées par l’EN 206 (annexe F) ; l’annexe nationale peut les adapter. La durabilité fixe souvent le dosage plus que la résistance.'],
+    caption: 'E/C maximal et dosage minimal en ciment selon l’environnement.',
+  },
+  {
+    id: 'bolomey-g05',
+    title: 'Résistance prévue par Bolomey',
+    steps: ['simple_examples'],
+    formula: ['f_c = G\\,\\sigma\'_c\\left(\\frac{C}{E} - 0{,}5\\right) = 0{,}5 \\times 55 \\times (2{,}0 - 0{,}5) = 41\\ \\text{MPa}'],
+    h: 270,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={180} xr={[1.2, 2.6]} yr={[0, 60]} yl="MPa"
+        xt={[[1.5, '1,5'], [2, '2,0'], [2.5, '2,5']]} yt={[[20, '20'], [41.25, '41'], [60, '60']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={fnPts(x => 27.5 * (x - 0.5), 1.2, 2.6, sx, sy, 10)} c="ink" w={2.6} />
+            <Line x1={sx(2)} y1={sy(0)} x2={sx(2)} y2={sy(41.25)} c="red" w={1.4} dash="5 4" />
+            <Line x1={sx(1.2)} y1={sy(41.25)} x2={sx(2)} y2={sy(41.25)} c="red" w={1.4} dash="5 4" />
+            <Dot x={sx(2)} y={sy(41.25)} r={6} c="red" />
+            <Text x={sx(2.05)} y={sy(38)} s={12} c="red" b>C/E = 2,0</Text>
+            <Text x={sx(2.55)} y={sy(5)} a="end" s={11} c="mute">C/E →</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['Granulats courants (G = 0,5) et CEM 42,5 (σ′c ≈ 55 MPa) : environ 41 MPa de résistance moyenne.'],
+    caption: 'Lecture directe de la résistance sur la droite de Bolomey.',
+  },
+  {
+    id: 'ajout-eau-chantier',
+    title: '30 litres d’eau ajoutés au pompage',
+    steps: ['real_examples'],
+    formula: ['\\frac{E}{C} : \\frac{165}{300} = 0{,}55 \\rightarrow \\frac{195}{300} = 0{,}65'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[[110, 'E/C', [0.55, 0.65], v => v * 200, v => v.toFixed(2).replace('.', ',')], [340, 'résistance relative', [100, 79], v => v * 1.3, v => `${v} %`]].map(([x, t, vals, h, f]) => (
+          <g key={t}>
+            <Text x={x} y={24} a="middle" s={12} b>{t}</Text>
+            {vals.map((v, i) => (
+              <g key={i}>
+                <Rect x={x - 60 + i * 64} y={190 - h(v)} w={50} h={h(v)} c={i ? 'red' : 'green'} sw={1.6} fill={i ? '~red' : '~green'} />
+                <Text x={x - 35 + i * 64} y={184 - h(v)} a="middle" s={12} b>{f(v)}</Text>
+                <Text x={x - 35 + i * 64} y={210} a="middle" s={11}>{i ? 'avec eau' : 'livré'}</Text>
+              </g>
+            ))}
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['22 MPa mesurés au lieu de 30 attendus : carottages, recalcul et renforcement de deux voiles. L’ouvrabilité s’obtient par la formulation et les adjuvants, pas par l’eau.'],
+    caption: 'C25/30 dégradé par un ajout d’eau sur chantier.',
   },
 ];

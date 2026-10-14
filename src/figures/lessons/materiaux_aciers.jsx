@@ -1,5 +1,6 @@
 // Plates — Module 7 · Aciers de construction
 import { Arrow, Badge, Dot, Line, Path, Plot, Poly, Rect, Text, fnPts } from '../../components/figures/kit.jsx';
+import { Circle } from '../../components/figures/kit.jsx';
 
 // Schematic tensile curve (strains dilated): O, yield, plateau, hardening to f_u, necking to rupture.
 const O = [70, 240];
@@ -156,5 +157,120 @@ export default [
     ),
     notes: ['On compare la plus faible valeur de chaque grandeur au seuil de la classe : les trois essais passent, le lot est accepté.'],
     caption: 'Trois essais de traction, trois critères (R_e, k, ε_u) : le lot est conforme B500B.',
+  },
+  {
+    id: 'nuances-charpente',
+    title: 'Nuances d’acier de charpente : f_y et f_u',
+    steps: ['theory'],
+    h: 240,
+    draw: () => {
+      const H = v => v * 0.32;
+      return (
+        <g>
+          {[['S235', 235, 360], ['S275', 275, 430], ['S355', 355, 490]].map(([n, fy, fu], i) => (
+            <g key={n}>
+              <Rect x={70 + i * 130} y={190 - H(fy)} w={40} h={H(fy)} c="ink" sw={1.6} fill="~ink" />
+              <Rect x={112 + i * 130} y={190 - H(fu)} w={40} h={H(fu)} c="red" sw={1.6} fill="~red" />
+              <Text x={90 + i * 130} y={184 - H(fy)} a="middle" s={11} b>{String(fy)}</Text>
+              <Text x={132 + i * 130} y={184 - H(fu)} a="middle" s={11} c="red" b>{String(fu)}</Text>
+              <Text x={111 + i * 130} y={210} a="middle" s={13} b>{n}</Text>
+            </g>
+          ))}
+          <Line x1={50} y1={190} x2={470} y2={190} c="ink" w={1.4} />
+          <Rect x={40} y={20} w={14} h={12} c="ink" sw={1} fill="~ink" />
+          <Text x={60} y={31} s={11}>{'f_y limite d’élasticité'}</Text>
+          <Rect x={40} y={38} w={14} h={12} c="red" sw={1} fill="~red" />
+          <Text x={60} y={49} s={11}>{'f_u résistance à la traction'}</Text>
+          <Text x={250} y={232} a="middle" s={11} c="mute">MPa, épaisseur ≤ 40 mm (EC3) ; qualités JR, J0, J2 : ténacité à +20, 0, −20 °C</Text>
+        </g>
+      );
+    },
+    notes: ['Le nombre de la nuance est la limite d’élasticité : S355 → 355 MPa.'],
+    caption: 'Caractéristiques mécaniques des trois nuances courantes.',
+  },
+  {
+    id: 'masse-ha16',
+    title: 'Masse d’un lot de barres HA16',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['m_l = 0{,}00617 \\times 16^2 = 1{,}58\\ \\text{kg/m} \\qquad M = 24 \\times 6{,}00 \\times 1{,}58 = 227\\ \\text{kg}'],
+    h: 200,
+    draw: () => (
+      <g>
+        {Array.from({ length: 8 }, (_, i) => <Line key={i} x1={40} y1={60 + i * 9} x2={440} y2={60 + i * 9} c="ink" w={4} />)}
+        <Text x={240} y={150} a="middle" s={13} b>24 barres HA16 de 6,00 m (3 bottes)</Text>
+        <Text x={240} y={176} a="middle" s={13} c="red" b>≈ 227 kg</Text>
+      </g>
+    ),
+    notes: ['La masse linéique vient de la section π d²/4 multipliée par 7 850 kg/m³.'],
+    caption: 'Métré d’une commande d’armatures.',
+  },
+  {
+    id: 'allongement-tirant',
+    title: 'Allongement élastique d’un tirant',
+    steps: ['simple_examples'],
+    formula: ['\\Delta L = \\frac{\\sigma\\,L}{E} = \\frac{200 \\times 4\\,000}{210\\,000} = 3{,}8\\ \\text{mm}'],
+    h: 200,
+    draw: () => (
+      <g>
+        <Rect x={30} y={60} w={20} h={70} c="ink" sw={1.6} fill="pat:hatch" />
+        <Line x1={50} y1={95} x2={400} y2={95} c="ink" w={5} />
+        <Line x1={400} y1={95} x2={430} y2={95} c="red" w={5} />
+        <Arrow x1={432} y1={95} x2={480} y2={95} c="red" w={2.6} hs={10} />
+        <Text x={225} y={84} a="middle" s={13} b>tirant S355, L = 4,0 m</Text>
+        <Text x={415} y={126} a="middle" s={13} c="red" b>ΔL = 3,8 mm</Text>
+        <Text x={225} y={130} a="middle" s={12}>σ = 200 MPa</Text>
+        <Text x={240} y={180} a="middle" s={11} c="mute">allongement exagéré sur le dessin</Text>
+      </g>
+    ),
+    notes: ['Loi de Hooke : tant que σ < f_y, l’allongement est proportionnel à la contrainte et disparaît au déchargement.'],
+    caption: 'Un tirant de 4 m s’allonge d’environ 4 mm sous 200 MPa.',
+  },
+  {
+    id: 'cev-exemple',
+    title: 'Carbone équivalent d’un acier de charpente',
+    steps: ['simple_examples'],
+    formula: ['CEV = 0{,}18 + \\frac{1{,}40}{6} + \\frac{0{,}08}{5} + \\frac{0{,}30}{15} = 0{,}45\\ \\%'],
+    h: 200,
+    draw: () => {
+      const X = v => 40 + v * 700;
+      return (
+        <g>
+          {[[0, 0.18, 'C', 'ink'], [0.18, 0.233, 'Mn/6', 'orange'], [0.413, 0.016, '', 'green'], [0.429, 0.02, '', 'water']].map(([a, w, l, c], i) => (
+            <g key={i}>
+              <Rect x={X(a)} y={70} w={w * 700} h={34} c={c} sw={1.4} fill={`~${c}`} />
+              {l && <Text x={X(a + w / 2)} y={92} a="middle" s={12} b>{l}</Text>}
+            </g>
+          ))}
+          <Line x1={X(0.45)} y1={50} x2={X(0.45)} y2={130} c="red" w={2} dash="6 4" />
+          <Text x={X(0.46)} y={60} s={12} c="red" b>≈ 0,45 %</Text>
+          {[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6].map(v => <Text key={v} x={X(v)} y={150} a="middle" s={11} c="mute">{String(v).replace('.', ',')}</Text>)}
+          <Text x={250} y={182} a="middle" s={12}>soudable ; préchauffage à étudier pour les fortes épaisseurs</Text>
+        </g>
+      );
+    },
+    notes: ['Plus le carbone équivalent est élevé, plus la zone affectée par la chaleur durcit et risque de fissurer à froid.'],
+    caption: 'Décomposition du CEV d’un acier à 0,18 % C et 1,40 % Mn.',
+  },
+  {
+    id: 'protection-corrosion',
+    title: 'Protéger l’acier de la corrosion',
+    steps: ['theory'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[[20, 'béton : pH ≈ 13', 'pat:concrete'], [180, 'peinture / galvanisation', '~grey'], [340, 'acier autopatinable', '~soil']].map(([x, t, f], k) => (
+          <g key={t}>
+            <Rect x={x} y={40} w={140} h={110} c="ink" sw={1.6} fill={k === 0 ? f : 'paper'} />
+            {k === 0 && [60, 100].map(cx => <Circle key={cx} cx={x + cx - 20} cy={110} r={8} c="ink" sw={1.4} fill="txt" />)}
+            {k === 1 && <><Rect x={x + 40} y={60} w={60} h={70} c="ink" sw={1.6} fill="~ink" /><Rect x={x + 34} y={54} w={72} h={82} c="water" sw={2.4} /></>}
+            {k === 2 && <Rect x={x + 40} y={60} w={60} h={70} c="soil" sw={2.4} fill={f} />}
+            <Text x={x + 70} y={176} a="middle" s={12} b>{t}</Text>
+          </g>
+        ))}
+        <Text x={250} y={212} a="middle" s={11} c="mute">passivation par l’alcalinité · barrière ou anode sacrificielle · patine protectrice</Text>
+      </g>
+    ),
+    notes: ['En béton, la carbonatation ou les chlorures détruisent la protection ; en charpente, on choisit le système selon la catégorie de corrosivité.'],
+    caption: 'Trois modes de protection des aciers.',
   },
 ];

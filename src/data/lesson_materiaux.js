@@ -273,7 +273,7 @@ $$f_{cm28} = K_B \\cdot f_{ce} \\cdot \\left( \\frac{C}{E + A} - 0{,}5 \\right)$
       examples: [
         {
           context: "Voussoirs de tunnel du Grand Paris Express (Ligne 16 et 17)",
-          scenario: "Substitution du ciment Portland classique CEM I par un ciment ternary bas carbone CEM III/C (80% de laitier de haut-fourneau moulu) et fibres métalliques structurelles (Béton Fibré BFU).",
+          scenario: "Substitution du ciment Portland classique CEM I par un ciment ternaire bas carbone CEM III/C (80% de laitier de haut-fourneau moulu) et fibres métalliques structurelles (Béton Fibré BFU).",
           decomposition_latex: "\\text{Émission } CO_2 \\text{ réduite de } 280 \\text{ kg/m}^3 \\text{ à } 95 \\text{ kg/m}^3 \\quad (-66\\% \\text{ de } CO_2)",
           lesson: "La très faible porosité du béton au laitier procure une résistance exceptionnelle à l'attaque des sulfates et chlorures, avec une résistance à 90 jours de fck > 60 MPa.",
         },

@@ -1,5 +1,6 @@
 // Plates — Module 7 · Matériaux innovants
 import { Arrow, Bars, Circle, Line, Plot, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Path } from '../../components/figures/kit.jsx';
 
 export default [
   {
@@ -114,5 +115,95 @@ export default [
       'La montée en résistance plus lente du CEM III/A ne gêne pas le planning des fondations.',
     ],
     caption: 'Changer de ciment est le levier carbone le plus simple pour un béton courant.',
+  },
+  {
+    id: 'bfup-composition',
+    title: 'BFUP : un béton sans gros granulats, armé de fibres',
+    steps: ['theory'],
+    h: 240,
+    draw: () => (
+      <g>
+        {[[30, 'béton courant', false], [270, 'BFUP', true]].map(([x, t, u]) => (
+          <g key={t}>
+            <Text x={x + 100} y={24} a="middle" s={13} b>{t}</Text>
+            <Rect x={x} y={36} w={200} h={140} c="ink" sw={2} fill="paper" />
+            {!u && [[40, 60, 14], [90, 80, 18], [150, 60, 12], [60, 130, 16], [120, 140, 20], [170, 120, 13]].map(([a, b, r], i) => <Circle key={i} cx={x + a} cy={b} r={r} c="grey" sw={1.4} fill="~grey" />)}
+            {u && Array.from({ length: 60 }, (_, i) => <Circle key={i} cx={x + 10 + ((i * 37) % 180)} cy={46 + ((i * 53) % 120)} r={2} c="grey" sw={0.8} fill="~grey" />)}
+            {u && Array.from({ length: 30 }, (_, i) => {
+              const cx = x + 15 + ((i * 41) % 170);
+              const cy = 50 + ((i * 29) % 115);
+              const a = (i * 47) % 180;
+              return <Line key={`f${i}`} x1={cx} y1={cy} x2={cx + 14 * Math.cos((a * Math.PI) / 180)} y2={cy + 14 * Math.sin((a * Math.PI) / 180)} c="ink" w={1.6} />;
+            })}
+          </g>
+        ))}
+        <Text x={130} y={200} a="middle" s={12}>{'gravillons jusqu’à 20 mm\nE/C ≈ 0,5'}</Text>
+        <Text x={370} y={200} a="middle" s={12}>{'grains de quelques mm, fumée de silice\nE/C ≈ 0,20, 2 à 3 % de fibres'}</Text>
+      </g>
+    ),
+    notes: ['Le squelette très fin et compact donne 150 à 200 MPa ; les fibres reprennent 8 à 10 MPa de traction après fissuration.'],
+    caption: 'Comparaison schématique des microstructures.',
+  },
+  {
+    id: 'bap-etalement',
+    title: 'Béton autoplaçant : l’essai d’étalement',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Poly pts={[[60, 160], [100, 60], [140, 60], [180, 160]]} c="ink" w={2} fill="~grey" close />
+        <Text x={120} y={190} a="middle" s={12}>cône d’Abrams soulevé</Text>
+        {[[85, 'SF3 : 760–850 mm', 'red'], [70, 'SF2 : 660–750 mm', 'orange'], [55, 'SF1 : 550–650 mm', 'green']].map(([r, t, c], i) => (
+          <g key={t}>
+            <Circle cx={300} cy={125} r={r} c={c} sw={2} fill={i === 2 ? '~grey' : 'none'} />
+            <Line x1={392} y1={80 + i * 24} x2={404} y2={80 + i * 24} c={c} w={3} />
+            <Text x={408} y={84 + i * 24} s={10} c={c} b>{t}</Text>
+          </g>
+        ))}
+        <Text x={300} y={238} a="middle" s={11} c="mute">diamètre de la galette après étalement libre</Text>
+      </g>
+    ),
+    notes: ['Le BAP se met en place sous son seul poids, sans vibration ; il doit aussi résister à la ségrégation.'],
+    caption: 'Classes d’étalement SF1 à SF3.',
+  },
+  {
+    id: 'gain-carbone-cem3',
+    title: 'CO₂ d’un béton : changer de ciment',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['CO_2 = \\sum m_i\\,FE_i : \\quad 350 \\times 0{,}80 = 280 \\ \\text{kg} \\quad 350 \\times 0{,}45 = 158\\ \\text{kg}'],
+    h: 230,
+    draw: () => (
+      <Bars x={90} y={30} w={300} h={160} max={300} ticks={[100, 200, 300]} unit="kg CO₂e par m³" bars={[
+        { label: 'CEM I', v: 280, c: 'grey' },
+        { label: 'CEM III/A', v: 158, c: 'green' },
+      ]} />
+    ),
+    notes: ['Facteurs indicatifs 0,80 et 0,45 kg CO₂e/kg : environ 44 % d’émissions en moins sur le ciment.'],
+    caption: 'Empreinte du ciment d’un mètre cube dosé à 350 kg.',
+  },
+  {
+    id: 'passerelle-paix',
+    title: 'Passerelle en BFUP de 120 m',
+    steps: ['real_examples'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Rect x={10} y={180} w={480} h={30} c="water" sw={0} fill="~water" />
+        <Rect x={10} y={150} w={40} h={60} c="soil" sw={0} fill="pat:soil" />
+        <Rect x={450} y={150} w={40} h={60} c="soil" sw={0} fill="pat:soil" />
+        <Path d="M 50 150 Q 250 20 450 150" c="ink" w={4} />
+        <Line x1={50} y1={100} x2={450} y2={100} c="ink" w={2.6} />
+        {Array.from({ length: 9 }, (_, i) => 90 + i * 40).map(x => {
+          const t = (x - 50) / 400;
+          const y = 150 - 4 * 65 * t * (1 - t);
+          return y < 100 ? null : <Line key={x} x1={x} y1={100} x2={x} y2={y} c="ink" w={1} />;
+        })}
+        <Text x={250} y={64} a="middle" s={13} b>arc mince en BFUP</Text>
+        <Text x={250} y={128} a="middle" s={12}>≈ 120 m</Text>
+        <Text x={250} y={204} a="middle" s={11} c="mute">{'f_c ≈ 200 MPa + fibres + précontrainte'}</Text>
+      </g>
+    ),
+    notes: ['Le BFUP permet des ouvrages fins et durables, à condition de maîtriser malaxage, orientation des fibres et cure.'],
+    caption: 'Passerelle de la Paix (Séoul, 2002), après celle de Sherbrooke (1997).',
   },
 ];
