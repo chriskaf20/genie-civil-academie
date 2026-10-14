@@ -260,7 +260,7 @@ où $d$ est la distance perpendiculaire de A à la droite d'action de $\\vec{F}$
           title: "Exemple 2 : Degré d'hyperstaticité d'un portique",
           given: "Portique plan : 2 montants encastrés à la base + 1 traverse horizontale. Aucune rotule interne.",
           find: "Degré d'hyperstaticité ns",
-          solution_latex: "r = 3 + 3 = 6 \\text{ (2 encastrements)} \\quad s = 0 \\quad m = 3 \\text{ barres} \\quad n_s = r - s - 3m = 6 - 0 - 9 = -3 + 6 = 3",
+          solution_latex: "r = 3 + 3 = 6 \\text{ (2 encastrements)} \\quad s = 0 \\quad m = 1 \\text{ (montants et traverse liés rigidement : un seul corps)} \\quad n_s = r - s - 3m = 6 - 0 - 3 = 3",
           result: "ns = 3 — Portique 3 fois hyperstatique (classique pour un portique encastré)",
         },
         {

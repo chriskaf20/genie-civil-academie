@@ -130,4 +130,116 @@ export default [
     notes: ['La pression au hameau dépasse les 2 bar exigés, même en pointe.'],
     caption: 'Conduite de 2 500 m, Ø 100 mm, 8 L/s : les pertes consomment 29 m des 55 m disponibles.',
   },
+  {
+    id: 'continuite-retrecissement',
+    title: 'Continuité : le débit se conserve',
+    steps: ['theory', 'simple_examples'],
+    formula: ['Q = v_1 A_1 = v_2 A_2 \\Rightarrow v_2 = v_1\\left(\\frac{D_1}{D_2}\\right)^2 = 1 \\times 2^2 = 4\\ \\text{m/s}'],
+    h: 220,
+    draw: () => (
+      <g>
+        <Path d="M 20 50 L 220 50 L 280 80 L 480 80 L 480 140 L 280 140 L 220 170 L 20 170 Z" c="ink" w={2.4} fill="~water" />
+        {[80, 110, 140].map(y => <Arrow key={y} x1={60} y1={y} x2={110} y2={y} c="water" w={2} hs={7} />)}
+        {[95, 125].map(y => <Arrow key={y} x1={320} y1={y} x2={440} y2={y} c="red" w={2.6} hs={9} />)}
+        <Text x={110} y={196} a="middle" s={13} b>D = 200 mm · v = 1 m/s</Text>
+        <Text x={380} y={170} a="middle" s={13} c="red" b>D = 100 mm · v = 4 m/s</Text>
+      </g>
+    ),
+    notes: ['La section est divisée par 4 quand le diamètre est divisé par 2 : la vitesse est multipliée par 4.'],
+    caption: 'Même débit dans une conduite qui se rétrécit.',
+  },
+  {
+    id: 'pertes-charge',
+    title: 'Pertes de charge linéaires et singulières',
+    steps: ['theory', 'formulas'],
+    formula: ['\\Delta H = \\lambda\\,\\frac{L}{D}\\,\\frac{v^2}{2g} + \\sum K\\,\\frac{v^2}{2g}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Line x1={30} y1={170} x2={200} y2={170} c="ink" w={8} />
+        <Path d="M 200 170 Q 220 170 220 190 L 220 200" c="ink" w={8} />
+        <Line x1={220} y1={200} x2={470} y2={200} c="ink" w={8} />
+        <Rect x={330} y={190} w={20} h={20} c="red" sw={2} fill="~red" />
+        <Text x={340} y={230} a="middle" s={11} c="red">vanne</Text>
+        <Text x={232} y={232} s={11} c="red">coude</Text>
+        <Path d="M 30 50 L 200 80 L 200 92 L 330 112 L 330 130 L 470 150" c="water" w={2.6} />
+        <Text x={110} y={52} s={12} c="water" b>ligne de charge</Text>
+        <Text x={120} y={100} a="middle" s={11}>{'pente : pertes\nlinéaires (frottement)'}</Text>
+        <Text x={210} y={70} s={11} c="red">chute locale</Text>
+        <Text x={338} y={110} s={11} c="red">chute locale</Text>
+      </g>
+    ),
+    notes: ['Le frottement fait baisser la charge régulièrement le long de la conduite ; chaque coude, vanne ou entrée ajoute une chute localisée.'],
+    caption: 'Évolution de la charge le long d’une conduite.',
+  },
+  {
+    id: 'torricelli-orifice',
+    title: 'Vidange par un orifice (Torricelli)',
+    steps: ['theory', 'simple_examples'],
+    formula: ['Q = C_d\\,A\\sqrt{2gh} = 0{,}6 \\times 0{,}001 \\times \\sqrt{2 \\times 9{,}81 \\times 2{,}0} = 3{,}8\\ \\text{L/s}'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={60} y={40} w={180} h={170} c="ink" sw={2.4} fill="none" />
+        <Rect x={62} y={60} w={176} h={148} c="water" sw={0} fill="~water" />
+        <Line x1={62} y1={60} x2={238} y2={60} c="water" w={2} />
+        <Rect x={238} y={186} w={8} h={14} c="ink" sw={1} fill="paper" />
+        <Path d="M 246 193 Q 320 196 380 236" c="water" w={4} />
+        <Arrow x1={270} y1={61} x2={270} y2={192} c="txt" w={1.2} hs={5} both />
+        <Text x={276} y={130} s={13} b>h = 2,0 m</Text>
+        <Text x={390} y={210} s={12} c="water" b>{'v = √(2gh)\n= 6,3 m/s'}</Text>
+        <Text x={150} y={230} a="middle" s={11} c="mute">orifice 10 cm², C_d = 0,6</Text>
+      </g>
+    ),
+    notes: ['La vitesse est celle d’une chute libre de hauteur h ; la contraction du jet réduit le débit réel (C_d ≈ 0,6).'],
+    caption: 'Débit d’un orifice à arête vive au début de la vidange.',
+  },
+  {
+    id: 'puissance-pompe',
+    title: 'Pompe : hauteur manométrique et puissance',
+    steps: ['formulas', 'diagrams'],
+    formula: ['P = \\frac{\\rho\\,g\\,Q\\,H_{mt}}{\\eta} = \\frac{9{,}81 \\times 0{,}050 \\times 40}{0{,}75} \\approx 26\\ \\text{kW}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Rect x={20} y={200} w={90} h={50} c="water" sw={1.6} fill="~water" />
+        <Rect x={380} y={40} w={100} h={50} c="water" sw={1.6} fill="~water" />
+        <Path d="M 90 220 L 150 220 L 150 210" c="ink" w={5} />
+        <Circle cx={160} cy={200} r={14} c="ink" sw={2.4} fill="~grey" />
+        <Path d="M 174 200 L 360 200 L 360 70 L 390 70" c="ink" w={5} />
+        <Path d="M 20 196 L 140 192 L 140 70 L 360 82 L 400 88" c="red" w={2.4} dash="7 4" />
+        <Text x={60} y={190} s={11} c="red">charge</Text>
+        <Arrow x1={130} y1={190} x2={130} y2={74} c="red" w={1.6} hs={6} both />
+        <Text x={124} y={140} a="end" s={12} c="red" b>HMT</Text>
+        <Text x={250} y={66} a="middle" s={11} c="red">pertes au refoulement</Text>
+        <Text x={160} y={232} a="middle" s={11}>pompe</Text>
+        <Text x={480} y={26} a="end" s={11} c="mute">exemple : Q = 50 L/s, η = 0,75</Text>
+      </g>
+    ),
+    notes: ['La pompe apporte un saut de charge égal à la HMT : dénivelée géométrique plus toutes les pertes de charge.'],
+    caption: 'Ligne de charge d’une installation de pompage entre deux réservoirs.',
+  },
+  {
+    id: 'pression-robinet',
+    title: 'Pression disponible en pied d’immeuble',
+    steps: ['simple_examples'],
+    formula: ['\\frac{p}{\\rho g} = 120 - 85 - 8 = 27\\ \\text{m} \\Rightarrow p \\approx 2{,}6\\ \\text{bar}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={30} y={40} w={80} h={40} c="water" sw={1.6} fill="~water" />
+        <Text x={70} y={34} a="middle" s={12} b>cote 120</Text>
+        <Path d="M 110 70 L 380 70 L 380 200" c="ink" w={4} />
+        <Line x1={110} y1={50} x2={400} y2={70} c="red" w={2} dash="7 4" />
+        <Text x={250} y={50} a="middle" s={11} c="red">ligne de charge (8 m de pertes)</Text>
+        <Rect x={370} y={196} w={20} h={10} c="ink" sw={1.4} fill="txt" />
+        <Text x={396} y={214} s={12} b>robinet, cote 85</Text>
+        <Arrow x1={440} y1={71} x2={440} y2={199} c="water" w={1.6} hs={6} both />
+        <Text x={446} y={140} s={12} c="water" b>27 m</Text>
+        <Line x1={20} y1={206} x2={480} y2={206} c="grey" w={1} dash="3 3" />
+      </g>
+    ),
+    notes: ['À vitesse faible, la pression au robinet est la hauteur entre la ligne de charge et le robinet : 27 m d’eau ≈ 2,6 bar.'],
+    caption: 'Distribution gravitaire depuis un château d’eau.',
+  },
 ];

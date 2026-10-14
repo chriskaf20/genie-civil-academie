@@ -1,5 +1,6 @@
 // Plates — Module 6 · Hydrostatique : pression, poussée, sous-pression, flottaison
 import { Arrow, Dim, Force, Ground, Line, Poly, Rect, Text, WaterLevel, SoilLayers } from '../../components/figures/kit.jsx';
+import { Path } from '../../components/figures/kit.jsx';
 
 export default [
   {
@@ -32,7 +33,7 @@ export default [
   {
     id: 'vanne-immergee',
     title: 'Vanne rectangulaire immergée',
-    steps: ['formulas'],
+    steps: ['formulas', 'simple_examples'],
     formula: ['F = \\rho g h_G A = 9{,}81 \\times 2{,}0 \\times 3{,}0 = 58{,}9\\ \\text{kN}', 'y_P = y_G + \\frac{I_G}{y_G A} = 2{,}17\\ \\text{m}'],
     h: 300,
     draw: () => {
@@ -126,5 +127,98 @@ export default [
     ),
     notes: ['Vide, le bassin pèse moins que l’eau qu’il déplace : un débord de radier chargé par les terres le stabilise.'],
     caption: 'Bassin de 20 × 10 m fondé à −4,0 m, nappe des plus hautes eaux à −1,0 m.',
+  },
+  {
+    id: 'pression-profondeur',
+    title: 'La pression ne dépend que de la profondeur',
+    steps: ['theory', 'formulas'],
+    formula: ['p = p_0 + \\rho\\,g\\,h \\approx 10\\ \\text{kPa par mètre d’eau}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Poly pts={[[30, 60], [110, 60], [110, 200], [30, 200]]} c="water" w={2} fill="~water" close />
+        <Poly pts={[[150, 60], [250, 60], [220, 200], [180, 200]]} c="water" w={2} fill="~water" close />
+        <Poly pts={[[290, 60], [310, 60], [310, 140], [380, 140], [380, 200], [290, 200]]} c="water" w={2} fill="~water" close />
+        <Line x1={20} y1={60} x2={390} y2={60} c="water" w={1.4} dash="6 4" />
+        <Line x1={20} y1={200} x2={390} y2={200} c="red" w={1.4} dash="6 4" />
+        <Text x={205} y={226} a="middle" s={13} c="red" b>même profondeur : même pression</Text>
+        <Arrow x1={420} y1={61} x2={420} y2={199} c="txt" w={1.4} hs={6} both />
+        <Text x={428} y={134} s={13} b>h</Text>
+        <Text x={460} y={70} s={12}>0</Text>
+        <Text x={444} y={206} s={12} c="red">ρgh</Text>
+      </g>
+    ),
+    notes: ['Ni la forme ni le volume du récipient n’interviennent : 10 m d’eau donnent toujours environ 1 bar de pression relative.'],
+    caption: 'Paradoxe hydrostatique : trois réservoirs, une seule pression au fond.',
+  },
+  {
+    id: 'sous-pression-radier',
+    title: 'Sous-pression sous un radier',
+    steps: ['simple_examples'],
+    formula: ['u = \\rho_w\\,g\\,h_w = 9{,}81 \\times 3{,}0 = 29{,}4\\ \\text{kPa} \\Rightarrow e_{béton} \\ge \\frac{29{,}4}{25} = 1{,}2\\ \\text{m}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={20} y={60} w={460} h={170} c="soil" sw={0} fill="pat:soil" o={0.5} />
+        <Line x1={20} y1={80} x2={480} y2={80} c="water" w={2} dash="7 4" />
+        <Text x={476} y={74} a="end" s={12} c="water" b>nappe</Text>
+        <Rect x={120} y={60} w={260} h={140} c="ink" sw={2} fill="paper" />
+        <Rect x={120} y={180} w={260} h={20} c="ink" sw={2} fill="pat:concrete" />
+        {Array.from({ length: 9 }, (_, i) => 140 + i * 28).map(x => <Arrow key={x} x1={x} y1={228} x2={x} y2={204} c="water" w={1.8} hs={7} />)}
+        <Text x={250} y={244} a="middle" s={12} c="water" b>u = 29,4 kPa</Text>
+        <Arrow x1={400} y1={81} x2={400} y2={199} c="txt" w={1.2} hs={5} both />
+        <Text x={406} y={144} s={12}>3,0 m</Text>
+      </g>
+    ),
+    notes: ['Il faut 1,2 m de béton pour équilibrer la sous-pression, sans marge : on ajoute un coefficient de sécurité, des ancrages ou un drainage.'],
+    caption: 'L’eau pousse le radier vers le haut avec une pression égale à ρ g h_w.',
+  },
+  {
+    id: 'piscine-soulevee',
+    title: 'Piscine vidée sous nappe : soulèvement',
+    steps: ['real_examples'],
+    formula: ['U = 9{,}81 \\times 1{,}1 \\times 32 = 345\\ \\text{kN} \\gg G \\approx 30\\ \\text{kN}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={20} y={60} w={460} h={170} c="soil" sw={0} fill="pat:soil" o={0.5} />
+        <Line x1={20} y1={60} x2={480} y2={60} c="ink" w={2} />
+        <Line x1={20} y1={84} x2={480} y2={84} c="water" w={2} dash="7 4" />
+        <Text x={476} y={78} a="end" s={11} c="water" b>nappe à 0,5 m</Text>
+        <Path d="M 140 30 L 140 120 Q 140 130 150 130 L 350 130 Q 360 130 360 120 L 360 30" c="red" w={3} />
+        <Path d="M 140 60 L 140 154 L 360 154 L 360 60" c="grey" w={1.4} dash="5 4" />
+        <Arrow x1={250} y1={150} x2={250} y2={134} c="red" w={2} hs={6} />
+        <Text x={372} y={40} s={12} c="red" b>coque soulevée de 40 cm</Text>
+        {Array.from({ length: 7 }, (_, i) => 160 + i * 30).map(x => <Arrow key={x} x1={x} y1={200} x2={x} y2={162} c="water" w={1.6} hs={6} />)}
+        <Text x={250} y={222} a="middle" s={12} c="water" b>sous-pression sur 8 × 4 m</Text>
+      </g>
+    ),
+    notes: ['On ne vidange jamais un ouvrage enterré sans vérifier la nappe ; sinon lest, ancrages ou clapet de décompression.'],
+    caption: 'Coque de 1,6 m de profondeur, vide, soulevée par 1,1 m d’eau.',
+  },
+  {
+    id: 'pressions-ouvrage',
+    title: 'Les pressions de l’eau sur un ouvrage',
+    steps: ['diagrams'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Rect x={20} y={60} w={180} h={150} c="water" sw={0} fill="~water" />
+        <Line x1={20} y1={60} x2={200} y2={60} c="water" w={2} />
+        <Rect x={200} y={30} w={30} h={190} c="ink" sw={2} fill="pat:concrete" />
+        <Poly pts={[[200, 60], [200, 210], [140, 210]]} c="red" w={1.6} fill="~red" close />
+        <Arrow x1={140} y1={160} x2={196} y2={160} c="red" w={2.4} hs={8} />
+        <Text x={110} y={156} a="end" s={12} c="red" b>{'½ρgH²\nà H/3'}</Text>
+        <Rect x={230} y={196} w={180} h={24} c="ink" sw={2} fill="pat:concrete" />
+        {Array.from({ length: 6 }, (_, i) => 250 + i * 30).map(x => <Arrow key={x} x1={x} y1={246} x2={x} y2={224} c="water" w={1.6} hs={6} />)}
+        <Text x={320} y={252} a="middle" s={11} c="water" b>{'sous-pression u = ρ g h_w'}</Text>
+        <Rect x={330} y={70} w={70} h={50} c="ink" sw={1.6} fill="~grey" />
+        <Arrow x1={365} y1={150} x2={365} y2={124} c="green" w={2} hs={7} />
+        <Text x={410} y={110} s={12} c="green" b>{'Archimède\nρ g V'}</Text>
+        <Text x={30} y={50} s={12} c="water">surface libre : p = 0</Text>
+      </g>
+    ),
+    notes: ['Poussée triangulaire sur les parois, sous-pression sous les radiers, poussée d’Archimède sur les corps immergés : trois effets d’une même loi.'],
+    caption: 'Synthèse des actions de l’eau à vérifier sur un ouvrage hydraulique.',
   },
 ];
