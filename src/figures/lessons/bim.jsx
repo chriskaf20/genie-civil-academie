@@ -157,4 +157,159 @@ export default [
     },
     caption: 'Bureaux R+5 de 12 000 m² : 8 semaines de synthèse, aucun percement imprévu sur le chantier.',
   },
+  {
+    id: 'lod-phases',
+    title: 'Niveaux de développement selon la phase',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[['LOD 100', 'esquisse', 'masse'], ['LOD 200', 'APS / APD', 'objets génériques'], ['LOD 300', 'PRO / DCE', 'dimensions exactes'], ['LOD 400', 'EXE', 'détails, ferraillage'], ['LOD 500', 'DOE', 'tel que construit']].map(([l, p, d], i) => (
+          <g key={l}>
+            <Rect x={20 + i * 94} y={40} w={86} h={150} c="ink" sw={1.4} fill={`~${['grey', 'water', 'green', 'orange', 'red'][i]}`} />
+            <Text x={63 + i * 94} y={62} a="middle" s={13} b>{l}</Text>
+            <Text x={63 + i * 94} y={84} a="middle" s={11}>{p}</Text>
+            <Rect x={43 + i * 94} y={100} w={40} h={50} c="ink" sw={1.6} fill={i === 0 ? '~grey' : 'paper'} rx={i === 0 ? 10 : 0} />
+            {i >= 3 && [0, 1, 2].map(k => <Line key={k} x1={47 + i * 94 + k * 15} y1={104} x2={47 + i * 94 + k * 15} y2={146} c="red" w={1.4} />)}
+            <Text x={63 + i * 94} y={176} a="middle" s={10}>{d}</Text>
+          </g>
+        ))}
+        <Arrow x1={20} y1={214} x2={480} y2={214} c="ink" w={1.6} hs={8} />
+        <Text x={250} y={236} a="middle" s={12} c="mute">la maquette s’enrichit en géométrie et en information</Text>
+      </g>
+    ),
+    notes: ['La convention BIM fixe le LOD attendu à chaque phase : modéliser trop tôt trop finement coûte cher, trop tard empêche la synthèse.'],
+    caption: 'De la masse conceptuelle au jumeau numérique de l’ouvrage exécuté.',
+  },
+  {
+    id: 'bcf-ticket',
+    title: 'Anatomie d’un ticket BCF',
+    steps: ['theory'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={30} y={30} w={440} h={190} rx={10} c="ink" sw={2} fill="paper" />
+        <Rect x={46} y={46} w={180} h={120} c="ink" sw={1.4} fill="~grey" />
+        <Rect x={70} y={100} w={130} h={22} c="grey" sw={1.4} fill="pat:hatch" />
+        <Line x1={60} y1={110} x2={210} y2={110} c="water" w={6} />
+        <Circle cx={136} cy={111} r={16} c="red" sw={2.2} />
+        <Text x={136} y={186} a="middle" s={11} c="mute">capture + point de vue 3D</Text>
+        {[['GUID', '2O2Fr$t4X7Zf8NOew3FLKI'], ['titre', 'gaine Ø200 dans poutre'], ['assigné à', 'BET structure'], ['statut', 'ouvert → résolu'], ['taille', 'quelques Ko']].map(([k, v], i) => (
+          <g key={k}>
+            <Text x={244} y={66 + i * 28} s={12} b>{k}</Text>
+            <Text x={322} y={66 + i * 28} s={12} c={i === 3 ? 'red' : 'ink'}>{v}</Text>
+          </g>
+        ))}
+      </g>
+    ),
+    notes: ['On échange le problème, pas la maquette : le ticket désigne l’objet par son GUID et replace la caméra au bon endroit.'],
+    caption: 'Un fichier .bcfzip léger au lieu d’une maquette IFC de plusieurs centaines de Mo.',
+  },
+  {
+    id: 'formules-5d',
+    title: 'Quantités et coûts extraits de la maquette',
+    steps: ['formulas'],
+    formula: ['V_{beton} = \\sum V_{Slab} + \\sum V_{Wall} \\qquad C_{total} = \\sum Q_k \\times P_k'],
+    h: 230,
+    draw: () => (
+      <g>
+        {[['IfcSlab', '420 m³', '~grey'], ['IfcWall', '310 m³', '~grey'], ['IfcColumn', '45 m³', '~grey']].map(([t, v, f], i) => (
+          <g key={t}>
+            <Rect x={30} y={40 + i * 50} w={150} h={36} rx={6} c="ink" sw={1.6} fill={f} />
+            <Text x={105} y={63 + i * 50} a="middle" s={12} b>{`${t} : ${v}`}</Text>
+          </g>
+        ))}
+        <Arrow x1={190} y1={108} x2={250} y2={108} c="red" w={2.2} hs={9} />
+        <Text x={360} y={80} a="middle" s={13} b>{'Q × P par poste'}</Text>
+        <Text x={360} y={110} a="middle" s={12}>{'775 m³ × prix unitaire'}</Text>
+        <Text x={360} y={140} a="middle" s={13} c="red" b>coût 5D</Text>
+        <Text x={250} y={214} a="middle" s={11} c="mute">quantités d’exemple ; les volumes sont recalculés à chaque mise à jour</Text>
+      </g>
+    ),
+    notes: ['La maquette donne des quantités cohérentes avec la géométrie ; le ratio d’acier et le coût en découlent directement.'],
+    caption: 'Du modèle aux métrés et au budget.',
+  },
+  {
+    id: 'gain-metre',
+    title: 'Métré manuel ou extraction BIM',
+    steps: ['simple_examples'],
+    formula: ['\\text{gain} = \\frac{40 - 6}{40} \\times 100 = 85\\ \\%'],
+    h: 220,
+    draw: () => (
+      <Bars x={90} y={30} w={300} h={150} max={45} ticks={[10, 20, 30, 40]} unit="heures" bars={[
+        { label: 'métré manuel', v: 40, c: 'grey' },
+        { label: 'BIM (2 h + 4 h)', v: 6, c: 'green' },
+      ]} />
+    ),
+    notes: ['L’extraction prend 2 h, la vérification 4 h : on ne supprime pas le contrôle humain, on le concentre.'],
+    caption: 'Bureaux de 5 000 m² : temps de réalisation des quantitatifs.',
+  },
+  {
+    id: 'clash-canalisation',
+    title: 'Clash dur : canalisation dans une poutre',
+    steps: ['simple_examples'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={160} y={40} w={80} h={120} c="ink" sw={2.2} fill="pat:hatch" />
+        <Text x={200} y={30} a="middle" s={12} b>poutre 40 × 60</Text>
+        <Rect x={20} y={136} w={460} h={22} rx={11} c="water" sw={2} fill="~water" />
+        <Rect x={160} y={136} w={80} h={24} c="red" sw={2.4} fill="~red" />
+        <Text x={300} y={130} s={12} c="water" b>EP Ø200</Text>
+        <Text x={200} y={184} a="middle" s={12} c="red" b>chevauchement 15 cm</Text>
+        <Path d="M 40 147 L 120 147 Q 140 147 140 190 L 260 190 Q 280 190 280 147 L 460 147" c="green" w={2.2} dash="7 4" />
+        <Text x={200} y={214} a="middle" s={12} c="green">A : dévoiement sous la poutre</Text>
+        <Text x={200} y={236} a="middle" s={12}>B : réservation validée par l’ingénieur béton</Text>
+      </g>
+    ),
+    notes: ['Le clash donne lieu à un ticket BCF vers le bureau structure ou le bureau fluides selon la solution retenue.'],
+    caption: 'Collision détectée dans Navisworks entre un réseau et la structure.',
+  },
+  {
+    id: 'hopital-45-maquettes',
+    title: '45 maquettes, 14 200 clashs, zéro sur le chantier',
+    steps: ['real_examples'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Poly pts={[[40, 40], [460, 40], [340, 190], [160, 190]]} c="red" w={2} fill="~red" close />
+        <Text x={250} y={70} a="middle" s={14} b>14 200 clashs initiaux</Text>
+        <Text x={250} y={110} a="middle" s={12}>6 mois de synthèse BIM</Text>
+        <Text x={250} y={150} a="middle" s={12}>45 maquettes · 12 bureaux d’études</Text>
+        <Rect x={200} y={196} w={100} h={26} rx={6} c="green" sw={2} fill="~green" />
+        <Text x={250} y={214} a="middle" s={13} c="green" b>0 sur chantier</Text>
+      </g>
+    ),
+    notes: ['Plus de 3,5 M€ de reprises et d’arrêts de chantier évités sur un hôpital de 225 000 m².'],
+    caption: 'La synthèse anticipe sur écran ce qui coûterait cher en béton.',
+  },
+  {
+    id: 'openbim-workflow',
+    title: 'Workflow OpenBIM',
+    steps: ['diagrams'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[['Archicad', 'architecte', 40], ['Tekla', 'structure', 110], ['Revit', 'fluides', 180]].map(([n, r, y]) => (
+          <g key={n}>
+            <Rect x={20} y={y} w={110} h={50} rx={6} c="ink" sw={1.6} fill="~grey" />
+            <Text x={75} y={y + 22} a="middle" s={12} b>{n}</Text>
+            <Text x={75} y={y + 40} a="middle" s={11}>{r}</Text>
+            <Arrow x1={132} y1={y + 25} x2={198} y2={140} c="water" w={1.6} hs={7} />
+          </g>
+        ))}
+        <Text x={165} y={30} a="middle" s={11} c="water">IFC</Text>
+        <Rect x={200} y={110} w={100} h={60} rx={8} c="water" sw={2} fill="~water" />
+        <Text x={250} y={146} a="middle" s={13} b>CDE</Text>
+        <Arrow x1={302} y1={140} x2={358} y2={140} c="ink" w={1.8} hs={7} />
+        <Rect x={360} y={110} w={120} h={60} rx={8} c="ink" sw={1.6} fill="~grey" />
+        <Text x={420} y={136} a="middle" s={12} b>synthèse</Text>
+        <Text x={420} y={154} a="middle" s={11}>Navisworks, Solibri</Text>
+        <Path d="M 420 172 Q 420 230 75 230 L 75 232" c="red" w={1.8} dash="6 4" />
+        <Text x={250} y={222} a="middle" s={12} c="red" b>tickets BCF vers les auteurs</Text>
+      </g>
+    ),
+    notes: ['Chaque métier garde son logiciel ; l’IFC sert de langue commune et le BCF de messagerie de la synthèse.'],
+    caption: 'Échanges ouverts entre logiciels de conception et de synthèse.',
+  },
 ];
