@@ -1,5 +1,6 @@
 // Plates — Module 5 · Topographie, géodésie & nivellement
 import { Angle, Arrow, Circle, Dot, Line, Plot, Poly, Rect, Text } from '../../components/figures/kit.jsx';
+import { Path, fnPts } from '../../components/figures/kit.jsx';
 
 /** Graduated levelling staff standing on the ground at (x, yBase). */
 function Mire({ x, yBase, h = 150 }) {
@@ -177,5 +178,152 @@ export default [
       'Les points levés sont triangulés : le MNT donne courbes de niveau, profils et cubatures du projet VRD.',
     ],
     caption: 'Le canevas rattaché au Lambert-93 porte tout le levé ; le MNT est le fond du projet.',
+  },
+  {
+    id: 'lambert93-cone',
+    title: 'Projection conique conforme Lambert-93',
+    steps: ['theory'],
+    formula: ['X_0 = 700\\,000\\ \\text{m} \\qquad Y_0 = 6\\,600\\,000\\ \\text{m}'],
+    h: 282,
+    draw: () => (
+      <g>
+        <Circle cx={130} cy={150} r={90} c="ink" sw={2} fill="~water" />
+        <Path d="M 40 150 Q 130 180 220 150" c="grey" w={1} />
+        <Poly pts={[[130, 26.2], [10, 140], [250, 140]]} c="red" w={1.8} fill="~red" close />
+        <Line x1={71} y1={82.1} x2={189} y2={82.1} c="red" w={2.6} />
+        <Line x1={65.3} y1={87.5} x2={194.7} y2={87.5} c="red" w={2.6} />
+        <Text x={200} y={76} s={11} c="red" b>44° et 49° N</Text>
+        <Text x={130} y={268} a="middle" s={12}>cône sécant à la Terre</Text>
+        <Arrow x1={240} y1={140} x2={280} y2={140} c="ink" w={2} hs={8} />
+        <Path d="M 300 230 A 260 260 0 0 1 470 120 L 470 230 Z" c="ink" w={1.6} fill="~grey" />
+        {[0, 1, 2, 3].map(i => <Line key={i} x1={320 + i * 40} y1={230} x2={330 + i * 40} y2={130} c="grey" w={1} />)}
+        <Text x={385} y={252} a="middle" s={12}>{'cône déroulé : plan (X, Y)'}</Text>
+        <Text x={385} y={46} a="middle" s={12} c="mute">{'angles conservés,\ndistances légèrement altérées'}</Text>
+      </g>
+    ),
+    notes: ['Sur les deux parallèles de contact, les distances sont exactes ; entre et au-delà, l’altération reste de quelques décimètres par kilomètre.'],
+    caption: 'La France métropolitaine est projetée sur un cône sécant puis « déroulée » à plat.',
+  },
+  {
+    id: 'nivellement-trigo',
+    title: 'Nivellement trigonométrique à la station totale',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['\\Delta H = D_i \\cos V + h_s - h_m = 150 \\times \\cos(95\\ \\text{gon}) + 1{,}55 - 1{,}80 = 11{,}52\\ \\text{m}'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Poly pts={[[20, 230], [100, 225], [420, 120], [480, 115], [480, 260], [20, 260]]} c="soil" w={2} fill="pat:soil" close />
+        <Line x1={90} y1={170} x2={76} y2={227} c="ink" w={1.8} />
+        <Line x1={90} y1={170} x2={104} y2={224} c="ink" w={1.8} />
+        <Rect x={80} y={156} w={20} h={16} rx={3} c="ink" sw={2} fill="~ink" />
+        <Line x1={410} y1={122} x2={410} y2={62} c="ink" w={2.2} />
+        <Circle cx={410} cy={62} r={6} c="red" sw={2} fill="paper" />
+        <Line x1={90} y1={164} x2={410} y2={62} c="red" w={2.2} />
+        <Text x={250} y={100} a="middle" s={13} c="red" b rot={-17.7}>{'D_i = 150 m'}</Text>
+        <Line x1={90} y1={164} x2={90} y2={90} c="grey" w={1} dash="3 4" />
+        <Angle cx={90} cy={164} r={34} a1={-90} a2={-17.7} label="V = 95 gon" c="red" s={11} lr={30} />
+        <Text x={60} y={200} a="end" s={12}>{'h_s = 1,55'}</Text>
+        <Text x={420} y={96} s={12}>{'h_m = 1,80'}</Text>
+        <Text x={100} y={250} s={12} b>A : 50,00 m</Text>
+        <Text x={476} y={150} a="end" s={12} c="green" b>B : 61,52 m</Text>
+      </g>
+    ),
+    notes: ['Visée montante (V < 100 gon) : cos V > 0, la dénivelée est positive. On ajoute la hauteur de l’instrument et on retire celle du prisme.'],
+    caption: 'Altitude d’un point visé au prisme depuis une station d’altitude connue.',
+  },
+  {
+    id: 'gnss-geoide',
+    title: 'GNSS : de la hauteur ellipsoïdale à l’altitude NGF',
+    steps: ['simple_examples'],
+    formula: ['Z_{NGF} = h - N = 185{,}42 - 48{,}15 = 137{,}27\\ \\text{m}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Path d="M 20 210 Q 250 190 480 210" c="ink" w={2} />
+        <Path d="M 20 170 Q 120 150 250 160 Q 380 172 480 150" c="water" w={2.2} dash="7 4" />
+        <Path d="M 20 80 L 120 60 L 200 76 L 280 50 L 380 70 L 480 56" c="soil" w={2.4} />
+        <Text x={476} y={226} a="end" s={12}>ellipsoïde (GNSS)</Text>
+        <Text x={476} y={142} a="end" s={12} c="water">géoïde (≈ niveau moyen des mers)</Text>
+        <Text x={476} y={46} a="end" s={12} c="soil">terrain</Text>
+        <Dot x={280} y={50} r={5} c="red" />
+        <Arrow x1={300} y1={199} x2={300} y2={52} c="red" w={2} hs={7} both />
+        <Text x={306} y={110} s={12} c="red" b>h = 185,42</Text>
+        <Arrow x1={240} y1={198} x2={240} y2={161} c="water" w={2} hs={6} both />
+        <Text x={234} y={184} a="end" s={12} c="water" b>N = 48,15</Text>
+        <Arrow x1={200} y1={159} x2={200} y2={78} c="green" w={2} hs={7} both />
+        <Text x={194} y={124} a="end" s={12} c="green" b>Z = 137,27</Text>
+      </g>
+    ),
+    notes: ['Le GNSS mesure une hauteur au-dessus de l’ellipsoïde ; l’altitude officielle se compte au-dessus du géoïde, dont la grille RAF20 donne l’écart N.'],
+    caption: 'Trois surfaces de référence : ellipsoïde, géoïde et terrain (écarts exagérés).',
+  },
+  {
+    id: 'tolerance-fermeture',
+    title: 'Tolérance de fermeture d’un nivellement',
+    steps: ['formulas'],
+    formula: ['T_H = 2{,}5\\,\\sigma\\sqrt{L_{km}} = 25\\sqrt{L_{km}}\\ \\text{mm} \\quad (\\sigma = 10\\ \\text{mm/km})'],
+    h: 280,
+    draw: () => (
+      <Plot x={70} y={30} w={380} h={190} xr={[0, 4]} yr={[0, 55]} yl="mm"
+        xt={[0, 0.8, 2, 4].map(v => [v, `${String(v).replace('.', ',')} km`])} yt={[[10, '10'], [22.4, '22,4'], [50, '50']]} grid
+      >
+        {(sx, sy) => (
+          <g>
+            <Poly pts={[[sx(0), sy(0)], ...fnPts(L => 25 * Math.sqrt(L), 0, 4, sx, sy, 60).slice(1), [sx(4), sy(0)]]} c="green" w={0} fill="~green" close />
+            <Poly pts={fnPts(L => 25 * Math.sqrt(L), 0, 4, sx, sy, 60)} c="green" w={2.8} />
+            <Dot x={sx(0.8)} y={sy(10)} r={6} c="red" />
+            <Text x={sx(0.9)} y={sy(10) + 4} s={12} c="red" b>{'f_H = 10 mm : accepté'}</Text>
+            <Text x={sx(2.6)} y={sy(48)} s={12} c="green" b>{'T_H : zone admissible'}</Text>
+          </g>
+        )}
+      </Plot>
+    ),
+    notes: ['La tolérance croît comme la racine de la longueur : les erreurs accidentelles de chaque portée se compensent en partie.'],
+    caption: 'Un cheminement est accepté si son écart de fermeture reste sous la courbe.',
+  },
+  {
+    id: 'piles-viaduc',
+    title: 'Canevas de chantier d’un viaduc de 600 m',
+    steps: ['real_examples'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Line x1={40} y1={130} x2={460} y2={130} c="ink" w={2} dash="12 4 2 4" />
+        {Array.from({ length: 9 }, (_, i) => 70 + i * 45).map(x => <Rect key={x} x={x - 8} y={122} w={16} h={16} c="ink" sw={1.6} fill="~grey" />)}
+        <Text x={250} y={160} a="middle" s={12}>axes des piles à implanter</Text>
+        {[[50, 50], [200, 40], [380, 45], [460, 200], [270, 220], [80, 210]].map(([x, y], i) => (
+          <g key={i}>
+            <Poly pts={[[x, y - 8], [x - 7, y + 5], [x + 7, y + 5]]} c="red" w={1.8} fill="~red" close />
+            <Text x={x + 10} y={y + 4} s={11} c="red" b>{`B${i + 1}`}</Text>
+          </g>
+        ))}
+        <Poly pts={[[50, 50], [200, 40], [380, 45], [460, 200], [270, 220], [80, 210]]} c="red" w={1.2} dash="5 4" close />
+        <Text x={250} y={244} a="middle" s={12}>{'6 bornes béton hors chantier · station 0,5 mgon, 1 mm + 1 ppm'}</Text>
+      </g>
+    ),
+    notes: ['Le canevas est mesuré et compensé avant les travaux ; chaque pile est ensuite implantée et contrôlée depuis plusieurs bornes.'],
+    caption: 'Polygonale de haute précision autour du tracé d’une LGV.',
+  },
+  {
+    id: 'mire-code-barres',
+    title: 'Niveau numérique et mire à code-barres',
+    steps: ['diagrams'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Rect x={360} y={30} w={24} h={200} c="ink" sw={1.6} fill="paper" />
+        {Array.from({ length: 30 }, (_, i) => (i % 3 === 0 || i % 7 === 0 ? <Rect key={i} x={360} y={30 + i * 6.6} w={24} h={3.6} c="ink" sw={0} fill="txt" /> : null))}
+        <Line x1={160} y1={130} x2={150} y2={226} c="ink" w={1.8} />
+        <Line x1={160} y1={130} x2={170} y2={226} c="ink" w={1.8} />
+        <Rect x={130} y={112} w={60} h={20} rx={3} c="ink" sw={2} fill="~ink" />
+        <Line x1={190} y1={122} x2={358} y2={122} c="red" w={1.6} dash="6 4" />
+        <Text x={270} y={112} a="middle" s={12} c="red">visée horizontale</Text>
+        <Text x={60} y={80} s={12}>{'le capteur lit le code\net calcule la hauteur'}</Text>
+        <Text x={400} y={130} s={12} c="red" b>1,4562</Text>
+        <Line x1={40} y1={228} x2={470} y2={228} c="ink" w={2} />
+      </g>
+    ),
+    notes: ['La lecture automatique supprime les fautes de lecture et enregistre directement les dénivelées dans le carnet électronique.'],
+    caption: 'Le niveau numérique « photographie » la mire et en déduit la lecture au dixième de millimètre.',
   },
 ];

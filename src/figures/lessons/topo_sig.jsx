@@ -1,5 +1,6 @@
 // Plates — Module 5 · SIG & projections
 import { Arrow, Dot, Flow, Line, Path, Poly, Rect, Text, flowHeight } from '../../components/figures/kit.jsx';
+import { Circle } from '../../components/figures/kit.jsx';
 
 // Radial geometry around the Earth's centre O (off the plate, below).
 const O = [250, 900];
@@ -165,5 +166,137 @@ export default [
       'Chaque cellule de 5 × 5 m compte pour 25 m² ; la table résultat alimente le zonage et l’information des propriétaires.',
     ],
     caption: 'Croisement raster × vecteur : surface inondée sous plus de 50 cm d’eau, parcelle par parcelle.',
+  },
+  {
+    id: 'systemes-reference',
+    title: 'Trois systèmes de référence',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Text x={85} y={24} a="middle" s={12} b>géographique (φ, λ)</Text>
+        <Circle cx={85} cy={120} r={70} c="ink" sw={2} fill="~water" />
+        {[-40, 0, 40].map(d => <Path key={d} d={`M ${15} ${120 + d} Q 85 ${120 + d + 14} 155 ${120 + d}`} c="grey" w={1} />)}
+        {[-35, 0, 35].map(d => <Path key={`m${d}`} d={`M ${85 + d} 50 Q ${85 + d * 1.4} 120 ${85 + d} 190`} c="grey" w={1} />)}
+        <Text x={85} y={214} a="middle" s={11}>RGF93 / WGS84</Text>
+        <Text x={250} y={24} a="middle" s={12} b>projeté (E, N)</Text>
+        <Rect x={190} y={60} w={120} h={120} c="ink" sw={2} fill="~grey" />
+        {[1, 2, 3].map(i => <g key={i}><Line x1={190 + 30 * i} y1={60} x2={190 + 30 * i} y2={180} c="grey" w={1} /><Line x1={190} y1={60 + 30 * i} x2={310} y2={60 + 30 * i} c="grey" w={1} /></g>)}
+        <Text x={250} y={214} a="middle" s={11}>Lambert 93, UTM (mètres)</Text>
+        <Text x={410} y={24} a="middle" s={12} b>altimétrique</Text>
+        <Path d="M 350 170 Q 410 160 470 170" c="ink" w={1.6} />
+        <Path d="M 350 140 Q 410 128 470 140" c="water" w={2} dash="6 4" />
+        <Arrow x1={410} y1={160} x2={410} y2={132} c="red" w={1.6} hs={6} both />
+        <Text x={414} y={154} s={11} c="red">≈ 50 m</Text>
+        <Text x={410} y={110} a="middle" s={11}>{'NGF-IGN69 (géoïde)\n≠ hauteur GNSS'}</Text>
+        <Text x={410} y={214} a="middle" s={11}>ellipsoïde en trait plein</Text>
+      </g>
+    ),
+    notes: ['Une coordonnée n’a de sens qu’avec son système : on vérifie toujours le système de référence avant d’échanger des données.'],
+    caption: 'Latitude et longitude, coordonnées planes, altitudes : trois systèmes distincts.',
+  },
+  {
+    id: 'analyses-sig',
+    title: 'Analyses SIG courantes',
+    steps: ['theory'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Text x={85} y={24} a="middle" s={12} b>zone tampon</Text>
+        <Rect x={40} y={90} w={90} h={40} rx={20} c="red" sw={1.6} fill="~red" />
+        <Line x1={60} y1={110} x2={110} y2={110} c="ink" w={3} />
+        <Text x={85} y={160} a="middle" s={11}>bande autour d’un objet</Text>
+        <Text x={250} y={24} a="middle" s={12} b>intersection</Text>
+        <Rect x={190} y={60} w={80} h={80} c="ink" sw={1.6} fill="~grey" />
+        <Circle cx={280} cy={120} r={45} c="water" sw={1.6} fill="~water" />
+        <Path d="M 270 79 A 45 45 0 0 0 235 120 L 235 140 L 270 140 Z" c="red" w={2} fill="~red" />
+        <Text x={250} y={196} a="middle" s={11}>parcelles × zone inondable</Text>
+        <Text x={410} y={24} a="middle" s={12} b>MNT : pentes</Text>
+        {[0, 1, 2, 3, 4].map(i => <Path key={i} d={`M ${350} ${60 + i * 25} Q ${410} ${48 + i * 25} ${470} ${64 + i * 25}`} c="soil" w={1.6} />)}
+        <Arrow x1={410} y1={60} x2={410} y2={150} c="water" w={2} hs={8} />
+        <Text x={410} y={196} a="middle" s={11}>courbes, pentes, écoulements</Text>
+      </g>
+    ),
+    notes: ['Ces opérations combinent des couches géoréférencées pour répondre à une question : qui est touché, où, sur quelle surface ?'],
+    caption: 'Tampon, intersection et analyse de terrain.',
+  },
+  {
+    id: 'taille-mnt',
+    title: 'Taille d’un modèle numérique de terrain',
+    steps: ['formulas', 'simple_examples'],
+    formula: ['N = \\frac{1\\,000}{0{,}5} \\times \\frac{1\\,000}{0{,}5} = 4 \\times 10^6 \\qquad V = 4 \\times 10^6 \\times 4\\ \\text{octets} = 16\\ \\text{Mo}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Rect x={60} y={40} w={160} h={160} c="ink" sw={2} fill="~soil" />
+        {Array.from({ length: 15 }, (_, i) => <g key={i}><Line x1={60 + (i + 1) * 10} y1={40} x2={60 + (i + 1) * 10} y2={200} c="soil" w={0.6} /><Line x1={60} y1={40 + (i + 1) * 10} x2={220} y2={40 + (i + 1) * 10} c="soil" w={0.6} /></g>)}
+        <Text x={140} y={222} a="middle" s={12}>1 km × 1 km</Text>
+        <Rect x={300} y={80} w={80} h={80} c="ink" sw={2} fill="~soil" />
+        <Text x={340} y={124} a="middle" s={12} b>0,5 m</Text>
+        <Text x={340} y={186} a="middle" s={12}>{'1 cellule = 1 altitude\n(4 octets)'}</Text>
+        <Text x={430} y={60} a="middle" s={12} c="red" b>{'4 millions\nde cellules'}</Text>
+      </g>
+    ),
+    notes: ['Diviser la résolution par deux multiplie le nombre de cellules par quatre : la taille des fichiers explose vite.'],
+    caption: 'Emprise, résolution et volume d’un raster d’altitudes.',
+  },
+  {
+    id: 'tampon-conduite',
+    title: 'Zone tampon autour d’une conduite',
+    steps: ['simple_examples'],
+    formula: ['A = 1\\,000 \\times 10 + \\pi \\times 5^2 \\approx 10\\,080\\ \\text{m}^2'],
+    h: 200,
+    draw: () => (
+      <g>
+        <Rect x={60} y={70} w={380} h={60} rx={30} c="red" sw={1.8} fill="~red" />
+        <Line x1={90} y1={100} x2={410} y2={100} c="ink" w={3.4} />
+        <Arrow x1={250} y1={101} x2={250} y2={129} c="txt" w={1.2} hs={5} both />
+        <Text x={256} y={124} s={12}>5 m</Text>
+        <Text x={250} y={160} a="middle" s={12}>{'bande de 10 m sur 1 000 m + deux demi-disques'}</Text>
+        <Text x={250} y={56} a="middle" s={12} c="red" b>zone de servitude</Text>
+      </g>
+    ),
+    notes: ['Le tampon sert à repérer les parcelles grevées d’une servitude ou les réseaux à protéger lors d’une DICT.'],
+    caption: 'Tampon de 5 m de part et d’autre d’une conduite rectiligne.',
+  },
+  {
+    id: 'lambert2-vs-93',
+    title: 'Mauvais système de coordonnées : 1 km de décalage',
+    steps: ['real_examples'],
+    h: 240,
+    draw: () => (
+      <g>
+        <Rect x={30} y={40} w={200} h={160} c="grey" sw={1.4} fill="~grey" />
+        <Path d="M 50 170 L 110 120 L 200 100" c="water" w={3} />
+        <Text x={130} y={220} a="middle" s={12} c="green" b>position réelle</Text>
+        <Rect x={270} y={40} w={200} h={160} c="grey" sw={1.4} fill="none" dash="5 4" />
+        <Path d="M 290 120 L 350 70 L 440 50" c="red" w={3} dash="6 4" />
+        <Text x={370} y={220} a="middle" s={12} c="red" b>importée en « Lambert 93 »</Text>
+        <Arrow x1={200} y1={110} x2={300} y2={92} c="red" w={2} hs={8} />
+        <Text x={250} y={30} a="middle" s={12} c="red">≈ 1 km</Text>
+      </g>
+    ),
+    notes: ['Des plans en Lambert II étendu importés comme du Lambert 93 décalent les réseaux d’environ 1 km ; un « recalage » manuel ajoute ensuite des erreurs de plusieurs mètres.'],
+    caption: 'Récolement mal géoréférencé : une DICT indique un réseau au mauvais endroit.',
+  },
+  {
+    id: 'chaine-donnee-sig',
+    title: 'Chaîne d’une donnée géographique',
+    steps: ['diagrams'],
+    h: 260,
+    draw: () => (
+      <g>
+        {[['acquisition (GNSS, drone, lidar)', 'soil'], ['référencement (RGF93, Lambert 93, NGF)', 'red'], ['couches vecteur et raster', 'water'], ['analyses (tampons, MNT)', 'green'], ['cartes, plans, export BIM', 'ink']].map(([t, c], i) => (
+          <g key={t}>
+            <Poly pts={[[110, 40 + i * 42], [330, 40 + i * 42], [370, 18 + i * 42], [150, 18 + i * 42]]} c={c} w={1.8} fill={`~${c}`} close />
+            <Text x={240} y={33 + i * 42} a="middle" s={11} b>{t}</Text>
+          </g>
+        ))}
+        <Arrow x1={90} y1={30} x2={90} y2={220} c="ink" w={1.6} hs={7} />
+        <Text x={84} y={250} a="end" s={11} c="mute">mise à jour</Text>
+      </g>
+    ),
+    notes: ['Chaque étape ajoute une information : sans référencement correct, toutes les analyses suivantes sont fausses.'],
+    caption: 'De la mesure à la carte : les couches d’un SIG.',
   },
 ];
