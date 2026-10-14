@@ -2,6 +2,7 @@
 import { Line, Plot, Poly, Rect, Text } from '../../components/figures/ink.jsx';
 import { BeamScheme, ForceDiagram, ISection } from '../../components/figures/kit.jsx';
 import { Path } from '../../components/figures/kit.jsx';
+import { Arrow, Bars, Circle, Dot } from '../../components/figures/kit.jsx';
 
 const X1 = 120;
 const X2 = 440;
@@ -12,7 +13,7 @@ export default [
   {
     id: 'chaine-integration',
     title: 'De la charge à la déformée : quatre intégrations',
-    steps: ['theory', 'formulas'],
+    steps: ['theory', 'formulas', 'diagrams'],
     formula: ['\\frac{dV}{dx} = -q', '\\frac{dM}{dx} = V', 'EI\\,\\frac{d^2 w}{dx^2} = -M'],
     h: 560,
     draw: () => (
@@ -39,7 +40,7 @@ export default [
   {
     id: 'cubature-profils',
     title: 'Cubature par la méthode des trapèzes',
-    steps: ['real_examples'],
+    steps: ['real_examples', 'formulas'],
     formula: ['V \\approx \\sum \\frac{S_i + S_{i+1}}{2}\\, d_i = 14\\,250\\ \\text{m}^3'],
     h: 300,
     draw: () => (
@@ -128,5 +129,123 @@ export default [
     ),
     notes: ['Deux intégrations donnent deux constantes ; les deux appuis (flèche nulle) les fixent. La flèche est maximale au milieu, là où la pente s’annule.'],
     caption: 'Intégrer EI·w″ = −M(x) deux fois, puis écrire les conditions aux appuis.',
+  },
+  {
+    id: 'integrale-aire-q',
+    title: 'V(x) : on retranche l’aire de la charge',
+    steps: ['theory'],
+    formula: ['V(x) = V(0) - \\int_0^x q\\,dt = \\frac{qL}{2} - q\\,x'],
+    h: 280,
+    draw: () => (
+      <g>
+        <BeamScheme x1={80} x2={420} y={60} loads={[{ type: 'udl', h: 28, label: 'q' }]} names={['A', 'B']} />
+        <Rect x={80} y={104} w={340} h={30} c="ink" sw={1.6} fill="~ink" />
+        <Rect x={80} y={104} w={119} h={30} c="red" sw={1.6} fill="~red" />
+        <Text x={140} y={124} a="middle" s={12} c="red" b>aire = q·x</Text>
+        <Text x={74} y={124} a="end" s={12} b>q</Text>
+        <Line x1={199} y1={96} x2={199} y2={250} c="grey" w={1.2} dash="5 4" />
+        <Text x={199} y={268} a="middle" s={12}>x</Text>
+        <ForceDiagram x1={80} x2={420} y0={200} f={t => 0.5 - t} scale={100} down={false} name="V" marks={[{ t: 0, label: '+qL/2', dx: 24 }]} />
+        <Dot x={199} y={200 - 100 * (0.5 - 0.35)} r={5} c="red" />
+        <Text x={206} y={182} s={12} c="red" b>{'V(x) = qL/2 − q·x'}</Text>
+      </g>
+    ),
+    notes: ['En avançant de A vers B, chaque mètre de charge q diminue l’effort tranchant de q : V décroît linéairement.'],
+    caption: 'L’effort tranchant en x vaut la réaction d’appui moins la charge déjà « rencontrée ».',
+  },
+  {
+    id: 'integrale-aire-v',
+    title: 'M(x) : l’aire sous le diagramme de V',
+    steps: ['theory'],
+    formula: ['M\\!\\left(\\tfrac{L}{2}\\right) = \\int_0^{L/2} V\\,dx = \\tfrac{1}{2} \\cdot \\tfrac{qL}{2} \\cdot \\tfrac{L}{2} = \\frac{qL^2}{8}'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Poly pts={[[80, 100], [250, 100], [80, 50]]} c="green" w={0} fill="~green" close />
+        <ForceDiagram x1={80} x2={420} y0={100} f={t => 0.5 - t} scale={100} down={false} name="V" />
+        <Text x={130} y={90} a="middle" s={12} c="green" b>aire = qL²/8</Text>
+        <ForceDiagram x1={80} x2={420} y0={170} f={t => 4 * t * (1 - t)} scale={70} c="red" fill="~red" name="M" marks={[{ t: 0.5, label: 'qL²/8' }]} />
+        <Arrow x1={140} y1={104} x2={245} y2={232} c="green" w={1.8} hs={8} dash="5 4" />
+        <Line x1={250} y1={60} x2={250} y2={250} c="grey" w={1.2} dash="5 4" />
+        <Text x={256} y={66} s={12} c="mute">V = 0</Text>
+      </g>
+    ),
+    notes: ['Le moment en un point est l’aire du diagramme d’effort tranchant jusqu’à ce point : il est maximal là où V change de signe.'],
+    caption: 'Intégrer V revient à cumuler son aire : le triangle vert donne exactement M au milieu.',
+  },
+  {
+    id: 'pente-diagrammes',
+    title: 'Les dérivées se lisent comme des pentes',
+    steps: ['formulas'],
+    formula: ['\\frac{dV}{dx} = -q \\qquad \\frac{dM}{dx} = V'],
+    h: 280,
+    draw: () => {
+      const X = t => 80 + 340 * t;
+      const My = t => 160 + 70 * 4 * t * (1 - t);
+      const slope = t => (70 * 4 * (1 - 2 * t)) / 340;
+      return (
+        <g>
+          <ForceDiagram x1={80} x2={420} y0={70} f={t => 0.5 - t} scale={80} down={false} name="V" />
+          <Text x={330} y={52} s={12} c="ink">{'pente de V = −q (constante)'}</Text>
+          <ForceDiagram x1={80} x2={420} y0={160} f={t => 4 * t * (1 - t)} scale={70} c="red" fill="~red" name="M" />
+          {[[0.06, '1 : V grand, pente forte'], [0.25, '2 : pente moyenne'], [0.5, '3 : V = 0, pente nulle']].map(([t, lab], k) => (
+            <g key={t}>
+              <Line x1={X(t) - 40} y1={My(t) - 40 * slope(t)} x2={X(t) + 40} y2={My(t) + 40 * slope(t)} c="green" w={2.6} />
+              <Dot x={X(t)} y={My(t)} r={4} c="green" />
+              <Dot x={X(t)} y={70 - 80 * (0.5 - t)} r={4} c="green" />
+              <Text x={X(t) - 10} y={My(t) - 8} a="end" s={12} c="green" b>{String(k + 1)}</Text>
+              <Text x={[40, 190, 330][k]} y={266} s={11} c="green" b>{lab}</Text>
+            </g>
+          ))}
+        </g>
+      );
+    },
+    notes: ['La valeur de V en un point est la pente de la courbe M en ce point : là où V = 0, M passe par son maximum.'],
+    caption: 'Lire un diagramme à partir de l’autre : valeur de l’un = pente de l’autre.',
+  },
+  {
+    id: 'courbure-moment',
+    title: 'Courbure et moment : EI·w″ = −M',
+    steps: ['formulas'],
+    formula: ['\\frac{1}{R} \\approx |w\'\'| = \\frac{M}{EI}'],
+    h: 250,
+    draw: () => {
+      const arc = (cx, cy, R, half) => Array.from({ length: 31 }, (_, k) => {
+        const a = -half + (2 * half * k) / 30;
+        return [cx + R * Math.sin(a), cy + R * Math.cos(a)];
+      });
+      return (
+        <g>
+          <Poly pts={arc(130, -170, 330, 0.24)} c="ink" w={5} />
+          <Line x1={130} y1={-170 + 330} x2={130} y2={60} c="grey" w={1} dash="4 4" />
+          <Text x={130} y={196} a="middle" s={13} b>M faible : grand rayon R</Text>
+          <Poly pts={arc(370, 20, 140, 0.55)} c="red" w={5} />
+          <Line x1={370} y1={160} x2={370} y2={20} c="red" w={1} dash="4 4" />
+          <Line x1={370} y1={20} x2={370 + 140 * Math.sin(0.55)} y2={20 + 140 * Math.cos(0.55)} c="red" w={1} dash="4 4" />
+          <Text x={376} y={90} s={13} c="red" b>R</Text>
+          <Text x={370} y={196} a="middle" s={13} c="red" b>M fort : petit rayon</Text>
+          <Text x={250} y={232} a="middle" s={12} c="mute">à moment égal, une poutre plus rigide (EI) se courbe moins</Text>
+        </g>
+      );
+    },
+    notes: ['La flèche s’obtient en intégrant deux fois cette courbure : c’est pourquoi elle est inversement proportionnelle à EI.'],
+    caption: 'Le moment fléchissant courbe la poutre ; la rigidité EI s’y oppose.',
+  },
+  {
+    id: 'fissuration-fluage',
+    title: 'Flèche instantanée et flèche réelle à long terme',
+    steps: ['practical_case'],
+    formula: ['w_{inst} = \\frac{5 \\times 18 \\times 7\\,500^4}{384 \\times 32\\,000 \\times 5{,}40 \\times 10^9} = 4{,}3\\ \\text{mm}'],
+    h: 250,
+    draw: () => (
+      <Bars x={70} y={30} w={360} h={170} max={32} ticks={[10, 20, 30]} unit="mm" bars={[
+        { label: 'instantanée', v: 4.3, c: 'green' },
+        { label: 'fissurée ×2', v: 8.6, c: 'orange' },
+        { label: 'long terme ×4', v: 17.2, c: 'red' },
+        { label: 'limite L/250', v: 30, c: 'grey' },
+      ]} />
+    ),
+    notes: ['Le calcul en section non fissurée est un minimum : la fissuration du béton tendu et le fluage multiplient la flèche par 2 à 4. La marge reste suffisante ici.'],
+    caption: 'Poutre 30 × 60 cm de 7,50 m : ordre de grandeur des flèches à comparer à L/250.',
   },
 ];

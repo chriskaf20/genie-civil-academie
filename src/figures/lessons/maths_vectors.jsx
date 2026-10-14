@@ -1,6 +1,7 @@
 // Plates — Module 1 · Calcul vectoriel, projection de forces & équilibre
 import { Angle, Arrow, Dim, Dot, Force, Ground, Line, Poly, Rect, Text } from '../../components/figures/ink.jsx';
 import { Crane } from '../../components/figures/kit.jsx';
+import { Circle, Moment } from '../../components/figures/kit.jsx';
 
 const rad = d => (d * Math.PI) / 180;
 
@@ -100,7 +101,7 @@ export default [
   {
     id: 'poids-pente',
     title: 'Décomposer un poids sur un versant',
-    steps: ['simple_examples'],
+    steps: ['simple_examples', 'diagrams'],
     formula: ['P_n = P\\cos\\theta', 'P_t = P\\sin\\theta'],
     h: 290,
     draw: () => {
@@ -188,5 +189,140 @@ export default [
     ),
     notes: ['La composante horizontale du hauban équilibre le vent ; sa composante verticale $T \\sin 40° = 29{,}4$ kN comprime le mât et tire sur l’ancrage.'],
     caption: 'Le triangle des forces se ferme : vent, tension du hauban et réaction du mât.',
+  },
+  {
+    id: 'polygone-forces',
+    title: 'Équilibre en translation : le polygone des forces se ferme',
+    steps: ['theory'],
+    formula: ['\\sum F_x = 0 \\qquad \\sum F_y = 0'],
+    h: 260,
+    draw: () => (
+      <g>
+        <Dot x={130} y={150} r={6} />
+        <Arrow x1={130} y1={150} x2={130} y2={230} c="red" w={3} hs={10} />
+        <Arrow x1={130} y1={150} x2={79.3} y2={120.7} c="green" w={3} hs={10} />
+        <Arrow x1={130} y1={150} x2={180.7} y2={99.3} c="water" w={3} hs={10} />
+        <Text x={138} y={226} s={14} c="red" b>P = 50 kN</Text>
+        <Text x={74} y={112} a="end" s={13} c="green" b>{'T_1 = 36,6'}</Text>
+        <Text x={186} y={94} s={13} c="water" b>{'T_2 = 44,8'}</Text>
+        <Text x={130} y={36} a="middle" s={13} b>forces sur le nœud</Text>
+        <Arrow x1={330} y1={70} x2={330} y2={150} c="red" w={3} hs={10} />
+        <Arrow x1={330} y1={150} x2={279.3} y2={120.7} c="green" w={3} hs={10} />
+        <Arrow x1={279.3} y1={120.7} x2={330} y2={70} c="water" w={3} hs={10} />
+        <Text x={390} y={36} a="middle" s={13} b>mises bout à bout</Text>
+        <Text x={350} y={120} s={13} c="red" b>la figure se ferme</Text>
+        <Text x={350} y={140} s={12}>{'⇒ résultante nulle'}</Text>
+        <Text x={250} y={250} a="middle" s={12} c="mute">même échelle pour les deux figures (1 kN = 1,6 px)</Text>
+      </g>
+    ),
+    notes: ['Si le nœud est en équilibre, la somme vectorielle des forces est nulle : placées bout à bout, elles reviennent au point de départ.'],
+    caption: 'Le nœud de charpente du calcul pas à pas : trois forces, un triangle fermé.',
+  },
+  {
+    id: 'moment-levier',
+    title: 'Moment d’une force : force × bras de levier',
+    steps: ['theory', 'formulas'],
+    formula: ['M_{/O} = F \\cdot d \\qquad d = L\\sin\\alpha'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Rect x={120} y={164} w={262} h={12} c="ink" sw={2} fill="~ink" />
+        <Circle cx={120} cy={170} r={7} c="ink" sw={2} fill="paper" />
+        <Poly pts={[[120, 177], [106, 200], [134, 200]]} c="ink" w={1.8} fill="~grey" close />
+        <Line x1={380} y1={170} x2={305} y2={40} c="grey" w={1.4} dash="6 4" />
+        <Line x1={120} y1={170} x2={315} y2={57.4} c="red" w={2.6} />
+        <Rect x={305} y={55} w={10} h={10} c="red" sw={1.2} />
+        <Arrow x1={415} y1={230.6} x2={382} y2={174} c="water" w={3.2} hs={11} />
+        <Text x={420} y={234} s={15} c="water" b>F</Text>
+        <Text x={200} y={100} a="end" s={14} c="red" b rot={-30}>d = L sin α</Text>
+        <Text x={250} y={196} a="middle" s={13}>L</Text>
+        <Angle cx={380} cy={170} r={34} a1={180} a2={240} label="α" c="water" s={14} />
+        <Moment x={120} y={170} r={30} a1={20} a2={-160} c="green" />
+        <Text x={78} y={150} a="end" s={13} c="green" b>M</Text>
+        <Text x={120} y={222} a="middle" s={12}>O (pivot)</Text>
+      </g>
+    ),
+    notes: ['Le bras de levier est la distance perpendiculaire entre le point O et la ligne d’action de la force, pas la longueur de la barre.'],
+    caption: 'Plus la force est éloignée du pivot et perpendiculaire à la barre, plus elle fait tourner.',
+  },
+  {
+    id: 'produit-scalaire-travail',
+    title: 'Produit scalaire : le travail d’une force',
+    steps: ['theory'],
+    formula: ['W = \\vec{F}\\cdot\\vec{u} = F\\,u\\cos\\theta = 10 \\times 5 \\times \\cos 30° = 43{,}3\\ \\text{kJ}'],
+    h: 230,
+    draw: () => (
+      <g>
+        <Line x1={40} y1={180} x2={460} y2={180} c="ink" w={2} />
+        <Rect x={120} y={140} w={70} h={40} c="ink" sw={2} fill="~grey" />
+        <Arrow x1={190} y1={150} x2={311} y2={80} c="red" w={3} hs={11} />
+        <Text x={316} y={78} s={15} c="red" b>F = 10 kN</Text>
+        <Arrow x1={190} y1={150} x2={311} y2={150} c="green" w={2.6} hs={9} />
+        <Line x1={311} y1={150} x2={311} y2={80} c="grey" w={1.4} dash="5 4" />
+        <Text x={250} y={168} a="middle" s={13} c="green" b>F cos θ : travaille</Text>
+        <Text x={318} y={122} s={12} c="mute">{'F sin θ :\nne travaille pas'}</Text>
+        <Angle cx={190} cy={150} r={44} a1={-30} a2={0} label="θ = 30°" c="red" s={12} lr={34} />
+        <Arrow x1={120} y1={204} x2={330} y2={204} c="water" w={2} hs={8} />
+        <Text x={225} y={222} a="middle" s={13} c="water" b>déplacement u = 5 m</Text>
+      </g>
+    ),
+    notes: ['Seule la composante de la force parallèle au déplacement fournit du travail ; une force perpendiculaire au déplacement ne travaille pas.'],
+    caption: 'Treuil tirant une charge sur des rails : le travail dépend de l’angle entre la force et le déplacement.',
+  },
+  {
+    id: 'produit-vectoriel-moment',
+    title: 'Produit vectoriel : le moment, perpendiculaire au plan',
+    steps: ['theory'],
+    formula: ['\\vec{M}_{/O} = \\vec{r} \\wedge \\vec{F} \\qquad \\|\\vec{M}\\| = r\\,F\\sin\\alpha = F\\,d'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Dot x={100} y={180} r={5} />
+        <Text x={92} y={200} a="end" s={14} b>O</Text>
+        <Arrow x1={100} y1={180} x2={300} y2={130} c="ink" w={2.6} hs={10} />
+        <Text x={200} y={172} a="middle" s={15} b>r</Text>
+        <Arrow x1={300} y1={130} x2={372.8} y2={182.9} c="red" w={3} hs={11} />
+        <Text x={380} y={192} s={15} c="red" b>F</Text>
+        <Line x1={300} y1={130} x2={192.9} y2={52.2} c="grey" w={1.4} dash="6 4" />
+        <Line x1={100} y1={180} x2={192.9} y2={52.2} c="green" w={2.4} />
+        <Text x={128} y={110} a="end" s={14} c="green" b>d</Text>
+        <Angle cx={300} cy={130} r={30} a1={-14} a2={36} label="α" c="red" s={14} />
+        <Moment x={100} y={180} r={36} a1={-150} a2={30} c="water" />
+        <Circle cx={60} cy={110} r={11} c="water" sw={2} fill="paper" />
+        <Line x1={53} y1={103} x2={67} y2={117} c="water" w={2} />
+        <Line x1={67} y1={103} x2={53} y2={117} c="water" w={2} />
+        <Text x={36} y={90} s={12} c="water">{'M ⟂ au plan (rentrant)'}</Text>
+        <Text x={300} y={232} a="middle" s={12} c="mute">d : distance de O à la ligne d’action de F</Text>
+      </g>
+    ),
+    notes: ['La norme du produit vectoriel est $rF\\sin\\alpha$, c’est-à-dire la force multipliée par son bras de levier : on retrouve $M = F\\,d$.'],
+    caption: 'Le moment est un vecteur perpendiculaire au plan ; en 2D on ne garde que sa valeur et son sens de rotation.',
+  },
+  {
+    id: 'norme-composantes',
+    title: 'Recomposer une force à partir de ses composantes',
+    steps: ['formulas'],
+    formula: ['F = \\sqrt{F_x^2 + F_y^2} = \\sqrt{30^2 + 40^2} = 50\\ \\text{kN}', '\\theta = \\arctan\\frac{F_y}{F_x} = 53{,}1°'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Arrow x1={100} y1={210} x2={290} y2={210} c="txt" w={1.4} hs={7} />
+        <Arrow x1={100} y1={210} x2={100} y2={20} c="txt" w={1.4} hs={7} />
+        <Text x={296} y={214} s={13}>x</Text>
+        <Text x={106} y={26} s={13}>y</Text>
+        <Line x1={220} y1={210} x2={220} y2={50} c="grey" w={1.2} dash="5 4" />
+        <Line x1={100} y1={50} x2={220} y2={50} c="grey" w={1.2} dash="5 4" />
+        <Arrow x1={100} y1={210} x2={220} y2={210} c="green" w={3} hs={10} />
+        <Arrow x1={100} y1={210} x2={100} y2={50} c="water" w={3} hs={10} />
+        <Arrow x1={100} y1={210} x2={220} y2={50} c="red" w={3.4} hs={12} />
+        <Text x={160} y={232} a="middle" s={13} c="green" b>{'F_x = 30 kN'}</Text>
+        <Text x={92} y={130} a="end" s={13} c="water" b>{'F_y = 40'}</Text>
+        <Text x={176} y={118} s={14} c="red" b>F = 50 kN</Text>
+        <Angle cx={100} cy={210} r={40} a1={-53.1} a2={0} label="θ" c="red" s={14} />
+        <Text x={330} y={110} s={13}>{'triangle 3-4-5 :\n30-40-50 kN'}</Text>
+      </g>
+    ),
+    notes: ['C’est l’opération inverse de la projection : on additionne les composantes sur chaque axe, puis on reconstruit la résultante.'],
+    caption: 'Norme et direction d’une force à partir de ses composantes horizontale et verticale.',
   },
 ];

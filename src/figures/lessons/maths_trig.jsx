@@ -208,4 +208,170 @@ export default [
     notes: ['Un écart d’angle de 0,2° paraît négligeable mais donne 21 mm en tête de voile : on règle les étais avant de bétonner.'],
     caption: 'La mesure de deux distances au faisceau laser vertical donne le faux aplomb du voile.',
   },
+  {
+    id: 'opp-adj-selon-angle',
+    title: 'Opposé et adjacent dépendent de l’angle choisi',
+    steps: ['theory'],
+    h: 250,
+    draw: () => (
+      <g>
+        {[0, 250].map((dx, k) => {
+          const A = [40 + dx, 200];
+          const B = [220 + dx, 200];
+          const C = [220 + dx, 70];
+          return (
+            <g key={dx}>
+              <Poly pts={[A, B, C]} c="ink" w={2.6} fill="~ink" close />
+              <Rect x={B[0] - 14} y={B[1] - 14} w={14} h={14} c="ink" sw={1.4} />
+              <Line x1={A[0]} y1={A[1]} x2={B[0]} y2={B[1]} c={k ? 'red' : 'green'} w={4} />
+              <Line x1={B[0]} y1={B[1]} x2={C[0]} y2={C[1]} c={k ? 'green' : 'red'} w={4} />
+              <Text x={(A[0] + B[0]) / 2} y={224} a="middle" s={13} c={k ? 'red' : 'green'} b>{k ? 'opposé à φ' : 'adjacent à θ'}</Text>
+              <Text x={k ? B[0] - 8 : B[0] + 8} y={k ? 168 : 140} a={k ? 'end' : 'start'} s={13} c={k ? 'green' : 'red'} b>{k ? 'adjacent\nà φ' : 'opposé\nà θ'}</Text>
+              <Text x={(A[0] + C[0]) / 2 - 14} y={(A[1] + C[1]) / 2 - 8} a="end" s={13} b>H</Text>
+              {k === 0 ? <Angle cx={A[0]} cy={A[1]} r={40} a1={-35.8} a2={0} label="θ" c="red" s={16} />
+                : <Angle cx={C[0]} cy={C[1]} r={34} a1={90} a2={144.2} label="φ" c="red" s={16} />}
+              <Text x={130 + dx} y={30} a="middle" s={13} b>{k ? 'vu depuis φ = 90° − θ' : 'vu depuis θ'}</Text>
+            </g>
+          );
+        })}
+      </g>
+    ),
+    notes: ['L’hypoténuse ne change jamais (face à l’angle droit) ; les deux autres côtés échangent leur nom quand on change d’angle.'],
+    caption: 'Même triangle, deux angles de référence : on nomme toujours les côtés par rapport à l’angle utilisé.',
+  },
+  {
+    id: 'pythagore-carres',
+    title: 'Pythagore : l’aire des carrés',
+    steps: ['formulas'],
+    formula: ['H^2 = \\text{adj}^2 + \\text{opp}^2 \\quad\\Rightarrow\\quad 5^2 = 4^2 + 3^2'],
+    h: 300,
+    draw: () => {
+      const A = [92, 190];
+      const B = [180, 190];
+      const C = [180, 124];
+      const P = [114, 36];
+      const Q = [26, 102];
+      const lerp = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+      return (
+        <g>
+          <Poly pts={[A, C, P, Q]} c="red" w={2.2} fill="~red" close />
+          {[1, 2, 3, 4].map(k => {
+            const [a, b] = [lerp(A, C, k / 5), lerp(Q, P, k / 5)];
+            const [c, d] = [lerp(A, Q, k / 5), lerp(C, P, k / 5)];
+            return <g key={k}><Line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} c="red" w={0.8} o={0.6} /><Line x1={c[0]} y1={c[1]} x2={d[0]} y2={d[1]} c="red" w={0.8} o={0.6} /></g>;
+          })}
+          <Rect x={92} y={190} w={88} h={88} c="green" sw={2.2} fill="~green" />
+          {[1, 2, 3].map(k => <g key={k}><Line x1={92 + 22 * k} y1={190} x2={92 + 22 * k} y2={278} c="green" w={0.8} o={0.6} /><Line x1={92} y1={190 + 22 * k} x2={180} y2={190 + 22 * k} c="green" w={0.8} o={0.6} /></g>)}
+          <Rect x={180} y={124} w={66} h={66} c="water" sw={2.2} fill="~water" />
+          {[1, 2].map(k => <g key={k}><Line x1={180 + 22 * k} y1={124} x2={180 + 22 * k} y2={190} c="water" w={0.8} o={0.6} /><Line x1={180} y1={124 + 22 * k} x2={246} y2={124 + 22 * k} c="water" w={0.8} o={0.6} /></g>)}
+          <Poly pts={[A, B, C]} c="ink" w={2.8} fill="paper" close />
+          <Text x={70} y={110} a="middle" s={18} c="red" b>25</Text>
+          <Text x={136} y={240} a="middle" s={18} c="green" b>16</Text>
+          <Text x={213} y={163} a="middle" s={18} c="water" b>9</Text>
+          <Text x={300} y={120} s={16} b>{'4² + 3² = 5²\n16 + 9 = 25'}</Text>
+          <Text x={300} y={190} s={13} c="mute">{'triangles « 3-4-5 » :\n6-8-10, 9-12-15…\npour tracer un angle droit'}</Text>
+        </g>
+      );
+    },
+    notes: ['Le carré construit sur l’hypoténuse a la même aire que les deux autres réunis : c’est ce qu’exprime $H^2 = \\text{adj}^2 + \\text{opp}^2$.'],
+    caption: 'Triangle 3-4-5 : 9 + 16 carreaux remplissent exactement le grand carré de 25.',
+  },
+  {
+    id: 'sinus-echelle',
+    title: 'Sinus : la hauteur atteinte par une échelle',
+    steps: ['formulas'],
+    formula: ['\\sin\\theta = \\frac{\\text{opp}}{H} \\Rightarrow h = L\\sin\\theta = 5{,}00 \\times \\sin 75° = 4{,}83\\ \\text{m}'],
+    h: 286,
+    draw: () => (
+      <g>
+        <Rect x={300} y={40} w={40} h={200} c="ink" sw={2} fill="pat:brick" />
+        <Rect x={60} y={240} w={300} h={12} c="soil" sw={0} fill="pat:soil" />
+        <Line x1={60} y1={240} x2={360} y2={240} c="ink" w={2} />
+        <Line x1={250} y1={240} x2={296} y2={66} c="ink" w={2.4} />
+        <Line x1={258} y1={240} x2={304} y2={68} c="ink" w={2.4} o={0} />
+        {Array.from({ length: 9 }, (_, k) => { const t = (k + 1) / 10; const x = 250 + 46 * t; const y = 240 - 174 * t; return <Line key={k} x1={x - 7} y1={y} x2={x + 5} y2={y} c="ink" w={1.8} />; })}
+        <Line x1={256} y1={240} x2={302} y2={66} c="ink" w={2.4} />
+        <Angle cx={250} cy={240} r={42} a1={-75} a2={0} label="75°" c="red" s={14} />
+        <Text x={236} y={150} a="end" s={14} b>L = 5,00 m</Text>
+        <Arrow x1={380} y1={239} x2={380} y2={67} c="red" w={1.4} hs={6} both />
+        <Text x={386} y={158} s={14} c="red" b>{'h = 4,83 m'}</Text>
+        <Arrow x1={251} y1={258} x2={299} y2={258} c="green" w={1.2} hs={5} both />
+        <Text x={275} y={274} a="middle" s={12} c="green">1,29 m</Text>
+      </g>
+    ),
+    notes: ['Règle de chantier : pied de l’échelle à environ ¼ de la hauteur, soit un angle voisin de 75°.'],
+    caption: 'Le sinus relie l’hypoténuse (l’échelle) au côté opposé à l’angle (la hauteur atteinte).',
+  },
+  {
+    id: 'cosinus-projection',
+    title: 'Cosinus : longueur réelle et longueur en plan',
+    steps: ['formulas'],
+    formula: ['\\cos\\theta = \\frac{\\text{adj}}{H} \\Rightarrow \\text{adj} = H\\cos\\theta = 8{,}35 \\times \\cos 16{,}7° = 8{,}00\\ \\text{m}'],
+    h: 250,
+    draw: () => (
+      <g>
+        <Poly pts={[[60, 200], [420, 92], [420, 200]]} c="ink" w={0} fill="~ink" close />
+        <Line x1={60} y1={200} x2={420} y2={92} c="ink" w={3.4} />
+        <Line x1={60} y1={200} x2={420} y2={200} c="green" w={3} />
+        <Line x1={420} y1={200} x2={420} y2={92} c="grey" w={1.4} dash="5 4" />
+        <Angle cx={60} cy={200} r={60} a1={-16.7} a2={0} label="16,7°" c="red" s={13} lr={30} />
+        <Text x={230} y={132} a="middle" s={14} b rot={-16.7}>arbalétrier H = 8,35 m</Text>
+        <Text x={240} y={222} a="middle" s={14} c="green" b>projection en plan : 8,00 m</Text>
+        <Text x={428} y={150} s={12}>2,40 m</Text>
+      </g>
+    ),
+    notes: ['Sur un plan de toiture, les longueurs sont projetées : la vraie longueur du bois à commander est $H = \\text{adj}/\\cos\\theta$.'],
+    caption: 'La longueur mesurée sur le plan est la projection horizontale de la pièce inclinée.',
+  },
+  {
+    id: 'tangente-pente',
+    title: 'Tangente : la pente en pourcentage',
+    steps: ['formulas'],
+    formula: ['p = \\tan\\theta = \\frac{\\Delta h}{d} \\qquad 6\\ \\% \\Rightarrow \\theta = \\arctan 0{,}06 = 3{,}43°'],
+    h: 270,
+    draw: () => (
+      <g>
+        <Line x1={60} y1={210} x2={440} y2={96} c="ink" w={3.4} />
+        <Line x1={60} y1={210} x2={440} y2={210} c="grey" w={1.4} dash="5 4" />
+        <Line x1={440} y1={210} x2={440} y2={96} c="red" w={2.4} />
+        <Text x={250} y={232} a="middle" s={13}>d = 100 m</Text>
+        <Text x={432} y={170} a="end" s={13} c="red" b>Δh = 6 m</Text>
+        <Angle cx={60} cy={210} r={70} a1={-16.7} a2={0} label="θ" c="red" s={15} />
+        <Text x={240} y={140} a="middle" s={13} b rot={-16.7}>route à 6 %</Text>
+        <Text x={60} y={36} s={12} c="mute">échelle verticale × 5</Text>
+        <Text x={60} y={258} s={12}>{'5 % → 2,86° · 10 % → 5,71° · 30 % → 16,70° · 100 % → 45°'}</Text>
+      </g>
+    ),
+    notes: ['Une pente en % est une tangente : 6 % signifie 6 m de dénivelée pour 100 m horizontaux, et non un angle de 6°.'],
+    caption: 'Pente d’une route : dénivelée sur distance horizontale.',
+  },
+  {
+    id: 'repere-triangle',
+    title: 'Le triangle dans un repère',
+    steps: ['diagrams'],
+    formula: ['M = (H\\cos\\theta\\ ;\\ H\\sin\\theta)'],
+    h: 270,
+    draw: () => {
+      const O = [80, 220];
+      const M = [80 + 200 * Math.cos(Math.PI * 35 / 180), 220 - 200 * Math.sin(Math.PI * 35 / 180)];
+      return (
+        <g>
+          <Arrow x1={O[0]} y1={O[1]} x2={460} y2={O[1]} c="txt" w={1.6} hs={8} />
+          <Arrow x1={O[0]} y1={O[1]} x2={O[0]} y2={30} c="txt" w={1.6} hs={8} />
+          <Poly pts={[O, [M[0], O[1]], M]} c="ink" w={2.6} fill="~ink" close />
+          <Line x1={O[0]} y1={O[1]} x2={M[0]} y2={O[1]} c="green" w={4} />
+          <Line x1={M[0]} y1={O[1]} x2={M[0]} y2={M[1]} c="red" w={4} />
+          <Line x1={O[0]} y1={M[1]} x2={M[0]} y2={M[1]} c="grey" w={1.2} dash="4 4" />
+          <Angle cx={O[0]} cy={O[1]} r={46} a1={-35} a2={0} label="θ" c="red" s={15} />
+          <Text x={(O[0] + M[0]) / 2} y={242} a="middle" s={13} c="green" b>adjacent = H cos θ (axe x)</Text>
+          <Text x={M[0] + 8} y={170} s={13} c="red" b>{'opposé = H sin θ\n(axe y)'}</Text>
+          <Text x={140} y={140} a="end" s={14} b rot={-35}>hypoténuse H</Text>
+          <Text x={M[0] + 6} y={M[1] - 8} s={13} b>M</Text>
+          <Text x={70} y={M[1] + 4} a="end" s={12} c="mute">H sin θ</Text>
+        </g>
+      );
+    },
+    notes: ['C’est ainsi qu’un logiciel décompose une barre ou une force inclinée : composante sur x, composante sur y.'],
+    caption: 'Adjacent sur l’axe des abscisses, opposé sur l’axe des ordonnées, hypoténuse en diagonale.',
+  },
 ];

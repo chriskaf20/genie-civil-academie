@@ -1,6 +1,7 @@
 // Plates — Module 1 · Trigonométrie avancée & triangles quelconques
 import { Angle, Circle, Dot, Line, Path, Poly, Text } from '../../components/figures/ink.jsx';
 import { Tree } from '../../components/figures/kit.jsx';
+import { Arrow, Rect } from '../../components/figures/kit.jsx';
 
 const deg = r => (r * 180) / Math.PI;
 const dir = (P, Q) => deg(Math.atan2(Q[1] - P[1], Q[0] - P[0]));
@@ -27,7 +28,7 @@ export default [
   {
     id: 'triangle-quelconque',
     title: 'Triangle quelconque : notations',
-    steps: ['theory', 'formulas'],
+    steps: ['theory', 'formulas', 'diagrams'],
     formula: ['a^2 = b^2 + c^2 - 2bc\\cos A', '\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C} = 2R'],
     h: 392,
     draw: () => {
@@ -201,5 +202,172 @@ export default [
       'Contrôle : $h = c \\sin B = b \\sin C = 2{,}78$ m.',
     ],
     caption: 'Le versant vitré, raide, regarde le nord ; le versant couvert, long et peu incliné, reçoit la couverture.',
+  },
+  {
+    id: 'al-kashi-pythagore',
+    title: 'Al-Kashi généralise Pythagore',
+    steps: ['theory'],
+    formula: ['a^2 = b^2 + c^2 - 2bc\\cos A'],
+    h: 260,
+    draw: () => (
+      <g>
+        {[[40, 60, 'cos A > 0 : a² < b² + c²'], [210, 90, 'cos A = 0 : Pythagore'], [400, 120, 'cos A < 0 : a² > b² + c²']].map(([x0, A, lab]) => {
+          const t = (A * Math.PI) / 180;
+          const P = [x0, 200];
+          const B = [x0 + 90, 200];
+          const C = [x0 + 90 * Math.cos(t), 200 - 90 * Math.sin(t)];
+          return (
+            <g key={A}>
+              <Poly pts={[P, B, C]} c="ink" w={2.2} fill="~ink" close />
+              <Line x1={B[0]} y1={B[1]} x2={C[0]} y2={C[1]} c="red" w={3.4} />
+              <Angle cx={P[0]} cy={P[1]} r={26} a1={-A} a2={0} label={`${A}°`} c="ink" s={12} lr={16} />
+              <Text x={(B[0] + C[0]) / 2 + 8} y={(B[1] + C[1]) / 2} s={14} c="red" b>a</Text>
+              <Text x={(P[0] + B[0]) / 2} y={218} a="middle" s={12}>c</Text>
+              <Text x={(P[0] + C[0]) / 2 - 8} y={(P[1] + C[1]) / 2} a="end" s={12}>b</Text>
+              <Text x={x0 + (A > 90 ? 0 : 45)} y={246} a="middle" s={12} c="red" b>{lab}</Text>
+            </g>
+          );
+        })}
+      </g>
+    ),
+    notes: ['Le terme −2bc cos A corrige Pythagore : il raccourcit a si l’angle est aigu, l’allonge s’il est obtus, et disparaît à 90°.'],
+    caption: 'Mêmes côtés b et c, angle A croissant : le côté opposé a s’allonge.',
+  },
+  {
+    id: 'cas-resolution',
+    title: 'Quatre cas de résolution d’un triangle',
+    steps: ['formulas'],
+    formula: ['\\cos A = \\frac{b^2 + c^2 - a^2}{2bc}', '\\frac{a}{\\sin A} = \\frac{b}{\\sin B} = \\frac{c}{\\sin C}'],
+    h: 290,
+    draw: () => {
+      const cells = [
+        [10, 10, 'deux côtés\n+ angle\ncompris', 'Al-Kashi → 3ᵉ côté', ['b', 'c'], ['A']],
+        [255, 10, 'trois côtés', 'Al-Kashi → angles', ['a', 'b', 'c'], []],
+        [10, 150, 'deux angles\n+ un côté', 'loi des sinus', ['c'], ['A', 'B']],
+        [255, 150, 'deux côtés\n+ angle non\ncompris', 'loi des sinus (cas ambigu !)', ['a', 'b'], ['A']],
+      ];
+      return (
+        <g>
+          {cells.map(([x, y, t1, t2, sides, angles]) => {
+            const A = [x + 20, y + 100];
+            const B = [x + 150, y + 100];
+            const C = [x + 100, y + 35];
+            const S = { a: [B, C], b: [A, C], c: [A, B] };
+            return (
+              <g key={t1}>
+                <Rect x={x} y={y} w={235} h={132} rx={8} c="grey" sw={1} />
+                <Poly pts={[A, B, C]} c="grey" w={1.4} fill="~grey" close />
+                {sides.map(sd => <Line key={sd} x1={S[sd][0][0]} y1={S[sd][0][1]} x2={S[sd][1][0]} y2={S[sd][1][1]} c="red" w={4} />)}
+                {angles.includes('A') && <Angle cx={A[0]} cy={A[1]} r={22} a1={-33} a2={0} c="red" />}
+                {angles.includes('B') && <Angle cx={B[0]} cy={B[1]} r={22} a1={180} a2={232.4} c="red" />}
+                <Text x={A[0] - 6} y={A[1] + 14} a="end" s={11} b>A</Text>
+                <Text x={B[0] + 6} y={B[1] + 14} s={11} b>B</Text>
+                <Text x={C[0]} y={C[1] - 6} a="middle" s={11} b>C</Text>
+                <Text x={x + 158} y={y + 30} s={11}>{t1}</Text>
+                <Text x={x + 117} y={y + 124} a="middle" s={12} c="red" b>{t2}</Text>
+              </g>
+            );
+          })}
+        </g>
+      );
+    },
+    notes: ['En rouge : les données mesurées. Le choix de la loi dépend de ce qui est connu ; dans le dernier cas, deux triangles peuvent convenir.'],
+    caption: 'Repérer les éléments connus avant de choisir entre loi des cosinus et loi des sinus.',
+  },
+  {
+    id: 'loi-sinus-cercle',
+    title: 'Pourquoi a / sin A = 2R',
+    steps: ['formulas'],
+    formula: ['a = 2R\\sin A \\iff \\frac{a}{\\sin A} = 2R'],
+    h: 290,
+    draw: () => {
+      const O = [180, 150];
+      const r = 110;
+      const P = t => [O[0] + r * Math.cos((t * Math.PI) / 180), O[1] + r * Math.sin((t * Math.PI) / 180)];
+      const A = P(150);
+      const B = P(30);
+      const C = P(-100);
+      const B2 = P(210);
+      return (
+        <g>
+          <Circle cx={O[0]} cy={O[1]} r={r} c="grey" sw={1.4} dash="6 4" />
+          <Poly pts={[A, B, C]} c="ink" w={2.4} fill="~ink" close />
+          <Line x1={B[0]} y1={B[1]} x2={B2[0]} y2={B2[1]} c="red" w={2} dash="6 4" />
+          <Line x1={B2[0]} y1={B2[1]} x2={C[0]} y2={C[1]} c="red" w={2} />
+          <Dot x={O[0]} y={O[1]} r={3.5} />
+          <Text x={O[0] + 6} y={O[1] - 6} s={12}>O</Text>
+          <Line x1={B[0]} y1={B[1]} x2={C[0]} y2={C[1]} c="green" w={3.6} />
+          <Text x={(B[0] + C[0]) / 2 + 10} y={(B[1] + C[1]) / 2} s={15} c="green" b>a</Text>
+          <Text x={A[0] - 10} y={A[1] + 16} a="end" s={14} b>A</Text>
+          <Text x={B[0] + 8} y={B[1] + 16} s={14} b>B</Text>
+          <Text x={C[0]} y={C[1] - 10} a="middle" s={14} b>C</Text>
+          <Text x={B2[0] - 10} y={B2[1]} a="end" s={14} c="red" b>B′</Text>
+          <Text x={330} y={70} s={13}>{'BB′ est un diamètre (2R)'}</Text>
+          <Text x={330} y={100} s={13}>{'le triangle BCB′ est\nrectangle en C'}</Text>
+          <Text x={330} y={150} s={13}>{'B′ et A interceptent\nle même arc BC :\nangle B′ = angle A'}</Text>
+          <Text x={330} y={226} s={14} c="red" b>{'a = 2R sin A'}</Text>
+        </g>
+      );
+    },
+    notes: ['Les trois rapports côté/sinus valent donc tous 2R : le diamètre du cercle circonscrit.'],
+    caption: 'Démonstration de la loi des sinus par le cercle circonscrit.',
+  },
+  {
+    id: 'aire-triangle',
+    title: 'Aire d’un triangle quelconque',
+    steps: ['formulas'],
+    formula: ['S = \\tfrac{1}{2}\\,b\\,c\\,\\sin A = \\sqrt{s(s-a)(s-b)(s-c)}'],
+    h: 260,
+    draw: () => {
+      const B = [70, 220];
+      const C = [429.7, 220];
+      const A = [143.9, 39.5];
+      return (
+        <g>
+          <Poly pts={[A, B, C]} c="ink" w={2.6} fill="~green" close />
+          <Line x1={A[0]} y1={A[1]} x2={A[0]} y2={220} c="red" w={2} dash="6 4" />
+          <Rect x={A[0]} y={206} w={14} h={14} c="red" sw={1.2} />
+          <Text x={A[0] + 8} y={140} s={13} c="red" b>h = 2,78 m</Text>
+          <Text x={250} y={244} a="middle" s={13} b>a = 5,53 m</Text>
+          <Text x={96} y={124} a="end" s={13} b>c = 3,00</Text>
+          <Text x={300} y={118} s={13} b>b = 5,20</Text>
+          <Text x={A[0]} y={A[1] - 10} a="middle" s={13} b>A = 80°</Text>
+          <Text x={300} y={170} s={12}>{'½ · 5,53 · 2,78 = 7,68 m²\n½ · 5,20 · 3,00 · sin 80° = 7,68 m²'}</Text>
+        </g>
+      );
+    },
+    notes: ['Héron, sans aucun angle : $s = (5{,}53 + 5{,}20 + 3{,}00)/2 = 6{,}865$ m et $S = \\sqrt{6{,}865 \\times 1{,}335 \\times 1{,}665 \\times 3{,}865} = 7{,}68$ m².'],
+    caption: 'Trois chemins vers la même aire : base × hauteur, deux côtés et l’angle compris, ou les trois côtés (Héron).',
+  },
+  {
+    id: 'cas-ambigu',
+    title: 'Le piège de l’arcsinus : deux angles possibles',
+    steps: ['stepbystep'],
+    formula: ['\\sin B = 0{,}7989 \\Rightarrow B = 53{,}0° \\ \\text{ou}\\ 127{,}0°'],
+    h: 270,
+    draw: () => {
+      const A = [40, 220];
+      const C = [223.9, 65.7];
+      const B1 = [340, 220];
+      const B2 = [107.7, 220];
+      return (
+        <g>
+          <Path d={`M ${C[0] - 193.1 * Math.cos(0.3)} ${C[1] + 193.1 * Math.sin(0.3)} A 193.1 193.1 0 0 0 ${C[0] + 193.1 * Math.cos(0.3)} ${C[1] + 193.1 * Math.sin(0.3)}`} c="grey" w={1.2} dash="5 4" />
+          <Line x1={20} y1={220} x2={470} y2={220} c="grey" w={1.2} />
+          <Poly pts={[A, B1, C]} c="green" w={2.6} fill="~green" close />
+          <Poly pts={[A, B2, C]} c="orange" w={2} dash="6 4" close />
+          <Angle cx={A[0]} cy={A[1]} r={36} a1={-40} a2={0} label="40°" c="ink" s={12} lr={20} />
+          <Text x={A[0] - 8} y={A[1] + 16} a="end" s={13} b>A</Text>
+          <Text x={C[0]} y={C[1] - 10} a="middle" s={13} b>C</Text>
+          <Text x={B1[0]} y={B1[1] + 18} a="middle" s={13} c="green" b>{'B₁ : 53,0°, c = 150 m ✓'}</Text>
+          <Text x={B2[0] + 10} y={B2[1] + 36} a="middle" s={13} c="orange" b>{'B₂ : 127,0°, c = 33,9 m ✗'}</Text>
+          <Text x={110} y={124} a="end" s={12}>b = 120 m</Text>
+          <Text x={300} y={140} s={12}>a = 96,55 m</Text>
+          <Text x={330} y={60} s={12} c="mute">{'cercle de rayon a\ncentré en C'}</Text>
+        </g>
+      );
+    },
+    notes: ['L’arcsinus renvoie toujours l’angle aigu ; l’angle obtus 180° − B a le même sinus. Ici c = 150 m est connu : seul B₁ convient (contrôle par Al-Kashi : cos B = 0,60).'],
+    caption: 'Avec deux côtés et un angle non compris, deux triangles peuvent répondre : il faut une donnée de plus pour trancher.',
   },
 ];
