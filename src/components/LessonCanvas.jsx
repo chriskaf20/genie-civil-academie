@@ -341,7 +341,7 @@ function UnitsStep({ s }) {
         <table className="w-full min-w-[560px] text-left text-sm border border-slate-200 dark:border-slate-700/80 rounded-xl overflow-hidden border-collapse">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80">
-              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-teal-800 dark:text-cyan-400">Grandeur</th>
+              <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-teal-800 dark:text-cyan-300">Grandeur</th>
               <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Système SI</th>
               <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-orange-700 dark:text-orange-400">Système impérial</th>
               <th className="py-3 px-4 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Conversion & remarque</th>
@@ -673,7 +673,7 @@ function QuizStep({ s, bestScore, onScore }) {
                       disabled={submitted}
                       aria-pressed={chosen === opt.id}
                     >
-                      <span className="font-mono text-slate-400 dark:text-slate-500 mr-2.5">{String(opt.id).toUpperCase()})</span>
+                      <span className="font-mono text-slate-500 dark:text-slate-400 mr-2.5">{String(opt.id).toUpperCase()})</span>
                       {renderInline(opt.text)}
                     </button>
                   );

@@ -68,7 +68,7 @@ export default function UnitConverter() {
       <div className="flex items-center gap-3 mb-4">
         <span className="text-xl">⚖️</span>
         <div>
-          <p className="text-xs uppercase tracking-widest text-orange-600 dark:text-orange-400 font-semibold">Convertisseur d'Unités</p>
+          <p className="text-xs uppercase tracking-widest text-orange-700 dark:text-orange-400 font-semibold">Convertisseur d'Unités</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Spécialisé Génie Civil</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function UnitConverter() {
             }}
             className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
               category === cat
-                ? 'bg-orange-600 text-white shadow-sm'
+                ? 'bg-orange-700 text-white shadow-sm'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >

@@ -244,7 +244,7 @@ function StressSketch({ stressMode, setStressMode }) {
             onClick={() => setStressMode('elu')}
             className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
               stressMode === 'elu'
-                ? 'bg-emerald-600 text-white shadow-sm'
+                ? 'bg-emerald-700 text-white shadow-sm'
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
             }`}
           >

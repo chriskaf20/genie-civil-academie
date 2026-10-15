@@ -31,7 +31,7 @@ export default function GlossarySearch() {
 
       {/* Search */}
       <div className="relative mb-3">
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500">🔍</span>
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400">🔍</span>
         <input
           value={query}
           onChange={e => setQuery(e.target.value)}
@@ -71,7 +71,7 @@ export default function GlossarySearch() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-bold text-slate-900 dark:text-white">{item.fr}</span>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">—</span>
                     <span className="text-xs text-blue-600 dark:text-sky-400 font-medium font-mono">{item.en}</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">{item.definition}</p>

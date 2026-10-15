@@ -158,12 +158,12 @@ export default function FormulaExplainer({
 
                   {/* Category footer */}
                   {v.category && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
+                    <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
                       <span className="uppercase tracking-wider font-semibold text-[9px] text-teal-700 dark:text-cyan-400/90">{v.category}</span>
                       {isSelected ? (
                         <span className="text-teal-600 dark:text-cyan-400 font-bold">Sélectionné ✓</span>
                       ) : (
-                        <span className="text-slate-400 dark:text-slate-500 hover:text-slate-600">Détail</span>
+                        <span className="text-slate-500 dark:text-slate-400 hover:text-slate-600">Détail</span>
                       )}
                     </div>
                   )}

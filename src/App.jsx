@@ -12,15 +12,16 @@ import { modules } from './data/modules.js';
 import { getLessonEntries } from './data/lesson_registry.js';
 
 const STORAGE_KEY = 'gcea-v2-progress';
-// themeV 2: white pages by default (2026-10); preferences saved before are reset to light once.
-const DEFAULT_PROGRESS = { currentModuleId: 1, completedIds: [], theme: 'light', themeV: 2, lessons: {} };
+// themeV 3: 'auto' follows the phone or computer setting; 'light' and 'dark' are explicit choices.
+const DEFAULT_PROGRESS = { currentModuleId: 1, completedIds: [], theme: 'auto', themeV: 3, lessons: {} };
+const darkQuery = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
 function loadProgress() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
     if (!saved) return DEFAULT_PROGRESS;
-    const theme = saved.themeV === 2 ? saved.theme : 'light';
-    return { ...DEFAULT_PROGRESS, ...saved, theme, themeV: 2, lessons: saved.lessons || {} };
+    const theme = saved.themeV === 3 ? saved.theme : saved.theme === 'dark' ? 'dark' : 'auto';
+    return { ...DEFAULT_PROGRESS, ...saved, theme, themeV: 3, lessons: saved.lessons || {} };
   } catch {
     return DEFAULT_PROGRESS;
   }
@@ -67,17 +68,29 @@ export default function App() {
   const [showSciCalc, setShowSciCalc] = useState(false);
   const [showMobileGlossary, setShowMobileGlossary] = useState(false);
 
-  const isDark = progress.theme === 'dark';
+  const [systemDark, setSystemDark] = useState(() => !!darkQuery?.matches);
+  const isDark = progress.theme === 'dark' || (progress.theme === 'auto' && systemDark);
 
   useEffect(() => {
     saveProgress(progress);
   }, [progress]);
 
   useEffect(() => {
+    if (!darkQuery?.addEventListener) return undefined;
+    const onChange = e => setSystemDark(e.matches);
+    darkQuery.addEventListener('change', onChange);
+    return () => darkQuery.removeEventListener('change', onChange);
+  }, []);
+
+  useEffect(() => {
     const root = document.documentElement;
     root.classList.toggle('dark', isDark);
     root.classList.toggle('theme-dark', isDark);
     root.classList.toggle('theme-light', !isDark);
+    // "only light" stops phone browsers (Chrome, Samsung Internet, installed app) from darkening
+    // the light theme themselves, which turned the plates black and hid their lines.
+    root.style.colorScheme = isDark ? 'dark' : 'only light';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark ? '#0f172a' : '#ffffff');
   }, [isDark]);
 
   // Record a module opened from a link as explored.
@@ -115,7 +128,11 @@ export default function App() {
     }));
   }
 
-  const toggleTheme = () => setProgress(p => ({ ...p, theme: p.theme === 'dark' ? 'light' : 'dark' }));
+  // Picking the same mode as the device means "follow the device" again.
+  const toggleTheme = () => setProgress(p => {
+    const next = isDark ? 'light' : 'dark';
+    return { ...p, theme: next === (systemDark ? 'dark' : 'light') ? 'auto' : next };
+  });
 
   const closeOverlays = () => {
     setMobileMenu(false);
@@ -163,7 +180,7 @@ export default function App() {
   const bgClass = isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-950';
   const sidebarBg = isDark ? 'bg-slate-900 border-slate-800/60' : 'bg-white border-slate-200';
   const headerBg = isDark ? 'bg-slate-900/95 border-slate-800/60' : 'bg-white/95 border-slate-200';
-  const navButton = active => `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${active ? 'text-sky-400 font-bold bg-sky-500/10' : 'text-slate-400 hover:text-slate-200'}`;
+  const navButton = active => `flex flex-col items-center py-1 px-2 rounded-xl transition-all ${active ? 'text-navy-700 bg-navy-50 font-bold dark:text-navy-200 dark:bg-navy-500/20' : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'}`;
 
   return (
     <div className={`min-h-screen flex flex-col ${isDark ? 'dark' : ''} ${bgClass} w-full max-w-full`}>
@@ -241,7 +258,7 @@ export default function App() {
             <div className="text-left">
               <div className="flex items-center gap-1.5">
                 <p className="text-[10px] md:text-xs uppercase tracking-widest text-teal-600 dark:text-cyan-400 font-semibold leading-tight">Académie Génie Civil</p>
-                <span className="tag-green text-[8px] md:text-[9px]">Accès libre</span>
+                <span className="hidden sm:inline"><span className="tag-green text-[8px] md:text-[9px] whitespace-nowrap">Accès libre</span></span>
               </div>
               <p className="text-xs md:text-sm font-bold text-slate-900 dark:text-white leading-tight hidden sm:block">Global Civil Engineering Academy</p>
             </div>
@@ -371,7 +388,11 @@ export default function App() {
       </div>
 
       {/* Mobile bottom navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 border-t border-slate-800/80 backdrop-blur-md px-2 py-1.5 flex justify-around items-center" aria-label="Navigation principale">
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 dark:bg-slate-900/95 dark:border-slate-800/80 backdrop-blur-md px-2 pt-1.5 flex justify-around items-center"
+        style={{ paddingBottom: 'max(6px, env(safe-area-inset-bottom))' }}
+        aria-label="Navigation principale"
+      >
         <button type="button" onClick={goHome} className={navButton(view === 'dashboard' && !mobileMenu && !showSciCalc && !showMobileGlossary)}>
           <span className="text-base" aria-hidden="true">🏠</span>
           <span className="text-[10px] mt-0.5">Accueil</span>

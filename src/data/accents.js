@@ -1,8 +1,8 @@
 // Secondary accent colours of the learning-path stages (see categories in modules.js).
 export const ACCENTS = {
   navy: { bg: 'bg-navy-50 dark:bg-navy-500/10', border: 'border-navy-200 dark:border-navy-500/30', text: 'text-navy-700 dark:text-navy-200', dot: 'bg-navy-600', badge: 'bg-navy-700 text-white', glow: 'shadow-navy-500/5' },
-  emerald: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/30', text: 'text-emerald-800 dark:text-emerald-300', dot: 'bg-emerald-600', badge: 'bg-emerald-600 text-white', glow: 'shadow-emerald-500/5' },
-  amber: { bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/30', text: 'text-amber-800 dark:text-amber-300', dot: 'bg-amber-500', badge: 'bg-amber-500 text-white', glow: 'shadow-amber-500/5' },
+  emerald: { bg: 'bg-emerald-50 dark:bg-emerald-500/10', border: 'border-emerald-200 dark:border-emerald-500/30', text: 'text-emerald-800 dark:text-emerald-300', dot: 'bg-emerald-600', badge: 'bg-emerald-700 text-white', glow: 'shadow-emerald-500/5' },
+  amber: { bg: 'bg-amber-50 dark:bg-amber-500/10', border: 'border-amber-200 dark:border-amber-500/30', text: 'text-amber-800 dark:text-amber-300', dot: 'bg-amber-500', badge: 'bg-amber-700 text-white', glow: 'shadow-amber-500/5' },
   rose: { bg: 'bg-rose-50 dark:bg-rose-500/10', border: 'border-rose-200 dark:border-rose-500/30', text: 'text-rose-800 dark:text-rose-300', dot: 'bg-rose-600', badge: 'bg-rose-600 text-white', glow: 'shadow-rose-500/5' },
 };
 export const accentOf = key => ACCENTS[key] || ACCENTS.navy;

@@ -129,7 +129,7 @@ export default function TechTooltip({ term, children, className = '' }) {
           )}
 
           {/* Footer badge */}
-          <div className="mt-2.5 flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500">
+          <div className="mt-2.5 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
             <span>💡 Lexique GCEA</span>
             <span className="font-mono text-[9px] bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
               Astuce débutant

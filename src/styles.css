@@ -588,7 +588,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   margin: 1.25rem auto;
   max-width: 760px;
   color: var(--f-txt);
-  color-scheme: light;
+  /* "only": phone browsers that darken pages on their own must leave the white paper alone. */
+  color-scheme: only light;
   box-shadow: 0 1px 2px rgba(10, 10, 10, 0.05), 0 10px 28px -16px rgba(10, 10, 10, 0.25);
 }
 .dark .planche { --f-frame: #a1a1aa; box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8); }
@@ -657,6 +658,59 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   color: var(--f-mute);
 }
 @media (max-width: 480px) {
-  .planche { padding: 10px 10px 10px; border-radius: 14px; }
+  .planche { padding: 10px 10px 10px; border-radius: 14px; margin-left: -6px; margin-right: -6px; }
+  /* Badge above the title so the title gets the full width instead of wrapping on four lines. */
+  .planche-head { flex-direction: column-reverse; align-items: flex-start; gap: 6px; }
   .planche-badge { font-size: 9px; padding: 2px 7px; }
 }
+
+/* Phones: open the drawing full screen, wider than the screen, to read its labels. */
+.planche-zoom-open { display: none; }
+@media (max-width: 760px) {
+  .planche-zoom-open {
+    display: flex;
+    margin: 8px auto 0;
+    padding: 6px 14px;
+    border: 1.5px solid var(--f-frame);
+    border-radius: 999px;
+    background: var(--f-paper);
+    color: var(--f-txt);
+    font-family: var(--f-sans);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+.planche.planche-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  margin: 0;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+.planche-zoom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--f-frame);
+}
+.planche-zoom-bar .planche-title { font-size: 1rem; text-decoration: none; }
+.planche-zoom-close {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--f-frame);
+  border-radius: 10px;
+  background: var(--f-paper);
+  color: var(--f-txt);
+  font-size: 18px;
+}
+.planche-zoom-body { flex: 1; overflow: auto; padding: 12px; }
+.planche-zoom-body .planche-svg { margin: 0; }

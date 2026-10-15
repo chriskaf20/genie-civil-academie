@@ -1,6 +1,7 @@
 // One illustrated plate ("planche") of a lesson, styled like a hand-drawn course board:
 // red numbered title, red-boxed key formula, blue drawing, handwritten notes.
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
+import { createPortal } from 'react-dom';
 import '@fontsource/kalam/latin-400.css';
 import '@fontsource/kalam/latin-700.css';
 import { SafeInlineMath } from '../SafeMath.jsx';
@@ -54,10 +55,42 @@ function Dots({ n, total }) {
   );
 }
 
+/** Full-screen copy of a drawing, wide enough to read its labels on a phone (scroll to pan). */
+function Zoom({ fig, n, drawing, onClose }) {
+  useEffect(() => {
+    const onKey = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  return createPortal(
+    <div className="planche planche-zoom" role="dialog" aria-modal="true" aria-label={fig.title}>
+      <div className="planche-zoom-bar">
+        <span className="planche-title">{n}. {fig.title}</span>
+        <button type="button" className="planche-zoom-close" onClick={onClose} aria-label="Fermer l’agrandissement">✕</button>
+      </div>
+      <div className="planche-zoom-body">{drawing}</div>
+    </div>,
+    document.body
+  );
+}
+
 export default function Planche({ fig, n = 1, total = 1 }) {
   const id = `f${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
+  const [zoom, setZoom] = useState(false);
   const [, , vw = 500, vh = 300] = (fig.viewBox || `0 0 500 ${fig.h || 300}`).split(/\s+/).map(Number);
   const formulas = Array.isArray(fig.formula) ? fig.formula : fig.formula ? [fig.formula] : [];
+  const drawing = (pid, style) => (
+    <svg
+      viewBox={`0 0 ${vw} ${vh}`}
+      role="img"
+      aria-label={[fig.title, fig.caption].filter(Boolean).join(' — ')}
+      className="planche-svg"
+      style={style}
+    >
+      <Patterns id={pid} />
+      <FigContext.Provider value={pid}>{fig.draw()}</FigContext.Provider>
+    </svg>
+  );
   return (
     <figure className="planche" data-planche={fig.id}>
       <div className="planche-head">
@@ -71,16 +104,9 @@ export default function Planche({ fig, n = 1, total = 1 }) {
           ))}
         </div>
       )}
-      <svg
-        viewBox={`0 0 ${vw} ${vh}`}
-        role="img"
-        aria-label={[fig.title, fig.caption].filter(Boolean).join(' — ')}
-        className="planche-svg"
-        style={{ maxWidth: fig.maxWidth || 680 }}
-      >
-        <Patterns id={id} />
-        <FigContext.Provider value={id}>{fig.draw()}</FigContext.Provider>
-      </svg>
+      {drawing(id, { maxWidth: fig.maxWidth || 680 })}
+      <button type="button" className="planche-zoom-open" onClick={() => setZoom(true)}>🔍 Agrandir le dessin</button>
+      {zoom && <Zoom fig={fig} n={n} drawing={drawing(`${id}z`, { width: 'max(100%, 760px)', maxWidth: 'none' })} onClose={() => setZoom(false)} />}
       {fig.notes?.length > 0 && (
         <ul className="planche-notes">{fig.notes.map((t, i) => <Note key={i} text={t} />)}</ul>
       )}

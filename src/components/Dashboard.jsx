@@ -43,7 +43,7 @@ function ModuleCard({ module, onSelect, isDone }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">#{String(module.n).padStart(2, '0')}</span>
+            <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">#{String(module.n).padStart(2, '0')}</span>
             <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${level.bg} ${level.color}`}>
               {module.level}
             </span>
@@ -54,7 +54,7 @@ function ModuleCard({ module, onSelect, isDone }) {
           <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-1">{module.description}</p>
           <div className="flex items-center gap-2 mt-2">
             <span className="text-[10px] text-slate-500 dark:text-slate-400">⏱ {module.duration}</span>
-            <span className="text-slate-400 dark:text-slate-600 text-[10px]">·</span>
+            <span className="text-slate-500 dark:text-slate-400 text-[10px]">·</span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400">{lessonCountLabel(getLessonEntries(module).length)}</span>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
                     style={{ width: `${Math.max(3, exploredPct)}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-slate-500 mt-1 font-medium">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium">
                   {completedIds.length}/{modules.length} explorés ({exploredPct}%)
                 </p>
               </div>
@@ -170,7 +170,7 @@ export default function Dashboard({ onSelectModule, completedIds = [] }) {
         <div className="flex items-center gap-3 mb-4">
           <span className="text-lg">⭐</span>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white">Modules Phares</h2>
-          <span className="text-xs text-slate-500">Les incontournables du Génie Civil</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400">Les incontournables du Génie Civil</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {featuredModules.map(m => (

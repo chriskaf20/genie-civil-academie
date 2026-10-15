@@ -623,7 +623,7 @@ function RebarBeamDiagram({ showStress = true, setShowStress }) {
         <button
           onClick={() => setShowStress && setShowStress(!showStress)}
           className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-            showStress ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
+            showStress ? 'bg-emerald-700 text-white' : 'bg-slate-800 text-slate-400'
           }`}
         >
           {showStress ? 'Masquer contraintes/déformations' : 'Afficher contraintes (ELU)'}

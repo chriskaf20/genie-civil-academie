@@ -70,7 +70,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
       {/* Global Search Input */}
       <div className="space-y-2">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 w-3.5 h-3.5" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 w-3.5 h-3.5" />
           <input
             type="search"
             value={search}
@@ -164,7 +164,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
                         <span className="text-sm shrink-0 mt-0.5">{m.icon}</span>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-1">
-                            <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono shrink-0">{String(m.n).padStart(2, '0')}</span>
+                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono shrink-0">{String(m.n).padStart(2, '0')}</span>
                             <div className="flex items-center gap-1">
                               {isDone && <CheckCircle2 className="w-3 h-3 text-emerald-500 dark:text-emerald-400 shrink-0" />}
                               <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium">🔓</span>
@@ -179,7 +179,7 @@ export default function ModuleNav({ activeSlug, onSelect, completedIds = [] }) {
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className={`text-[10px] font-medium ${LEVEL_COLORS[m.level] || 'text-slate-500'}`}>{m.level}</span>
-                            <span className="text-slate-400 dark:text-slate-600 text-[10px]">·</span>
+                            <span className="text-slate-500 dark:text-slate-400 text-[10px]">·</span>
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">{m.duration}</span>
                           </div>
                         </div>
